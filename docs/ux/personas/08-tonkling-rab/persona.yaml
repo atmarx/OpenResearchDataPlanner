@@ -1,0 +1,78 @@
+id: "tonkling-rab"
+name: "Dr. Rab Tonkling"
+department: "Civil Engineering"
+title: "Professor"
+specialty: "Earthquake simulation, structural analysis, seismic retrofit"
+tech_level: "medium"
+years_at_institution: 14
+
+archetype: "closet_nas"
+vibe: "Practical, no-nonsense engineer. Just needs it to work. Has a NAS in his office closet connected to daisy-chained power strips and knows this is a disaster waiting to happen."
+frustrations:
+  - "I know my closet NAS is a fire hazard. I just haven't had time to fix it."
+  - "Every time I ask IT for alternatives, they give me a form and a 6-month timeline"
+  - "I'm an engineer. I can solve problems. But not bureaucracy."
+hopes:
+  - "A legitimate solution that doesn't require 47 meetings"
+  - "Someone who will just tell me what to do and how much it costs"
+
+workarounds:
+  - type: "closet_nas"
+    description: "Consumer NAS in office closet, connected to 3 daisy-chained power strips"
+  - type: "grad_student"
+    description: "Previous student set up the NAS, current students maintain it poorly"
+
+lab:
+  name: "Tonkling Structural Dynamics Lab"
+  size: 4
+  composition:
+    postdocs: 0
+    phd_students: 2
+    masters_students: 1
+    undergrads: 1
+  tech_person: "None — 'I just need it to work'"
+
+projects:
+  - id: "tonkling-retrofit"
+    title: "Seismic Retrofit Analysis (State DOT)"
+    tier: "medium"
+    tier_justification: "Government contract with pre-publication restrictions"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 35000
+      pattern: "bursty"
+    storage:
+      active_tb: 6
+      archive_tb: 4
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 3
+
+  - id: "tonkling-usgs"
+    title: "Historical Earthquake Data Repository"
+    tier: "low"
+    tier_justification: "Public USGS data, no restrictions"
+    type: "storage_only"
+    storage:
+      active_tb: 4
+      archive_tb: 4
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 1
+
+  - id: "tonkling-sensors"
+    title: "Bridge Sensor Network Analysis"
+    tier: "medium"
+    tier_justification: "Infrastructure security concerns, unpublished sensor data"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 12000
+      pattern: "sustained"
+    storage:
+      active_tb: 3
+      archive_tb: 2
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 2

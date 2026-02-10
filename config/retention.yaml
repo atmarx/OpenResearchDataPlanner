@@ -1,0 +1,81 @@
+# Retention schedules and requirements
+# Users select applicable schedules; longest retention wins
+
+schedules:
+  - slug: federal-grant-standard
+    name: "Federal Grant (Standard)"
+    description: "Standard federal grant data retention requirement"
+    years: 3
+    regulation: "2 CFR 200.334"
+    regulation_url: "https://www.ecfr.gov/current/title-2/section-200.334"
+    applies_to_tiers:
+      - low
+      - medium
+      - high
+    is_post_grant: true
+    is_default: true
+    archive_required: false
+
+  - slug: nih-gds
+    name: "NIH Genomic Data Sharing"
+    description: "Genomic data under NIH GDS Policy"
+    years: 10
+    regulation: "NIH GDS Policy"
+    regulation_url: "https://sharing.nih.gov/genomic-data-sharing-policy"
+    applies_to_tiers:
+      - low
+      - medium
+      - high
+    is_post_grant: true
+    is_default: false
+    archive_required: true
+
+  - slug: irb-human-subjects
+    name: "IRB Human Subjects Research"
+    description: "Research involving human subjects under IRB protocol"
+    years: 20
+    regulation: "45 CFR 46 / 21 CFR 50"
+    regulation_url: "https://www.hhs.gov/ohrp/regulations-and-policy"
+    applies_to_tiers:
+      - high
+    is_post_grant: false
+    is_default: false
+    archive_required: true
+    trigger_question: "Does your research involve human subjects under an IRB protocol?"
+
+  - slug: ferpa
+    name: "FERPA Student Records"
+    description: "Educational records covered by FERPA"
+    years: 7
+    regulation: "20 U.S.C. § 1232g"
+    regulation_url: "https://www2.ed.gov/policy/gen/guid/fpco/ferpa"
+    applies_to_tiers:
+      - high
+    is_post_grant: false
+    is_default: false
+    archive_required: true
+    trigger_question: "Does your research involve student educational records?"
+
+  - slug: export-control
+    name: "Export Controlled Data"
+    description: "Data subject to EAR or ITAR export controls"
+    years: 5
+    regulation: "EAR/ITAR"
+    applies_to_tiers:
+      - high
+    is_post_grant: true
+    is_default: false
+    archive_required: true
+    trigger_question: "Is your research subject to export controls (EAR/ITAR)?"
+
+# Archive cost calculation settings
+archive_settings:
+  # When calculating archive costs, assume data reduces to this
+  # percentage of active storage (deduplication, cleanup, etc.)
+  typical_archive_ratio: 0.7
+
+  # Prompt user to estimate if they expect different
+  allow_custom_ratio: true
+  custom_ratio_prompt: |
+    What percentage of your active data will need long-term retention?
+    (Default: 70% - accounts for temporary files, duplicates, etc.)

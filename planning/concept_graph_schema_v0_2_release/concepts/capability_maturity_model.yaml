@@ -1,0 +1,22 @@
+schema_version: '0.2'
+id: capability_maturity_model
+name: Capability Maturity Model
+summary: Framework for assessing and evolving institutional capability over time.
+description: Institutions and units progress through defined maturity stages as tooling
+  and practice improve.
+tags:
+  organizational-design: core
+  governance: informed-by
+assumptions:
+- capability_can_be_measured
+downstream_impacts:
+- delegation_decisions
+- training_priorities
+anti_patterns:
+- static_capability_assumptions
+owners:
+- role: it_leadership
+maturity:
+  level: aspirational
+notes:
+- Adaptable to institutional culture and size.

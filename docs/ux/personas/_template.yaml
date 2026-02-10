@@ -1,0 +1,85 @@
+# Persona Template
+# Copy this file to a new persona folder and customize
+
+id: "lastname-firstname"
+name: "Dr. Firstname Lastname"
+department: "Department Name"
+title: "Professor"  # Professor | Associate Professor | Assistant Professor
+specialty: "Research specialty description"
+tech_level: "medium"  # very_high | high | medium | low | very_low
+years_at_institution: 10
+
+# Personality & context
+archetype: "skeptic"  # skeptic | overwhelmed | evangelist | expert | deadline_panic | legacy | ai_curious | technophobe | detail_oriented | compliance_juggler
+vibe: "One-sentence personality summary"
+frustrations:
+  - "First frustration"
+  - "Second frustration"
+hopes:
+  - "First hope for this tool"
+  - "Second hope"
+
+# Shadow IT workarounds
+workarounds:
+  - type: "custom_scripts"  # custom_scripts | closet_nas | personal_cloud | grad_student | departmental_it | external_drives | paid_out_of_pocket
+    description: "Description of the workaround"
+
+# Research group
+lab:
+  name: "Lab Name"
+  size: 5
+  composition:
+    postdocs: 0
+    phd_students: 3
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Name (role) - what they handle"  # or "None" if no tech person
+
+# Projects (3 per persona)
+projects:
+  # Project 1: Usually compute-heavy or primary research
+  - id: "lastname-project-short-name"
+    title: "Full Project Title"
+    tier: "medium"  # low | medium | high | restricted
+    tier_justification: "Why this tier is appropriate"
+    type: "compute_heavy"  # compute_heavy | compute_moderate | compute_light | storage_only | gpu_heavy | web_hosting
+    compute:
+      type: "hpc_slurm"  # hpc_slurm | gpu_cluster | web_server | none
+      monthly_su: 10000  # Service units per month (omit for storage_only)
+      pattern: "sustained"  # sustained | bursty | seasonal
+    storage:
+      active_tb: 5
+      archive_tb: 3
+    retention: "federal_grant_standard"  # federal_grant_standard | nih_genomic | irb_human_subjects | ferpa_student | export_controlled
+    grant_years: 3
+    team_size: 4
+
+  # Project 2: Secondary project
+  - id: "lastname-project-2"
+    title: "Second Project Title"
+    tier: "low"
+    tier_justification: "Why this tier"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 5000
+      pattern: "bursty"
+    storage:
+      active_tb: 2
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 2
+
+  # Project 3: Storage-only project (required for each persona)
+  - id: "lastname-storage-project"
+    title: "Storage-Only Project Title"
+    tier: "low"
+    tier_justification: "Why this tier"
+    type: "storage_only"
+    storage:
+      active_tb: 1
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 1
+    team_size: 1

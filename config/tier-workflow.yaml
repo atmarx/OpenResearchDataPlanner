@@ -1,0 +1,339 @@
+# config/tier-workflow.yaml
+# Detailed approval processes for each tier
+
+workflows:
+  L1:
+    name: "Low (Public Data)"
+    process: "self-service"
+    description: "No special approval needed"
+    color: "green"
+    icon: "check-circle"
+
+    steps:
+      - step: "Select services in planner"
+        description: "Choose what you need"
+        time: "~5 min"
+        self_service: true
+        icon: "list"
+
+      - step: "Generate DMP language"
+        description: "Export text for your proposal"
+        time: "Instant"
+        self_service: true
+        icon: "file-text"
+
+      - step: "Request services"
+        description: "Submit via self-service portal"
+        time: "~5 min"
+        self_service: true
+        icon: "send"
+
+      - step: "Access granted"
+        description: "Credentials delivered automatically"
+        time: "Same day"
+        self_service: true
+        icon: "key"
+
+    typical_time: "Same day"
+
+    summary: |
+      Public and non-sensitive data can be provisioned immediately
+      through our self-service portal. No approval required.
+
+  L2:
+    name: "Medium (Internal Data)"
+    process: "self-service"
+    description: "Standard institutional security"
+    color: "yellow"
+    icon: "shield"
+
+    steps:
+      - step: "Select services in planner"
+        description: "Choose what you need"
+        time: "~5 min"
+        self_service: true
+        icon: "list"
+
+      - step: "Generate DMP language"
+        description: "Export text for your proposal"
+        time: "Instant"
+        self_service: true
+        icon: "file-text"
+
+      - step: "Request services"
+        description: "Submit via self-service portal with institutional auth"
+        time: "~5 min"
+        self_service: true
+        icon: "send"
+
+      - step: "Access granted"
+        description: "Credentials delivered automatically"
+        time: "Same day"
+        self_service: true
+        icon: "key"
+
+    typical_time: "Same day"
+
+    summary: |
+      Pre-publication and proprietary data uses standard institutional
+      security. Self-service provisioning with your university login.
+
+  L3:
+    name: "High (Regulated Data)"
+    process: "consultation"
+    description: "Requires BAA verification or IRB documentation"
+    color: "orange"
+    icon: "shield-check"
+
+    compliance_types:
+      - hipaa
+      - ferpa
+      - pii
+
+    steps:
+      - step: "Complete planner"
+        description: "Finish selecting your services and estimates"
+        time: "~10 min"
+        self_service: true
+        icon: "clipboard-check"
+
+      - step: "Research IT consultation"
+        description: "Brief call to verify data classification and requirements"
+        time: "1-3 business days"
+        self_service: false
+        contact: "rc-help@northwinds.edu"
+        icon: "phone"
+        details: |
+          We'll review your data types, confirm service compatibility,
+          and identify any additional requirements. Usually a 15-30
+          minute call.
+
+      - step: "BAA verification"
+        description: "Confirm institutional agreement covers your use case"
+        time: "Same day to 1 week"
+        self_service: false
+        skip_if: "using_preapproved_service"
+        icon: "file-check"
+        details: |
+          For cloud services (AWS, Azure, GCP), we verify our existing
+          BAA covers your use case. For new vendors, this may require
+          additional agreements.
+
+      - step: "Environment setup"
+        description: "Configure encryption, access controls, audit logging"
+        time: "1-3 business days"
+        self_service: false
+        icon: "settings"
+        details: |
+          We provision your environment with appropriate security
+          controls including encryption at rest, access logging,
+          and network isolation.
+
+      - step: "Training"
+        description: "Complete required compliance training"
+        time: "~30 min"
+        self_service: true
+        training_url: "https://training.northwinds.edu/hipaa"
+        icon: "book-open"
+        details: |
+          Annual HIPAA training is required for all users handling
+          PHI. Training is online and self-paced.
+
+      - step: "Access granted"
+        description: "Credentials and access instructions delivered"
+        time: "Same day"
+        self_service: false
+        icon: "key"
+
+    typical_time: "3-7 business days"
+
+    preapproved_services:
+      - slug: "cloud-high-security"
+        name: "Cloud High-Security (HIPAA)"
+        note: "Pre-approved with BAA in place"
+      - slug: "vdi-hipaa"
+        name: "VDI HIPAA"
+        note: "Pre-approved with BAA in place"
+
+    summary: |
+      Regulated data (HIPAA, FERPA, PII) requires verification of
+      compliance infrastructure. We've streamlined this process and
+      have pre-approved options available.
+
+  L4:
+    name: "Restricted (Export-Controlled)"
+    process: "security_review"
+    description: "Requires export control review and dedicated infrastructure"
+    color: "red"
+    icon: "lock"
+
+    compliance_types:
+      - itar
+      - ear
+      - cui
+      - nist_800_171
+
+    steps:
+      - step: "Complete planner"
+        description: "Finish selecting your services (preliminary)"
+        time: "~10 min"
+        self_service: true
+        icon: "clipboard-check"
+        details: |
+          Your selections help us understand your requirements, but
+          final services may be adjusted during review.
+
+      - step: "Research IT consultation"
+        description: "Review requirements with compliance team"
+        time: "1-3 business days"
+        self_service: false
+        contact: "rc-help@northwinds.edu"
+        icon: "phone"
+
+      - step: "Export control determination"
+        description: "Research Security confirms data classification"
+        time: "3-5 business days"
+        self_service: false
+        contact: "export-control@northwinds.edu"
+        icon: "shield-alert"
+        details: |
+          Our Export Control office reviews your research to confirm
+          the applicable regulations (ITAR, EAR, CUI) and any license
+          requirements.
+
+      - step: "Security assessment"
+        description: "Architecture review for NIST 800-171 / CMMC compliance"
+        time: "1-2 weeks"
+        self_service: false
+        icon: "search"
+        details: |
+          Information Security reviews the proposed environment against
+          applicable security frameworks and documents any required
+          controls.
+
+      - step: "Enclave provisioning"
+        description: "Dedicated isolated environment with required controls"
+        time: "1-2 weeks"
+        self_service: false
+        icon: "server"
+        details: |
+          We provision a dedicated environment separate from shared
+          infrastructure, with network isolation, access controls,
+          and audit logging meeting federal requirements.
+
+      - step: "Certification"
+        description: "Security team certifies environment meets requirements"
+        time: "3-5 business days"
+        self_service: false
+        icon: "badge-check"
+
+      - step: "Training"
+        description: "Export control handling and personnel restrictions"
+        time: "~2 hours"
+        self_service: true
+        training_url: "https://training.northwinds.edu/export-control"
+        icon: "book-open"
+
+      - step: "Access granted"
+        description: "Credentials for isolated enclave"
+        time: "Same day"
+        self_service: false
+        icon: "key"
+
+    typical_time: "3-6 weeks"
+
+    warnings:
+      - text: "Only US persons may access this data"
+        icon: "alert-triangle"
+        severity: "high"
+      - text: "Dedicated infrastructure required - no shared resources"
+        icon: "server"
+        severity: "medium"
+      - text: "Annual recertification required"
+        icon: "refresh-cw"
+        severity: "medium"
+
+    summary: |
+      Export-controlled data requires dedicated isolated infrastructure
+      and export control review. While the process is thorough, we have
+      established pathways and experienced staff to guide you.
+
+# FAQ shown in workflow modal
+faq:
+  - question: "Why does high-tier data take longer?"
+    answer: |
+      Regulated and export-controlled data requires verification of
+      compliance infrastructure. This protects both the data subjects
+      and the institution. We've streamlined this process as much as
+      possible while maintaining required safeguards.
+    icon: "clock"
+
+  - question: "Can I start working while waiting for approval?"
+    answer: |
+      **For L3 (HIPAA/PHI):** Yes, you can often begin with de-identified
+      or synthetic data while BAA verification completes.
+
+      **For L4 (export-controlled):** No, you must wait for full approval
+      before any data access. However, you can prepare analysis code on
+      non-sensitive test data.
+    icon: "play"
+
+  - question: "What if I'm not sure about my data tier?"
+    answer: |
+      That's common! The tier questionnaire helps identify likely
+      requirements, but Research IT will confirm during consultation.
+      It's better to over-estimate initially - we can always relax
+      controls if warranted.
+    icon: "help-circle"
+
+  - question: "I have a grant deadline. Can this be expedited?"
+    answer: |
+      Contact Research IT immediately with your deadline. We can often
+      prioritize consultations and work in parallel with other approvals.
+      Include your deadline in the planner notes.
+    icon: "calendar"
+
+  - question: "What happens if my data tier changes mid-project?"
+    answer: |
+      Contact us as soon as you know. If you need to move to a higher
+      tier (e.g., adding PHI to an existing project), we'll work with
+      you to migrate appropriately. This is common and we have
+      established processes.
+    icon: "refresh-cw"
+
+  - question: "Do I need a new consultation for each project?"
+    answer: |
+      Not necessarily. If you have an established relationship with
+      Research IT and your new project is similar to previous ones,
+      we can often streamline or skip the consultation. Just mention
+      your prior projects.
+    icon: "users"
+
+# Timeline visualization settings
+timeline:
+  show_elapsed_time: true
+  show_estimated_completion: true
+  highlight_current_step: true
+  show_skip_indicators: true
+
+# Contact information for each process
+contacts:
+  self-service:
+    email: "rc-help@northwinds.edu"
+    response_time: "1 business day"
+
+  consultation:
+    email: "rc-help@northwinds.edu"
+    phone: "(555) 123-4567"
+    calendar: "https://calendly.com/northwinds-rc/consult"
+    response_time: "1 business day"
+
+  security_review:
+    email: "research-security@northwinds.edu"
+    phone: "(555) 123-4568"
+    response_time: "2 business days"
+
+  export_control:
+    email: "export-control@northwinds.edu"
+    phone: "(555) 123-4569"
+    response_time: "2 business days"

@@ -1,0 +1,78 @@
+id: "volgin-andras"
+name: "Dr. Andras Volgin"
+department: "Economics"
+title: "Professor"
+specialty: "Agent-based modeling, policy analysis, large datasets"
+tech_level: "medium"
+years_at_institution: 13
+
+archetype: "excel_escapee"
+vibe: "Frustrated that his Stata and Excel macros don't scale. Policy-focused researcher who needs bigger compute but doesn't want to become a programmer."
+frustrations:
+  - "My Stata code runs for 3 days on my desktop. This can't be right."
+  - "I know there's a better way but I don't have time to learn it"
+  - "Python keeps coming up but I've been using Stata for 20 years"
+hopes:
+  - "A way to run my existing code faster without rewriting everything"
+  - "Someone who speaks economics, not just computer science"
+
+workarounds:
+  - type: "custom_scripts"
+    description: "Stata and Excel macros that take days to run"
+  - type: "grad_student"
+    description: "One PhD student who 'knows Python' helps with technical issues"
+
+lab:
+  name: "Volgin Policy Economics Lab"
+  size: 5
+  composition:
+    postdocs: 0
+    phd_students: 3
+    masters_students: 1
+    undergrads: 1
+  tech_person: "One PhD student who 'knows Python'"
+
+projects:
+  - id: "volgin-abm"
+    title: "Agent-Based Market Simulation"
+    tier: "medium"
+    tier_justification: "Proprietary economic models"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 25000
+      pattern: "bursty"
+    storage:
+      active_tb: 3
+      archive_tb: 2
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 3
+
+  - id: "volgin-policy"
+    title: "Public Policy Impact Dataset"
+    tier: "low"
+    tier_justification: "Government data, public record"
+    type: "storage_only"
+    storage:
+      active_tb: 2
+      archive_tb: 2
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 1
+
+  - id: "volgin-fed"
+    title: "Fed Reserve Collaboration"
+    tier: "medium"
+    tier_justification: "Pre-publication data with sensitive timing"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 15000
+      pattern: "bursty"
+    storage:
+      active_tb: 4
+      archive_tb: 3
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 2

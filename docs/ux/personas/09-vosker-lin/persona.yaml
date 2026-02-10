@@ -1,0 +1,82 @@
+id: "vosker-lin"
+name: "Dr. Lin Vosker"
+department: "Electrical and Computer Engineering"
+title: "Professor"
+specialty: "Chip design, EDA tools, FPGA, ITAR/export controlled research"
+tech_level: "high"
+years_at_institution: 12
+
+archetype: "license_wrangler"
+vibe: "Deals with export controls and classified research. Frustrated by license server headaches. Has one project that's ITAR, one that's DOD classified."
+frustrations:
+  - "License servers crash every other week and nobody can fix them"
+  - "ITAR compliance is a nightmare but I have to do it"
+  - "The DOD project has requirements that don't fit any standard form"
+hopes:
+  - "Someone who understands that some research just can't use standard infrastructure"
+  - "A path forward for my classified project that doesn't involve 18 months of paperwork"
+
+workarounds:
+  - type: "custom_scripts"
+    description: "Dedicated workstation for ITAR work, completely isolated from the network"
+  - type: "departmental_it"
+    description: "Works closely with ECE IT on license server issues"
+
+lab:
+  name: "Vosker VLSI Research Lab"
+  size: 7
+  composition:
+    postdocs: 1
+    phd_students: 4
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Multiple students handle different EDA tools"
+
+projects:
+  - id: "vosker-fpga"
+    title: "Next-Gen FPGA Architecture Research"
+    tier: "medium"
+    tier_justification: "Industry partner, IP-sensitive pre-publication research"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 30000
+      pattern: "sustained"
+    storage:
+      active_tb: 5
+      archive_tb: 3
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 4
+
+  - id: "vosker-itar"
+    title: "ITAR-Controlled Radar Chip Design"
+    tier: "high"
+    tier_justification: "Export controlled under ITAR, defense application"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 20000
+      pattern: "bursty"
+    storage:
+      active_tb: 3
+      archive_tb: 3
+    retention: "export_controlled"
+    grant_years: 4
+    team_size: 3
+
+  - id: "vosker-darpa"
+    title: "DOD Secure Enclave Project (DARPA)"
+    tier: "restricted"
+    tier_justification: "Classified defense research, requires dedicated secure enclave"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 15000
+      pattern: "bursty"
+    storage:
+      active_tb: 2
+      archive_tb: 2
+    retention: "export_controlled"
+    grant_years: 3
+    team_size: 2

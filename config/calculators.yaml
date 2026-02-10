@@ -1,0 +1,372 @@
+# config/calculators.yaml
+# Configuration for "Help Me Estimate" calculators
+
+# Which calculators are enabled and in what order
+enabled_calculators:
+  storage:
+    - microscopy
+    - photography
+    - genomics
+    - video
+    - medical-imaging
+    - documents
+
+  cpu:
+    - genomics-pipelines
+    - simulations
+    - batch-processing
+    - statistics
+
+  gpu:
+    - ml-training
+    - ml-inference
+    - gpu-simulation
+
+# Calculator-specific configuration
+calculator_config:
+  # ============================================================
+  # STORAGE CALCULATORS
+  # ============================================================
+
+  microscopy:
+    name: "Microscopy Images"
+    icon: "microscope"
+    description: "Confocal, fluorescence, electron microscopy"
+
+    # Institution-specific defaults
+    default_resolution: "4k"
+    default_bit_depth: 16
+
+    # Quick presets for common setups
+    presets:
+      - label: "Confocal Core"
+        resolution: "4k"
+        bit_depth: 16
+        channels: 4
+        description: "Standard confocal microscope settings"
+      - label: "Light Sheet"
+        resolution: "4k"
+        bit_depth: 16
+        channels: 2
+        z_slices: 200
+        description: "Light sheet microscopy with Z-stack"
+      - label: "Electron Microscopy"
+        resolution: "8k"
+        bit_depth: 16
+        channels: 1
+        description: "High-resolution EM images"
+
+    # Resolution options
+    resolutions:
+      - label: "2K (2048 x 2048)"
+        key: "2k"
+        pixels: 4194304
+      - label: "4K (4096 x 4096)"
+        key: "4k"
+        pixels: 16777216
+      - label: "8K (8192 x 8192)"
+        key: "8k"
+        pixels: 67108864
+
+    # Bit depth options
+    bit_depths:
+      - label: "8-bit (grayscale)"
+        value: 8
+        bytes_per_pixel: 1
+      - label: "16-bit (standard)"
+        value: 16
+        bytes_per_pixel: 2
+      - label: "32-bit (float)"
+        value: 32
+        bytes_per_pixel: 4
+
+  photography:
+    name: "Photography/Fieldwork"
+    icon: "camera"
+    description: "Field photos, specimen imaging, documentation"
+
+    presets:
+      - label: "DSLR RAW"
+        size_mb: 50
+        description: "Full-resolution RAW files"
+      - label: "DSLR JPEG"
+        size_mb: 12
+        description: "High-quality JPEG"
+      - label: "Smartphone"
+        size_mb: 5
+        description: "Modern smartphone photos"
+      - label: "Drone Aerial"
+        size_mb: 25
+        description: "Drone photography"
+
+  genomics:
+    name: "Genomics Data"
+    icon: "dna"
+    description: "Sequencing reads, alignments, variants"
+
+    # Which data types to show
+    data_types:
+      - label: "Whole Genome (30x)"
+        size_gb: 150
+        description: "Raw FASTQ + BAM + VCF"
+      - label: "Whole Exome"
+        size_gb: 20
+        description: "Raw + processed files"
+      - label: "RNA-seq"
+        size_gb: 30
+        description: "Per sample, raw + counts"
+      - label: "Single-cell RNA"
+        size_gb: 100
+        description: "10x Chromium, per run"
+      - label: "ATAC-seq"
+        size_gb: 25
+        description: "Per sample"
+      - label: "ChIP-seq"
+        size_gb: 15
+        description: "Per sample"
+      - label: "Metagenomics"
+        size_gb: 50
+        description: "Per sample, variable"
+
+  video:
+    name: "Video Recording"
+    icon: "video"
+    description: "Behavioral studies, time-lapse, lectures"
+
+    presets:
+      - label: "HD 1080p"
+        gb_per_hour: 10
+        description: "Standard HD video"
+      - label: "4K"
+        gb_per_hour: 45
+        description: "Ultra HD video"
+      - label: "Time-lapse (compressed)"
+        gb_per_hour: 2
+        description: "Compressed time-lapse"
+      - label: "High-speed (1000fps)"
+        gb_per_hour: 200
+        description: "Scientific high-speed camera"
+
+  medical-imaging:
+    name: "Medical Imaging"
+    icon: "scan"
+    description: "CT, MRI, PET, X-ray, Ultrasound"
+
+    data_types:
+      - label: "CT Scan"
+        size_gb: 0.5
+        description: "Per study, DICOM"
+      - label: "MRI (structural)"
+        size_gb: 1
+        description: "Per study"
+      - label: "fMRI"
+        size_gb: 5
+        description: "Per session"
+      - label: "PET Scan"
+        size_gb: 0.3
+        description: "Per study"
+      - label: "Whole Slide Imaging"
+        size_gb: 3
+        description: "Per slide, 40x magnification"
+
+  documents:
+    name: "Documents & PDFs"
+    icon: "file-text"
+    description: "Papers, reports, text documents"
+
+    presets:
+      - label: "Text document"
+        size_mb: 0.1
+        description: "Plain text or simple doc"
+      - label: "PDF (text-only)"
+        size_mb: 0.5
+        description: "Standard PDF"
+      - label: "PDF with images"
+        size_mb: 5
+        description: "PDF with embedded figures"
+      - label: "Scanned document"
+        size_mb: 20
+        description: "High-resolution scan"
+
+  # ============================================================
+  # CPU CALCULATORS
+  # ============================================================
+
+  genomics-pipelines:
+    name: "Genomics Pipelines"
+    icon: "workflow"
+    description: "Alignment, variant calling, RNA-seq"
+
+    pipelines:
+      - label: "WGS Alignment (BWA-MEM2)"
+        su_per_sample: 300
+        description: "30x genome alignment"
+      - label: "Variant Calling (GATK)"
+        su_per_sample: 200
+        description: "Per sample, joint calling extra"
+      - label: "RNA-seq (STAR + featureCounts)"
+        su_per_sample: 50
+        description: "Alignment + quantification"
+      - label: "Single-cell (Cell Ranger)"
+        su_per_sample: 400
+        description: "10x processing pipeline"
+      - label: "Differential Expression (DESeq2)"
+        su_per_sample: 10
+        description: "Statistical analysis"
+      - label: "Metagenomics (MetaPhlAn)"
+        su_per_sample: 100
+        description: "Community profiling"
+
+  simulations:
+    name: "Scientific Simulations"
+    icon: "atom"
+    description: "GROMACS, LAMMPS, OpenFOAM, ANSYS"
+
+    packages:
+      - label: "GROMACS (MD)"
+        su_per_ns_per_million_atoms: 100
+        typical_runs: "1-100 ns"
+        description: "Molecular dynamics"
+      - label: "LAMMPS"
+        su_per_ns_per_million_atoms: 80
+        description: "General molecular dynamics"
+      - label: "OpenFOAM (CFD)"
+        su_per_hour_simulated: 500
+        description: "Computational fluid dynamics"
+      - label: "ANSYS Fluent"
+        su_per_hour_simulated: 1000
+        description: "Commercial CFD"
+      - label: "COMSOL"
+        su_per_hour_simulated: 800
+        description: "Multi-physics"
+      - label: "Gaussian"
+        su_per_calculation: 50
+        description: "Quantum chemistry, varies by method"
+
+  batch-processing:
+    name: "General Batch Processing"
+    icon: "layers"
+    description: "Custom scripts, image processing, data conversion"
+
+    templates:
+      - label: "Light processing"
+        su_per_file: 0.1
+        description: "File conversion, simple transforms"
+      - label: "Medium processing"
+        su_per_file: 1
+        description: "Image analysis, data extraction"
+      - label: "Heavy processing"
+        su_per_file: 10
+        description: "Complex analysis per file"
+
+  statistics:
+    name: "Statistical Analysis"
+    icon: "bar-chart"
+    description: "R, Stata, SAS, SPSS"
+
+    workloads:
+      - label: "Basic statistics"
+        su_estimate: 10
+        description: "T-tests, ANOVA, regression"
+      - label: "Mixed models"
+        su_estimate: 100
+        description: "lme4, multilevel models"
+      - label: "Bayesian MCMC"
+        su_estimate: 1000
+        description: "Stan, JAGS, MCMC sampling"
+      - label: "Bootstrapping (10K)"
+        su_estimate: 500
+        description: "Resampling methods"
+
+  # ============================================================
+  # GPU CALCULATORS
+  # ============================================================
+
+  ml-training:
+    name: "ML Training"
+    icon: "brain"
+    description: "Deep learning model training"
+
+    model_sizes:
+      - label: "Small (ResNet-18, BERT-base)"
+        typical_hours: 10
+        description: "Fine-tuning or small datasets"
+      - label: "Medium (ResNet-50, GPT-2)"
+        typical_hours: 50
+        description: "Full training, medium datasets"
+      - label: "Large (ViT-L, LLaMA-7B)"
+        typical_hours: 200
+        description: "Large models, big datasets"
+      - label: "Very Large (LLaMA-70B)"
+        typical_hours: 2000
+        description: "Requires multi-GPU"
+
+    # Factors that affect GPU time
+    factors:
+      - "Dataset size"
+      - "Number of epochs"
+      - "Model complexity"
+      - "Hyperparameter tuning runs"
+
+  ml-inference:
+    name: "ML Inference"
+    icon: "zap"
+    description: "Running trained models on data"
+
+    workloads:
+      - label: "Image classification"
+        items_per_gpu_hour: 50000
+        description: "ResNet-50 inference"
+      - label: "Object detection"
+        items_per_gpu_hour: 5000
+        description: "YOLO, Faster R-CNN"
+      - label: "Text generation"
+        tokens_per_gpu_hour: 100000
+        description: "LLM inference (7B model)"
+      - label: "Embedding generation"
+        items_per_gpu_hour: 20000
+        description: "BERT embeddings"
+
+  gpu-simulation:
+    name: "GPU-Accelerated Simulation"
+    icon: "cpu"
+    description: "CUDA-accelerated scientific codes"
+
+    packages:
+      - label: "GROMACS (GPU)"
+        speedup: "5-10x vs CPU"
+        gpu_hours_per_ns: 1
+        description: "GPU-accelerated MD"
+      - label: "AMBER (GPU)"
+        speedup: "5-20x vs CPU"
+        gpu_hours_per_ns: 0.5
+        description: "Biomolecular MD"
+      - label: "NAMD"
+        speedup: "3-5x vs CPU"
+        gpu_hours_per_ns: 2
+        description: "Large-scale MD"
+
+# Global calculator settings
+global:
+  # Safety multiplier for all estimates
+  safety_multiplier: 1.5
+  safety_message: "Includes 1.5x buffer for processing intermediates"
+
+  # Show calculation breakdown
+  show_calculation: true
+
+  # Precision for results
+  storage_precision: 1    # decimal places for TB
+  compute_precision: 0    # decimal places for SU
+
+  # Archive ratio suggestion
+  default_archive_ratio: 0.5
+  archive_ratio_help: |
+    Estimate what percentage of your data needs long-term retention.
+    Typically 50% - raw data and final results are kept, intermediates
+    are deleted.
+
+  # Result display
+  show_breakdown: true
+  show_cost_estimate: true
+  allow_manual_adjustment: true

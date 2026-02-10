@@ -1,0 +1,78 @@
+id: "thranson-mei"
+name: "Dr. Mei Thranson"
+department: "Pharmacology"
+title: "Associate Professor"
+specialty: "Drug discovery, molecular docking, industry partnerships"
+tech_level: "medium"
+years_at_institution: 8
+
+archetype: "industry_partner"
+vibe: "Industry partnerships require IP protection and careful data handling. Wants reproducibility but also needs to protect proprietary methods."
+frustrations:
+  - "Industry partner provides compute, but coordination is a nightmare"
+  - "Balancing open science ideals with IP protection"
+  - "Every collaboration has different requirements"
+hopes:
+  - "Clear budget numbers I can share with industry partners"
+  - "A way to plan projects that protects IP while enabling reproducibility"
+
+workarounds:
+  - type: "departmental_it"
+    description: "Industry partner provides some compute, but it's hard to coordinate"
+  - type: "custom_scripts"
+    description: "Lab manager handles logistics between university and company systems"
+
+lab:
+  name: "Thranson Drug Discovery Lab"
+  size: 6
+  composition:
+    postdocs: 1
+    phd_students: 3
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Lab manager handles logistics between systems"
+
+projects:
+  - id: "thranson-screening"
+    title: "Drug-Target Interaction Screening"
+    tier: "medium"
+    tier_justification: "Industry partnership with IP-sensitive methodology"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 35000
+      pattern: "bursty"
+    storage:
+      active_tb: 6
+      archive_tb: 4
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 4
+
+  - id: "thranson-benchmark"
+    title: "Published Binding Affinity Dataset"
+    tier: "low"
+    tier_justification: "Reproducibility archive, published data"
+    type: "storage_only"
+    storage:
+      active_tb: 1
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 1
+
+  - id: "thranson-nih"
+    title: "NIH R01: Novel Compound Discovery"
+    tier: "medium"
+    tier_justification: "Pre-publication competitive research"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 40000
+      pattern: "sustained"
+    storage:
+      active_tb: 8
+      archive_tb: 5
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 4

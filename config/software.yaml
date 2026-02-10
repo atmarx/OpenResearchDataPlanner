@@ -1,0 +1,657 @@
+# config/software.yaml
+# Licensed software available on various platforms
+
+# License status definitions
+license_statuses:
+  full:
+    label: "Available"
+    color: "green"
+    icon: "check-circle"
+    description: "Fully licensed, ready to use"
+
+  restricted:
+    label: "Restricted"
+    color: "yellow"
+    icon: "alert-circle"
+    description: "Available with limitations or approval required"
+
+  byol:
+    label: "Bring Your Own"
+    color: "gray"
+    icon: "external-link"
+    description: "You must provide your own license"
+
+  unavailable:
+    label: "Not Available"
+    color: "red"
+    icon: "x-circle"
+    description: "Not available on this platform"
+
+# Software catalog
+software:
+  # ============================================================
+  # COMPUTATIONAL CHEMISTRY
+  # ============================================================
+
+  - slug: gaussian
+    name: "Gaussian"
+    vendor: "Gaussian, Inc."
+    category: "computational-chemistry"
+    description: "Electronic structure modeling"
+    website: "https://gaussian.com"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["16-C.01", "16-B.01"]
+        module: "gaussian/16-C.01"
+        notes: "Site license, all users"
+      vdi:
+        status: restricted
+        notes: "By request only"
+      cloud:
+        status: byol
+        notes: "Cloud licensing not permitted by vendor"
+
+    documentation_url: "https://docs.rc.northwinds.edu/software/gaussian"
+
+    tags:
+      - chemistry
+      - quantum
+      - dft
+
+  - slug: orca
+    name: "ORCA"
+    vendor: "Max Planck Institute"
+    category: "computational-chemistry"
+    description: "Quantum chemistry program"
+    website: "https://orcaforum.kofo.mpg.de"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["5.0.4", "5.0.3"]
+        module: "orca/5.0.4"
+        notes: "Free for academic use"
+      vdi:
+        status: unavailable
+      cloud:
+        status: full
+        notes: "Free for academic use"
+
+    tags:
+      - chemistry
+      - quantum
+      - free
+
+  # ============================================================
+  # MOLECULAR DYNAMICS
+  # ============================================================
+
+  - slug: amber
+    name: "AMBER"
+    vendor: "AMBER Development Team"
+    category: "molecular-dynamics"
+    description: "Molecular dynamics for biomolecules"
+    website: "https://ambermd.org"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["22", "20"]
+        module: "amber/22"
+        gpu_support: true
+      vdi:
+        status: byol
+      cloud:
+        status: full
+        notes: "AWS/Azure marketplace images available"
+
+    tags:
+      - chemistry
+      - molecular-dynamics
+      - gpu
+
+  - slug: gromacs
+    name: "GROMACS"
+    vendor: "Open Source"
+    category: "molecular-dynamics"
+    description: "High-performance molecular dynamics"
+    website: "https://www.gromacs.org"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["2024.1", "2023.4"]
+        module: "gromacs/2024.1"
+        gpu_support: true
+        notes: "Open source, GPU-accelerated"
+      vdi:
+        status: full
+      cloud:
+        status: full
+
+    tags:
+      - molecular-dynamics
+      - gpu
+      - open-source
+
+  - slug: namd
+    name: "NAMD"
+    vendor: "UIUC"
+    category: "molecular-dynamics"
+    description: "Scalable molecular dynamics"
+    website: "https://www.ks.uiuc.edu/Research/namd/"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["3.0", "2.14"]
+        module: "namd/3.0"
+        gpu_support: true
+      vdi:
+        status: unavailable
+      cloud:
+        status: full
+        notes: "Free for academic use"
+
+    tags:
+      - molecular-dynamics
+      - gpu
+      - scalable
+
+  # ============================================================
+  # NUMERICAL COMPUTING
+  # ============================================================
+
+  - slug: matlab
+    name: "MATLAB"
+    vendor: "MathWorks"
+    category: "numerical-computing"
+    description: "Numerical computing and visualization"
+    website: "https://mathworks.com/products/matlab.html"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["R2024a", "R2023b"]
+        module: "matlab/R2024a"
+        parallel_toolbox: true
+        notes: "Campus license with Parallel Computing Toolbox"
+      vdi:
+        status: full
+        versions: ["R2024a"]
+        notes: "Pre-installed on all VDI images"
+      cloud:
+        status: restricted
+        notes: "Requires MathWorks Cloud license"
+
+    # Available toolboxes
+    toolboxes:
+      - "Parallel Computing Toolbox"
+      - "Statistics and Machine Learning Toolbox"
+      - "Image Processing Toolbox"
+      - "Signal Processing Toolbox"
+      - "Bioinformatics Toolbox"
+      - "Deep Learning Toolbox"
+      - "Computer Vision Toolbox"
+
+    documentation_url: "https://docs.rc.northwinds.edu/software/matlab"
+
+    tags:
+      - numerical
+      - visualization
+      - engineering
+
+  - slug: mathematica
+    name: "Mathematica"
+    vendor: "Wolfram Research"
+    category: "numerical-computing"
+    description: "Technical computing system"
+    website: "https://www.wolfram.com/mathematica/"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["14.0", "13.3"]
+        module: "mathematica/14.0"
+        notes: "Campus license"
+      vdi:
+        status: full
+        versions: ["14.0"]
+      cloud:
+        status: byol
+
+    tags:
+      - numerical
+      - symbolic
+      - visualization
+
+  # ============================================================
+  # STATISTICS
+  # ============================================================
+
+  - slug: stata
+    name: "Stata"
+    vendor: "StataCorp"
+    category: "statistics"
+    description: "Statistical software for data science"
+    website: "https://stata.com"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["18-MP"]
+        module: "stata/18"
+        notes: "Stata/MP with 32 cores"
+      vdi:
+        status: full
+        versions: ["18"]
+      cloud:
+        status: byol
+
+    tags:
+      - statistics
+      - social-science
+      - economics
+
+  - slug: sas
+    name: "SAS"
+    vendor: "SAS Institute"
+    category: "statistics"
+    description: "Statistical analysis system"
+    website: "https://www.sas.com"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["9.4M8"]
+        module: "sas/9.4"
+        notes: "Campus license"
+      vdi:
+        status: full
+        versions: ["9.4"]
+      cloud:
+        status: restricted
+        notes: "SAS Viya available, contact for setup"
+
+    tags:
+      - statistics
+      - analytics
+      - enterprise
+
+  - slug: spss
+    name: "SPSS Statistics"
+    vendor: "IBM"
+    category: "statistics"
+    description: "Statistical analysis software"
+    website: "https://www.ibm.com/products/spss-statistics"
+
+    availability:
+      hpc:
+        status: restricted
+        notes: "Limited licenses, by request"
+      vdi:
+        status: full
+        versions: ["29"]
+      cloud:
+        status: byol
+
+    tags:
+      - statistics
+      - social-science
+
+  - slug: r
+    name: "R"
+    vendor: "R Foundation"
+    category: "statistics"
+    description: "Statistical computing and graphics"
+    website: "https://www.r-project.org"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["4.3.2", "4.2.3"]
+        module: "R/4.3.2"
+        notes: "Open source, many packages pre-installed"
+      vdi:
+        status: full
+        versions: ["4.3.2"]
+        notes: "RStudio Desktop included"
+      cloud:
+        status: full
+        notes: "Open source"
+
+    tags:
+      - statistics
+      - open-source
+      - visualization
+
+  # ============================================================
+  # SIMULATION & FEA
+  # ============================================================
+
+  - slug: ansys
+    name: "ANSYS"
+    vendor: "ANSYS, Inc."
+    category: "simulation"
+    description: "Multi-physics simulation suite"
+    website: "https://ansys.com"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["2024R1", "2023R2"]
+        module: "ansys/2024R1"
+        products:
+          - "Mechanical"
+          - "Fluent"
+          - "CFX"
+          - "HFSS"
+        notes: "Teaching and research licenses"
+      vdi:
+        status: full
+        notes: "Workbench GUI available"
+      cloud:
+        status: byol
+        notes: "Elastic licensing available for purchase"
+
+    license_info:
+      type: "ANSYS License Manager"
+      teaching_licenses: 25
+      research_licenses: 10
+      contact: "rc-help@northwinds.edu"
+
+    documentation_url: "https://docs.rc.northwinds.edu/software/ansys"
+
+    tags:
+      - simulation
+      - fea
+      - cfd
+      - engineering
+
+  - slug: comsol
+    name: "COMSOL Multiphysics"
+    vendor: "COMSOL"
+    category: "simulation"
+    description: "Multi-physics simulation software"
+    website: "https://www.comsol.com"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["6.2", "6.1"]
+        module: "comsol/6.2"
+        notes: "Campus license with selected add-ons"
+      vdi:
+        status: full
+        versions: ["6.2"]
+      cloud:
+        status: byol
+
+    add_ons:
+      - "Heat Transfer Module"
+      - "Structural Mechanics Module"
+      - "AC/DC Module"
+      - "CFD Module"
+
+    tags:
+      - simulation
+      - multi-physics
+      - engineering
+
+  - slug: openfoam
+    name: "OpenFOAM"
+    vendor: "OpenCFD"
+    category: "simulation"
+    description: "Open source CFD software"
+    website: "https://www.openfoam.com"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["v2312", "v2306"]
+        module: "openfoam/v2312"
+        notes: "Open source"
+      vdi:
+        status: full
+      cloud:
+        status: full
+
+    tags:
+      - cfd
+      - simulation
+      - open-source
+
+  # ============================================================
+  # BIOINFORMATICS
+  # ============================================================
+
+  - slug: cellranger
+    name: "Cell Ranger"
+    vendor: "10x Genomics"
+    category: "bioinformatics"
+    description: "Single-cell RNA-seq analysis"
+    website: "https://www.10xgenomics.com/support/software/cell-ranger"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["8.0", "7.2"]
+        module: "cellranger/8.0"
+        notes: "Free for academic use"
+      vdi:
+        status: unavailable
+      cloud:
+        status: full
+
+    tags:
+      - bioinformatics
+      - single-cell
+      - genomics
+
+  - slug: gatk
+    name: "GATK"
+    vendor: "Broad Institute"
+    category: "bioinformatics"
+    description: "Genome Analysis Toolkit"
+    website: "https://gatk.broadinstitute.org"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["4.5", "4.4"]
+        module: "gatk/4.5"
+        notes: "Open source"
+      vdi:
+        status: unavailable
+      cloud:
+        status: full
+
+    tags:
+      - bioinformatics
+      - genomics
+      - variant-calling
+
+  # ============================================================
+  # DEEP LEARNING
+  # ============================================================
+
+  - slug: pytorch
+    name: "PyTorch"
+    vendor: "Meta/Linux Foundation"
+    category: "deep-learning"
+    description: "Deep learning framework"
+    website: "https://pytorch.org"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["2.2", "2.1", "2.0"]
+        module: "pytorch/2.2"
+        gpu_support: true
+        notes: "Open source, CUDA-optimized builds"
+      vdi:
+        status: full
+        notes: "CPU-only on standard VDI"
+      cloud:
+        status: full
+
+    tags:
+      - deep-learning
+      - gpu
+      - open-source
+
+  - slug: tensorflow
+    name: "TensorFlow"
+    vendor: "Google"
+    category: "deep-learning"
+    description: "Machine learning platform"
+    website: "https://www.tensorflow.org"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["2.15", "2.14"]
+        module: "tensorflow/2.15"
+        gpu_support: true
+        notes: "Open source, GPU builds available"
+      vdi:
+        status: full
+        notes: "CPU-only on standard VDI"
+      cloud:
+        status: full
+
+    tags:
+      - deep-learning
+      - gpu
+      - open-source
+
+  # ============================================================
+  # EDA TOOLS
+  # ============================================================
+
+  - slug: cadence
+    name: "Cadence Virtuoso"
+    vendor: "Cadence Design Systems"
+    category: "eda"
+    description: "IC design and verification"
+    website: "https://cadence.com"
+
+    availability:
+      hpc:
+        status: restricted
+        notes: "ECE department license only"
+        contact: "ece-it@northwinds.edu"
+        approval_required: true
+      vdi:
+        status: restricted
+        notes: "Dedicated EDA VDI pool"
+      cloud:
+        status: unavailable
+
+    license_info:
+      type: "FlexLM"
+      server: "Internal"
+      contact: "ece-it@northwinds.edu"
+
+    tags:
+      - eda
+      - vlsi
+      - engineering
+
+  - slug: synopsys
+    name: "Synopsys Design Compiler"
+    vendor: "Synopsys"
+    category: "eda"
+    description: "RTL synthesis"
+    website: "https://www.synopsys.com"
+
+    availability:
+      hpc:
+        status: restricted
+        notes: "ECE department license only"
+        contact: "ece-it@northwinds.edu"
+        approval_required: true
+      vdi:
+        status: restricted
+        notes: "Dedicated EDA VDI pool"
+      cloud:
+        status: unavailable
+
+    tags:
+      - eda
+      - vlsi
+      - synthesis
+
+# Categories for filtering
+categories:
+  - slug: computational-chemistry
+    name: "Computational Chemistry"
+    icon: "flask"
+
+  - slug: molecular-dynamics
+    name: "Molecular Dynamics"
+    icon: "atom"
+
+  - slug: statistics
+    name: "Statistics"
+    icon: "bar-chart"
+
+  - slug: numerical-computing
+    name: "Numerical Computing"
+    icon: "calculator"
+
+  - slug: simulation
+    name: "Simulation & FEA"
+    icon: "box"
+
+  - slug: bioinformatics
+    name: "Bioinformatics"
+    icon: "dna"
+
+  - slug: deep-learning
+    name: "Deep Learning"
+    icon: "brain"
+
+  - slug: eda
+    name: "Electronic Design Automation"
+    icon: "cpu"
+
+# Platform descriptions
+platforms:
+  hpc:
+    name: "HPC Cluster"
+    description: "High-performance computing cluster"
+    typical_use: "Batch jobs, parallel computing"
+
+  vdi:
+    name: "Virtual Desktop"
+    description: "Virtual desktop infrastructure"
+    typical_use: "Interactive GUI applications"
+
+  cloud:
+    name: "Cloud (AWS/Azure)"
+    description: "Cloud computing platforms"
+    typical_use: "Flexible, scalable workloads"
+
+# License server hosting info (shown as callout)
+license_hosting:
+  enabled: true
+  title: "Need to host your own license server?"
+  description: |
+    Research Computing can host FlexLM/RLM license servers for your
+    lab or department. This is useful for software with "bring your
+    own license" requirements.
+  contact: "rc-help@northwinds.edu"
+  more_info_url: "https://docs.rc.northwinds.edu/licenses/hosting"
+
+# Search configuration
+search:
+  enabled: true
+  placeholder: "Search software..."
+  search_fields:
+    - name
+    - description
+    - tags
+    - vendor

@@ -1,0 +1,78 @@
+id: "bramford-lina"
+name: "Dr. Lina Bramford"
+department: "Environmental Science"
+title: "Associate Professor"
+specialty: "Climate modeling, satellite imagery analysis, regional downscaling"
+tech_level: "medium"
+years_at_institution: 6
+
+archetype: "evangelist"
+vibe: "Passionate about open science and frustrated by data silos. Believes all publicly-funded research should be public."
+frustrations:
+  - "Why is it so hard to share data with collaborators at other institutions?"
+  - "Our data could help so many people if it were accessible"
+  - "Paywalls and proprietary formats are holding back climate science"
+hopes:
+  - "A system that makes open data sharing the default, not the exception"
+  - "Clear guidance on making data FAIR-compliant"
+
+workarounds:
+  - type: "personal_cloud"
+    description: "Uses personal Google Drive (50GB) for sharing with external collaborators"
+  - type: "grad_student"
+    description: "Carlin Mendz (PhD student) has built custom data pipelines that only he understands"
+
+lab:
+  name: "Bramford Climate Modeling Lab"
+  size: 7
+  composition:
+    postdocs: 1
+    phd_students: 4
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Carlin Mendz (PhD) - built the data pipelines, everyone prays he doesn't graduate soon"
+
+projects:
+  - id: "bramford-downscaling"
+    title: "Regional Climate Downscaling Initiative"
+    tier: "low"
+    tier_justification: "Fully open science initiative, all data and models public"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 40000
+      pattern: "seasonal"
+    storage:
+      active_tb: 15
+      archive_tb: 10
+    retention: "federal_grant_standard"
+    grant_years: 4
+    team_size: 5
+
+  - id: "bramford-satellite"
+    title: "Satellite Imagery Archive (Landsat/Sentinel)"
+    tier: "low"
+    tier_justification: "Public domain imagery from USGS and ESA, no restrictions"
+    type: "storage_only"
+    storage:
+      active_tb: 25
+      archive_tb: 20
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 3
+
+  - id: "bramford-epa"
+    title: "EPA Watershed Collaboration"
+    tier: "medium"
+    tier_justification: "Pre-publication data under agency partnership agreement"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 15000
+      pattern: "bursty"
+    storage:
+      active_tb: 8
+      archive_tb: 5
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 4

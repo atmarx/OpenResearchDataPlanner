@@ -1,0 +1,23 @@
+schema_version: '0.2'
+id: cost_transparency
+name: Cost Transparency
+summary: Timely, understandable visibility into resource consumption and cost.
+description: Users and sponsors can see and understand costs before they become surprises.
+tags:
+  billing: core
+  governance: informed-by
+  human-factors: informed-by
+assumptions:
+- cost_data_is_accessible
+downstream_impacts:
+- behavior_change
+- budget_planning
+anti_patterns:
+- opaque_billing
+owners:
+- role: finance
+- role: it_operations
+maturity:
+  level: current
+notes:
+- Highly generalizable; tooling varies by provider.

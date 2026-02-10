@@ -1,0 +1,23 @@
+schema_version: '0.2'
+id: least_privilege_by_persona
+name: Least Privilege by Persona
+summary: Access granted based on role-specific threat models rather than convenience.
+description: Different personas receive different default access levels aligned with
+  risk and responsibility.
+tags:
+  identity-access: core
+  security: core
+  governance: informed-by
+assumptions:
+- roles_and_personas_are_defined
+downstream_impacts:
+- rbac_design
+- auditability
+anti_patterns:
+- blanket_admin_access
+owners:
+- role: identity_management
+maturity:
+  level: current
+notes:
+- Applies equally in cloud, HPC, and on-prem environments.

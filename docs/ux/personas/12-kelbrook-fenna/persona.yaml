@@ -1,0 +1,78 @@
+id: "kelbrook-fenna"
+name: "Dr. Fenna Kelbrook"
+department: "Information Science"
+title: "Associate Professor"
+specialty: "Data science, interactive dashboards, web applications, metadata standards"
+tech_level: "high"
+years_at_institution: 7
+
+archetype: "dashboard_publisher"
+vibe: "Jack of all trades. Publishes interactive web apps and needs hosting. Frustrated by lack of institutional options for research web applications."
+frustrations:
+  - "I pay for Heroku out of pocket because there's no institutional hosting option"
+  - "My dashboards help public health, but nobody will host them"
+  - "Every time I build something useful, the question is 'where will it live?'"
+hopes:
+  - "Institutional support for research web applications"
+  - "A way to publish interactive tools without paying out of pocket"
+
+workarounds:
+  - type: "paid_out_of_pocket"
+    description: "Pays for Heroku/Vercel hosting from personal funds"
+  - type: "grad_student"
+    description: "Amir (PhD student) handles deployments and DevOps"
+
+lab:
+  name: "Kelbrook Data Science Lab"
+  size: 5
+  composition:
+    postdocs: 0
+    phd_students: 3
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Amir Rostami (PhD) handles deployments"
+
+projects:
+  - id: "kelbrook-dashboard"
+    title: "Public Health Dashboard (State Contract)"
+    tier: "medium"
+    tier_justification: "Government data with pre-release restrictions"
+    type: "web_hosting"
+    compute:
+      type: "web_server"
+      monthly_su: 5000
+      pattern: "sustained"
+    storage:
+      active_tb: 2
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 3
+
+  - id: "kelbrook-toolkit"
+    title: "Open Data Portal Toolkit"
+    tier: "low"
+    tier_justification: "Open source project for the data community"
+    type: "web_hosting"
+    compute:
+      type: "web_server"
+      monthly_su: 3000
+      pattern: "sustained"
+    storage:
+      active_tb: 1
+      archive_tb: 0.5
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 2
+
+  - id: "kelbrook-catalog"
+    title: "Research Data Catalog"
+    tier: "low"
+    tier_justification: "Metadata only, no sensitive content"
+    type: "storage_only"
+    storage:
+      active_tb: 0.5
+      archive_tb: 0.5
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 1

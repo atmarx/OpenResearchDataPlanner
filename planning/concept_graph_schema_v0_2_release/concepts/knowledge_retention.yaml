@@ -1,0 +1,21 @@
+schema_version: '0.2'
+id: knowledge_retention
+name: Knowledge Retention
+summary: Preservation of institutional knowledge beyond individual contributors.
+description: Documentation, tooling, and automation capture reasoning and decisions.
+tags:
+  documentation: core
+  organizational-design: core
+assumptions:
+- documentation_is_maintained
+downstream_impacts:
+- succession_planning
+- onboarding
+anti_patterns:
+- tribal_knowledge
+owners:
+- role: all_teams
+maturity:
+  level: current
+notes:
+- Universally applicable across organizations.

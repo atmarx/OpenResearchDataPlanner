@@ -1,0 +1,307 @@
+bundles:
+  - slug: genomics-pipeline
+    name: "Genomics Pipeline"
+    description: |
+      Standard setup for genomics and bioinformatics workflows:
+      HPC compute for alignment/analysis, high-capacity storage
+      for sequence data, and Globus for data transfer from cores.
+    icon: "dna"
+    recommended_tiers:
+      - low
+      - medium
+    services:
+      - service: hpc-compute
+        default_estimate: 50000
+        note: "Typical for WGS pipeline: ~5000 SU per sample"
+      - service: hpc-storage
+        default_estimate: 100
+        note: "~1TB raw data per WGS sample; plan for intermediates"
+      - service: globus-transfer
+        default_estimate: 20
+        note: "Transfer sequencing data from core facilities"
+
+  - slug: ml-training
+    name: "ML/AI Model Training (On-Prem)"
+    description: |
+      On-premises GPU compute with high-speed storage for training
+      machine learning models. V100s for modest ML, K8s cluster for heavy training.
+    icon: "brain"
+    recommended_tiers:
+      - low
+      - medium
+    services:
+      - service: hpc-gpu
+        default_estimate: 500
+        note: "V100 GPUs - good for simulation, modest for ML training"
+      - service: hpc-storage
+        default_estimate: 50
+        note: "Model checkpoints and training data"
+      - service: k8s-cluster
+        default_estimate: 1
+        note: "For heavy ML: H200/GH200/A100 GPUs (beta, requires approval)"
+
+  - slug: ml-training-cloud
+    name: "ML/AI Model Training (Cloud)"
+    description: |
+      Cloud-based GPU compute for ML training with flexible scaling.
+      Ideal for burst workloads or access to latest GPU architectures.
+    icon: "cloud"
+    recommended_tiers:
+      - low
+      - medium
+      - high
+    services:
+      - service: aws-compute-large
+        default_estimate: 3000
+        note: "GPU instances (p3/p4) for training; ~$3-30/hr per GPU"
+      - service: aws-storage-hot
+        default_estimate: 10
+        note: "Training data and model artifacts"
+
+  - slug: llm-application
+    name: "LLM/Chatbot Application"
+    description: |
+      Build a chatbot, RAG system, or other LLM-powered application
+      using Azure OpenAI with document storage.
+    icon: "message-square"
+    recommended_tiers:
+      - low
+      - medium
+    services:
+      - service: azure-openai
+        default_estimate: 10
+        note: "Varies heavily with user volume and context size"
+      - service: nwfiles
+        default_estimate: 1
+        note: "Document corpus and vector indices"
+
+  - slug: clinical-data
+    name: "Clinical/IRB Data Analysis"
+    description: |
+      Secure cloud compute and storage for human subjects research
+      data under IRB protocol. Uses compliant cloud infrastructure.
+    icon: "shield"
+    recommended_tiers:
+      - high
+    services:
+      - service: azure-compute-medium
+        default_estimate: 1000
+        note: "HIPAA-compliant Azure compute environment"
+      - service: azure-storage-hot
+        default_estimate: 10
+        note: "PHI storage with encryption and audit logging"
+      - service: research-vdi-gold
+        default_estimate: 1
+        note: "Secure desktop for data analysis"
+
+  - slug: collaborative-project
+    name: "Collaborative Research Project"
+    description: |
+      Simple setup for multi-institution collaboration with
+      shared file storage and Globus for external data sharing.
+    icon: "users"
+    recommended_tiers:
+      - low
+      - medium
+    services:
+      - service: nwfiles
+        default_estimate: 5
+        note: "Shared project files accessible across campus"
+      - service: globus-transfer
+        default_estimate: 10
+        note: "Share data with external collaborators"
+
+  - slug: storage-only
+    name: "Storage Only (Campus)"
+    description: |
+      Just need a place to store your research data? NWFiles provides
+      university-managed storage with SMB access and automatic backups.
+    icon: "hard-drive"
+    recommended_tiers:
+      - low
+      - medium
+      - high
+    services:
+      - service: nwfiles
+        default_estimate: 10
+        note: "Adjust based on your data volume needs"
+
+  - slug: simulation-hpc
+    name: "Simulation & FEA"
+    description: |
+      GPU-accelerated computing for finite element analysis, CFD,
+      molecular dynamics, and similar compute-intensive simulations.
+    icon: "activity"
+    recommended_tiers:
+      - low
+      - medium
+    services:
+      - service: hpc-gpu
+        default_estimate: 500
+        note: "V100 GPUs optimized for simulation workloads"
+      - service: hpc-storage
+        default_estimate: 50
+        note: "Storage for simulation inputs and results"
+      - service: rc-consultation
+        default_estimate: 1
+        note: "Free initial consultation for workflow setup"
+
+  - slug: web-application
+    name: "Research Web Application"
+    description: |
+      Deploy and host research web applications, APIs, and databases
+      on managed Azure infrastructure with CI/CD pipelines.
+    icon: "globe"
+    recommended_tiers:
+      - low
+      - medium
+    services:
+      - service: web-hosting
+        default_estimate: 150
+        note: "Container Apps + PostgreSQL baseline"
+      - service: nwfiles
+        default_estimate: 1
+        note: "Optional file storage for uploads/assets"
+      - service: rc-consultation
+        default_estimate: 2
+        note: "Pipeline setup and architecture review"
+
+  - slug: data-transfer
+    name: "Large Data Transfer & Collaboration"
+    description: |
+      High-speed data movement for multi-institutional collaborations,
+      large instrument data, or bulk data migration using Globus.
+    icon: "upload-cloud"
+    recommended_tiers:
+      - low
+      - medium
+    services:
+      - service: globus-transfer
+        default_estimate: 50
+        note: "Free Globus transfer service"
+      - service: globus-storage
+        default_estimate: 100
+        note: "5PB iRODS storage with Globus connectivity"
+
+  - slug: secure-desktop
+    name: "Secure Research Desktop"
+    description: |
+      Isolated virtual desktops for working with sensitive or
+      regulated data requiring controlled access.
+    icon: "monitor"
+    recommended_tiers:
+      - medium
+      - high
+    services:
+      - service: research-vdi-gold
+        default_estimate: 1
+        note: "Gold tier recommended for analysis workloads"
+      - service: nwfiles
+        default_estimate: 10
+        note: "Secure storage accessible from VDI"
+
+  - slug: ai-ml-advanced
+    name: "Advanced AI/ML (K8s Cluster)"
+    description: |
+      Cutting-edge GPU compute for serious ML/AI research using our
+      K8s cluster with H200, GH200, and A100 GPUs.
+    icon: "cpu"
+    recommended_tiers:
+      - low
+      - medium
+    services:
+      - service: k8s-cluster
+        default_estimate: 1
+        note: "Dedicated namespace with custom CRDs (beta, requires approval)"
+      - service: globus-storage
+        default_estimate: 50
+        note: "High-capacity storage for training data"
+      - service: rc-consultation
+        default_estimate: 2
+        note: "Help with Helm charts and container setup"
+
+  - slug: hpc-starter
+    name: "HPC Getting Started"
+    description: |
+      Free tier access to HPC for learning, prototyping, and small-scale
+      computations. Great for getting started with batch computing.
+    icon: "play"
+    recommended_tiers:
+      - low
+      - medium
+    services:
+      - service: hpc-free
+        default_estimate: 12
+        note: "12 months of free tier access"
+      - service: hpc-storage
+        default_estimate: 2
+        note: "Small persistent storage allocation"
+      - service: rc-consultation
+        default_estimate: 1
+        note: "Free consultation to get started"
+
+  - slug: cloud-analysis
+    name: "Cloud Data Analysis"
+    description: |
+      Cloud-based compute and storage for flexible data analysis.
+      Scale up or down based on your needs with pass-through pricing.
+    icon: "bar-chart-2"
+    recommended_tiers:
+      - low
+      - medium
+      - high
+    services:
+      - service: azure-compute-medium
+        default_estimate: 300
+        note: "Medium VM for analysis workloads"
+      - service: azure-storage-hot
+        default_estimate: 5
+        note: "Active dataset storage"
+      - service: azure-storage-archive
+        default_estimate: 20
+        note: "Long-term retention for completed analysis"
+
+  - slug: access-national-hpc
+    name: "ACCESS National HPC"
+    description: |
+      Free NSF-funded access to national supercomputing resources through
+      the ACCESS program. Merit-based allocations for research computing
+      at scales from exploratory to massive.
+    icon: "globe"
+    recommended_tiers:
+      - low
+      - medium
+    services:
+      - service: access-explore
+        default_estimate: 100000
+        note: "Entry level: up to 400K credits, minimal paperwork"
+      - service: access-discover
+        default_estimate: 500000
+        note: "Moderate scale: up to 1.5M credits, one-page description"
+      - service: access-accelerate
+        default_estimate: 1500000
+        note: "Mid-scale: up to 3M credits, panel review required"
+
+  - slug: large-scale-simulation
+    name: "Large-Scale Simulation (ACCESS)"
+    description: |
+      Combine local HPC for development with ACCESS national resources
+      for production-scale simulations. Ideal for computationally
+      demanding research that exceeds local capacity.
+    icon: "zap"
+    recommended_tiers:
+      - low
+      - medium
+    services:
+      - service: hpc-gpu
+        default_estimate: 200
+        note: "Local V100s for development and testing"
+      - service: hpc-storage
+        default_estimate: 20
+        note: "Local persistent storage for results"
+      - service: access-accelerate
+        default_estimate: 2000000
+        note: "Production runs on national supercomputers"
+      - service: rc-consultation
+        default_estimate: 2
+        note: "Help preparing ACCESS allocation request"

@@ -1,0 +1,78 @@
+id: "bontamo-kev"
+name: "Dr. Kev Bontamo"
+department: "Materials Science and Engineering"
+title: "Professor"
+specialty: "Finite element analysis, composite materials, SLURM batch computing"
+tech_level: "high"
+years_at_institution: 22
+
+archetype: "veteran"
+vibe: "Grew up on FORTRAN. Runs massive batch jobs. Impatient with GUIs. Knows exactly what he needs and how much it should cost."
+frustrations:
+  - "New tools always add clicks between me and my simulations"
+  - "I've been running these jobs for 20 years. I don't need a tutorial."
+  - "Why does everyone assume I need help? I need resources, not hand-holding."
+hopes:
+  - "A tool that respects that I know what I'm doing"
+  - "Accurate budget numbers without jumping through hoops"
+
+workarounds:
+  - type: "custom_scripts"
+    description: "FORTRAN code and SLURM wrapper scripts he's maintained for 20 years"
+  - type: "departmental_it"
+    description: "Close relationship with engineering IT, often helps them debug cluster issues"
+
+lab:
+  name: "Bontamo Computational Mechanics Lab"
+  size: 6
+  composition:
+    postdocs: 1
+    phd_students: 4
+    masters_students: 0
+    undergrads: 1
+  tech_person: "Dr. Bontamo IS the tech person"
+
+projects:
+  - id: "bontamo-composites"
+    title: "Composite Failure Mode Simulation"
+    tier: "medium"
+    tier_justification: "Industry sponsor (aerospace company), NDA covers all simulation results"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 80000
+      pattern: "sustained"
+    storage:
+      active_tb: 10
+      archive_tb: 7
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 4
+
+  - id: "bontamo-validation"
+    title: "Published Simulation Validation Suite"
+    tier: "low"
+    tier_justification: "Benchmark data for reproducibility, meant to be public"
+    type: "storage_only"
+    storage:
+      active_tb: 3
+      archive_tb: 3
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 1
+
+  - id: "bontamo-career"
+    title: "NSF CAREER: Multiscale Modeling"
+    tier: "medium"
+    tier_justification: "Pre-publication research, competitive multiscale modeling field"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 60000
+      pattern: "sustained"
+    storage:
+      active_tb: 8
+      archive_tb: 5
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 3

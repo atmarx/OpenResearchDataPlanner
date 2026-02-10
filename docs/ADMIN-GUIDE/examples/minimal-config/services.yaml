@@ -1,0 +1,115 @@
+# =============================================================================
+# MINIMAL CONFIG: services.yaml
+# =============================================================================
+# Three essential services: HPC compute, standard storage, compliant storage.
+# This demonstrates key concepts: tiers, cost models, subsidies.
+# =============================================================================
+
+services:
+  # ===========================================================================
+  # SERVICE 1: HPC Compute
+  # ===========================================================================
+  - slug: hpc-compute
+    name: "HPC Compute"
+    category: compute                       # Must match categories.yaml
+
+    description: "CPU compute time on the campus cluster"
+
+    # Which tiers can use this service
+    available_tiers:
+      - standard                            # References slug from tiers.yaml
+
+    # Pricing model
+    cost_model:
+      type: unit                            # Per-unit pricing
+      unit: "SU"                            # Service Unit
+      price: 0.05                           # $0.05 per SU
+      billing_period: usage                 # Billed on usage
+
+    # Estimation UI
+    estimation:
+      unit: "SU"
+      prompt: "How many Service Units do you need?"
+      default_value: 10000
+      presets:                              # Quick-select options
+        - label: "Small project"
+          value: 5000
+        - label: "Medium project"
+          value: 50000
+        - label: "Large project"
+          value: 200000
+
+    # Documentation link
+    documentation_url: "https://hpc.contoso.edu/docs"
+
+  # ===========================================================================
+  # SERVICE 2: Research Storage (Standard)
+  # ===========================================================================
+  - slug: research-storage
+    name: "Research Storage"
+    category: storage
+
+    description: "Shared storage for active research data"
+
+    available_tiers:
+      - standard
+
+    # Tiered pricing model
+    cost_model:
+      type: tiered                          # Volume-based pricing
+      unit: "TB"
+      billing_period: month
+      tiers:
+        - up_to: 1
+          price: 0
+          note: "First 1 TB free"
+        - up_to: 10
+          price: 10                         # $10/TB/month for 1-10 TB
+        - above: 10
+          price: 8                          # $8/TB/month above 10 TB
+
+    # Automatic subsidy
+    subsidies:
+      - slug: free-tier
+        name: "Free Tier"
+        description: "First 1 TB included at no cost"
+        discount_type: free_units
+        discount_value: 1
+        auto_apply: true                    # Applied automatically
+
+    estimation:
+      unit: "TB"
+      prompt: "How much storage do you need?"
+      default_value: 5
+
+    documentation_url: "https://storage.contoso.edu"
+
+  # ===========================================================================
+  # SERVICE 3: Secure Storage (Compliant)
+  # ===========================================================================
+  - slug: secure-storage
+    name: "Secure Storage"
+    category: storage
+
+    description: "Encrypted storage for regulated data (HIPAA, FERPA)"
+
+    available_tiers:
+      - sensitive                           # Only for sensitive tier
+
+    cost_model:
+      type: unit
+      unit: "TB"
+      price: 30                             # Higher price for compliance
+      billing_period: month
+
+    # Compliance badges
+    compliance:
+      - hipaa
+      - ferpa
+
+    estimation:
+      unit: "TB"
+      prompt: "How much secure storage do you need?"
+      default_value: 1
+
+    documentation_url: "https://storage.contoso.edu/secure"

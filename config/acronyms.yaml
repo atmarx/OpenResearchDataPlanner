@@ -1,0 +1,493 @@
+# config/acronyms.yaml
+# Terminology definitions for automatic annotation throughout the app
+
+acronyms:
+  # ============================================================
+  # INFRASTRUCTURE TERMS
+  # ============================================================
+
+  - term: "HPC"
+    expansion: "High-Performance Computing"
+    short_def: "Big shared computers for research"
+    long_def: |
+      High-Performance Computing (HPC) refers to computing systems that
+      aggregate computing power to deliver much higher performance than
+      a typical desktop. HPC systems use parallel processing across many
+      nodes to solve complex computational problems.
+    examples:
+      - "Running a genome alignment across 128 CPU cores"
+      - "Simulating molecular dynamics with GROMACS"
+    related: ["GPU", "SU", "SLURM"]
+    category: "infrastructure"
+
+  - term: "GPU"
+    expansion: "Graphics Processing Unit"
+    short_def: "Special chip that's fast for ML and simulations"
+    long_def: |
+      A GPU is a specialized processor originally designed for rendering
+      graphics, but now widely used for parallel computing tasks. GPUs
+      excel at operations that can be split into thousands of simultaneous
+      threads, making them ideal for machine learning, scientific
+      simulations, and image processing.
+    examples:
+      - "Training a neural network on an NVIDIA V100"
+      - "Running CUDA-accelerated molecular dynamics"
+    related: ["HPC", "GPU-hour", "CUDA"]
+    category: "infrastructure"
+
+  - term: "SU"
+    expansion: "Service Unit"
+    short_def: "1 CPU-core running for 1 hour"
+    long_def: |
+      A Service Unit (SU) is the standard billing unit for HPC compute
+      time. 1 SU = 1 CPU core running for 1 hour. If you run a job on
+      32 cores for 10 hours, that's 320 SU.
+
+      Think of it like electricity billing - you pay for what you use.
+    examples:
+      - "A 4-hour job on 8 cores = 32 SU"
+      - "A genome alignment typically uses 100-500 SU"
+    related: ["HPC", "GPU-hour", "ACCESS credits"]
+    category: "infrastructure"
+    see_also:
+      - label: "SU Calculator"
+        action: "open_calculator"
+        calculator: "cpu"
+
+  - term: "TB"
+    expansion: "Terabyte"
+    short_def: "1,000 GB (about 200,000 high-res photos)"
+    long_def: |
+      A terabyte (TB) is 1,000 gigabytes (GB) or 1 trillion bytes.
+      For context:
+      - Your laptop probably has 256 GB - 1 TB of storage
+      - A single whole genome sequence is ~100-200 GB
+      - Research datasets often require 1-100 TB or more
+    examples:
+      - "1 TB = 200,000 smartphone photos"
+      - "1 TB = 30,000 4K microscopy images"
+      - "1 TB = 250 hours of HD video"
+    related: ["GB", "PB", "archive"]
+    category: "infrastructure"
+    see_also:
+      - label: "Storage Calculator"
+        action: "open_calculator"
+        calculator: "storage"
+
+  - term: "GB"
+    expansion: "Gigabyte"
+    short_def: "1,000 MB (about 200 high-res photos)"
+    long_def: |
+      A gigabyte (GB) is 1,000 megabytes (MB) or 1 billion bytes.
+      For context:
+      - A smartphone photo is about 3-5 MB
+      - A 2-hour HD movie is about 4-5 GB
+      - Most laptop hard drives are 256 GB - 1 TB
+    examples:
+      - "1 GB = 200 smartphone photos"
+      - "1 GB = 30 4K microscopy images"
+    related: ["TB", "MB", "storage"]
+    category: "infrastructure"
+
+  - term: "SLURM"
+    expansion: "Simple Linux Utility for Resource Management"
+    short_def: "The software that schedules HPC jobs"
+    long_def: |
+      SLURM is the job scheduler used on most HPC clusters. You submit
+      jobs describing what resources you need (cores, memory, time), and
+      SLURM schedules them to run when resources are available.
+    examples:
+      - "sbatch my_job.sh - submit a batch job"
+      - "srun --pty bash - start an interactive session"
+    related: ["HPC", "batch job", "queue"]
+    category: "infrastructure"
+
+  - term: "VDI"
+    expansion: "Virtual Desktop Infrastructure"
+    short_def: "Remote Windows/Linux desktops"
+    long_def: |
+      VDI provides remote access to dedicated virtual machines with full
+      desktop environments. Unlike HPC, VDI gives you a persistent machine
+      with a graphical interface - ideal for GUI applications, analysis
+      tools, and development work.
+    related: ["VM", "remote desktop"]
+    category: "infrastructure"
+
+  - term: "VM"
+    expansion: "Virtual Machine"
+    short_def: "A computer running inside another computer"
+    long_def: |
+      A virtual machine is a software-based emulation of a physical computer.
+      VMs allow you to run multiple operating systems on a single physical
+      machine, providing isolation and flexibility for research workloads.
+    related: ["VDI", "cloud", "container"]
+    category: "infrastructure"
+
+  - term: "K8s"
+    display: "Kubernetes (K8s)"
+    expansion: "Kubernetes"
+    short_def: "Software for running containers at scale"
+    long_def: |
+      Kubernetes (often abbreviated K8s) is an orchestration platform for
+      containerized applications. It automatically handles deployment,
+      scaling, and management of applications packaged as containers.
+    related: ["container", "Docker", "Helm"]
+    category: "infrastructure"
+
+  - term: "CUDA"
+    expansion: "Compute Unified Device Architecture"
+    short_def: "NVIDIA's GPU programming platform"
+    long_def: |
+      CUDA is NVIDIA's parallel computing platform and programming model
+      for general computing on GPUs. Most GPU-accelerated scientific
+      software uses CUDA, including deep learning frameworks like PyTorch
+      and TensorFlow.
+    related: ["GPU", "NVIDIA", "deep learning"]
+    category: "infrastructure"
+
+  # ============================================================
+  # STORAGE CONCEPTS
+  # ============================================================
+
+  - term: "archive"
+    display: "Archive Storage"
+    expansion: null
+    short_def: "Cold storage - cheap but slow to retrieve"
+    long_def: |
+      Archive storage is designed for data you rarely access but need to
+      keep. It's much cheaper than active storage but takes hours to
+      retrieve.
+
+      Think of it like putting boxes in the attic vs. keeping them on
+      your desk.
+    examples:
+      - "Raw sequencing data after analysis is complete"
+      - "Grant retention requirements (keep for 7 years)"
+    related: ["active storage", "Glacier", "cold storage"]
+    category: "storage"
+
+  - term: "snapshot"
+    display: "Snapshots"
+    expansion: null
+    short_def: "Automatic backups you can restore from"
+    long_def: |
+      Snapshots are point-in-time copies of your files, like Time Machine
+      backups. If you accidentally delete or modify something, you can
+      recover the previous version.
+
+      Our research storage keeps daily snapshots for 30 days.
+    related: ["backup", "version control"]
+    category: "storage"
+
+  - term: "Globus"
+    expansion: null
+    short_def: "Fast, reliable research data transfer"
+    long_def: |
+      Globus is a data transfer service designed for research. It handles
+      large file transfers reliably, resuming automatically if interrupted.
+      It's the recommended way to move data to/from HPC systems and
+      between institutions.
+    examples:
+      - "Transferring 10 TB of sequencing data"
+      - "Sharing data with collaborators at other universities"
+    related: ["data transfer", "research storage"]
+    category: "tools"
+
+  - term: "GPFS"
+    expansion: "General Parallel File System"
+    short_def: "High-performance shared filesystem for HPC"
+    long_def: |
+      GPFS (also called IBM Spectrum Scale) is a parallel filesystem
+      designed for high-performance computing. It allows thousands of
+      compute nodes to access the same files simultaneously with high
+      bandwidth.
+    related: ["HPC", "parallel", "filesystem"]
+    category: "storage"
+
+  # ============================================================
+  # COMPLIANCE TERMS
+  # ============================================================
+
+  - term: "PHI"
+    expansion: "Protected Health Information"
+    short_def: "Patient/health data that needs HIPAA protection"
+    long_def: |
+      Protected Health Information (PHI) includes any individually
+      identifiable health information. This includes medical records,
+      lab results, billing information, and even appointment schedules
+      when linked to an individual.
+
+      PHI requires HIPAA-compliant storage and handling. At Northwinds,
+      this means using High-tier services with BAAs in place.
+    examples:
+      - "Patient medical records from a clinical study"
+      - "Genetic data linked to individual participants"
+    related: ["HIPAA", "BAA", "IRB", "high-tier"]
+    category: "compliance"
+
+  - term: "HIPAA"
+    expansion: "Health Insurance Portability and Accountability Act"
+    short_def: "Federal law protecting health data"
+    long_def: |
+      HIPAA is a US federal law that establishes national standards for
+      protecting sensitive patient health information. Research involving
+      PHI must use HIPAA-compliant systems and have appropriate agreements
+      (BAAs) in place with service providers.
+    related: ["PHI", "BAA", "IRB"]
+    category: "compliance"
+
+  - term: "BAA"
+    expansion: "Business Associate Agreement"
+    short_def: "HIPAA contract with a vendor"
+    long_def: |
+      A Business Associate Agreement (BAA) is a contract between a
+      HIPAA-covered entity and a vendor who will handle PHI. The BAA
+      ensures the vendor will appropriately safeguard the information.
+
+      Before storing PHI on any service, verify a BAA is in place.
+      Cloud providers (AWS, Azure) have institutional BAAs; check with
+      Research IT.
+    related: ["HIPAA", "PHI"]
+    category: "compliance"
+
+  - term: "IRB"
+    expansion: "Institutional Review Board"
+    short_def: "Committee that approves human subjects research"
+    long_def: |
+      The Institutional Review Board (IRB) reviews research involving
+      human subjects to ensure ethical treatment and proper informed
+      consent. IRB approval is typically required before collecting or
+      analyzing human subjects data.
+    related: ["PHI", "HIPAA", "consent"]
+    category: "compliance"
+
+  - term: "FERPA"
+    expansion: "Family Educational Rights and Privacy Act"
+    short_def: "Federal law protecting student records"
+    long_def: |
+      FERPA protects the privacy of student education records. Research
+      using student data (grades, enrollment, financial aid) requires
+      appropriate data use agreements and typically IRB approval.
+    related: ["IRB", "high-tier"]
+    category: "compliance"
+
+  - term: "PII"
+    expansion: "Personally Identifiable Information"
+    short_def: "Data that can identify a specific person"
+    long_def: |
+      Personally Identifiable Information (PII) is any data that could
+      potentially identify a specific individual. This includes names,
+      Social Security numbers, addresses, phone numbers, and email
+      addresses. PII requires appropriate security controls.
+    examples:
+      - "Names and addresses from survey respondents"
+      - "Social Security numbers in administrative data"
+    related: ["PHI", "HIPAA", "FERPA"]
+    category: "compliance"
+
+  - term: "CUI"
+    expansion: "Controlled Unclassified Information"
+    short_def: "Sensitive government data (not classified)"
+    long_def: |
+      CUI is government-created or owned information that requires
+      safeguarding but isn't classified. Many DoD and federal contracts
+      involve CUI and require specific handling procedures and compliant
+      infrastructure (NIST 800-171).
+    related: ["FISMA", "ITAR", "NIST 800-171"]
+    category: "compliance"
+
+  - term: "ITAR"
+    expansion: "International Traffic in Arms Regulations"
+    short_def: "Export control for defense-related data"
+    long_def: |
+      ITAR controls the export of defense-related articles, services,
+      and technical data. Research involving ITAR-controlled information
+      cannot be accessed by non-US persons and requires specific
+      safeguards and dedicated infrastructure.
+    related: ["EAR", "CUI", "export control"]
+    category: "compliance"
+
+  - term: "EAR"
+    expansion: "Export Administration Regulations"
+    short_def: "Export control for dual-use technology"
+    long_def: |
+      EAR controls exports of commercial and dual-use items, software,
+      and technology. Less restrictive than ITAR but still requires
+      compliance for certain research areas.
+    related: ["ITAR", "export control"]
+    category: "compliance"
+
+  - term: "NIST 800-171"
+    display: "NIST SP 800-171"
+    expansion: "NIST Special Publication 800-171"
+    short_def: "Security requirements for CUI"
+    long_def: |
+      NIST SP 800-171 specifies security requirements for protecting
+      Controlled Unclassified Information (CUI) in non-federal systems.
+      Many DoD contracts require compliance with these 110 security
+      controls.
+    related: ["CUI", "CMMC", "DoD"]
+    category: "compliance"
+
+  - term: "CMMC"
+    expansion: "Cybersecurity Maturity Model Certification"
+    short_def: "DoD cybersecurity certification framework"
+    long_def: |
+      CMMC is a framework that measures a contractor's cybersecurity
+      maturity level. DoD contractors must achieve appropriate CMMC
+      certification levels to handle CUI and other sensitive information.
+    related: ["CUI", "NIST 800-171", "DoD"]
+    category: "compliance"
+
+  - term: "FDA 21 CFR Part 11"
+    display: "21 CFR Part 11"
+    expansion: "FDA Electronic Records Rule"
+    short_def: "FDA requirements for clinical trials data"
+    long_def: |
+      21 CFR Part 11 establishes FDA requirements for electronic records
+      and signatures. Research data intended for FDA submissions (clinical
+      trials, drug development) must use systems meeting these requirements,
+      including audit trails and validated software.
+    related: ["clinical trial", "GxP", "validation"]
+    category: "compliance"
+
+  - term: "DUA"
+    expansion: "Data Use Agreement"
+    short_def: "Contract governing how data can be used"
+    long_def: |
+      A Data Use Agreement is a contract that specifies how data can be
+      used, stored, and shared. DUAs are commonly required when receiving
+      data from external sources or sharing data with collaborators.
+    related: ["MOU", "IRB", "data sharing"]
+    category: "compliance"
+
+  # ============================================================
+  # PROGRAMS & RESOURCES
+  # ============================================================
+
+  - term: "ACCESS"
+    expansion: "Advanced Cyberinfrastructure Coordination Ecosystem"
+    short_def: "Free national supercomputing for researchers"
+    long_def: |
+      ACCESS provides free compute time on national supercomputers for
+      US researchers. It's funded by the NSF, so qualifying researchers
+      can use world-class computing resources at no cost.
+
+      Allocations range from 400,000 credits (Explore, auto-approved)
+      to unlimited (Maximize, peer-reviewed).
+    examples:
+      - "Running large-scale climate simulations on Frontera"
+      - "Training ML models on Delta's GPUs"
+    related: ["NSF", "XSEDE", "credits"]
+    category: "programs"
+    see_also:
+      - label: "ACCESS Tiers Explained"
+        action: "open_section"
+        section: "access-explainer"
+      - label: "ACCESS Website"
+        action: "external_link"
+        url: "https://access-ci.org"
+
+  - term: "XSEDE"
+    expansion: "Extreme Science and Engineering Discovery Environment"
+    short_def: "Previous national computing program (now ACCESS)"
+    long_def: |
+      XSEDE was the predecessor to ACCESS, providing national-scale
+      computing resources to researchers. XSEDE ended in 2022 and was
+      replaced by ACCESS.
+    related: ["ACCESS", "NSF"]
+    category: "programs"
+
+  - term: "NSF"
+    expansion: "National Science Foundation"
+    short_def: "Federal agency funding science research"
+    long_def: |
+      The National Science Foundation is a US government agency that
+      supports fundamental research and education in science and
+      engineering. NSF funds ACCESS and many campus research computing
+      infrastructure grants.
+    related: ["ACCESS", "NIH", "grants"]
+    category: "programs"
+
+  - term: "NIH"
+    expansion: "National Institutes of Health"
+    short_def: "Federal agency funding health research"
+    long_def: |
+      The National Institutes of Health is the primary US government
+      agency for biomedical and public health research. NIH grants have
+      specific data management and sharing requirements.
+    related: ["NSF", "grants", "DMP"]
+    category: "programs"
+
+  # ============================================================
+  # TOOLS & SOFTWARE
+  # ============================================================
+
+  - term: "LabArchives"
+    expansion: null
+    short_def: "Electronic lab notebook (ELN) for research documentation"
+    long_def: |
+      LabArchives is a cloud-based electronic lab notebook used to
+      document research activities, experiments, and protocols. It's
+      commonly used for compliance with data management requirements.
+
+      Note: LabArchives has file size limits (typically 4GB per file)
+      and storage quotas (typically 1TB per user). For large datasets,
+      use dedicated research storage and link to files from your
+      LabArchives entries.
+    examples:
+      - "Documenting wet lab protocols and observations"
+      - "Recording computational experiment parameters"
+    related: ["ELN", "DMP", "data management"]
+    category: "tools"
+    limits:
+      max_file_size: "4GB"
+      default_quota: "1TB"
+
+  - term: "ELN"
+    expansion: "Electronic Lab Notebook"
+    short_def: "Digital replacement for paper lab notebooks"
+    long_def: |
+      An electronic lab notebook is software used to document research
+      activities digitally. ELNs provide searchability, collaboration
+      features, and audit trails that paper notebooks cannot.
+    related: ["LabArchives", "data management"]
+    category: "tools"
+
+  - term: "DMP"
+    expansion: "Data Management Plan"
+    short_def: "Required document describing data handling"
+    long_def: |
+      A Data Management Plan describes how research data will be
+      collected, stored, protected, and shared. DMPs are required by
+      most federal funding agencies (NSF, NIH, DoE) and help ensure
+      good data practices throughout a project.
+    related: ["NSF", "NIH", "data sharing"]
+    category: "tools"
+
+  - term: "DOI"
+    expansion: "Digital Object Identifier"
+    short_def: "Permanent link to a dataset or publication"
+    long_def: |
+      A Digital Object Identifier is a persistent identifier used to
+      uniquely identify objects like datasets and publications. DOIs
+      make your research data citable and findable.
+    examples:
+      - "doi:10.5281/zenodo.1234567"
+    related: ["data sharing", "citation", "repository"]
+    category: "tools"
+
+# Annotation behavior settings
+annotation_config:
+  word_boundary: true      # Match whole words only
+  case_sensitive: true     # "HPC" but not "hpc"
+  max_per_term: 3          # Max annotations per page per term
+  tooltip_delay: 300       # ms before showing tooltip
+
+  # Elements to skip
+  skip_elements:
+    - "code"
+    - "pre"
+    - "input"
+    - "textarea"
+    - ".no-annotate"

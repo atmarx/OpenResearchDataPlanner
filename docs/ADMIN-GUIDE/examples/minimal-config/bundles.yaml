@@ -1,0 +1,44 @@
+# =============================================================================
+# MINIMAL CONFIG: bundles.yaml
+# =============================================================================
+# One starter bundle demonstrating the concept.
+# Bundles are pre-configured service combinations for common use cases.
+# =============================================================================
+
+bundles:
+  # ===========================================================================
+  # BUNDLE 1: HPC Starter
+  # ===========================================================================
+  - slug: hpc-starter
+    name: "HPC Starter"
+    description: "Everything you need to start using HPC"
+    icon: "rocket"                          # Icon from icon set
+
+    # Who this bundle is for
+    recommended_for:
+      - "New HPC users"
+      - "Testing workflows"
+      - "Small analyses"
+
+    # Compatible tiers
+    recommended_tiers:
+      - standard
+
+    # Services included with default estimates
+    services:
+      - service: hpc-compute                # References slug from services.yaml
+        default_estimate: 10000             # Pre-filled estimate
+        required: true                      # Must include this service
+
+      - service: research-storage
+        default_estimate: 1
+        required: true
+
+    # Total monthly estimate (for display)
+    estimated_monthly_cost: 0               # Free tier covers this
+
+    # Next steps after selection
+    onboarding_steps:
+      - "Request cluster account"
+      - "Complete HPC orientation (30 min online)"
+      - "Transfer your first dataset"

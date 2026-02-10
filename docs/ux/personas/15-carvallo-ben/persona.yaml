@@ -1,0 +1,78 @@
+id: "carvallo-ben"
+name: "Dr. Ben Carvallo"
+department: "Public Health"
+title: "Associate Professor"
+specialty: "Epidemiology, disease modeling, government partnerships"
+tech_level: "medium"
+years_at_institution: 9
+
+archetype: "careful_collaborator"
+vibe: "Works with state health departments. Careful with de-identified data. Understands that 'de-identified' doesn't mean 'not sensitive.'"
+frustrations:
+  - "Everyone thinks de-identified means we can do whatever we want. It doesn't."
+  - "Government partners have their own requirements on top of ours"
+  - "Data sharing agreements take 6 months to negotiate"
+hopes:
+  - "A tool that understands the nuance of de-identified but still sensitive data"
+  - "Clear documentation for my government partners"
+
+workarounds:
+  - type: "departmental_it"
+    description: "State gave him a VPN and separate workstation"
+  - type: "custom_scripts"
+    description: "Works closely with public health IT on secure data transfer"
+
+lab:
+  name: "Carvallo Epidemiology Lab"
+  size: 4
+  composition:
+    postdocs: 0
+    phd_students: 2
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Works closely with public health IT department"
+
+projects:
+  - id: "carvallo-state"
+    title: "State Health Department Disease Modeling"
+    tier: "medium"
+    tier_justification: "De-identified but sensitive data under Data Use Agreement"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 20000
+      pattern: "bursty"
+    storage:
+      active_tb: 5
+      archive_tb: 3
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 3
+
+  - id: "carvallo-covid"
+    title: "Published COVID Retrospective"
+    tier: "low"
+    tier_justification: "Fully de-identified published data"
+    type: "storage_only"
+    storage:
+      active_tb: 2
+      archive_tb: 2
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 1
+
+  - id: "carvallo-cdc"
+    title: "CDC Wastewater Surveillance"
+    tier: "medium"
+    tier_justification: "Government partnership with pre-publication agreement"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 12000
+      pattern: "sustained"
+    storage:
+      active_tb: 3
+      archive_tb: 2
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 2

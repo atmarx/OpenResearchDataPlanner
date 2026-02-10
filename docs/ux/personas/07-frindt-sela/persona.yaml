@@ -1,0 +1,78 @@
+id: "frindt-sela"
+name: "Dr. Sela Frindt"
+department: "Biomedical Engineering"
+title: "Associate Professor"
+specialty: "Medical device simulation, ANSYS/SolidWorks, FDA regulatory pathway"
+tech_level: "medium"
+years_at_institution: 9
+
+archetype: "compliance_juggler"
+vibe: "Constantly navigating FDA requirements, hospital partnerships, and industry NDAs. Juggles multiple compliance frameworks simultaneously."
+frustrations:
+  - "Every project has different compliance requirements and I can never remember which is which"
+  - "Industry wants one thing, FDA wants another, hospital wants a third"
+  - "I spend more time on paperwork than on actual research"
+hopes:
+  - "A tool that helps me track which data needs which protections"
+  - "Clear documentation I can show to auditors"
+
+workarounds:
+  - type: "departmental_it"
+    description: "Hospital IT gave her a separate workstation for patient data"
+  - type: "custom_scripts"
+    description: "Elaborate spreadsheet system to track which project needs which compliance"
+
+lab:
+  name: "Frindt Medical Device Lab"
+  size: 5
+  composition:
+    postdocs: 0
+    phd_students: 3
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Jason Kellmore (PhD) handles ANSYS licensing issues"
+
+projects:
+  - id: "frindt-stent"
+    title: "Cardiac Stent Simulation (FDA Submission)"
+    tier: "high"
+    tier_justification: "Medical device regulatory submission, FDA 510(k) pathway requirements"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 25000
+      pattern: "bursty"
+    storage:
+      active_tb: 5
+      archive_tb: 5
+    retention: "export_controlled"
+    grant_years: 3
+    team_size: 3
+
+  - id: "frindt-hospital"
+    title: "Hospital Collaboration: Implant Analysis"
+    tier: "high"
+    tier_justification: "HIPAA-covered patient imaging data used for implant analysis"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 10000
+      pattern: "bursty"
+    storage:
+      active_tb: 3
+      archive_tb: 3
+    retention: "irb_human_subjects"
+    grant_years: 2
+    team_size: 2
+
+  - id: "frindt-student-archive"
+    title: "Undergraduate Design Competition Archive"
+    tier: "low"
+    tier_justification: "Student capstone projects, no IP or compliance concerns"
+    type: "storage_only"
+    storage:
+      active_tb: 1
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 1
+    team_size: 1

@@ -1,0 +1,78 @@
+id: "vex-torben"
+name: "Dr. Torben Vex"
+department: "Physics"
+title: "Professor"
+specialty: "Discrete atomic modeling, molecular dynamics, LAMMPS simulations"
+tech_level: "high"
+years_at_institution: 18
+
+archetype: "skeptic"
+vibe: "The Linux greybeard. Compiles his own kernels. Skeptical of 'wizard' tools but secretly hopes this one is different."
+frustrations:
+  - "Every new system promises to be different, then wastes my time"
+  - "I've written scripts that do exactly what I need — why change?"
+  - "IT 'solutions' are designed for people who don't know what they're doing"
+hopes:
+  - "Maybe this will finally be something that respects my time"
+  - "If it generates accurate budget numbers, that would actually help"
+
+workarounds:
+  - type: "custom_scripts"
+    description: "Maintains a personal toolkit of SLURM submission scripts perfected over 15 years"
+  - type: "departmental_it"
+    description: "Has a good relationship with the physics department IT admin (they trade homebrew)"
+
+lab:
+  name: "Vex Computational Materials Lab"
+  size: 6
+  composition:
+    postdocs: 1
+    phd_students: 3
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Welk Zanger (postdoc) - handles cluster issues when Torben is traveling"
+
+projects:
+  - id: "vex-lammps-alloys"
+    title: "Novel High-Entropy Alloy Simulations"
+    tier: "medium"
+    tier_justification: "Unpublished research with potential patent applications through university tech transfer"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 50000
+      pattern: "sustained"
+    storage:
+      active_tb: 8
+      archive_tb: 5
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 4
+
+  - id: "vex-teaching-archive"
+    title: "PHYS 480 Computational Lab Archive"
+    tier: "low"
+    tier_justification: "Educational materials, student assignments, no IP concerns"
+    type: "storage_only"
+    storage:
+      active_tb: 2
+      archive_tb: 2
+    retention: "federal_grant_standard"
+    grant_years: 1
+    team_size: 1
+
+  - id: "vex-openkim"
+    title: "OpenKIM Interatomic Potential Validation"
+    tier: "low"
+    tier_justification: "Open science collaboration with NSF-funded OpenKIM project, all data public"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 10000
+      pattern: "bursty"
+    storage:
+      active_tb: 1
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 2

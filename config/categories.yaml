@@ -1,0 +1,130 @@
+categories:
+  - slug: compute
+    name: "Compute"
+    description: "Processing and analysis resources"
+    icon: "cpu"
+    sort_order: 1
+    comparison_features:
+      - key: gpu_available
+        label: "GPU Available"
+        description: "Access to GPU accelerators"
+      - key: batch_jobs
+        label: "Batch Jobs"
+        description: "Submit jobs to run unattended"
+      - key: interactive
+        label: "Interactive Use"
+        description: "Live, interactive sessions"
+      - key: auto_scaling
+        label: "Auto-Scaling"
+        description: "Automatically scale resources"
+      - key: cost_predictable
+        label: "Predictable Cost"
+        description: "Fixed or easy-to-estimate pricing"
+      - key: beginner_friendly
+        label: "Beginner Friendly"
+        description: "Easy to get started"
+      - key: high_tier_data
+        label: "High-Tier Data"
+        description: "Approved for regulated/PHI data"
+      - key: free_tier
+        label: "Free Tier"
+        description: "No-cost option available"
+
+  - slug: storage
+    name: "Storage"
+    description: "Data storage and file systems"
+    icon: "hard-drive"
+    sort_order: 2
+    comparison_features:
+      - key: hpc_mounted
+        label: "HPC Access"
+        description: "Directly accessible from HPC cluster"
+      - key: high_throughput
+        label: "High Throughput"
+        description: "Fast for large data transfers"
+      - key: snapshots
+        label: "Snapshots/Backup"
+        description: "Version history or backups"
+      - key: collaboration
+        label: "Collaboration"
+        description: "Easy sharing with team"
+      - key: external_sharing
+        label: "External Sharing"
+        description: "Share outside institution"
+      - key: large_files
+        label: "Large Files"
+        description: "Handles very large files"
+      - key: high_tier_data
+        label: "High-Tier Data"
+        description: "Approved for regulated/PHI data"
+      - key: free_allocation
+        label: "Free Allocation"
+        description: "No-cost storage included"
+
+  - slug: api
+    name: "APIs & Services"
+    description: "Cloud APIs, AI services, specialized tools"
+    icon: "cloud"
+    sort_order: 3
+
+  - slug: environment
+    name: "Environments"
+    description: "Managed research environments and enclaves"
+    icon: "box"
+    sort_order: 4
+    comparison_features:
+      - key: dedicated_resources
+        label: "Dedicated Resources"
+        description: "Guaranteed CPU/RAM allocation"
+      - key: gui_desktop
+        label: "GUI Desktop"
+        description: "Graphical desktop interface"
+      - key: web_accessible
+        label: "Web Accessible"
+        description: "Access from browser"
+      - key: admin_control
+        label: "Admin Control"
+        description: "Install your own software"
+      - key: high_tier_data
+        label: "High-Tier Data"
+        description: "Approved for regulated/PHI data"
+      - key: scalable
+        label: "Scalable"
+        description: "Can increase resources"
+      - key: preconfigured_software
+        label: "Pre-configured"
+        description: "Software pre-installed"
+      - key: cost_predictable
+        label: "Predictable Cost"
+        description: "Fixed monthly pricing"
+
+  - slug: support
+    name: "Support Services"
+    description: "Consultation, training, and assistance"
+    icon: "life-buoy"
+    sort_order: 5
+
+  - slug: external
+    name: "National Resources"
+    description: "NSF-funded national cyberinfrastructure (ACCESS)"
+    icon: "globe"
+    sort_order: 6
+    comparison_features:
+      - key: free_nsf
+        label: "NSF Funded"
+        description: "No cost to researchers"
+      - key: merit_based
+        label: "Merit-Based"
+        description: "Requires allocation application"
+      - key: national_scale
+        label: "National Scale"
+        description: "Access to top supercomputing centers"
+      - key: gpu_available
+        label: "GPU Available"
+        description: "Access to GPU accelerators"
+      - key: large_scale
+        label: "Large Scale"
+        description: "Massive compute capacity"
+      - key: beginner_friendly
+        label: "Beginner Friendly"
+        description: "Lower tiers easy to obtain"

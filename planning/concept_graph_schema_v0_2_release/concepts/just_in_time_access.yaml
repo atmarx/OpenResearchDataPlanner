@@ -1,0 +1,24 @@
+schema_version: '0.2'
+id: just_in_time_access
+name: Just-in-Time Access
+summary: Time-bound access granted only when needed.
+description: Privileged access is activated temporarily with justification and automatic
+  expiration.
+tags:
+  security: core
+  operations: core
+  identity-access: core
+assumptions:
+- access_activation_is_logged
+downstream_impacts:
+- incident_response
+- compliance_posture
+anti_patterns:
+- permanent_privileged_access
+owners:
+- role: security
+- role: operations
+maturity:
+  level: current
+notes:
+- Vendor-agnostic; supported by multiple IAM platforms.

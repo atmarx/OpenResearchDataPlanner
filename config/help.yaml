@@ -1,0 +1,182 @@
+# config/help.yaml
+# Configuration for the "Talk to a Human" help escape hatch and contact information
+
+# Global help CTA that appears on complex pages
+global:
+  show_help_cta: true
+  help_cta_text: "Not sure? Talk to a human"
+  help_cta_link: "/contact"
+  help_cta_position: "bottom-right"   # or "inline", "header"
+
+  # Pages where help is especially prominent
+  emphasized_pages:
+    - "tier-selection"
+    - "storage-estimate"
+    - "service-selection"
+    - "high-tier-workflow"
+    - "comparison-modal"
+
+  # Floating button settings
+  floating_button:
+    enabled: true
+    icon: "message-circle"
+    pulse_animation: false  # Set true to draw attention
+    show_after_seconds: 30  # Show after user has been on page for 30s
+
+# Contact options in help modal
+contact_options:
+  - type: "email"
+    label: "Email Us"
+    description: "Get a response within 1 business day"
+    icon: "mail"
+    primary: true
+    action:
+      type: "email"
+      address: "rc-help@northwinds.edu"
+      subject_template: "Data Planner Help Request"
+      # Include wizard state in email body
+      include_state: true
+
+  - type: "schedule"
+    label: "Schedule a Call"
+    description: "30-minute consultation with RC staff"
+    icon: "calendar"
+    primary: false
+    action:
+      type: "external_link"
+      url: "https://calendly.com/northwinds-rc/consult"
+
+  - type: "ticket"
+    label: "Submit a Ticket"
+    description: "For tracking longer requests"
+    icon: "ticket"
+    primary: false
+    action:
+      type: "external_link"
+      url: "https://northwinds.service-now.com/rc"
+
+  - type: "save"
+    label: "Save & Continue Later"
+    description: "Get a link to return to your progress"
+    icon: "bookmark"
+    primary: false
+    action:
+      type: "save_state"
+      # Email the state link to user
+      email_link: true
+
+# Context-specific help messages
+contextual_help:
+  tier-selection:
+    title: "Not sure which data tier?"
+    message: |
+      Data classification can be tricky. If your research involves any
+      human subjects data, health information, or government contracts,
+      we recommend scheduling a quick consultation.
+    show_schedule_cta: true
+
+  storage-estimate:
+    title: "Unsure about storage needs?"
+    message: |
+      Try our calculators, or describe your data types and we'll help
+      estimate. It's better to start with a rough estimate - you can
+      always adjust later.
+    show_calculator_cta: true
+
+  high-tier-workflow:
+    title: "Questions about the compliance process?"
+    message: |
+      The approval process for regulated data is thorough but we've
+      streamlined it. Contact us if you have deadline concerns.
+    show_email_cta: true
+
+  comparison-modal:
+    title: "Need help choosing?"
+    message: |
+      Each option has trade-offs. If you're not sure which is best for
+      your specific use case, let's talk through it.
+    show_schedule_cta: true
+
+# What gets exported when user requests help mid-wizard
+export_state:
+  include:
+    - current_step
+    - selected_tier
+    - selected_services
+    - estimates
+    - questionnaire_answers
+    - comparison_selections
+
+  # Format for email body
+  email_format: |
+    ## Current Progress
+
+    **Step:** {{current_step}}
+    **Data Tier:** {{selected_tier.name}}
+
+    ### Selected Services
+    {{#each selected_services}}
+    - {{this.name}}: {{this.estimate}} {{this.unit}}
+    {{/each}}
+
+    ### Questionnaire Answers
+    {{#each questionnaire_answers}}
+    - {{this.question}}: {{this.answer}}
+    {{/each}}
+
+    ---
+    Please help me with: [describe your question]
+
+  # Generate shareable link
+  shareable_link:
+    enabled: true
+    expiry_days: 30
+    base_url: "https://planner.rc.northwinds.edu/restore"
+
+# Quick FAQ shown in help modal
+faq:
+  - question: "How long does provisioning take?"
+    answer: |
+      **L1/L2 services:** Same day (self-service)
+      **L3 (HIPAA):** 3-7 business days
+      **L4 (export-controlled):** 3-6 weeks
+
+  - question: "Can I change my selections later?"
+    answer: |
+      Yes! This planner helps you estimate needs and generate DMP
+      language. You can adjust services anytime - just contact us
+      to modify your allocation.
+
+  - question: "What if I have a grant deadline?"
+    answer: |
+      Include your deadline when you contact us. We can often
+      prioritize consultations and work in parallel with other
+      approvals.
+
+  - question: "Is my data saved?"
+    answer: |
+      Your progress is saved in your browser. Use "Save & Continue
+      Later" to get a link you can return to from any device.
+
+# Office hours (optional)
+office_hours:
+  enabled: true
+  title: "Drop-in Office Hours"
+  description: "No appointment needed"
+  schedule:
+    - day: "Tuesday"
+      time: "2:00 PM - 4:00 PM"
+      location: "Virtual (Zoom)"
+      link: "https://northwinds.zoom.us/j/123456789"
+    - day: "Thursday"
+      time: "10:00 AM - 12:00 PM"
+      location: "Library 302"
+      link: null
+
+# Emergency/urgent contact
+urgent:
+  enabled: true
+  title: "Urgent Issue?"
+  description: "For production system outages or security incidents"
+  contact: "rc-urgent@northwinds.edu"
+  phone: "(555) 123-4567"

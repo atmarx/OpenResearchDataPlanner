@@ -1,0 +1,74 @@
+id: "pallish-dorn"
+name: "Dr. Dorn Pallish"
+department: "Digital Humanities"
+title: "Associate Professor"
+specialty: "Text analysis, NLP, historical archives, corpus linguistics"
+tech_level: "low"
+years_at_institution: 10
+
+archetype: "curious_humanist"
+vibe: "A historian with digital tools. Not a programmer, but genuinely curious. Has massive text corpora and no idea how to process them efficiently."
+frustrations:
+  - "I don't understand why I can't just use Google Drive for my research"
+  - "Everyone speaks in acronyms I don't understand"
+  - "I'm a historian, not a computer scientist"
+hopes:
+  - "Plain language explanations of what I need"
+  - "Someone to meet me where I am, not where they think I should be"
+
+workarounds:
+  - type: "personal_cloud"
+    description: "Uses personal Dropbox for most data storage"
+  - type: "grad_student"
+    description: "Relies on a technically-minded humanities grad student for any computational work"
+
+lab:
+  name: "Pallish Digital Text Lab"
+  size: 3
+  composition:
+    postdocs: 0
+    phd_students: 2
+    masters_students: 0
+    undergrads: 1
+  tech_person: "None — 'I'm a historian, not a programmer'"
+
+projects:
+  - id: "pallish-manuscripts"
+    title: "Medieval Manuscript Corpus Analysis"
+    tier: "low"
+    tier_justification: "Public domain historical texts"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 5000
+      pattern: "bursty"
+    storage:
+      active_tb: 3
+      archive_tb: 2
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 2
+
+  - id: "pallish-oral-history"
+    title: "Oral History Transcription Archive"
+    tier: "medium"
+    tier_justification: "Interview subjects have privacy concerns"
+    type: "storage_only"
+    storage:
+      active_tb: 1
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 1
+
+  - id: "pallish-course"
+    title: "DH Methods Course Materials"
+    tier: "low"
+    tier_justification: "Teaching resources, no sensitive content"
+    type: "storage_only"
+    storage:
+      active_tb: 0.2
+      archive_tb: 0.1
+    retention: "federal_grant_standard"
+    grant_years: 1
+    team_size: 1

@@ -1,0 +1,78 @@
+id: "mellendo-cris"
+name: "Dr. Cris Mellendo"
+department: "Digital Media"
+title: "Associate Professor"
+specialty: "AR/VR development, 3D rendering, motion capture"
+tech_level: "high"
+years_at_institution: 6
+
+archetype: "deadline_panic"
+vibe: "Creative chaos. Scavenges compute everywhere. Needs burst capacity for deadlines. Pays out of pocket for AWS when desperate."
+frustrations:
+  - "I need 1000 GPU-hours by Friday and nobody can help"
+  - "Scavenger queue is great until it preempts my render at 90%"
+  - "I love free compute but I also need reliability when it counts"
+hopes:
+  - "A way to mix free/cheap compute with on-demand for deadlines"
+  - "Someone who understands creative production timelines"
+
+workarounds:
+  - type: "paid_out_of_pocket"
+    description: "Personal AWS account for burst rendering when deadlines loom"
+  - type: "custom_scripts"
+    description: "Scripts to scavenge compute across multiple systems"
+
+lab:
+  name: "Mellendo Immersive Media Lab"
+  size: 5
+  composition:
+    postdocs: 0
+    phd_students: 3
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Everyone renders, everyone debugs"
+
+projects:
+  - id: "mellendo-vr"
+    title: "VR Documentary Rendering"
+    tier: "medium"
+    tier_justification: "Unreleased documentary footage, rights issues"
+    type: "gpu_heavy"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 50000
+      pattern: "bursty"
+    storage:
+      active_tb: 8
+      archive_tb: 5
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 3
+
+  - id: "mellendo-ar-toolkit"
+    title: "Open Source AR Toolkit"
+    tier: "low"
+    tier_justification: "Open source community project"
+    type: "compute_moderate"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 10000
+      pattern: "sustained"
+    storage:
+      active_tb: 2
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 2
+
+  - id: "mellendo-student-films"
+    title: "Student Film Archive"
+    tier: "low"
+    tier_justification: "Course projects, student work"
+    type: "storage_only"
+    storage:
+      active_tb: 5
+      archive_tb: 3
+    retention: "federal_grant_standard"
+    grant_years: 1
+    team_size: 1

@@ -1,0 +1,78 @@
+id: "selwick-mira"
+name: "Dr. Mira Selwick"
+department: "Chemistry"
+title: "Associate Professor"
+specialty: "Quantum chemistry, computational catalysis, Gaussian/ORCA"
+tech_level: "medium"
+years_at_institution: 8
+
+archetype: "detail_oriented"
+vibe: "Meticulous and methodical. Worries about data provenance and reproducibility. Frustrated by license management chaos."
+frustrations:
+  - "I can never get a straight answer on how much Gaussian licenses cost"
+  - "Our data organization is a mess — I can't reproduce results from 2019"
+  - "Industry collaborators want documentation I don't have time to create"
+hopes:
+  - "A clear budget breakdown I can show to collaborators"
+  - "Better organization for long-term data management"
+
+workarounds:
+  - type: "paid_out_of_pocket"
+    description: "Pays for Gaussian licenses out of grant funds, unclear if institutional licenses exist"
+  - type: "departmental_it"
+    description: "Relies on chemistry IT for cluster access but communication is spotty"
+
+lab:
+  name: "Selwick Computational Catalysis Lab"
+  size: 5
+  composition:
+    postdocs: 1
+    phd_students: 3
+    masters_students: 0
+    undergrads: 1
+  tech_person: "None — relies on chemistry IT, which is understaffed"
+
+projects:
+  - id: "selwick-catalysis"
+    title: "Catalytic Reaction Pathway Modeling"
+    tier: "medium"
+    tier_justification: "Industry collaboration with chemical company, IP-sensitive, under NDA"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 30000
+      pattern: "sustained"
+    storage:
+      active_tb: 4
+      archive_tb: 3
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 4
+
+  - id: "selwick-benchmark"
+    title: "Published Benchmark Dataset Repository"
+    tier: "low"
+    tier_justification: "Published data for computational chemistry community, fully open"
+    type: "storage_only"
+    storage:
+      active_tb: 2
+      archive_tb: 2
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 1
+
+  - id: "selwick-training"
+    title: "Graduate Student Training Calculations"
+    tier: "low"
+    tier_justification: "Teaching and training, no sensitive data"
+    type: "compute_light"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 2000
+      pattern: "bursty"
+    storage:
+      active_tb: 0.5
+      archive_tb: 0.5
+    retention: "federal_grant_standard"
+    grant_years: 1
+    team_size: 3

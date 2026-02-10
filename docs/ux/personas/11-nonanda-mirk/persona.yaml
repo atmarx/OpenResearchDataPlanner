@@ -1,0 +1,82 @@
+id: "nonanda-mirk"
+name: "Dr. Mirk Nonanda"
+department: "Computer Science"
+title: "Professor"
+specialty: "Operating Systems, compilers, systems programming"
+tech_level: "very_high"
+years_at_institution: 16
+
+archetype: "pipeline_builder"
+vibe: "Builds things from scratch. Has root everywhere. Runs his own build servers. Every student leaves his lab knowing how kernels work."
+frustrations:
+  - "Modern infrastructure is too abstracted. I want to see the metal."
+  - "My students need to understand what's happening, not just click buttons"
+  - "CI/CD pipelines require permissions I shouldn't have to ask for"
+hopes:
+  - "Infrastructure I can actually inspect and understand"
+  - "A tool that doesn't assume I want things hidden from me"
+
+workarounds:
+  - type: "custom_scripts"
+    description: "Runs his own build servers and CI infrastructure"
+  - type: "departmental_it"
+    description: "Has root on several department machines 'for research purposes'"
+
+lab:
+  name: "Nonanda Systems Lab"
+  size: 6
+  composition:
+    postdocs: 1
+    phd_students: 3
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Dr. Nonanda and every student — you don't leave this lab without knowing systems"
+
+projects:
+  - id: "nonanda-kernel"
+    title: "Custom Kernel Development Pipeline"
+    tier: "low"
+    tier_justification: "Open source kernel research, all code public"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 40000
+      pattern: "sustained"
+    storage:
+      active_tb: 3
+      archive_tb: 2
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 3
+
+  - id: "nonanda-os-course"
+    title: "OS Course Infrastructure (CS 450)"
+    tier: "low"
+    tier_justification: "Teaching infrastructure, student VMs, no sensitive data"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 15000
+      pattern: "seasonal"
+    storage:
+      active_tb: 2
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 1
+    team_size: 1
+
+  - id: "nonanda-compiler"
+    title: "Compiler Optimization Research"
+    tier: "medium"
+    tier_justification: "Pre-publication research in competitive field"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 30000
+      pattern: "bursty"
+    storage:
+      active_tb: 4
+      archive_tb: 3
+    retention: "federal_grant_standard"
+    grant_years: 4
+    team_size: 3

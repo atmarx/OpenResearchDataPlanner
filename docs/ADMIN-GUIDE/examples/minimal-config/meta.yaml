@@ -1,0 +1,28 @@
+# =============================================================================
+# MINIMAL CONFIG: meta.yaml
+# =============================================================================
+# This is the minimum required institution configuration.
+# Copy this to config/meta.yaml and customize for your institution.
+# =============================================================================
+
+# Institution identity (REQUIRED)
+institution:
+  name: "Contoso College"         # Full institution name
+  short_name: "Contoso"           # Abbreviated name for UI
+  logo: null                      # Optional: "/images/logo.svg"
+
+# Site configuration (REQUIRED)
+site:
+  title: "Research Data Planner"
+  tagline: "Plan your data infrastructure and budget for grant proposals"
+
+# Contact information (REQUIRED)
+contact:
+  general: "research-it@contoso.edu"        # Primary support email
+  security: "data-security@contoso.edu"     # Security/compliance inquiries
+  consultation_url: "https://contoso.edu/research-it/consult"  # Booking link
+
+# Versioning (REQUIRED for upgrades)
+version: "1.0.0"                  # Your instance version
+schema_version: "1.0"             # OpenResearchDataPlanner schema version
+last_updated: "2024-01-15"        # Last config update date

@@ -1,0 +1,82 @@
+id: "transom-yev"
+name: "Dr. Yev Transom"
+department: "Computer Science"
+title: "Associate Professor"
+specialty: "Machine Learning, GPU clusters, Kubernetes, large language models"
+tech_level: "very_high"
+years_at_institution: 5
+
+archetype: "cluster_breaker"
+vibe: "The one who breaks the cluster. Needs GPUs, spot instances, preemptible compute. Knows more about infrastructure than most IT staff."
+frustrations:
+  - "The cluster doesn't have enough GPUs and everyone's competing for them"
+  - "I can't burst to cloud without going through 3 months of procurement"
+  - "The scavenger queue is great but I need guaranteed compute for deadlines"
+hopes:
+  - "A way to mix scavenger/preemptible compute with on-demand for flexibility"
+  - "Cost transparency so I can make intelligent tradeoffs"
+
+workarounds:
+  - type: "paid_out_of_pocket"
+    description: "Has a personal AWS account for burst compute when deadlines loom"
+  - type: "custom_scripts"
+    description: "Elaborate job scheduling system to maximize scavenger queue usage"
+
+lab:
+  name: "Transom AI Research Lab"
+  size: 8
+  composition:
+    postdocs: 2
+    phd_students: 4
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Everyone — this is a CS lab, they all can debug k8s"
+
+projects:
+  - id: "transom-llm"
+    title: "Large Language Model Training"
+    tier: "medium"
+    tier_justification: "Proprietary training data and model weights"
+    type: "gpu_heavy"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 100000
+      pattern: "bursty"
+    storage:
+      active_tb: 20
+      archive_tb: 15
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 5
+
+  - id: "transom-benchmark"
+    title: "Open Benchmark Leaderboard"
+    tier: "low"
+    tier_justification: "Public benchmarks for reproducibility"
+    type: "compute_moderate"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 15000
+      pattern: "sustained"
+    storage:
+      active_tb: 5
+      archive_tb: 3
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 2
+
+  - id: "transom-industry"
+    title: "Industry Partnership: Recommendation Systems"
+    tier: "medium"
+    tier_justification: "Corporate data under NDA"
+    type: "gpu_heavy"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 60000
+      pattern: "bursty"
+    storage:
+      active_tb: 10
+      archive_tb: 5
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 3

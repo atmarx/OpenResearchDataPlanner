@@ -1,0 +1,74 @@
+id: "belvins-omar"
+name: "Dr. Omar Belvins"
+department: "Psychology"
+title: "Associate Professor"
+specialty: "Large-scale surveys, quantitative methods, R/Stata"
+tech_level: "low"
+years_at_institution: 11
+
+archetype: "stats_specialist"
+vibe: "Statistician who runs massive surveys but isn't compute-focused. R on his laptop, frustrated when analyses take hours. Has FERPA-adjacent student data."
+frustrations:
+  - "My analyses take 6 hours to run and I don't understand why"
+  - "IT keeps telling me to 'use the cluster' but I don't know how"
+  - "I'm a statistician, not a computer scientist"
+hopes:
+  - "Someone to explain in normal words why I might need HPC"
+  - "A way to keep my student data secure without a PhD in security"
+
+workarounds:
+  - type: "personal_cloud"
+    description: "Uses Qualtrics for surveys, stores everything on university OneDrive"
+  - type: "grad_student"
+    description: "Relies on grad students for any technical work beyond R"
+
+lab:
+  name: "Belvins Quantitative Psychology Lab"
+  size: 4
+  composition:
+    postdocs: 0
+    phd_students: 2
+    masters_students: 1
+    undergrads: 1
+  tech_person: "None — 'I'm a statistician, I just need R to work'"
+
+projects:
+  - id: "belvins-survey"
+    title: "Large-Scale Survey Study (N=50,000)"
+    tier: "medium"
+    tier_justification: "Contains some demographic data, needs reasonable protection"
+    type: "compute_light"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 3000
+      pattern: "bursty"
+    storage:
+      active_tb: 1
+      archive_tb: 0.5
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 3
+
+  - id: "belvins-ferpa"
+    title: "Longitudinal Student Outcomes Study"
+    tier: "high"
+    tier_justification: "FERPA-covered student educational records"
+    type: "storage_only"
+    storage:
+      active_tb: 0.5
+      archive_tb: 0.5
+    retention: "ferpa_student"
+    grant_years: 5
+    team_size: 2
+
+  - id: "belvins-meta"
+    title: "Meta-Analysis Archive"
+    tier: "low"
+    tier_justification: "Published effect sizes from literature"
+    type: "storage_only"
+    storage:
+      active_tb: 0.1
+      archive_tb: 0.1
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 1

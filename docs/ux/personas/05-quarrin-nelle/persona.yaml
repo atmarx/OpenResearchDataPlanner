@@ -1,0 +1,78 @@
+id: "quarrin-nelle"
+name: "Dr. Nelle Quarrin"
+department: "Neuroscience"
+title: "Associate Professor"
+specialty: "Brain imaging, fMRI analysis, Alzheimer's biomarker research"
+tech_level: "low"
+years_at_institution: 7
+
+archetype: "overwhelmed"
+vibe: "Clinician-scientist with zero bandwidth. Time-poor, delegates tech to grad students, desperately needs something that just works."
+frustrations:
+  - "I have 10 minutes between clinic and my next meeting. Make it count."
+  - "My grad student who set up our analysis pipeline graduated last year"
+  - "I don't understand why HIPAA makes everything so complicated"
+hopes:
+  - "Something that handles compliance so I don't have to think about it"
+  - "Clear, simple guidance without jargon"
+
+workarounds:
+  - type: "grad_student"
+    description: "Former grad student (now graduated) set up the fMRI analysis pipeline. Nobody fully understands it."
+  - type: "departmental_it"
+    description: "Hospital IT handles HIPAA compliance, but communication is poor"
+
+lab:
+  name: "Quarrin Neuroimaging Lab"
+  size: 5
+  composition:
+    postdocs: 1
+    phd_students: 2
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Desperately needs one — delegates to whoever is available"
+
+projects:
+  - id: "quarrin-alzheimers"
+    title: "Clinical fMRI Study (Alzheimer's Biomarkers)"
+    tier: "high"
+    tier_justification: "HIPAA-covered human subjects data, IRB-approved clinical research"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 20000
+      pattern: "bursty"
+    storage:
+      active_tb: 6
+      archive_tb: 6
+    retention: "irb_human_subjects"
+    grant_years: 4
+    team_size: 4
+
+  - id: "quarrin-methods"
+    title: "Anonymized Imaging Methods Paper"
+    tier: "low"
+    tier_justification: "Fully de-identified data for methods publication"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 8000
+      pattern: "bursty"
+    storage:
+      active_tb: 2
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 2
+
+  - id: "quarrin-protocols"
+    title: "Lab Protocol Documentation"
+    tier: "low"
+    tier_justification: "Internal procedures and documentation, no sensitive data"
+    type: "storage_only"
+    storage:
+      active_tb: 0.2
+      archive_tb: 0.1
+    retention: "federal_grant_standard"
+    grant_years: 1
+    team_size: 1

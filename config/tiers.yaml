@@ -1,0 +1,81 @@
+tiers:
+  - slug: low
+    name: "Low Risk"
+    short_name: "L1"
+    sort_order: 1
+    color: "green"
+    description: |
+      Open science data, publicly available datasets,
+      pre-publication non-sensitive research data.
+    examples:
+      - "Publicly available genomic databases"
+      - "Open source model weights"
+      - "Published datasets being reanalyzed"
+    help_text: |
+      Choose this tier if your data could be made public without
+      any negative consequences. This includes open science projects,
+      replication studies using public data, and method development
+      using synthetic or public datasets.
+    consultation_required: false
+    retention_questions_required: false
+
+  - slug: medium
+    name: "Medium Risk"
+    short_name: "L2"
+    sort_order: 2
+    color: "yellow"
+    description: |
+      Proprietary data, IP-sensitive pre-publication work,
+      data under DUA with standard terms.
+    examples:
+      - "Unpublished research data"
+      - "Licensed commercial datasets"
+      - "Industry collaboration data"
+    help_text: |
+      Choose this tier if your data has IP value or is covered by
+      a Data Use Agreement, but does not contain regulated data
+      (PHI, PII, export-controlled, etc.).
+    consultation_required: false
+    retention_questions_required: false
+
+  - slug: high
+    name: "High Risk"
+    short_name: "L3"
+    sort_order: 3
+    color: "orange"
+    description: |
+      HIPAA, FERPA, IRB-governed human subjects data,
+      export-controlled research (EAR/ITAR).
+    examples:
+      - "Clinical trial data"
+      - "Student educational records"
+      - "Export-controlled defense research"
+    help_text: |
+      Choose this tier if your data is subject to regulatory
+      requirements such as HIPAA, FERPA, or export controls.
+      This tier requires additional retention planning.
+    consultation_required: false
+    retention_questions_required: true
+
+  - slug: restricted
+    name: "Restricted"
+    short_name: "L4"
+    sort_order: 4
+    color: "red"
+    description: |
+      Secure enclaves, bespoke security requirements,
+      DOD/defense contractor work, CUI.
+    examples:
+      - "Classified research"
+      - "Defense contractor projects"
+      - "Controlled Unclassified Information (CUI)"
+    help_text: |
+      This tier requires a dedicated secure enclave with custom
+      security controls. Pricing and services are determined through
+      consultation with the security team.
+    consultation_required: true
+    consultation_message: |
+      Projects at this tier require a consultation with the
+      Research Security team to determine appropriate controls
+      and budget.
+    consultation_contact: "security@northwinds.edu"

@@ -1,0 +1,28 @@
+{
+  "name": "openresearchdataplanner",
+  "description": "Self-service discovery for researchers. Informed requests for support teams.",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build:config && vite",
+    "build": "npm run build:config && vite build",
+    "build:config": "node scripts/build-config.js",
+    "validate:config": "node scripts/build-config.js --validate-only",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.0",
+    "pinia": "^3.0.0",
+    "handlebars": "^4.7.8",
+    "marked": "^17.0.0"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0",
+    "@vitejs/plugin-vue": "^5.2.0",
+    "tailwindcss": "^4.0.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "lucide-vue-next": "^0.469.0",
+    "js-yaml": "^4.1.0"
+  }
+}

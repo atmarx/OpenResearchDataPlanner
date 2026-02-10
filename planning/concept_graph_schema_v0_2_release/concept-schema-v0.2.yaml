@@ -1,0 +1,15 @@
+schema_version: '0.2'
+description: Final frozen schema for Policy-as-Code Concept Graph
+fields:
+  id: stable, machine-friendly identifier
+  name: human-readable concept name
+  summary: one-paragraph overview
+  description: expanded narrative description
+  tags: mapping of domain -> applicability (core | informed-by | tangential)
+  assumptions: explicit preconditions for applicability
+  downstream_impacts: concepts or domains affected by changes here
+  anti_patterns: known failure modes this concept exists to prevent
+  owners: roles responsible for stewardship
+  maturity:
+    level: current | emerging | aspirational
+  notes: optional free-form commentary

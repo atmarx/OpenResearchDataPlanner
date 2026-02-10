@@ -1,0 +1,327 @@
+# config/tier-questionnaire.yaml
+# Decision tree questions to help users determine their data tier
+
+# Introduction shown before questions
+intro:
+  title: "What type of data will you be working with?"
+  description: |
+    Answer a few questions to help us recommend the right security level
+    for your research data. If you're unsure, err on the side of caution -
+    you can always adjust later with our team.
+  skip_option:
+    enabled: true
+    label: "I already know my data tier"
+    link: "/tier-select"
+
+# Questions in order
+questions:
+  - id: human_subjects
+    question: "Does your research involve human subjects?"
+    help_text: "This includes surveys, interviews, medical records, genetic data, or any data collected from people."
+    icon: "users"
+    options:
+      - label: "No"
+        value: false
+        next: government_data
+      - label: "Yes"
+        value: true
+        next: health_data
+
+  - id: health_data
+    question: "Does your data include health or medical information?"
+    help_text: "Medical records, diagnoses, treatments, genetic information linked to individuals, mental health data, substance abuse records."
+    icon: "heart-pulse"
+    options:
+      - label: "No"
+        value: false
+        next: student_data
+      - label: "Yes"
+        value: true
+        sets_tier: L3
+        sets_flags:
+          - hipaa
+          - phi
+        next: identifiable
+
+  - id: identifiable
+    question: "Is the health data identifiable or de-identified?"
+    help_text: "De-identified means all 18 HIPAA identifiers have been removed (names, dates, locations, etc.)"
+    icon: "user-check"
+    learn_more:
+      title: "HIPAA De-identification"
+      content: |
+        The HIPAA Safe Harbor method requires removing these 18 identifiers:
+        1. Names
+        2. Geographic data (smaller than state)
+        3. Dates (except year) related to an individual
+        4. Phone numbers
+        5. Fax numbers
+        6. Email addresses
+        7. Social Security numbers
+        8. Medical record numbers
+        9. Health plan beneficiary numbers
+        10. Account numbers
+        11. Certificate/license numbers
+        12. Vehicle identifiers and serial numbers
+        13. Device identifiers and serial numbers
+        14. Web URLs
+        15. IP addresses
+        16. Biometric identifiers
+        17. Full-face photographs
+        18. Any other unique identifying number or code
+    options:
+      - label: "Fully de-identified (Safe Harbor method)"
+        value: "deidentified"
+        sets_tier: L2
+        clears_flags:
+          - hipaa
+          - phi
+        next: government_data
+      - label: "Limited dataset (some identifiers)"
+        value: "limited"
+        sets_tier: L3
+        next: government_data
+      - label: "Identifiable / not sure"
+        value: "identifiable"
+        sets_tier: L3
+        next: government_data
+
+  - id: student_data
+    question: "Does your data include student education records?"
+    help_text: "Grades, enrollment status, financial aid, disciplinary records, or other data from student information systems."
+    icon: "graduation-cap"
+    options:
+      - label: "No"
+        value: false
+        next: government_data
+      - label: "Yes"
+        value: true
+        sets_tier: L3
+        sets_flags:
+          - ferpa
+        next: government_data
+
+  - id: government_data
+    question: "Is this research funded by or for a government agency?"
+    help_text: "DoD, DoE, NASA, or other federal contracts may have specific data handling requirements."
+    icon: "landmark"
+    options:
+      - label: "No"
+        value: false
+        next: export_control
+      - label: "Yes - standard federal grant (NSF, NIH)"
+        value: "standard_federal"
+        next: export_control
+      - label: "Yes - DoD/defense-related"
+        value: "dod"
+        sets_flags:
+          - cui_possible
+        next: cui_check
+
+  - id: cui_check
+    question: "Does your contract specify CUI (Controlled Unclassified Information)?"
+    help_text: "Check your contract for terms like 'CUI', 'DFARS 252.204-7012', or 'NIST 800-171'."
+    icon: "file-lock"
+    learn_more:
+      title: "What is CUI?"
+      content: |
+        Controlled Unclassified Information (CUI) is government-created or
+        government-owned information that requires safeguarding. Look for:
+
+        - "CUI" marking on documents
+        - Contract clause DFARS 252.204-7012
+        - References to NIST SP 800-171
+        - Terms like "Controlled Technical Information"
+
+        If unsure, contact your contracting officer or our export control office.
+    options:
+      - label: "No / Not sure"
+        value: false
+        next: export_control
+      - label: "Yes"
+        value: true
+        sets_tier: L4
+        sets_flags:
+          - cui
+          - nist_800_171
+        next: complete
+
+  - id: export_control
+    question: "Does your research involve export-controlled technology?"
+    help_text: "ITAR (defense articles), EAR (dual-use technology), or technology that cannot be shared with non-US persons."
+    icon: "globe-lock"
+    learn_more:
+      title: "Export Control Basics"
+      content: |
+        Export control laws restrict sharing certain technology with non-US
+        persons. This applies even to verbal discussions, not just physical
+        exports.
+
+        **ITAR** - International Traffic in Arms Regulations
+        - Covers defense articles and technical data
+        - Very restrictive, US persons only
+
+        **EAR** - Export Administration Regulations
+        - Covers dual-use commercial items
+        - Less restrictive but still requires compliance
+
+        Contact our Export Control office if you're unsure.
+    options:
+      - label: "No / Not sure"
+        value: false
+        next: proprietary_check
+      - label: "Yes - ITAR"
+        value: "itar"
+        sets_tier: L4
+        sets_flags:
+          - itar
+        next: complete
+      - label: "Yes - EAR"
+        value: "ear"
+        sets_tier: L4
+        sets_flags:
+          - ear
+        next: complete
+
+  - id: proprietary_check
+    question: "Does your research involve proprietary or confidential data?"
+    help_text: "Industry partnerships with NDAs, proprietary algorithms, trade secrets, or data you've agreed to keep confidential."
+    icon: "lock"
+    options:
+      - label: "No - publicly shareable"
+        value: false
+        sets_tier: L1
+        next: complete
+      - label: "Yes - pre-publication or NDA-protected"
+        value: true
+        sets_tier: L2
+        next: complete
+
+  - id: complete
+    type: "summary"
+
+# Summary page configuration
+summary:
+  title: "Your Recommended Data Tier"
+  show_flags: true
+  show_reasoning: true
+
+  # Call-to-action based on tier
+  cta:
+    L1:
+      title: "You're ready to go!"
+      message: "Self-service access available for low-tier data."
+      action: "Continue to Service Selection"
+    L2:
+      title: "You're ready to go!"
+      message: "Self-service access available for medium-tier data."
+      action: "Continue to Service Selection"
+    L3:
+      title: "Consultation recommended"
+      message: "High-tier data requires verification. We'll walk you through it."
+      action: "Continue to Service Selection"
+      secondary_action: "Schedule Consultation First"
+    L4:
+      title: "Consultation required"
+      message: "Restricted data requires export control review before proceeding."
+      action: "Schedule Consultation"
+      secondary_action: "Continue Planning (Preliminary)"
+
+# Discipline-specific examples to help users understand
+examples_by_discipline:
+  biomedical:
+    name: "Biomedical / Life Sciences"
+    icon: "microscope"
+    examples:
+      L1:
+        - "Published protein structures from PDB"
+        - "Public genomics datasets from NCBI"
+        - "Anonymized cell line data"
+      L2:
+        - "Your lab's unpublished experimental results"
+        - "Pre-publication manuscripts and figures"
+        - "Proprietary analysis pipelines"
+      L3:
+        - "Patient samples with clinical data"
+        - "Genetic data linked to individuals"
+        - "Clinical trial data"
+
+  engineering:
+    name: "Engineering"
+    icon: "cog"
+    examples:
+      L1:
+        - "Published simulation results"
+        - "Open-source CAD models"
+        - "Public benchmark datasets"
+      L2:
+        - "Proprietary designs before patent filing"
+        - "Industry collaboration data under NDA"
+        - "Unpublished experimental results"
+      L4:
+        - "Defense contractor research (ITAR)"
+        - "CUI-marked government data"
+        - "Export-controlled technology"
+
+  social_science:
+    name: "Social Sciences"
+    icon: "users"
+    examples:
+      L1:
+        - "Census data and public surveys"
+        - "Published interview transcripts"
+        - "Aggregated demographic data"
+      L2:
+        - "Ongoing survey responses (anonymized)"
+        - "Interview recordings (consent obtained)"
+        - "Unpublished qualitative data"
+      L3:
+        - "Student educational records (FERPA)"
+        - "Identifiable interview data"
+        - "Sensitive survey responses"
+
+  humanities:
+    name: "Humanities & Arts"
+    icon: "book"
+    examples:
+      L1:
+        - "Public domain texts and images"
+        - "Published research materials"
+        - "Open-access archives"
+      L2:
+        - "Unpublished manuscripts"
+        - "Licensed digital collections"
+        - "Pre-publication analyses"
+
+  physical_science:
+    name: "Physical Sciences"
+    icon: "atom"
+    examples:
+      L1:
+        - "Published simulation data"
+        - "Public astronomy observations"
+        - "Open datasets from collaborations"
+      L2:
+        - "Unpublished experimental results"
+        - "Proprietary instrument data"
+        - "Pre-publication findings"
+
+# Allow users to override the recommendation
+override:
+  enabled: true
+  confirmation_required: true
+  confirmation_text: |
+    You're selecting a different tier than our recommendation.
+    Please confirm you understand the implications:
+
+    - **Selecting a lower tier** may mean your data isn't adequately protected
+    - **Selecting a higher tier** will require additional approval steps
+
+    If you're unsure, please contact Research Computing for guidance.
+
+# Quick-select option for experienced users
+quick_select:
+  enabled: true
+  title: "I know my data tier"
+  description: "Skip the questionnaire if you already know your classification"
+  show_examples: true

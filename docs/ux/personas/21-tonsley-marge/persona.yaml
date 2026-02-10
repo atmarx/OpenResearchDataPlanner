@@ -1,0 +1,70 @@
+id: "tonsley-marge"
+name: "Dr. Marge Tonsley"
+department: "History"
+title: "Professor"
+specialty: "Medieval history, manuscript studies, archival research"
+tech_level: "very_low"
+years_at_institution: 25
+
+archetype: "technophobe"
+vibe: "Distinguished medieval historian. Truly uncomfortable with technology. 'My graduate student used to handle this.' Tests accessibility and plain language at the extreme."
+frustrations:
+  - "Every new system assumes I know things I don't"
+  - "My graduate student who handled technology graduated three years ago"
+  - "I just want to store my manuscript images somewhere safe"
+hopes:
+  - "Something that doesn't make me feel stupid"
+  - "Plain words, not acronyms"
+
+workarounds:
+  - type: "grad_student"
+    description: "Former grad student (now graduated) handled all tech. Nobody has replaced them."
+  - type: "personal_cloud"
+    description: "Manuscripts stored on personal Google Drive, unsure if appropriate"
+
+lab:
+  name: "Tonsley Medieval Studies"
+  size: 3
+  composition:
+    postdocs: 0
+    phd_students: 2
+    masters_students: 0
+    undergrads: 1
+  tech_person: "None — truly uncomfortable with technology"
+
+projects:
+  - id: "tonsley-manuscripts"
+    title: "Medieval Manuscript Digitization"
+    tier: "low"
+    tier_justification: "Public domain historical materials"
+    type: "storage_only"
+    storage:
+      active_tb: 2
+      archive_tb: 2
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 2
+
+  - id: "tonsley-uk"
+    title: "Monastic Archive Collaboration (UK)"
+    tier: "medium"
+    tier_justification: "Partner institution has specific data sharing requirements"
+    type: "storage_only"
+    storage:
+      active_tb: 1
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 1
+
+  - id: "tonsley-thesis"
+    title: "Graduate Thesis Document Collection"
+    tier: "low"
+    tier_justification: "Student work, historical documents"
+    type: "storage_only"
+    storage:
+      active_tb: 0.3
+      archive_tb: 0.3
+    retention: "federal_grant_standard"
+    grant_years: 5
+    team_size: 1

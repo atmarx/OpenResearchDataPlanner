@@ -1,0 +1,23 @@
+schema_version: '0.2'
+id: project_lifecycle_governance
+name: Project Lifecycle Governance
+summary: Explicit management of project creation, operation, and closure.
+description: Projects are expected to be reviewed, renewed, or retired based on defined
+  lifecycle stages.
+tags:
+  operations: core
+  governance: core
+  billing: informed-by
+assumptions:
+- projects_have_funding_or_sponsorship
+downstream_impacts:
+- resource_cleanup
+- cost_controls
+anti_patterns:
+- abandoned_projects
+owners:
+- role: research_computing
+maturity:
+  level: current
+notes:
+- Lifecycle thinking is portable across institutions.

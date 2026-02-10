@@ -1,0 +1,21 @@
+schema_version: '0.2'
+id: platform_agnostic_design
+name: Platform-Agnostic Design
+summary: Concepts and workflows designed independently of specific vendors.
+description: Avoids coupling institutional intent to a single technology provider.
+tags:
+  architecture: core
+  governance: informed-by
+assumptions:
+- multiple_platforms_exist
+downstream_impacts:
+- portability
+- vendor_negotiation
+anti_patterns:
+- vendor_specific_governance
+owners:
+- role: architecture
+maturity:
+  level: current
+notes:
+- Critical for long-term sustainability.

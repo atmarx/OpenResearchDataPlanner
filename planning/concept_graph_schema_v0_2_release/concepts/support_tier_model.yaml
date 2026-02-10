@@ -1,0 +1,21 @@
+schema_version: '0.2'
+id: support_tier_model
+name: Support Tier Model
+summary: Layered support structure spanning local, central, and specialist teams.
+description: Different support layers collaborate rather than duplicate effort.
+tags:
+  organizational-design: core
+  operations: core
+assumptions:
+- multiple_support_roles_exist
+downstream_impacts:
+- staffing_models
+- escalation_paths
+anti_patterns:
+- single_team_supports_everything
+owners:
+- role: it_leadership
+maturity:
+  level: emerging
+notes:
+- Terminology may differ by institution, concept does not.

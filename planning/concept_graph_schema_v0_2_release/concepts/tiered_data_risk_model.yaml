@@ -1,0 +1,23 @@
+schema_version: '0.2'
+id: tiered_data_risk_model
+name: Tiered Data Risk Model
+summary: Classification of research data by sensitivity to drive proportional controls.
+description: Data are categorized into risk tiers that determine required safeguards,
+  access controls, and hosting constraints.
+tags:
+  security: core
+  governance: core
+  research-computing: core
+assumptions:
+- institution_defines_data_sensitivity_levels
+downstream_impacts:
+- hosting_decisions
+- access_controls
+anti_patterns:
+- one_size_fits_all_security
+owners:
+- role: information_security
+maturity:
+  level: current
+notes:
+- Widely applicable across research institutions.

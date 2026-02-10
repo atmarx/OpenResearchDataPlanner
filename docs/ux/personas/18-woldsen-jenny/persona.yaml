@@ -1,0 +1,78 @@
+id: "woldsen-jenny"
+name: "Dr. Jenny Woldsen"
+department: "Business School"
+title: "Associate Professor"
+specialty: "Fiscal modeling, Monte Carlo simulation, management strategy"
+tech_level: "low"
+years_at_institution: 10
+
+archetype: "ai_curious"
+vibe: "Heard AI is important for business. Wants to explore but doesn't know where to start. Relies on Excel and doesn't understand why that's limiting."
+frustrations:
+  - "Everyone talks about AI but nobody explains what it actually does"
+  - "I can't figure out why my Excel macros don't scale"
+  - "GPU? CPU? What's the difference and why does it matter?"
+hopes:
+  - "Someone to explain AI in business-relevant terms"
+  - "Understanding whether I need 'the cloud' or not"
+
+workarounds:
+  - type: "personal_cloud"
+    description: "Uses Excel Online and university OneDrive for everything"
+  - type: "grad_student"
+    description: "MBA students sometimes help with technical aspects"
+
+lab:
+  name: "Woldsen Strategy Lab"
+  size: 4
+  composition:
+    postdocs: 0
+    phd_students: 2
+    masters_students: 1
+    undergrads: 1
+  tech_person: "None — 'Can someone explain GPU vs CPU?'"
+
+projects:
+  - id: "woldsen-simulation"
+    title: "Market Simulation Monte Carlo"
+    tier: "medium"
+    tier_justification: "Proprietary simulation methodology"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 8000
+      pattern: "bursty"
+    storage:
+      active_tb: 1
+      archive_tb: 0.5
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 2
+
+  - id: "woldsen-teaching"
+    title: "Teaching Case Archive"
+    tier: "low"
+    tier_justification: "Course materials, no sensitivity"
+    type: "storage_only"
+    storage:
+      active_tb: 0.2
+      archive_tb: 0.2
+    retention: "federal_grant_standard"
+    grant_years: 1
+    team_size: 1
+
+  - id: "woldsen-ai"
+    title: "AI Strategy Research (new!)"
+    tier: "medium"
+    tier_justification: "Exploring LLM applications, proprietary methodology"
+    type: "compute_moderate"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 5000
+      pattern: "bursty"
+    storage:
+      active_tb: 0.5
+      archive_tb: 0.3
+    retention: "federal_grant_standard"
+    grant_years: 1
+    team_size: 2

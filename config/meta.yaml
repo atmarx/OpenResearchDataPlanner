@@ -1,0 +1,19 @@
+# Site-wide metadata
+institution:
+  name: "Northwinds University"
+  short_name: "Northwinds"
+  logo: null  # Optional: "/images/logo.svg"
+
+site:
+  title: "Research Data Planner"
+  tagline: "Self-service discovery for researchers. Informed requests for support teams."
+
+contact:
+  general: "research-computing@northwinds.edu"
+  security: "data-security@northwinds.edu"
+  consultation_url: "https://northwinds.edu/research-computing/consult"
+
+# Template version (included in exports for tracking)
+version: "1.0.0"
+schema_version: "1.0"             # Schema version for upgrade compatibility
+last_updated: "2026-02-04"

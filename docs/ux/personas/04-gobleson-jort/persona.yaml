@@ -1,0 +1,78 @@
+id: "gobleson-jort"
+name: "Dr. Jort Gobleson"
+department: "Astronomy"
+title: "Professor"
+specialty: "Telescope surveys, transient detection, image processing pipelines"
+tech_level: "medium"
+years_at_institution: 15
+
+archetype: "legacy"
+vibe: "Night owl who's dealt with petabytes since before 'big data' was a thing. Has 'solved' storage with external drives. Knows this is bad but hasn't had time to fix it."
+frustrations:
+  - "I have 8 external drives in my office and one failed last month"
+  - "There's data from 2003 that I can't access because the format is obsolete"
+  - "Every time I ask IT for help, they say 'submit a ticket' and nothing happens"
+hopes:
+  - "A real solution for archiving decades of observations"
+  - "Someone to finally take data storage seriously"
+
+workarounds:
+  - type: "external_drives"
+    description: "8 external drives in his office, one failed recently causing minor data loss"
+  - type: "closet_nas"
+    description: "Has a consumer NAS that his former grad student set up, nobody knows the password"
+
+lab:
+  name: "Gobleson Transient Survey Lab"
+  size: 4
+  composition:
+    postdocs: 0
+    phd_students: 2
+    masters_students: 1
+    undergrads: 1
+  tech_person: "None — 'I've always just figured it out'"
+
+projects:
+  - id: "gobleson-transients"
+    title: "Transient Survey Pipeline"
+    tier: "medium"
+    tier_justification: "Unpublished observations, competitive field with scoop risk"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 25000
+      pattern: "sustained"
+    storage:
+      active_tb: 12
+      archive_tb: 8
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 3
+
+  - id: "gobleson-legacy-archive"
+    title: "Legacy Observation Archive (1998-2015)"
+    tier: "low"
+    tier_justification: "Historical data, already published, no sensitivity concerns"
+    type: "storage_only"
+    storage:
+      active_tb: 30
+      archive_tb: 30
+    retention: "federal_grant_standard"
+    grant_years: 10
+    team_size: 1
+
+  - id: "gobleson-citizen-science"
+    title: "Citizen Science Image Classification"
+    tier: "low"
+    tier_justification: "Public engagement project, all data meant to be shared"
+    type: "compute_light"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 3000
+      pattern: "bursty"
+    storage:
+      active_tb: 2
+      archive_tb: 1
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 2

@@ -1,0 +1,2517 @@
+services:
+  # =============================================================================
+  # HPC CLUSTER (SLURM) - Low/Medium only
+  # =============================================================================
+
+  - slug: hpc-free
+    name: "HPC Free Tier"
+    category: compute
+    description: "Free access to HPC with limited CPU and GPU resources"
+    long_description: |
+      Free tier access to our SLURM-managed HPC cluster with resource limits.
+      Perfect for learning, prototyping, and small-scale computations.
+      Includes access to CPU nodes and limited V100 GPU time.
+
+      **Included with free tier:**
+      - Up to 1,000 CPU-hours/month
+      - Up to 100 GPU-hours/month (V100, preemptible)
+      - 100GB BeeGFS scratch space (ephemeral)
+
+      Jobs may be preempted by paid users. Best for fault-tolerant workflows.
+    documentation_url: "https://docs.northwinds.edu/hpc"
+
+    comparison_features:
+      gpu_available:
+        value: partial
+        detail: "100 GPU-hours/month (preemptible V100)"
+      batch_jobs:
+        value: full
+      interactive:
+        value: partial
+        detail: "Interactive sessions via srun"
+      auto_scaling:
+        value: none
+        detail: "Fixed capacity; queue-based scheduling"
+      cost_predictable:
+        value: full
+        detail: "Free with resource limits"
+      beginner_friendly:
+        value: partial
+        detail: "Requires SLURM knowledge; training available"
+      high_tier_data:
+        value: none
+        detail: "Low/Medium only"
+      free_tier:
+        value: full
+        detail: "No cost, resource-limited"
+
+    cost_model:
+      type: unit
+      unit: "month"
+      unit_label: "Month"
+      price: 0.00
+      billing_period: month
+      note: "Free tier with resource limits. Upgrade to paid tiers for guaranteed resources."
+
+    subsidies: []
+    archive_option: null
+
+    recommended_with:
+      - service: hpc-storage
+        reason: "Persistent storage required for data that survives job completion"
+
+    estimation:
+      prompt: "How many months do you need free tier access?"
+      default_value: 12
+      min_value: 1
+      max_value: 60
+      step: 1
+      presets:
+        - label: "One year"
+          value: 12
+          description: "Standard grant year"
+        - label: "Full grant"
+          value: 36
+          description: "Three-year grant period"
+
+  - slug: hpc-compute
+    name: "HPC Compute (CPU)"
+    category: compute
+    description: "CPU compute on SLURM cluster for batch workloads"
+    long_description: |
+      CPU-focused compute on our SLURM-managed HPC cluster. Suitable for
+      genomics pipelines, data processing, simulations, and parallel workloads.
+
+      **Resources:**
+      - Multi-core CPU nodes (up to 128 cores per node)
+      - High-memory nodes available (up to 1TB RAM)
+      - 100TB BeeGFS scratch (fast, ephemeral - included free)
+      - InfiniBand interconnect for MPI jobs
+
+      Scratch storage on BeeGFS is free but ephemeral - data is purged regularly.
+      Use HPC Storage (Isilon) for persistent data.
+    documentation_url: "https://docs.northwinds.edu/hpc"
+
+    comparison_features:
+      gpu_available:
+        value: none
+        detail: "CPU-only; see HPC GPU for V100 access"
+      batch_jobs:
+        value: full
+      interactive:
+        value: partial
+        detail: "Interactive sessions via srun; 4-hour limit"
+      auto_scaling:
+        value: none
+        detail: "Fixed capacity; queue-based scheduling"
+      cost_predictable:
+        value: full
+        detail: "Tiered per-SU pricing"
+      beginner_friendly:
+        value: partial
+        detail: "Requires SLURM knowledge; training available"
+      high_tier_data:
+        value: none
+        detail: "Low/Medium only; use cloud for High tier"
+      free_tier:
+        value: none
+        detail: "See HPC Free Tier for no-cost option"
+
+    cost_model:
+      type: tiered
+      unit: "SU"
+      unit_label: "Service Unit"
+      unit_description: "1 SU = 1 CPU-core-hour"
+      tiers:
+        - up_to: 10000
+          price: 0.08
+          label: "Standard"
+        - up_to: 100000
+          price: 0.06
+          label: "Volume"
+        - up_to: null
+          price: 0.04
+          label: "High Volume"
+
+    subsidies: []
+    archive_option: null
+
+    recommended_with:
+      - service: hpc-storage
+        reason: "Persistent storage required - BeeGFS scratch is ephemeral"
+
+    estimation:
+      prompt: "How many CPU-core-hours do you expect per month?"
+      default_value: 10000
+      min_value: 1000
+      max_value: 1000000
+      step: 1000
+      presets:
+        - label: "Light"
+          value: 5000
+          description: "Small jobs, occasional use"
+        - label: "Moderate"
+          value: 25000
+          description: "Regular multi-node jobs"
+        - label: "Heavy"
+          value: 100000
+          description: "Continuous large-scale workloads"
+
+  - slug: hpc-gpu
+    name: "HPC GPU (V100)"
+    category: compute
+    description: "V100 GPU compute for simulation, FEA, and modest ML workloads"
+    long_description: |
+      GPU compute on our SLURM-managed HPC cluster featuring NVIDIA V100 GPUs.
+      Optimized for simulation workloads: FEA, CFD, molecular dynamics.
+
+      **Hardware:**
+      - NVIDIA V100 GPUs (2 per node, 32GB HBM2 each)
+      - CUDA, OpenCL, and vendor-optimized libraries
+      - 100TB BeeGFS scratch (fast, ephemeral - included free)
+
+      V100s are excellent for simulation but dated for heavy ML/AI training.
+      For cutting-edge ML, consider the K8s cluster (H200/GH200/A100) or cloud GPUs.
+    documentation_url: "https://docs.northwinds.edu/hpc"
+
+    comparison_features:
+      gpu_available:
+        value: full
+        detail: "NVIDIA V100 GPUs (32GB HBM2)"
+      batch_jobs:
+        value: full
+      interactive:
+        value: partial
+        detail: "Interactive GPU sessions; 4-hour limit"
+      auto_scaling:
+        value: none
+        detail: "Fixed capacity; queue-based scheduling"
+      cost_predictable:
+        value: full
+        detail: "Tiered per-GPU-hour pricing"
+      beginner_friendly:
+        value: partial
+        detail: "Requires SLURM + CUDA knowledge"
+      high_tier_data:
+        value: none
+        detail: "Low/Medium only"
+      free_tier:
+        value: none
+        detail: "See HPC Free Tier for limited GPU access"
+
+    cost_model:
+      type: tiered
+      unit: "GPU-hour"
+      unit_label: "GPU Hour"
+      unit_description: "One hour of V100 GPU compute"
+      tiers:
+        - up_to: 500
+          price: 0.35
+          label: "Standard"
+        - up_to: 2000
+          price: 0.28
+          label: "Volume"
+        - up_to: null
+          price: 0.20
+          label: "Heavy Use"
+
+    subsidies: []
+    archive_option: null
+
+    recommended_with:
+      - service: hpc-storage
+        reason: "Persistent storage required - BeeGFS scratch is ephemeral"
+
+    estimation:
+      prompt: "How many GPU-hours per month do you estimate?"
+      default_value: 200
+      min_value: 50
+      max_value: 5000
+      step: 50
+      presets:
+        - label: "Light (prototyping)"
+          value: 100
+          description: "Testing and development"
+        - label: "Moderate (production)"
+          value: 500
+          description: "Regular simulation workloads"
+        - label: "Heavy (large-scale)"
+          value: 2000
+          description: "Complex multi-physics simulations"
+
+  - slug: hpc-storage
+    name: "HPC Storage (Isilon)"
+    category: storage
+    description: "Persistent storage for HPC workloads (500TB Isilon array)"
+    long_description: |
+      Persistent storage on our Isilon array, designed for HPC workflows.
+      Required for any data that needs to survive beyond job completion.
+
+      **Features:**
+      - 500TB total capacity
+      - Mounted on all HPC compute nodes
+      - Daily snapshots, 30-day retention
+      - Accessible via SCP/SFTP from campus
+
+      Note: BeeGFS scratch (100TB) is included free with HPC compute but is
+      ephemeral. Use Isilon for data you need to keep.
+    documentation_url: "https://docs.northwinds.edu/hpc-storage"
+
+    comparison_features:
+      hpc_mounted:
+        value: full
+        detail: "Mounted on all HPC compute nodes"
+      high_throughput:
+        value: full
+        detail: "Optimized for HPC I/O patterns"
+      snapshots:
+        value: full
+        detail: "Daily snapshots, 30-day retention"
+      collaboration:
+        value: partial
+        detail: "Unix group-based access control"
+      external_sharing:
+        value: partial
+        detail: "Via SCP/SFTP; no direct external sharing"
+      large_files:
+        value: full
+        detail: "No file size limits"
+      high_tier_data:
+        value: none
+        detail: "Low/Medium only"
+      free_allocation:
+        value: partial
+        detail: "100GB free with HPC compute allocation"
+
+    cost_model:
+      type: unit
+      unit: "TB"
+      unit_label: "Terabyte"
+      price: 4.00
+      billing_period: month
+
+    subsidies:
+      - slug: base-hpc-allocation
+        name: "Base HPC Allocation"
+        description: "First 100GB included with any HPC compute allocation"
+        condition: "Requires active HPC compute allocation"
+        discount_type: free_units
+        discount_value: 0.1
+        auto_apply: true
+
+    archive_option:
+      service_slug: aws-storage-archive
+      description: |
+        At grant end, data can be migrated to cloud archive storage
+        for long-term retention at reduced cost.
+
+    estimation:
+      prompt: "How much persistent HPC storage do you need?"
+      default_value: 5
+      min_value: 0.5
+      max_value: 200
+      step: 1
+      unit_display: "TB"
+      presets:
+        - label: "Small project"
+          value: 2
+          description: "Code, configs, small datasets"
+        - label: "Medium project"
+          value: 20
+          description: "Moderate datasets, simulation outputs"
+        - label: "Data-intensive"
+          value: 100
+          description: "Large-scale simulations, genomics"
+
+  # =============================================================================
+  # KUBERNETES CLUSTER - Low/Medium only (Beta)
+  # =============================================================================
+
+  - slug: k8s-cluster
+    name: "Kubernetes Cluster (Beta)"
+    category: compute
+    description: "GPU-accelerated Kubernetes with H200, GH200, and A100 nodes"
+    long_description: |
+      Our Kubernetes cluster provides container orchestration for GPU-accelerated
+      research workloads including ML/AI training, inference, and HPC applications.
+
+      **Hardware:**
+      - 2x 8xH200 servers (16 H200 GPUs)
+      - 2x GH200 Grace Hopper Superchip servers
+      - 1x 8xA100 server (8 A100 GPUs)
+      - 1PB high-speed NVMe fabric storage
+      - 400GbE interconnects
+
+      Each project receives a dedicated namespace with custom CRDs for workload
+      management. Currently in beta with free access for qualifying projects.
+      Applicants should have experience with Helm charts or containerized workflows.
+    documentation_url: "https://docs.northwinds.edu/k8s"
+
+    comparison_features:
+      gpu_available:
+        value: full
+        detail: "H200, GH200, A100 GPUs - cutting edge"
+      batch_jobs:
+        value: full
+        detail: "Kubernetes Jobs and CronJobs"
+      interactive:
+        value: partial
+        detail: "Via JupyterHub or kubectl exec"
+      auto_scaling:
+        value: full
+        detail: "Horizontal pod autoscaling"
+      cost_predictable:
+        value: partial
+        detail: "Free during beta; future pricing TBD"
+      beginner_friendly:
+        value: none
+        detail: "Requires Helm/container expertise"
+      high_tier_data:
+        value: none
+        detail: "Low/Medium only"
+      free_tier:
+        value: full
+        detail: "Free during beta period"
+
+    cost_model:
+      type: unit
+      unit: "namespace-month"
+      unit_label: "Namespace Month"
+      price: 0.00
+      billing_period: month
+      note: |
+        Currently free during beta period. Future pricing TBD based on
+        resource consumption (CPU, memory, storage).
+
+    subsidies:
+      - slug: k8s-beta
+        name: "Beta Program"
+        description: "Free access during beta period"
+        condition: null
+        discount_type: percent
+        discount_value: 100
+        auto_apply: true
+
+    acknowledgment:
+      required: true
+      title: "Kubernetes Beta Program Requirements"
+      message: |
+        The Kubernetes cluster is in beta and requires application approval.
+        Apply at k8s-beta@northwinds.edu with your use case and experience.
+      items:
+        - "You must have experience with containerized applications"
+        - "Helm chart knowledge required (or willingness to learn with support)"
+        - "Access is by application only - not a general-use resource"
+        - "Beta services may have downtime for maintenance"
+
+    recommended_with:
+      - service: globus-storage
+        reason: "5PB iRODS storage launching alongside K8s cluster"
+
+    archive_option: null
+
+    estimation:
+      prompt: "How many namespaces do you need?"
+      default_value: 1
+      min_value: 1
+      max_value: 5
+      step: 1
+      presets:
+        - label: "Single application"
+          value: 1
+          description: "One namespace for your workload"
+        - label: "Dev + Prod"
+          value: 2
+          description: "Separate namespaces for development and production"
+
+  # =============================================================================
+  # GLOBUS & iRODS STORAGE - Low/Medium only
+  # =============================================================================
+
+  - slug: globus-transfer
+    name: "Globus Data Transfer"
+    category: storage
+    description: "High-speed data transfer service via Globus"
+    long_description: |
+      Globus provides reliable, high-performance data transfer for research data.
+      Transfer data between collaborating institutions, cloud providers, and
+      local storage systems. Includes automated transfer scheduling, integrity
+      verification, and detailed transfer logging.
+
+      Transfers are free - this service is for tracking transfer volume estimates.
+    documentation_url: "https://docs.northwinds.edu/globus"
+
+    comparison_features:
+      hpc_mounted:
+        value: none
+        detail: "Transfer service only; see Globus Storage"
+      high_throughput:
+        value: full
+        detail: "GridFTP protocol; parallel transfers"
+      snapshots:
+        value: none
+        detail: "Transfer service only; no storage"
+      collaboration:
+        value: full
+        detail: "Share with any Globus user"
+      external_sharing:
+        value: full
+        detail: "Transfer to/from any Globus endpoint"
+      large_files:
+        value: full
+        detail: "No file size limits; auto-retry"
+      high_tier_data:
+        value: none
+        detail: "Low/Medium only"
+      free_allocation:
+        value: full
+        detail: "Unlimited transfers at no cost"
+
+    cost_model:
+      type: unit
+      unit: "TB transferred"
+      unit_label: "Terabyte Transferred"
+      price: 0.00
+      billing_period: month
+      note: "Globus transfers are provided at no cost."
+
+    subsidies: []
+    archive_option: null
+
+    estimation:
+      prompt: "How much data do you expect to transfer per month?"
+      default_value: 5
+      min_value: 0.1
+      max_value: 500
+      step: 1
+      unit_display: "TB"
+      presets:
+        - label: "Small transfers"
+          value: 1
+          description: "Occasional file sharing"
+        - label: "Regular collaboration"
+          value: 10
+          description: "Ongoing data exchange"
+        - label: "Large-scale ingest"
+          value: 100
+          description: "Instrument data, bulk migration"
+
+  - slug: globus-storage
+    name: "Globus-Connected Storage (iRODS)"
+    category: storage
+    description: "5PB iRODS-managed storage with Globus connectivity"
+    long_description: |
+      High-capacity research storage on our 5PB iRODS-managed array with
+      native Globus connectivity. Ideal for large-scale data sharing,
+      multi-institutional collaborations, and data-intensive research.
+
+      **Features:**
+      - 5PB total capacity
+      - Globus endpoint for high-speed transfers
+      - iRODS metadata management and policy engine
+      - Accessible from K8s cluster
+      - Data integrity verification
+
+      Launching alongside the K8s cluster for integrated ML/AI workflows.
+    documentation_url: "https://docs.northwinds.edu/globus-storage"
+
+    comparison_features:
+      hpc_mounted:
+        value: partial
+        detail: "Accessible from K8s cluster"
+      high_throughput:
+        value: full
+        detail: "Globus + 400GbE connectivity"
+      snapshots:
+        value: partial
+        detail: "iRODS replication; no versioning"
+      collaboration:
+        value: full
+        detail: "iRODS permissions; Globus sharing"
+      external_sharing:
+        value: full
+        detail: "Globus endpoint for external transfers"
+      large_files:
+        value: full
+        detail: "5PB capacity; no file size limits"
+      high_tier_data:
+        value: none
+        detail: "Low/Medium only"
+      free_allocation:
+        value: partial
+        detail: "500GB free per project"
+
+    cost_model:
+      type: unit
+      unit: "TB"
+      unit_label: "Terabyte"
+      price: 3.50
+      billing_period: month
+      note: "Includes Globus transfers at no additional cost."
+
+    subsidies:
+      - slug: base-globus-allocation
+        name: "Base Allocation"
+        description: "First 500GB included per project"
+        condition: null
+        discount_type: free_units
+        discount_value: 0.5
+        auto_apply: true
+
+    archive_option:
+      service_slug: aws-storage-archive
+      description: |
+        At grant end, data can be migrated to cloud archive storage
+        for long-term retention.
+
+    estimation:
+      prompt: "How much Globus-connected storage do you need?"
+      default_value: 10
+      min_value: 1
+      max_value: 1000
+      step: 5
+      unit_display: "TB"
+      presets:
+        - label: "Small project"
+          value: 5
+          description: "Moderate datasets, collaboration"
+        - label: "Data-intensive"
+          value: 50
+          description: "Large datasets, multi-site sharing"
+        - label: "Large-scale"
+          value: 200
+          description: "Major data generation or aggregation"
+
+  # =============================================================================
+  # AWS CLOUD SERVICES
+  # =============================================================================
+
+  - slug: aws-compute-small
+    name: "AWS Compute - Small"
+    category: compute
+    description: "Small cloud VMs (~2 vCPU, 8GB RAM)"
+    long_description: |
+      Small-tier AWS compute for lightweight workloads. You control your own
+      AWS resource group with full transparency on usage and costs.
+
+      **Typical instances:**
+      - t3.large, m5.large, or similar
+      - ~2 vCPU, 8GB RAM
+      - General purpose workloads
+
+      Pass-through pricing with no markup. You're responsible for actual usage.
+      If you budget for small but spin up large instances, costs will differ.
+    documentation_url: "https://docs.northwinds.edu/aws"
+
+    comparison_features:
+      gpu_available:
+        value: none
+        detail: "See AWS Large for GPU instances"
+      batch_jobs:
+        value: partial
+        detail: "Via AWS Batch or custom scheduling"
+      interactive:
+        value: full
+        detail: "SSH, SSM, or web console access"
+      auto_scaling:
+        value: full
+        detail: "Auto Scaling Groups available"
+      cost_predictable:
+        value: partial
+        detail: "Usage-based; varies with activity"
+      beginner_friendly:
+        value: partial
+        detail: "AWS experience helpful"
+      high_tier_data:
+        value: full
+        detail: "With proper security config"
+      free_tier:
+        value: none
+        detail: "Pay for what you use"
+
+    cost_model:
+      type: unit
+      unit: "USD"
+      unit_label: "Dollars"
+      price: 1.00
+      billing_period: month
+      note: "Pass-through AWS pricing. Estimate ~$75/month for always-on small instance."
+
+    subsidies:
+      - slug: aws-credits
+        name: "AWS Research Credits"
+        description: "Apply for AWS research credits (competitive)"
+        condition: "Apply at least 3 months before grant start"
+        discount_type: percent
+        discount_value: 50
+        auto_apply: false
+
+    archive_option: null
+
+    estimation:
+      prompt: "Estimated monthly AWS spend for small compute?"
+      default_value: 75
+      min_value: 25
+      max_value: 500
+      step: 25
+      unit_display: "$"
+      presets:
+        - label: "Part-time use"
+          value: 50
+          description: "Occasional workloads, ~50% utilization"
+        - label: "Always-on"
+          value: 75
+          description: "Continuous small instance"
+        - label: "Multiple instances"
+          value: 200
+          description: "Several small instances"
+
+  - slug: aws-compute-medium
+    name: "AWS Compute - Medium"
+    category: compute
+    description: "Medium cloud VMs (~8 vCPU, 32GB RAM)"
+    long_description: |
+      Medium-tier AWS compute for standard workloads. You control your own
+      AWS resource group with full transparency on usage and costs.
+
+      **Typical instances:**
+      - m5.2xlarge, r5.2xlarge, c5.2xlarge
+      - ~8 vCPU, 32GB RAM
+      - Analysis, development, moderate compute
+
+      Pass-through pricing with no markup.
+    documentation_url: "https://docs.northwinds.edu/aws"
+
+    comparison_features:
+      gpu_available:
+        value: none
+        detail: "See AWS Large for GPU instances"
+      batch_jobs:
+        value: partial
+        detail: "Via AWS Batch or custom scheduling"
+      interactive:
+        value: full
+        detail: "SSH, SSM, or web console access"
+      auto_scaling:
+        value: full
+        detail: "Auto Scaling Groups available"
+      cost_predictable:
+        value: partial
+        detail: "Usage-based; varies with activity"
+      beginner_friendly:
+        value: partial
+        detail: "AWS experience helpful"
+      high_tier_data:
+        value: full
+        detail: "With proper security config"
+      free_tier:
+        value: none
+        detail: "Pay for what you use"
+
+    cost_model:
+      type: unit
+      unit: "USD"
+      unit_label: "Dollars"
+      price: 1.00
+      billing_period: month
+      note: "Pass-through AWS pricing. Estimate ~$300/month for always-on medium instance."
+
+    subsidies:
+      - slug: aws-credits
+        name: "AWS Research Credits"
+        description: "Apply for AWS research credits (competitive)"
+        condition: "Apply at least 3 months before grant start"
+        discount_type: percent
+        discount_value: 50
+        auto_apply: false
+
+    archive_option: null
+
+    estimation:
+      prompt: "Estimated monthly AWS spend for medium compute?"
+      default_value: 300
+      min_value: 100
+      max_value: 2000
+      step: 50
+      unit_display: "$"
+      presets:
+        - label: "Part-time use"
+          value: 200
+          description: "~50% utilization"
+        - label: "Always-on"
+          value: 300
+          description: "Continuous medium instance"
+        - label: "Heavy use"
+          value: 800
+          description: "Multiple instances or burst"
+
+  - slug: aws-compute-large
+    name: "AWS Compute - Large"
+    category: compute
+    description: "Large cloud VMs (~32 vCPU, 128GB RAM) or GPU instances"
+    long_description: |
+      Large-tier AWS compute for heavy workloads including GPU instances.
+      You control your own AWS resource group with full transparency.
+
+      **Typical instances:**
+      - m5.8xlarge, r5.8xlarge (CPU)
+      - p3.2xlarge, p4d.24xlarge (GPU)
+      - ~32+ vCPU, 128GB+ RAM, or GPU accelerators
+
+      Pass-through pricing with no markup. GPU instances can be $3-30+/hour.
+    documentation_url: "https://docs.northwinds.edu/aws"
+
+    comparison_features:
+      gpu_available:
+        value: full
+        detail: "P3/P4 instances with NVIDIA GPUs"
+      batch_jobs:
+        value: partial
+        detail: "Via AWS Batch or custom scheduling"
+      interactive:
+        value: full
+        detail: "SSH, SSM, or web console access"
+      auto_scaling:
+        value: full
+        detail: "Auto Scaling Groups available"
+      cost_predictable:
+        value: none
+        detail: "GPU costs vary significantly"
+      beginner_friendly:
+        value: none
+        detail: "Requires AWS + GPU expertise"
+      high_tier_data:
+        value: full
+        detail: "With proper security config"
+      free_tier:
+        value: none
+        detail: "Pay for what you use"
+
+    cost_model:
+      type: unit
+      unit: "USD"
+      unit_label: "Dollars"
+      price: 1.00
+      billing_period: month
+      note: "Pass-through AWS pricing. GPU instances significantly more expensive."
+
+    subsidies:
+      - slug: aws-credits
+        name: "AWS Research Credits"
+        description: "Apply for AWS research credits (competitive)"
+        condition: "Apply at least 3 months before grant start"
+        discount_type: percent
+        discount_value: 50
+        auto_apply: false
+
+    archive_option: null
+
+    estimation:
+      prompt: "Estimated monthly AWS spend for large/GPU compute?"
+      default_value: 1500
+      min_value: 500
+      max_value: 20000
+      step: 250
+      unit_display: "$"
+      presets:
+        - label: "Large CPU"
+          value: 1000
+          description: "Always-on large instance"
+        - label: "Moderate GPU"
+          value: 3000
+          description: "Regular GPU training jobs"
+        - label: "Heavy GPU"
+          value: 8000
+          description: "Intensive ML training"
+
+  - slug: aws-storage-hot
+    name: "AWS Storage - Hot (S3 Standard)"
+    category: storage
+    description: "Frequently accessed cloud storage"
+    long_description: |
+      S3 Standard storage for frequently accessed data. Best for active
+      datasets, application data, and content distribution.
+
+      Pass-through pricing with no markup.
+    documentation_url: "https://docs.northwinds.edu/aws"
+
+    comparison_features:
+      hpc_mounted:
+        value: none
+        detail: "Object storage; no POSIX mount"
+      high_throughput:
+        value: full
+        detail: "Multi-part uploads; high concurrency"
+      snapshots:
+        value: full
+        detail: "Versioning available"
+      collaboration:
+        value: partial
+        detail: "IAM-based; requires AWS accounts"
+      external_sharing:
+        value: full
+        detail: "Pre-signed URLs; public buckets"
+      large_files:
+        value: full
+        detail: "5TB max object size"
+      high_tier_data:
+        value: full
+        detail: "With KMS encryption and logging"
+      free_allocation:
+        value: none
+        detail: "Pay for what you use"
+
+    cost_model:
+      type: unit
+      unit: "TB"
+      unit_label: "Terabyte"
+      price: 23.00
+      billing_period: month
+      note: "Pass-through S3 Standard pricing (~$0.023/GB/month)."
+
+    subsidies: []
+
+    archive_option:
+      service_slug: aws-storage-archive
+      description: "Migrate to Glacier for long-term retention."
+
+    estimation:
+      prompt: "How much hot storage do you need?"
+      default_value: 5
+      min_value: 0.5
+      max_value: 500
+      step: 5
+      unit_display: "TB"
+      presets:
+        - label: "Small"
+          value: 1
+          description: "Application data, configs"
+        - label: "Medium"
+          value: 10
+          description: "Active datasets"
+        - label: "Large"
+          value: 50
+          description: "Data-intensive applications"
+
+  - slug: aws-storage-cold
+    name: "AWS Storage - Cold (S3 Infrequent Access)"
+    category: storage
+    description: "Infrequently accessed cloud storage at reduced cost"
+    long_description: |
+      S3 Infrequent Access for data accessed less than once per month.
+      Lower storage cost, higher retrieval cost.
+
+      Pass-through pricing with no markup.
+    documentation_url: "https://docs.northwinds.edu/aws"
+
+    comparison_features:
+      hpc_mounted:
+        value: none
+        detail: "Object storage; no POSIX mount"
+      high_throughput:
+        value: partial
+        detail: "Retrieval fees apply"
+      snapshots:
+        value: full
+        detail: "Versioning available"
+      collaboration:
+        value: partial
+        detail: "IAM-based; requires AWS accounts"
+      external_sharing:
+        value: full
+        detail: "Pre-signed URLs; public buckets"
+      large_files:
+        value: full
+        detail: "5TB max object size"
+      high_tier_data:
+        value: full
+        detail: "With KMS encryption and logging"
+      free_allocation:
+        value: none
+        detail: "Pay for what you use"
+
+    cost_model:
+      type: unit
+      unit: "TB"
+      unit_label: "Terabyte"
+      price: 12.50
+      billing_period: month
+      note: "Pass-through S3-IA pricing (~$0.0125/GB/month). Retrieval fees apply."
+
+    subsidies: []
+
+    archive_option:
+      service_slug: aws-storage-archive
+      description: "Migrate to Glacier for long-term retention."
+
+    estimation:
+      prompt: "How much cold storage do you need?"
+      default_value: 20
+      min_value: 1
+      max_value: 1000
+      step: 10
+      unit_display: "TB"
+      presets:
+        - label: "Small"
+          value: 10
+          description: "Backup data, old datasets"
+        - label: "Medium"
+          value: 50
+          description: "Completed project data"
+        - label: "Large"
+          value: 200
+          description: "Large-scale archival"
+
+  - slug: aws-storage-archive
+    name: "AWS Storage - Archive (S3 Glacier)"
+    category: storage
+    description: "Long-term archival storage for compliance and retention"
+    long_description: |
+      S3 Glacier Deep Archive for data retention and compliance.
+      Lowest cost storage, retrieval takes hours.
+
+      Ideal for grant retention requirements (3-10+ years).
+      Pass-through pricing with no markup.
+    documentation_url: "https://docs.northwinds.edu/aws"
+
+    is_archive_tier: true
+
+    comparison_features:
+      hpc_mounted:
+        value: none
+        detail: "Archive storage; no direct access"
+      high_throughput:
+        value: none
+        detail: "12-48 hour retrieval time"
+      snapshots:
+        value: none
+        detail: "Write-once archival"
+      collaboration:
+        value: none
+        detail: "Archival only; no active sharing"
+      external_sharing:
+        value: none
+        detail: "Must restore to share"
+      large_files:
+        value: full
+        detail: "No size limits"
+      high_tier_data:
+        value: full
+        detail: "Encryption maintained"
+      free_allocation:
+        value: none
+        detail: "Lowest cost tier"
+
+    cost_model:
+      type: unit
+      unit: "TB"
+      unit_label: "Terabyte"
+      price: 1.00
+      billing_period: month
+      note: "Pass-through Glacier Deep Archive (~$0.001/GB/month). 12-48 hour retrieval."
+
+    subsidies: []
+    archive_option: null
+
+    estimation:
+      prompt: "How much archive storage do you need for retention?"
+      default_value: 50
+      min_value: 5
+      max_value: 2000
+      step: 25
+      unit_display: "TB"
+      presets:
+        - label: "Small project"
+          value: 20
+          description: "3-year retention, modest data"
+        - label: "Medium project"
+          value: 100
+          description: "Standard grant retention"
+        - label: "Large project"
+          value: 500
+          description: "Data-intensive, long retention"
+
+  # =============================================================================
+  # AZURE CLOUD SERVICES
+  # =============================================================================
+
+  - slug: azure-compute-small
+    name: "Azure Compute - Small"
+    category: compute
+    description: "Small cloud VMs (~2 vCPU, 8GB RAM)"
+    long_description: |
+      Small-tier Azure compute for lightweight workloads. You control your own
+      Azure resource group with full transparency on usage and costs.
+      Integrated with campus Active Directory.
+
+      **Typical instances:**
+      - B2ms, D2as_v5, or similar
+      - ~2 vCPU, 8GB RAM
+      - General purpose workloads
+
+      Pass-through pricing with no markup.
+    documentation_url: "https://docs.northwinds.edu/azure"
+
+    comparison_features:
+      gpu_available:
+        value: none
+        detail: "See Azure Large for GPU VMs"
+      batch_jobs:
+        value: partial
+        detail: "Via Azure Batch or custom scheduling"
+      interactive:
+        value: full
+        detail: "SSH, Bastion, or portal access"
+      auto_scaling:
+        value: full
+        detail: "VM Scale Sets available"
+      cost_predictable:
+        value: partial
+        detail: "Usage-based; varies with activity"
+      beginner_friendly:
+        value: partial
+        detail: "Azure experience helpful; AD integrated"
+      high_tier_data:
+        value: full
+        detail: "With proper security config"
+      free_tier:
+        value: none
+        detail: "Pay for what you use"
+
+    cost_model:
+      type: unit
+      unit: "USD"
+      unit_label: "Dollars"
+      price: 1.00
+      billing_period: month
+      note: "Pass-through Azure pricing. Estimate ~$75/month for always-on small VM."
+
+    subsidies:
+      - slug: azure-credits
+        name: "Azure Research Credits"
+        description: "Apply for Azure for Research credits (competitive)"
+        condition: "Apply at least 3 months before grant start"
+        discount_type: percent
+        discount_value: 50
+        auto_apply: false
+
+    archive_option: null
+
+    estimation:
+      prompt: "Estimated monthly Azure spend for small compute?"
+      default_value: 75
+      min_value: 25
+      max_value: 500
+      step: 25
+      unit_display: "$"
+      presets:
+        - label: "Part-time use"
+          value: 50
+          description: "~50% utilization"
+        - label: "Always-on"
+          value: 75
+          description: "Continuous small VM"
+        - label: "Multiple VMs"
+          value: 200
+          description: "Several small VMs"
+
+  - slug: azure-compute-medium
+    name: "Azure Compute - Medium"
+    category: compute
+    description: "Medium cloud VMs (~8 vCPU, 32GB RAM)"
+    long_description: |
+      Medium-tier Azure compute for standard workloads. You control your own
+      Azure resource group with full transparency.
+
+      **Typical instances:**
+      - D8as_v5, E8as_v5
+      - ~8 vCPU, 32GB RAM
+      - Analysis, development, moderate compute
+
+      Pass-through pricing with no markup.
+    documentation_url: "https://docs.northwinds.edu/azure"
+
+    comparison_features:
+      gpu_available:
+        value: none
+        detail: "See Azure Large for GPU VMs"
+      batch_jobs:
+        value: partial
+        detail: "Via Azure Batch or custom scheduling"
+      interactive:
+        value: full
+        detail: "SSH, Bastion, or portal access"
+      auto_scaling:
+        value: full
+        detail: "VM Scale Sets available"
+      cost_predictable:
+        value: partial
+        detail: "Usage-based; varies with activity"
+      beginner_friendly:
+        value: partial
+        detail: "Azure experience helpful; AD integrated"
+      high_tier_data:
+        value: full
+        detail: "With proper security config"
+      free_tier:
+        value: none
+        detail: "Pay for what you use"
+
+    cost_model:
+      type: unit
+      unit: "USD"
+      unit_label: "Dollars"
+      price: 1.00
+      billing_period: month
+      note: "Pass-through Azure pricing. Estimate ~$300/month for always-on medium VM."
+
+    subsidies:
+      - slug: azure-credits
+        name: "Azure Research Credits"
+        description: "Apply for Azure for Research credits (competitive)"
+        condition: "Apply at least 3 months before grant start"
+        discount_type: percent
+        discount_value: 50
+        auto_apply: false
+
+    archive_option: null
+
+    estimation:
+      prompt: "Estimated monthly Azure spend for medium compute?"
+      default_value: 300
+      min_value: 100
+      max_value: 2000
+      step: 50
+      unit_display: "$"
+      presets:
+        - label: "Part-time use"
+          value: 200
+          description: "~50% utilization"
+        - label: "Always-on"
+          value: 300
+          description: "Continuous medium VM"
+        - label: "Heavy use"
+          value: 800
+          description: "Multiple VMs or burst"
+
+  - slug: azure-compute-large
+    name: "Azure Compute - Large"
+    category: compute
+    description: "Large cloud VMs (~32 vCPU, 128GB RAM) or GPU instances"
+    long_description: |
+      Large-tier Azure compute for heavy workloads including GPU instances.
+      You control your own Azure resource group with full transparency.
+
+      **Typical instances:**
+      - D32as_v5, E32as_v5 (CPU)
+      - NC-series, ND-series (GPU)
+      - ~32+ vCPU, 128GB+ RAM, or GPU accelerators
+
+      Pass-through pricing with no markup. GPU VMs significantly more expensive.
+    documentation_url: "https://docs.northwinds.edu/azure"
+
+    comparison_features:
+      gpu_available:
+        value: full
+        detail: "NC/ND-series with NVIDIA GPUs"
+      batch_jobs:
+        value: partial
+        detail: "Via Azure Batch or custom scheduling"
+      interactive:
+        value: full
+        detail: "SSH, Bastion, or portal access"
+      auto_scaling:
+        value: full
+        detail: "VM Scale Sets available"
+      cost_predictable:
+        value: none
+        detail: "GPU costs vary significantly"
+      beginner_friendly:
+        value: none
+        detail: "Requires Azure + GPU expertise"
+      high_tier_data:
+        value: full
+        detail: "With proper security config"
+      free_tier:
+        value: none
+        detail: "Pay for what you use"
+
+    cost_model:
+      type: unit
+      unit: "USD"
+      unit_label: "Dollars"
+      price: 1.00
+      billing_period: month
+      note: "Pass-through Azure pricing. GPU VMs can be $3-30+/hour."
+
+    subsidies:
+      - slug: azure-credits
+        name: "Azure Research Credits"
+        description: "Apply for Azure for Research credits (competitive)"
+        condition: "Apply at least 3 months before grant start"
+        discount_type: percent
+        discount_value: 50
+        auto_apply: false
+
+    archive_option: null
+
+    estimation:
+      prompt: "Estimated monthly Azure spend for large/GPU compute?"
+      default_value: 1500
+      min_value: 500
+      max_value: 20000
+      step: 250
+      unit_display: "$"
+      presets:
+        - label: "Large CPU"
+          value: 1000
+          description: "Always-on large VM"
+        - label: "Moderate GPU"
+          value: 3000
+          description: "Regular GPU training"
+        - label: "Heavy GPU"
+          value: 8000
+          description: "Intensive ML training"
+
+  - slug: azure-storage-hot
+    name: "Azure Storage - Hot (Blob Hot)"
+    category: storage
+    description: "Frequently accessed cloud storage"
+    long_description: |
+      Azure Blob Hot tier for frequently accessed data. Best for active
+      datasets, application data, and content distribution.
+
+      Pass-through pricing with no markup.
+    documentation_url: "https://docs.northwinds.edu/azure"
+
+    comparison_features:
+      hpc_mounted:
+        value: none
+        detail: "Blob storage; no POSIX mount"
+      high_throughput:
+        value: full
+        detail: "High concurrency; azcopy for bulk"
+      snapshots:
+        value: full
+        detail: "Soft delete and versioning"
+      collaboration:
+        value: partial
+        detail: "Azure AD or SAS tokens"
+      external_sharing:
+        value: full
+        detail: "SAS URLs; private endpoints"
+      large_files:
+        value: full
+        detail: "190TB max block blob"
+      high_tier_data:
+        value: full
+        detail: "With CMK and private endpoints"
+      free_allocation:
+        value: none
+        detail: "Pay for what you use"
+
+    cost_model:
+      type: unit
+      unit: "TB"
+      unit_label: "Terabyte"
+      price: 20.00
+      billing_period: month
+      note: "Pass-through Azure Blob Hot pricing (~$0.02/GB/month)."
+
+    subsidies: []
+
+    archive_option:
+      service_slug: azure-storage-archive
+      description: "Migrate to Archive tier for long-term retention."
+
+    estimation:
+      prompt: "How much hot storage do you need?"
+      default_value: 5
+      min_value: 0.5
+      max_value: 500
+      step: 5
+      unit_display: "TB"
+      presets:
+        - label: "Small"
+          value: 1
+          description: "Application data"
+        - label: "Medium"
+          value: 10
+          description: "Active datasets"
+        - label: "Large"
+          value: 50
+          description: "Data-intensive apps"
+
+  - slug: azure-storage-cold
+    name: "Azure Storage - Cold (Blob Cool)"
+    category: storage
+    description: "Infrequently accessed cloud storage at reduced cost"
+    long_description: |
+      Azure Blob Cool tier for data accessed less than once per month.
+      Lower storage cost, higher retrieval cost.
+
+      Pass-through pricing with no markup.
+    documentation_url: "https://docs.northwinds.edu/azure"
+
+    comparison_features:
+      hpc_mounted:
+        value: none
+        detail: "Blob storage; no POSIX mount"
+      high_throughput:
+        value: partial
+        detail: "Retrieval fees apply"
+      snapshots:
+        value: full
+        detail: "Soft delete and versioning"
+      collaboration:
+        value: partial
+        detail: "Azure AD or SAS tokens"
+      external_sharing:
+        value: full
+        detail: "SAS URLs; private endpoints"
+      large_files:
+        value: full
+        detail: "190TB max block blob"
+      high_tier_data:
+        value: full
+        detail: "With CMK and private endpoints"
+      free_allocation:
+        value: none
+        detail: "Pay for what you use"
+
+    cost_model:
+      type: unit
+      unit: "TB"
+      unit_label: "Terabyte"
+      price: 10.00
+      billing_period: month
+      note: "Pass-through Azure Blob Cool pricing (~$0.01/GB/month). Retrieval fees apply."
+
+    subsidies: []
+
+    archive_option:
+      service_slug: azure-storage-archive
+      description: "Migrate to Archive tier for long-term retention."
+
+    estimation:
+      prompt: "How much cold storage do you need?"
+      default_value: 20
+      min_value: 1
+      max_value: 1000
+      step: 10
+      unit_display: "TB"
+      presets:
+        - label: "Small"
+          value: 10
+          description: "Backup data"
+        - label: "Medium"
+          value: 50
+          description: "Completed projects"
+        - label: "Large"
+          value: 200
+          description: "Large-scale archival"
+
+  - slug: azure-storage-archive
+    name: "Azure Storage - Archive (Blob Archive)"
+    category: storage
+    description: "Long-term archival storage for compliance and retention"
+    long_description: |
+      Azure Blob Archive tier for data retention and compliance.
+      Lowest cost storage, retrieval takes hours.
+
+      Ideal for grant retention requirements (3-10+ years).
+      Pass-through pricing with no markup.
+    documentation_url: "https://docs.northwinds.edu/azure"
+
+    is_archive_tier: true
+
+    comparison_features:
+      hpc_mounted:
+        value: none
+        detail: "Archive storage; no direct access"
+      high_throughput:
+        value: none
+        detail: "Hours to rehydrate"
+      snapshots:
+        value: none
+        detail: "Write-once archival"
+      collaboration:
+        value: none
+        detail: "Archival only; no active sharing"
+      external_sharing:
+        value: none
+        detail: "Must rehydrate to share"
+      large_files:
+        value: full
+        detail: "No size limits"
+      high_tier_data:
+        value: full
+        detail: "Encryption maintained"
+      free_allocation:
+        value: none
+        detail: "Lowest cost tier"
+
+    cost_model:
+      type: unit
+      unit: "TB"
+      unit_label: "Terabyte"
+      price: 2.00
+      billing_period: month
+      note: "Pass-through Azure Archive (~$0.002/GB/month). Hours to rehydrate."
+
+    subsidies: []
+    archive_option: null
+
+    estimation:
+      prompt: "How much archive storage do you need for retention?"
+      default_value: 50
+      min_value: 5
+      max_value: 2000
+      step: 25
+      unit_display: "TB"
+      presets:
+        - label: "Small project"
+          value: 20
+          description: "3-year retention"
+        - label: "Medium project"
+          value: 100
+          description: "Standard grant retention"
+        - label: "Large project"
+          value: 500
+          description: "Data-intensive, long retention"
+
+  # =============================================================================
+  # UNIVERSITY SERVICES (All Tiers)
+  # =============================================================================
+
+  - slug: nwfiles
+    name: "University File Server (NWFiles)"
+    category: storage
+    description: "Campus network storage for general research files"
+    long_description: |
+      University-managed file server with automatic backups,
+      campus-wide accessibility, and integration with university SSO.
+      Suitable for collaborative projects and general research data.
+      Supports SMB mounts for easy desktop access.
+    documentation_url: "https://docs.northwinds.edu/nwfiles"
+
+    comparison_features:
+      hpc_mounted:
+        value: none
+        detail: "Campus network; not HPC-mounted"
+      high_throughput:
+        value: partial
+        detail: "Good for moderate file sizes"
+      snapshots:
+        value: full
+        detail: "Automatic backups included"
+      collaboration:
+        value: full
+        detail: "AD groups; easy desktop mount"
+      external_sharing:
+        value: none
+        detail: "Campus only; use Globus for external"
+      large_files:
+        value: partial
+        detail: "Better suited for moderate sizes"
+      high_tier_data:
+        value: full
+        detail: "With restricted folder config"
+      free_allocation:
+        value: partial
+        detail: "100GB free via department"
+
+    cost_model:
+      type: unit
+      unit: "TB"
+      unit_label: "Terabyte"
+      price: 3.00
+      billing_period: month
+
+    subsidies:
+      - slug: dept-allocation
+        name: "Department Allocation"
+        description: "First 100 GB included via department allocation"
+        condition: null
+        discount_type: free_units
+        discount_value: 0.1
+        auto_apply: true
+
+    archive_option:
+      service_slug: aws-storage-archive
+      description: |
+        At grant end, data can be migrated to cloud archive storage
+        for long-term retention.
+
+    estimation:
+      prompt: "How much file storage do you need?"
+      default_value: 2
+      min_value: 0.1
+      max_value: 500
+      step: 1
+      unit_display: "TB"
+      presets:
+        - label: "Small project"
+          value: 0.5
+          description: "Documents, spreadsheets"
+        - label: "Medium project"
+          value: 5
+          description: "Mixed file types"
+        - label: "Large project"
+          value: 20
+          description: "Large datasets, many collaborators"
+
+  - slug: onedrive
+    name: "OneDrive for Business"
+    category: storage
+    description: "Cloud storage included with university Microsoft 365"
+    long_description: |
+      OneDrive cloud storage included with your university account.
+      First 1TB is included at no cost. Additional storage is available
+      but priced significantly higher than research storage options.
+    documentation_url: "https://docs.northwinds.edu/onedrive"
+
+    comparison_features:
+      hpc_mounted:
+        value: none
+        detail: "Cloud sync; no HPC mount"
+      high_throughput:
+        value: none
+        detail: "Sync-based; not for bulk data"
+      snapshots:
+        value: full
+        detail: "Version history included"
+      collaboration:
+        value: full
+        detail: "Easy M365 sharing"
+      external_sharing:
+        value: full
+        detail: "Shareable links with controls"
+      large_files:
+        value: none
+        detail: "Not suited for large datasets"
+      high_tier_data:
+        value: full
+        detail: "M365 BAA in place"
+      free_allocation:
+        value: full
+        detail: "1TB included free"
+
+    cost_model:
+      type: unit
+      unit: "TB"
+      unit_label: "Terabyte"
+      price: 40.00
+      billing_period: month
+      note: "First 1TB free; additional storage $40/TB/month"
+
+    subsidies:
+      - slug: included-storage
+        name: "Included Storage"
+        description: "1TB included with university Microsoft 365 account"
+        condition: null
+        discount_type: free_units
+        discount_value: 1.0
+        auto_apply: true
+
+    acknowledgment:
+      required: true
+      title: "OneDrive Storage Limitations"
+      message: |
+        OneDrive is convenient for personal and small collaborative use,
+        but has important limitations for research data management.
+      items:
+        - "Storage beyond 1TB is very expensive ($40/TB/month)"
+        - "Not designed for large dataset storage or high-throughput access"
+        - "Sync conflicts possible with multiple editors"
+        - "Not recommended as primary storage for grant-funded research data"
+        - "Data retention tied to user account lifecycle"
+
+    archive_option: null
+
+    estimation:
+      prompt: "How much OneDrive storage do you need?"
+      default_value: 0.5
+      min_value: 0.1
+      max_value: 5
+      step: 0.1
+      unit_display: "TB"
+      presets:
+        - label: "Within included quota"
+          value: 0.5
+          description: "Under 1TB (no cost)"
+        - label: "At included limit"
+          value: 1
+          description: "Full 1TB allocation (no cost)"
+        - label: "Over quota"
+          value: 2
+          description: "Requires paid storage"
+
+  - slug: labarchives
+    name: "LabArchives ELN"
+    category: storage
+    description: "Electronic lab notebook with institutional license"
+    long_description: |
+      Electronic lab notebook for documenting research processes,
+      protocols, and data. Institutional license provides free access
+      with storage quotas per notebook.
+
+      Also suitable for archiving small datasets (<1TB) for retention.
+    documentation_url: "https://docs.northwinds.edu/labarchives"
+
+    comparison_features:
+      hpc_mounted:
+        value: none
+        detail: "Web-based ELN"
+      high_throughput:
+        value: none
+        detail: "4GB max file size"
+      snapshots:
+        value: full
+        detail: "Full version history"
+      collaboration:
+        value: full
+        detail: "Notebook sharing and comments"
+      external_sharing:
+        value: full
+        detail: "External collaborator access"
+      large_files:
+        value: none
+        detail: "4GB max; 1TB per notebook"
+      high_tier_data:
+        value: full
+        detail: "21 CFR Part 11 compliant"
+      free_allocation:
+        value: full
+        detail: "Institutional license"
+
+    cost_model:
+      type: unit
+      unit: "notebook"
+      unit_label: "Notebook"
+      price: 0.00
+      billing_period: month
+      note: "Included with institutional license; storage limits apply"
+
+    subsidies:
+      - slug: institutional-license
+        name: "Institutional License"
+        description: "Free access via university site license"
+        condition: null
+        discount_type: percent
+        discount_value: 100
+        auto_apply: true
+
+    acknowledgment:
+      required: true
+      title: "LabArchives Storage Limitations"
+      message: |
+        LabArchives is excellent for lab documentation and small dataset
+        archival but has hard storage limits.
+      items:
+        - "Maximum file size: 4GB (250MB if using auto-uploader)"
+        - "Maximum storage per notebook: 1TB"
+        - "Not suitable for large datasets (genomics, imaging, etc.)"
+        - "Good option for archiving small datasets for retention"
+
+    archive_option: null
+
+    estimation:
+      prompt: "How many LabArchives notebooks do you need?"
+      default_value: 1
+      min_value: 1
+      max_value: 10
+      step: 1
+      unit_display: "notebooks"
+      presets:
+        - label: "Single lab notebook"
+          value: 1
+          description: "One notebook for the project"
+        - label: "Per-aim notebooks"
+          value: 3
+          description: "Separate notebook per specific aim"
+        - label: "Team notebooks"
+          value: 5
+          description: "Individual notebooks per team member"
+
+  - slug: azure-openai
+    name: "Azure OpenAI Service"
+    category: api
+    description: "GPT-4, embeddings, and other Azure-hosted AI models"
+    long_description: |
+      Institutional Azure OpenAI instance with approved models.
+      Data does not leave the university's Azure tenant.
+    documentation_url: "https://docs.northwinds.edu/azure-ai"
+
+    cost_model:
+      type: unit
+      unit: "1M tokens"
+      unit_label: "Million tokens"
+      price: 30.00
+      billing_period: month
+      note: "Blended rate across models; actual cost varies by model"
+
+    subsidies: []
+    archive_option: null
+
+    estimation:
+      prompt: "Estimated token usage per month?"
+      default_value: 5
+      min_value: 0.1
+      max_value: 1000
+      step: 1
+      unit_display: "M tokens"
+      presets:
+        - label: "Prototype/testing"
+          value: 1
+          description: "Development and small-scale testing"
+        - label: "Production chatbot"
+          value: 10
+          description: "Moderate user base, RAG application"
+        - label: "Batch processing"
+          value: 100
+          description: "Large-scale document analysis"
+
+  # =============================================================================
+  # VDI & SECURE ENVIRONMENTS (All Tiers including High)
+  # =============================================================================
+
+  - slug: research-vdi-silver
+    name: "Research VDI - Silver"
+    category: environment
+    description: "Entry-level virtual desktop (4 vCPU, 16GB RAM) with daily backups"
+
+    comparison_features:
+      dedicated_resources:
+        value: full
+        detail: "4 vCPU, 16GB RAM guaranteed"
+      gui_desktop:
+        value: full
+        detail: "Windows or Linux desktop"
+      web_accessible:
+        value: full
+        detail: "Browser-based access"
+      admin_control:
+        value: partial
+        detail: "Local admin; managed base image"
+      high_tier_data:
+        value: full
+        detail: "All tiers including restricted"
+      scalable:
+        value: partial
+        detail: "Upgrade to Gold/Platinum"
+      preconfigured_software:
+        value: partial
+        detail: "Base image; install your own"
+      cost_predictable:
+        value: full
+        detail: "$75/month fixed"
+
+    long_description: |
+      Silver tier Research Virtual Desktop provides a dedicated Windows or Linux
+      VM on our Azure Local cluster. Includes 4 vCPU, 16GB RAM, and 100GB OS disk.
+      Ideal for general research computing, document processing, and light analysis.
+      All VDI tiers include automated daily backups with 30-day retention, Azure AD
+      authentication, and optional domain join.
+    documentation_url: "https://docs.northwinds.edu/vdi"
+
+    cost_model:
+      type: unit
+      unit: "VM-month"
+      unit_label: "VM Month"
+      price: 75.00
+      billing_period: month
+      note: "Includes daily backups and standard support."
+
+    subsidies: []
+    archive_option: null
+
+    estimation:
+      prompt: "How many Silver VMs do you need?"
+      default_value: 1
+      min_value: 1
+      max_value: 20
+      step: 1
+      presets:
+        - label: "Single researcher"
+          value: 1
+          description: "One dedicated VM"
+        - label: "Small team"
+          value: 3
+          description: "VMs for small group"
+
+  - slug: research-vdi-gold
+    name: "Research VDI - Gold"
+    category: environment
+    description: "Mid-tier virtual desktop (8 vCPU, 32GB RAM) with daily backups"
+
+    comparison_features:
+      dedicated_resources:
+        value: full
+        detail: "8 vCPU, 32GB RAM guaranteed"
+      gui_desktop:
+        value: full
+        detail: "Windows or Linux desktop"
+      web_accessible:
+        value: full
+        detail: "Browser-based access"
+      admin_control:
+        value: partial
+        detail: "Local admin; managed base image"
+      high_tier_data:
+        value: full
+        detail: "All tiers including restricted"
+      scalable:
+        value: partial
+        detail: "Upgrade to Platinum"
+      preconfigured_software:
+        value: partial
+        detail: "Base image; install your own"
+      cost_predictable:
+        value: full
+        detail: "$150/month fixed"
+
+    long_description: |
+      Gold tier Research Virtual Desktop provides a dedicated Windows or Linux
+      VM on our Azure Local cluster. Includes 8 vCPU, 32GB RAM, and 200GB OS disk.
+      Suited for moderate computational work, statistical analysis, and development.
+      All VDI tiers include automated daily backups with 30-day retention, Azure AD
+      authentication, and optional domain join.
+    documentation_url: "https://docs.northwinds.edu/vdi"
+
+    cost_model:
+      type: unit
+      unit: "VM-month"
+      unit_label: "VM Month"
+      price: 150.00
+      billing_period: month
+      note: "Includes daily backups and standard support."
+
+    subsidies: []
+    archive_option: null
+
+    estimation:
+      prompt: "How many Gold VMs do you need?"
+      default_value: 1
+      min_value: 1
+      max_value: 10
+      step: 1
+      presets:
+        - label: "Power user"
+          value: 1
+          description: "One high-performance VM"
+        - label: "Analysis team"
+          value: 3
+          description: "VMs for data analysis group"
+
+  - slug: research-vdi-platinum
+    name: "Research VDI - Platinum"
+    category: environment
+    description: "High-performance virtual desktop (16 vCPU, 64GB RAM) with daily backups"
+
+    comparison_features:
+      dedicated_resources:
+        value: full
+        detail: "16 vCPU, 64GB RAM guaranteed"
+      gui_desktop:
+        value: full
+        detail: "Windows or Linux desktop"
+      web_accessible:
+        value: full
+        detail: "Browser-based access"
+      admin_control:
+        value: partial
+        detail: "Local admin; managed base image"
+      high_tier_data:
+        value: full
+        detail: "All tiers including restricted"
+      scalable:
+        value: none
+        detail: "Highest tier available"
+      preconfigured_software:
+        value: partial
+        detail: "Base image; install your own"
+      cost_predictable:
+        value: full
+        detail: "$300/month fixed"
+
+    long_description: |
+      Platinum tier Research Virtual Desktop provides a dedicated Windows or Linux
+      VM on our Azure Local cluster. Includes 16 vCPU, 64GB RAM, and 500GB OS disk.
+      Designed for memory-intensive workloads, large dataset analysis, and complex
+      development environments. All VDI tiers include automated daily backups with
+      30-day retention, Azure AD authentication, and optional domain join.
+    documentation_url: "https://docs.northwinds.edu/vdi"
+
+    cost_model:
+      type: unit
+      unit: "VM-month"
+      unit_label: "VM Month"
+      price: 300.00
+      billing_period: month
+      note: "Includes daily backups and standard support."
+
+    subsidies: []
+    archive_option: null
+
+    estimation:
+      prompt: "How many Platinum VMs do you need?"
+      default_value: 1
+      min_value: 1
+      max_value: 5
+      step: 1
+      presets:
+        - label: "Heavy workload"
+          value: 1
+          description: "One high-memory VM"
+
+  - slug: secure-enclave
+    name: "Secure Research Enclave"
+    category: environment
+    description: "Isolated environment for restricted data"
+
+    comparison_features:
+      dedicated_resources:
+        value: full
+        detail: "Custom allocation per project"
+      gui_desktop:
+        value: full
+        detail: "Secure desktop included"
+      web_accessible:
+        value: partial
+        detail: "VPN or jump host required"
+      admin_control:
+        value: none
+        detail: "Fully managed; no admin"
+      high_tier_data:
+        value: full
+        detail: "Restricted tier compliant"
+      scalable:
+        value: full
+        detail: "Custom sizing available"
+      preconfigured_software:
+        value: full
+        detail: "Pre-approved software stack"
+      cost_predictable:
+        value: none
+        detail: "Custom pricing per project"
+
+    long_description: |
+      Purpose-built secure environment meeting specific compliance
+      requirements (FISMA, CUI, etc.). Custom configuration per project.
+    documentation_url: "https://docs.northwinds.edu/enclave"
+
+    cost_model:
+      type: consultation
+      contact: "security@northwinds.edu"
+      note: |
+        Pricing varies significantly based on requirements.
+        Typical range: $5,000 - $50,000/year depending on scale
+        and compliance requirements.
+
+    subsidies: []
+    archive_option: null
+    estimation: null
+
+  - slug: web-hosting
+    name: "Research Web Hosting"
+    category: environment
+    description: "Managed web application hosting on Azure with CI/CD pipelines"
+
+    comparison_features:
+      dedicated_resources:
+        value: partial
+        detail: "Container Apps; scales automatically"
+      gui_desktop:
+        value: none
+        detail: "Web apps only; no desktop"
+      web_accessible:
+        value: full
+        detail: "Public or private endpoints"
+      admin_control:
+        value: partial
+        detail: "You control code; we manage infra"
+      high_tier_data:
+        value: full
+        detail: "With proper security config"
+      scalable:
+        value: full
+        detail: "Auto-scaling included"
+      preconfigured_software:
+        value: partial
+        detail: "Container Apps + PostgreSQL"
+      cost_predictable:
+        value: partial
+        detail: "Usage-based; varies with traffic"
+
+    long_description: |
+      Host research web applications, databases, and APIs on our managed Azure
+      platform. Standard deployments include Azure DevOps for CI/CD, Container
+      Apps for application hosting, and managed PostgreSQL. Other Azure services
+      (Cosmos DB, Functions, Storage, etc.) available upon request. Our team
+      provides pipeline setup support and ongoing infrastructure management.
+    documentation_url: "https://docs.northwinds.edu/web-hosting"
+
+    cost_model:
+      type: unit
+      unit: "USD"
+      unit_label: "Dollars"
+      price: 1.00
+      billing_period: month
+      note: |
+        Pass-through Azure pricing with no overhead. Typical small applications
+        run $50-150/month. Complex applications with databases may run $200-500/month.
+        Includes pipeline setup consultation.
+
+    subsidies: []
+    archive_option: null
+
+    estimation:
+      prompt: "Estimated monthly Azure spend for your application?"
+      default_value: 100
+      min_value: 25
+      max_value: 2000
+      step: 25
+      unit_display: "$"
+      presets:
+        - label: "Simple app"
+          value: 75
+          description: "Static site or small API"
+        - label: "Standard application"
+          value: 200
+          description: "Web app with PostgreSQL"
+        - label: "Complex platform"
+          value: 500
+          description: "Multi-service architecture"
+
+  # =============================================================================
+  # SUPPORT SERVICES
+  # =============================================================================
+
+  - slug: rc-consultation
+    name: "Research Computing Consultation"
+    category: support
+    description: "Expert guidance and implementation support from RC specialists"
+    long_description: |
+      Work directly with Research Computing specialists for architecture design,
+      workflow optimization, or hands-on implementation support. First hour is
+      complimentary for each project. Additional hours available in blocks for
+      ongoing support, training, or complex implementations.
+    documentation_url: "https://docs.northwinds.edu/consultation"
+
+    cost_model:
+      type: unit
+      unit: "hour"
+      unit_label: "Hour"
+      price: 150.00
+      billing_period: one-time
+      note: |
+        First hour free for each project. Additional hours billed at $150/hour.
+        Available in 5-hour ($750) or 10-hour ($1,500) blocks.
+
+    subsidies:
+      - slug: free-first-hour
+        name: "Complimentary Consultation"
+        description: "First hour free for each new project"
+        condition: "One free hour per project"
+        discount_type: free_units
+        discount_value: 1
+        auto_apply: true
+
+    archive_option: null
+
+    estimation:
+      prompt: "How many consultation hours do you anticipate needing?"
+      default_value: 1
+      min_value: 1
+      max_value: 40
+      step: 1
+      presets:
+        - label: "Initial consultation only"
+          value: 1
+          description: "Architecture review or getting started"
+        - label: "Implementation support"
+          value: 5
+          description: "Hands-on help with setup"
+        - label: "Extended engagement"
+          value: 10
+          description: "Ongoing support for complex projects"
+
+  # =============================================================================
+  # ACCESS ALLOCATIONS (NSF-Funded National Resources) - Low/Medium only
+  # =============================================================================
+
+  - slug: access-explore
+    name: "ACCESS Explore"
+    category: external
+    description: "Entry-level national HPC allocation (up to 400,000 credits)"
+
+    comparison_features:
+      free_nsf:
+        value: full
+        detail: "100% NSF-funded"
+      merit_based:
+        value: partial
+        detail: "Abstract + CV only"
+      national_scale:
+        value: full
+        detail: "Access to top supercomputing centers"
+      gpu_available:
+        value: full
+        detail: "GPUs available on most resources"
+      large_scale:
+        value: partial
+        detail: "Up to 400K credits"
+      beginner_friendly:
+        value: full
+        detail: "1-2 week approval; minimal docs"
+
+    long_description: |
+      ACCESS (Advanced Cyberinfrastructure Coordination Ecosystem) provides
+      merit-based allocations to NSF-funded national supercomputing resources.
+
+      **Explore tier** is ideal for:
+      - Resource evaluation and benchmarking
+      - Graduate student projects
+      - Small classes and training events
+      - Code development and porting
+
+      **Credit limit:** Up to 400,000 ACCESS credits (~400,000 core-hours)
+      Credits are awarded in two phases: half initially, half after progress report.
+
+      **Requirements:** Project abstract, PI CV. Graduate students need advisor letter.
+    documentation_url: "https://allocations.access-ci.org/"
+
+    cost_model:
+      type: unit
+      unit: "credits"
+      unit_label: "ACCESS Credits"
+      price: 0.00
+      billing_period: one-time
+      note: |
+        Free NSF-funded resource. 1 credit ≈ 1 core-hour (varies by resource).
+        Maximum 400,000 credits. Merit-based allocation required.
+
+    subsidies:
+      - slug: nsf-funded
+        name: "NSF Funded"
+        description: "No cost to researchers - funded by NSF"
+        condition: null
+        discount_type: percent
+        discount_value: 100
+        auto_apply: true
+
+    acknowledgment:
+      required: true
+      title: "ACCESS Allocation Requirements"
+      message: |
+        ACCESS allocations are merit-based and require an application.
+        Allow 1-2 weeks for Explore requests to be processed.
+      items:
+        - "Must submit allocation request at allocations.access-ci.org"
+        - "PI must be affiliated with eligible US institution"
+        - "Graduate students require signed advisor letter"
+        - "Progress report required to receive second half of credits"
+        - "Publications must acknowledge ACCESS and specific resources used"
+
+    archive_option: null
+
+    estimation:
+      prompt: "How many ACCESS credits do you need?"
+      default_value: 100000
+      min_value: 10000
+      max_value: 400000
+      step: 25000
+      unit_display: "credits"
+      presets:
+        - label: "Small exploration"
+          value: 50000
+          description: "Testing workflows, benchmarking"
+        - label: "Graduate project"
+          value: 150000
+          description: "Typical graduate research project"
+        - label: "Full Explore allocation"
+          value: 400000
+          description: "Maximum for Explore tier"
+
+  - slug: access-discover
+    name: "ACCESS Discover"
+    category: external
+    description: "Mid-level national HPC allocation (up to 1.5M credits)"
+
+    comparison_features:
+      free_nsf:
+        value: full
+        detail: "100% NSF-funded"
+      merit_based:
+        value: partial
+        detail: "One-page description required"
+      national_scale:
+        value: full
+        detail: "Access to top supercomputing centers"
+      gpu_available:
+        value: full
+        detail: "GPUs available on most resources"
+      large_scale:
+        value: partial
+        detail: "Up to 1.5M credits"
+      beginner_friendly:
+        value: partial
+        detail: "Advisory review included"
+
+    long_description: |
+      ACCESS (Advanced Cyberinfrastructure Coordination Ecosystem) provides
+      merit-based allocations to NSF-funded national supercomputing resources.
+
+      **Discover tier** is designed for:
+      - Research grants with modest resource needs
+      - Campus Champions allocations
+      - Large classes and training events
+      - Benchmarking and code testing at scale
+      - Gateway development
+
+      **Credit limit:** Up to 1,500,000 ACCESS credits
+      Credits are awarded in two phases: half initially, half after progress report.
+
+      **Requirements:** Project abstract, one-page project description, PI CV.
+    documentation_url: "https://allocations.access-ci.org/"
+
+    cost_model:
+      type: unit
+      unit: "credits"
+      unit_label: "ACCESS Credits"
+      price: 0.00
+      billing_period: one-time
+      note: |
+        Free NSF-funded resource. 1 credit ≈ 1 core-hour (varies by resource).
+        Maximum 1,500,000 credits. Merit-based allocation required.
+
+    subsidies:
+      - slug: nsf-funded
+        name: "NSF Funded"
+        description: "No cost to researchers - funded by NSF"
+        condition: null
+        discount_type: percent
+        discount_value: 100
+        auto_apply: true
+
+    acknowledgment:
+      required: true
+      title: "ACCESS Allocation Requirements"
+      message: |
+        ACCESS allocations are merit-based and require an application.
+        Discover requests receive advisory review to help guide resource selection.
+      items:
+        - "Must submit allocation request at allocations.access-ci.org"
+        - "Requires one-page project description"
+        - "PI must be affiliated with eligible US institution"
+        - "Progress report required to receive second half of credits"
+        - "Publications must acknowledge ACCESS and specific resources used"
+
+    archive_option: null
+
+    estimation:
+      prompt: "How many ACCESS credits do you need?"
+      default_value: 500000
+      min_value: 100000
+      max_value: 1500000
+      step: 100000
+      unit_display: "credits"
+      presets:
+        - label: "Moderate project"
+          value: 500000
+          description: "Standard research computing needs"
+        - label: "Substantial project"
+          value: 1000000
+          description: "Larger computational requirements"
+        - label: "Full Discover allocation"
+          value: 1500000
+          description: "Maximum for Discover tier"
+
+  - slug: access-accelerate
+    name: "ACCESS Accelerate"
+    category: external
+    description: "Mid-scale national HPC allocation (up to 3M credits)"
+
+    comparison_features:
+      free_nsf:
+        value: full
+        detail: "100% NSF-funded"
+      merit_based:
+        value: full
+        detail: "Three-page description; panel review"
+      national_scale:
+        value: full
+        detail: "Access to top supercomputing centers"
+      gpu_available:
+        value: full
+        detail: "GPUs available on most resources"
+      large_scale:
+        value: full
+        detail: "Up to 3M credits"
+      beginner_friendly:
+        value: none
+        detail: "4-6 week panel review process"
+
+    long_description: |
+      ACCESS (Advanced Cyberinfrastructure Coordination Ecosystem) provides
+      merit-based allocations to NSF-funded national supercomputing resources.
+
+      **Accelerate tier** supports:
+      - Experienced users with mid-scale resource needs
+      - Consolidating multi-grant programs
+      - Collaborative projects
+      - Preparing for Maximize ACCESS requests
+      - Gateways with growing communities
+
+      **Credit limit:** Up to 3,000,000 ACCESS credits
+      This is the maximum for a single funding award via standard process.
+
+      **Requirements:** Project abstract, three-page description, PI CV.
+      Undergoes panel review against formal evaluation criteria.
+    documentation_url: "https://allocations.access-ci.org/"
+
+    cost_model:
+      type: unit
+      unit: "credits"
+      unit_label: "ACCESS Credits"
+      price: 0.00
+      billing_period: one-time
+      note: |
+        Free NSF-funded resource. 1 credit ≈ 1 core-hour (varies by resource).
+        Maximum 3,000,000 credits. Requires panel review.
+
+    subsidies:
+      - slug: nsf-funded
+        name: "NSF Funded"
+        description: "No cost to researchers - funded by NSF"
+        condition: null
+        discount_type: percent
+        discount_value: 100
+        auto_apply: true
+
+    acknowledgment:
+      required: true
+      title: "ACCESS Accelerate Requirements"
+      message: |
+        Accelerate requests undergo formal panel review. Plan for 4-6 weeks
+        from submission to award decision.
+      items:
+        - "Must submit allocation request at allocations.access-ci.org"
+        - "Requires three-page project description"
+        - "Must address: research objectives, resource estimates, computational plan"
+        - "Panel review evaluates scientific merit and resource justification"
+        - "Progress report required to receive second half of credits"
+
+    archive_option: null
+
+    estimation:
+      prompt: "How many ACCESS credits do you need?"
+      default_value: 1500000
+      min_value: 500000
+      max_value: 3000000
+      step: 250000
+      unit_display: "credits"
+      presets:
+        - label: "Mid-scale project"
+          value: 1500000
+          description: "Substantial computational needs"
+        - label: "Large project"
+          value: 2500000
+          description: "Major research computing"
+        - label: "Full Accelerate allocation"
+          value: 3000000
+          description: "Maximum for Accelerate tier"
+
+  - slug: access-maximize
+    name: "ACCESS Maximize"
+    category: external
+    description: "Large-scale national HPC allocation (no upper limit)"
+
+    comparison_features:
+      free_nsf:
+        value: full
+        detail: "100% NSF-funded"
+      merit_based:
+        value: full
+        detail: "10-page proposal; formal AARC review"
+      national_scale:
+        value: full
+        detail: "Access to top supercomputing centers"
+      gpu_available:
+        value: full
+        detail: "GPUs available on most resources"
+      large_scale:
+        value: full
+        detail: "No upper limit"
+      beginner_friendly:
+        value: none
+        detail: "Semi-annual review; 3-4 month process"
+
+    long_description: |
+      ACCESS (Advanced Cyberinfrastructure Coordination Ecosystem) provides
+      merit-based allocations to NSF-funded national supercomputing resources.
+
+      **Maximize tier** is for large-scale research requiring resources beyond
+      what Accelerate can provide. There is no upper limit on allocation size,
+      though individual resource providers may have limits.
+
+      **Review cycle:** Semi-annual (submissions in Jan and July)
+      - December 15 - January 31: Awards start April 1
+      - June 15 - July 31: Awards start October 1
+
+      **Requirements:** 10-page proposal, progress report (3 pages),
+      code performance data (5 pages), PI CVs.
+    documentation_url: "https://allocations.access-ci.org/"
+
+    cost_model:
+      type: unit
+      unit: "credits"
+      unit_label: "ACCESS Credits"
+      price: 0.00
+      billing_period: one-time
+      note: |
+        Free NSF-funded resource. No upper credit limit.
+        Requires formal AARC panel review. Semi-annual submission windows.
+
+    subsidies:
+      - slug: nsf-funded
+        name: "NSF Funded"
+        description: "No cost to researchers - funded by NSF"
+        condition: null
+        discount_type: percent
+        discount_value: 100
+        auto_apply: true
+
+    acknowledgment:
+      required: true
+      title: "ACCESS Maximize Requirements"
+      message: |
+        Maximize requests undergo formal AARC panel review with semi-annual
+        submission windows. Plan 3-4 months from submission to award start.
+      items:
+        - "Semi-annual submission windows (Jan and July)"
+        - "Requires 10-page proposal with detailed justification"
+        - "Must include code performance and scaling data (5 pages)"
+        - "Progress report required (3 pages) for renewals"
+        - "Formal panel review with structured evaluation rubric"
+
+    archive_option: null
+
+    estimation:
+      prompt: "How many ACCESS credits do you need?"
+      default_value: 5000000
+      min_value: 3000000
+      max_value: 50000000
+      step: 1000000
+      unit_display: "credits"
+      presets:
+        - label: "Large-scale"
+          value: 5000000
+          description: "Significant national resource use"
+        - label: "Very large"
+          value: 10000000
+          description: "Major computational campaign"
+        - label: "Massive scale"
+          value: 25000000
+          description: "Exceptional resource requirements"

@@ -1,0 +1,735 @@
+# Service-to-tier mappings with metadata
+# If a service-tier combination is not listed, that service
+# is NOT available for that tier.
+
+mappings:
+  # =============================================================================
+  # HPC CLUSTER - Low/Medium only
+  # =============================================================================
+
+  # HPC Free Tier
+  - service: hpc-free
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "hpc-free/default"
+
+  - service: hpc-free
+    tier: medium
+    approval: automatic
+    notes: |
+      Free tier has resource limits. Data must remain on cluster filesystems.
+    dmp_template: "hpc-free/default"
+
+  # HPC Compute (CPU)
+  - service: hpc-compute
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "hpc-compute/default"
+
+  - service: hpc-compute
+    tier: medium
+    approval: automatic
+    notes: |
+      Data must remain on cluster filesystems during processing.
+      Do not copy data to personal devices.
+    dmp_template: "hpc-compute/default"
+
+  # HPC GPU (V100)
+  - service: hpc-gpu
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "hpc-gpu/default"
+
+  - service: hpc-gpu
+    tier: medium
+    approval: automatic
+    notes: |
+      Data must remain on cluster filesystems during processing.
+      V100s best for simulation; consider K8s cluster for heavy ML.
+    dmp_template: "hpc-gpu/default"
+
+  # HPC Storage (Isilon)
+  - service: hpc-storage
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "hpc-storage/default"
+
+  - service: hpc-storage
+    tier: medium
+    approval: automatic
+    notes: |
+      Encryption at rest enabled by default.
+      Data accessible from HPC compute nodes.
+    dmp_template: "hpc-storage/default"
+
+  # =============================================================================
+  # KUBERNETES CLUSTER - Low/Medium only (Beta)
+  # =============================================================================
+
+  - service: k8s-cluster
+    tier: low
+    approval: review
+    approval_contact: "k8s-beta@northwinds.edu"
+    notes: |
+      Beta access requires application approval.
+      Submit your use case and container experience to k8s-beta@northwinds.edu.
+    dmp_template: "k8s-cluster/default"
+
+  - service: k8s-cluster
+    tier: medium
+    approval: review
+    approval_contact: "k8s-beta@northwinds.edu"
+    notes: |
+      Beta access requires application approval.
+      Workloads must use appropriate network policies.
+    dmp_template: "k8s-cluster/default"
+
+  # =============================================================================
+  # GLOBUS & iRODS - Low/Medium only
+  # =============================================================================
+
+  - service: globus-transfer
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "globus-transfer/default"
+
+  - service: globus-transfer
+    tier: medium
+    approval: automatic
+    notes: |
+      Use Globus encryption for transfers containing proprietary data.
+    dmp_template: "globus-transfer/default"
+
+  - service: globus-storage
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "globus-storage/default"
+
+  - service: globus-storage
+    tier: medium
+    approval: automatic
+    notes: |
+      Encryption at rest enabled. Verify recipient endpoint security before sharing.
+    dmp_template: "globus-storage/default"
+
+  # =============================================================================
+  # AWS CLOUD - Low through High
+  # =============================================================================
+
+  # AWS Compute - Small
+  - service: aws-compute-small
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-compute/default"
+
+  - service: aws-compute-small
+    tier: medium
+    approval: automatic
+    notes: |
+      Use private VPCs. Enable CloudTrail logging for audit compliance.
+    dmp_template: "cloud-compute/default"
+
+  - service: aws-compute-small
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Dedicated VPC with restricted access
+      - All data encrypted with customer-managed KMS keys
+      - Requires completed cloud security assessment
+    dmp_template: "cloud-compute/high"
+
+  # AWS Compute - Medium
+  - service: aws-compute-medium
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-compute/default"
+
+  - service: aws-compute-medium
+    tier: medium
+    approval: automatic
+    notes: |
+      Use private VPCs. Enable CloudTrail logging for audit compliance.
+    dmp_template: "cloud-compute/default"
+
+  - service: aws-compute-medium
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Dedicated VPC with restricted access
+      - All data encrypted with customer-managed KMS keys
+      - Requires completed cloud security assessment
+    dmp_template: "cloud-compute/high"
+
+  # AWS Compute - Large
+  - service: aws-compute-large
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-compute/default"
+
+  - service: aws-compute-large
+    tier: medium
+    approval: automatic
+    notes: |
+      Use private VPCs. Enable CloudTrail logging for audit compliance.
+    dmp_template: "cloud-compute/default"
+
+  - service: aws-compute-large
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Dedicated VPC with restricted access
+      - All data encrypted with customer-managed KMS keys
+      - Requires completed cloud security assessment
+    dmp_template: "cloud-compute/high"
+
+  # AWS Storage - Hot
+  - service: aws-storage-hot
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-storage/default"
+
+  - service: aws-storage-hot
+    tier: medium
+    approval: automatic
+    notes: |
+      Enable bucket versioning and access logging.
+    dmp_template: "cloud-storage/default"
+
+  - service: aws-storage-hot
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Block public access
+      - Server-side encryption with KMS
+      - Access logging required
+    dmp_template: "cloud-storage/high"
+
+  # AWS Storage - Cold
+  - service: aws-storage-cold
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-storage/default"
+
+  - service: aws-storage-cold
+    tier: medium
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-storage/default"
+
+  - service: aws-storage-cold
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      Same security requirements as hot storage.
+    dmp_template: "cloud-storage/high"
+
+  # AWS Storage - Archive
+  - service: aws-storage-archive
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-storage/archive"
+
+  - service: aws-storage-archive
+    tier: medium
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-storage/archive"
+
+  - service: aws-storage-archive
+    tier: high
+    approval: automatic
+    notes: |
+      Archive tier maintains same security controls as source storage.
+    dmp_template: "cloud-storage/archive"
+
+  # =============================================================================
+  # AZURE CLOUD - Low through High
+  # =============================================================================
+
+  # Azure Compute - Small
+  - service: azure-compute-small
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-compute/default"
+
+  - service: azure-compute-small
+    tier: medium
+    approval: automatic
+    notes: |
+      Use virtual networks with appropriate NSGs. Enable Azure Monitor logging.
+    dmp_template: "cloud-compute/default"
+
+  - service: azure-compute-small
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Dedicated resource group
+      - Azure Policy enforcement
+      - All data encrypted with customer-managed keys
+      - Requires completed cloud security assessment
+    dmp_template: "cloud-compute/high"
+
+  # Azure Compute - Medium
+  - service: azure-compute-medium
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-compute/default"
+
+  - service: azure-compute-medium
+    tier: medium
+    approval: automatic
+    notes: |
+      Use virtual networks with appropriate NSGs. Enable Azure Monitor logging.
+    dmp_template: "cloud-compute/default"
+
+  - service: azure-compute-medium
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Dedicated resource group
+      - Azure Policy enforcement
+      - All data encrypted with customer-managed keys
+      - Requires completed cloud security assessment
+    dmp_template: "cloud-compute/high"
+
+  # Azure Compute - Large
+  - service: azure-compute-large
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-compute/default"
+
+  - service: azure-compute-large
+    tier: medium
+    approval: automatic
+    notes: |
+      Use virtual networks with appropriate NSGs. Enable Azure Monitor logging.
+    dmp_template: "cloud-compute/default"
+
+  - service: azure-compute-large
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Dedicated resource group
+      - Azure Policy enforcement
+      - All data encrypted with customer-managed keys
+      - Requires completed cloud security assessment
+    dmp_template: "cloud-compute/high"
+
+  # Azure Storage - Hot
+  - service: azure-storage-hot
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-storage/default"
+
+  - service: azure-storage-hot
+    tier: medium
+    approval: automatic
+    notes: |
+      Enable soft delete and access logging.
+    dmp_template: "cloud-storage/default"
+
+  - service: azure-storage-hot
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Private endpoints only
+      - Customer-managed encryption keys
+      - Access logging required
+    dmp_template: "cloud-storage/high"
+
+  # Azure Storage - Cold
+  - service: azure-storage-cold
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-storage/default"
+
+  - service: azure-storage-cold
+    tier: medium
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-storage/default"
+
+  - service: azure-storage-cold
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      Same security requirements as hot storage.
+    dmp_template: "cloud-storage/high"
+
+  # Azure Storage - Archive
+  - service: azure-storage-archive
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-storage/archive"
+
+  - service: azure-storage-archive
+    tier: medium
+    approval: automatic
+    notes: null
+    dmp_template: "cloud-storage/archive"
+
+  - service: azure-storage-archive
+    tier: high
+    approval: automatic
+    notes: |
+      Archive tier maintains same security controls as source storage.
+    dmp_template: "cloud-storage/archive"
+
+  # =============================================================================
+  # UNIVERSITY SERVICES - Low through High
+  # =============================================================================
+
+  # University File Server (NWFiles)
+  - service: nwfiles
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "nwfiles/default"
+
+  - service: nwfiles
+    tier: medium
+    approval: automatic
+    notes: |
+      Encryption at rest enabled. Use departmental share for collaboration.
+    dmp_template: "nwfiles/default"
+
+  - service: nwfiles
+    tier: high
+    approval: review
+    approval_contact: "storage-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Isolated project folder with restricted access
+      - Access logging enabled
+      - Annual access review required
+    dmp_template: "nwfiles/high"
+
+  # OneDrive
+  - service: onedrive
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "onedrive/default"
+
+  - service: onedrive
+    tier: medium
+    approval: automatic
+    notes: |
+      Ensure sharing is restricted to authorized collaborators only.
+    dmp_template: "onedrive/default"
+
+  - service: onedrive
+    tier: high
+    approval: automatic
+    notes: |
+      OneDrive is covered under Microsoft BAA for high-tier data.
+      Ensure sharing is disabled or restricted to authorized personnel.
+      Use sensitivity labels where appropriate.
+    dmp_template: "onedrive/high"
+
+  # LabArchives
+  - service: labarchives
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "labarchives/default"
+
+  - service: labarchives
+    tier: medium
+    approval: automatic
+    notes: |
+      Suitable for lab documentation with medium-tier data.
+      Do not store large datasets - use appropriate storage for bulk data.
+    dmp_template: "labarchives/default"
+
+  - service: labarchives
+    tier: high
+    approval: automatic
+    notes: |
+      LabArchives is approved for high-tier lab documentation.
+      Ensure notebook permissions are restricted to authorized personnel.
+    dmp_template: "labarchives/high"
+
+  # Azure OpenAI - Low/Medium only
+  - service: azure-openai
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "azure-openai/default"
+
+  - service: azure-openai
+    tier: medium
+    approval: automatic
+    notes: |
+      Do not include sensitive or proprietary data in prompts.
+      Use for general analysis, not for processing protected data.
+    dmp_template: "azure-openai/default"
+
+  # =============================================================================
+  # VDI & SECURE ENVIRONMENTS - All Tiers
+  # =============================================================================
+
+  # Research VDI - Silver
+  - service: research-vdi-silver
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "research-vdi/default"
+
+  - service: research-vdi-silver
+    tier: medium
+    approval: automatic
+    notes: |
+      VMs are isolated per user. Use network storage for data that needs backup.
+    dmp_template: "research-vdi/default"
+
+  - service: research-vdi-silver
+    tier: high
+    approval: automatic
+    notes: |
+      VDI includes encryption at rest and daily backups.
+      Ensure Azure AD MFA is enabled. Do not transfer data to personal devices.
+    dmp_template: "research-vdi/high"
+
+  - service: research-vdi-silver
+    tier: restricted
+    approval: review
+    approval_contact: "security@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Isolated network segment
+      - No internet access from VM
+      - Session logging may be required
+    dmp_template: null
+
+  # Research VDI - Gold
+  - service: research-vdi-gold
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "research-vdi/default"
+
+  - service: research-vdi-gold
+    tier: medium
+    approval: automatic
+    notes: |
+      VMs are isolated per user. Use network storage for data that needs backup.
+    dmp_template: "research-vdi/default"
+
+  - service: research-vdi-gold
+    tier: high
+    approval: automatic
+    notes: |
+      VDI includes encryption at rest and daily backups.
+      Ensure Azure AD MFA is enabled. Do not transfer data to personal devices.
+    dmp_template: "research-vdi/high"
+
+  - service: research-vdi-gold
+    tier: restricted
+    approval: review
+    approval_contact: "security@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Isolated network segment
+      - No internet access from VM
+      - Session logging may be required
+    dmp_template: null
+
+  # Research VDI - Platinum
+  - service: research-vdi-platinum
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "research-vdi/default"
+
+  - service: research-vdi-platinum
+    tier: medium
+    approval: automatic
+    notes: |
+      VMs are isolated per user. Use network storage for data that needs backup.
+    dmp_template: "research-vdi/default"
+
+  - service: research-vdi-platinum
+    tier: high
+    approval: automatic
+    notes: |
+      VDI includes encryption at rest and daily backups.
+      Ensure Azure AD MFA is enabled. Do not transfer data to personal devices.
+    dmp_template: "research-vdi/high"
+
+  - service: research-vdi-platinum
+    tier: restricted
+    approval: review
+    approval_contact: "security@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Isolated network segment
+      - No internet access from VM
+      - Session logging may be required
+    dmp_template: null
+
+  # Web Hosting
+  - service: web-hosting
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "web-hosting/default"
+
+  - service: web-hosting
+    tier: medium
+    approval: automatic
+    notes: |
+      Use Azure AD authentication for access control.
+      Enable application logging and monitoring.
+    dmp_template: "web-hosting/default"
+
+  - service: web-hosting
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Private endpoints only
+      - WAF and DDoS protection enabled
+      - Security assessment required before deployment
+    dmp_template: "web-hosting/high"
+
+  # Secure Enclave - Restricted only
+  - service: secure-enclave
+    tier: restricted
+    approval: consultation
+    approval_contact: "security@northwinds.edu"
+    notes: |
+      Secure enclaves are provisioned through consultation.
+      Allow 4-8 weeks lead time for setup.
+    dmp_template: null
+
+  # =============================================================================
+  # SUPPORT SERVICES - All Tiers
+  # =============================================================================
+
+  - service: rc-consultation
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "rc-consultation/default"
+
+  - service: rc-consultation
+    tier: medium
+    approval: automatic
+    notes: null
+    dmp_template: "rc-consultation/default"
+
+  - service: rc-consultation
+    tier: high
+    approval: automatic
+    notes: |
+      Consultation for high-tier projects may involve security team members.
+    dmp_template: "rc-consultation/default"
+
+  - service: rc-consultation
+    tier: restricted
+    approval: automatic
+    notes: |
+      Consultation for restricted-tier projects requires security team participation.
+    dmp_template: "rc-consultation/default"
+
+  # =============================================================================
+  # ACCESS ALLOCATIONS (NSF National Resources) - Low/Medium only
+  # =============================================================================
+
+  # ACCESS Explore (up to 400K credits)
+  - service: access-explore
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "access/explore"
+
+  - service: access-explore
+    tier: medium
+    approval: automatic
+    notes: |
+      ACCESS resources are shared national infrastructure. Do not store
+      proprietary or export-controlled data on ACCESS systems.
+    dmp_template: "access/explore"
+
+  # ACCESS Discover (up to 1.5M credits)
+  - service: access-discover
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "access/discover"
+
+  - service: access-discover
+    tier: medium
+    approval: automatic
+    notes: |
+      ACCESS resources are shared national infrastructure. Do not store
+      proprietary or export-controlled data on ACCESS systems.
+    dmp_template: "access/discover"
+
+  # ACCESS Accelerate (up to 3M credits)
+  - service: access-accelerate
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "access/accelerate"
+
+  - service: access-accelerate
+    tier: medium
+    approval: automatic
+    notes: |
+      ACCESS resources are shared national infrastructure. Do not store
+      proprietary or export-controlled data on ACCESS systems.
+    dmp_template: "access/accelerate"
+
+  # ACCESS Maximize (no upper limit)
+  - service: access-maximize
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "access/maximize"
+
+  - service: access-maximize
+    tier: medium
+    approval: automatic
+    notes: |
+      ACCESS resources are shared national infrastructure. Do not store
+      proprietary or export-controlled data on ACCESS systems.
+    dmp_template: "access/maximize"

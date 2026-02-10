@@ -1,0 +1,49 @@
+# =============================================================================
+# MINIMAL CONFIG: tiers.yaml
+# =============================================================================
+# This is a minimal 2-tier configuration.
+# Most institutions use 3-4 tiers. Expand as needed.
+# =============================================================================
+
+tiers:
+  # -------------------------------------------------------------------------
+  # TIER 1: Standard / Non-sensitive
+  # -------------------------------------------------------------------------
+  - slug: standard
+    name: "Standard"
+    short_name: "Standard"
+    description: "Non-sensitive research data"
+    color: "green"                # UI color: green, yellow, orange, red
+
+    # Examples help users understand what belongs here
+    examples:
+      - "Published datasets"
+      - "Public domain images"
+      - "Pre-publication manuscripts"
+      - "Non-identifiable survey data"
+
+    # Workflow settings
+    self_service: true            # Users can provision without approval
+    consultation_required: false  # No consultation needed
+
+  # -------------------------------------------------------------------------
+  # TIER 2: Sensitive / Regulated
+  # -------------------------------------------------------------------------
+  - slug: sensitive
+    name: "Sensitive"
+    short_name: "Sensitive"
+    description: "PHI, PII, or other regulated data requiring compliance controls"
+    color: "orange"
+
+    examples:
+      - "Patient medical records (HIPAA)"
+      - "Student education records (FERPA)"
+      - "Identifiable human subjects data"
+
+    # Workflow settings
+    self_service: false           # Requires RC involvement
+    consultation_required: true   # Must consult before provisioning
+    show_workflow_modal: true     # Show compliance workflow when selected
+
+# Default tier if user doesn't complete questionnaire
+default_tier: standard

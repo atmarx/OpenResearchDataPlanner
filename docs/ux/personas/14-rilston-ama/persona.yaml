@@ -1,0 +1,82 @@
+id: "rilston-ama"
+name: "Dr. Ama Rilston"
+department: "Genetics"
+title: "Professor"
+specialty: "DNA sequencing, genomics, core facility director"
+tech_level: "medium"
+years_at_institution: 12
+
+archetype: "compliance_expert"
+vibe: "Runs a sequencing core facility. Processes human, mouse, and bird DNA. Knows compliance requirements cold. Has projects in all three standard tiers."
+frustrations:
+  - "People don't understand that human DNA and mouse DNA require completely different handling"
+  - "IRB requirements keep changing and I have to keep up"
+  - "I spend more time on compliance paperwork than on actual science"
+hopes:
+  - "A tool that understands the nuance between different data types"
+  - "Something that helps me explain requirements to my collaborators"
+
+workarounds:
+  - type: "departmental_it"
+    description: "Works closely with genetics IT and IRB office"
+  - type: "custom_scripts"
+    description: "Elaborate tracking system for which samples go where"
+
+lab:
+  name: "Rilston Genomics Core Facility"
+  size: 7
+  composition:
+    postdocs: 1
+    phd_students: 4
+    masters_students: 1
+    undergrads: 1
+  tech_person: "Core facility staff handle sequencing, students handle analysis"
+
+projects:
+  - id: "rilston-cancer"
+    title: "Human Cancer Genomics Study"
+    tier: "high"
+    tier_justification: "HIPAA-covered human subjects data, NIH genomic data sharing policy applies"
+    type: "compute_heavy"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 45000
+      pattern: "bursty"
+    storage:
+      active_tb: 12
+      archive_tb: 12
+    retention: "nih_genomic"
+    grant_years: 5
+    team_size: 5
+
+  - id: "rilston-mouse"
+    title: "Mouse Colony Breeding Study"
+    tier: "medium"
+    tier_justification: "Proprietary mouse strain, unpublished breeding data"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 15000
+      pattern: "sustained"
+    storage:
+      active_tb: 6
+      archive_tb: 4
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 3
+
+  - id: "rilston-museum"
+    title: "Museum Bird DNA Barcoding Initiative"
+    tier: "low"
+    tier_justification: "Open science collaboration with natural history museum, all data public"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 10000
+      pattern: "bursty"
+    storage:
+      active_tb: 4
+      archive_tb: 3
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 3
