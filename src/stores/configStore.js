@@ -6,6 +6,11 @@ export const useConfigStore = defineStore('config', () => {
   const loading = ref(true)
   const error = ref(null)
 
+  // Direct access to arrays
+  const tiers = computed(() => config.value?.tiers || [])
+  const categories = computed(() => config.value?.categories || [])
+  const services = computed(() => config.value?.services || [])
+
   // Computed lookups for quick access
   const tiersBySlug = computed(() => {
     if (!config.value?.tiers) return {}
@@ -103,6 +108,11 @@ export const useConfigStore = defineStore('config', () => {
     config,
     loading,
     error,
+
+    // Direct array access
+    tiers,
+    categories,
+    services,
 
     // Computed lookups
     tiersBySlug,

@@ -2,8 +2,12 @@ services:
   # =============================================================================
   # HPC CLUSTER (SLURM) - Low/Medium only
   # =============================================================================
+  # Note: HPC services are internal cost centers and typically F&A-exempt.
+  # Set fa_exempt: true for services where indirect costs don't apply.
+  # Cloud services (AWS, Azure) are external purchases and F&A applies by default.
 
   - slug: hpc-free
+    fa_exempt: true  # Internal service center
     name: "HPC Free Tier"
     category: compute
     description: "Free access to HPC with limited CPU and GPU resources"
@@ -75,6 +79,7 @@ services:
           description: "Three-year grant period"
 
   - slug: hpc-compute
+    fa_exempt: true  # Internal service center
     name: "HPC Compute (CPU)"
     category: compute
     description: "CPU compute on SLURM cluster for batch workloads"
@@ -158,6 +163,7 @@ services:
           description: "Continuous large-scale workloads"
 
   - slug: hpc-gpu
+    fa_exempt: true  # Internal service center
     name: "HPC GPU (V100)"
     category: compute
     description: "V100 GPU compute for simulation, FEA, and modest ML workloads"
@@ -240,6 +246,7 @@ services:
           description: "Complex multi-physics simulations"
 
   - slug: hpc-storage
+    fa_exempt: true  # Internal service center
     name: "HPC Storage (Isilon)"
     category: storage
     description: "Persistent storage for HPC workloads (500TB Isilon array)"
@@ -328,6 +335,7 @@ services:
   # =============================================================================
 
   - slug: k8s-cluster
+    fa_exempt: true  # Internal service center
     name: "Kubernetes Cluster (Beta)"
     category: compute
     description: "GPU-accelerated Kubernetes with H200, GH200, and A100 nodes"
@@ -429,6 +437,7 @@ services:
   # =============================================================================
 
   - slug: globus-transfer
+    fa_exempt: true  # Free service
     name: "Globus Data Transfer"
     category: storage
     description: "High-speed data transfer service via Globus"
@@ -497,6 +506,7 @@ services:
           description: "Instrument data, bulk migration"
 
   - slug: globus-storage
+    fa_exempt: true  # Internal service center
     name: "Globus-Connected Storage (iRODS)"
     category: storage
     description: "5PB iRODS-managed storage with Globus connectivity"
@@ -585,6 +595,8 @@ services:
   # =============================================================================
   # AWS CLOUD SERVICES
   # =============================================================================
+  # Note: Cloud services are external purchases and F&A applies by default.
+  # Do not set fa_exempt on cloud services.
 
   - slug: aws-compute-small
     name: "AWS Compute - Small"
@@ -635,7 +647,9 @@ services:
       unit_label: "Dollars"
       price: 1.00
       billing_period: month
-      note: "Pass-through AWS pricing. Estimate ~$75/month for always-on small instance."
+      note: |
+        Pass-through AWS pricing (1:1 cost passthrough, no markup).
+        Reference rates: t3.large ~$0.08/hr ($60/mo), m5.large ~$0.10/hr ($72/mo).
 
     subsidies:
       - slug: aws-credits
@@ -714,7 +728,9 @@ services:
       unit_label: "Dollars"
       price: 1.00
       billing_period: month
-      note: "Pass-through AWS pricing. Estimate ~$300/month for always-on medium instance."
+      note: |
+        Pass-through AWS pricing (1:1 cost passthrough, no markup).
+        Reference rates: m5.2xlarge ~$0.38/hr ($280/mo), r5.2xlarge ~$0.50/hr ($365/mo).
 
     subsidies:
       - slug: aws-credits
@@ -793,7 +809,10 @@ services:
       unit_label: "Dollars"
       price: 1.00
       billing_period: month
-      note: "Pass-through AWS pricing. GPU instances significantly more expensive."
+      note: |
+        Pass-through AWS pricing (1:1 cost passthrough, no markup).
+        Reference rates: m5.8xlarge ~$1.50/hr ($1,100/mo), p3.2xlarge (V100) ~$3/hr,
+        p4d.24xlarge (8×A100) ~$22/hr. GPU instances run $2,200-16,000+/mo at full use.
 
     subsidies:
       - slug: aws-credits
@@ -808,21 +827,24 @@ services:
 
     estimation:
       prompt: "Estimated monthly AWS spend for large/GPU compute?"
-      default_value: 1500
+      default_value: 2000
       min_value: 500
-      max_value: 20000
-      step: 250
+      max_value: 25000
+      step: 500
       unit_display: "$"
       presets:
-        - label: "Large CPU"
-          value: 1000
-          description: "Always-on large instance"
-        - label: "Moderate GPU"
+        - label: "Large CPU only"
+          value: 1200
+          description: "m5.8xlarge always-on (~32 vCPU)"
+        - label: "Single GPU (part-time)"
           value: 3000
-          description: "Regular GPU training jobs"
-        - label: "Heavy GPU"
-          value: 8000
-          description: "Intensive ML training"
+          description: "p3.2xlarge at ~50% utilization"
+        - label: "Single GPU (full-time)"
+          value: 6000
+          description: "p3.2xlarge or p4d always-on"
+        - label: "Multi-GPU training"
+          value: 12000
+          description: "p4d.24xlarge (8×A100) at ~50%"
 
   - slug: aws-storage-hot
     name: "AWS Storage - Hot (S3 Standard)"
@@ -1034,6 +1056,8 @@ services:
   # =============================================================================
   # AZURE CLOUD SERVICES
   # =============================================================================
+  # Note: Cloud services are external purchases and F&A applies by default.
+  # Do not set fa_exempt on cloud services.
 
   - slug: azure-compute-small
     name: "Azure Compute - Small"
@@ -1084,7 +1108,9 @@ services:
       unit_label: "Dollars"
       price: 1.00
       billing_period: month
-      note: "Pass-through Azure pricing. Estimate ~$75/month for always-on small VM."
+      note: |
+        Pass-through Azure pricing (1:1 cost passthrough, no markup).
+        Reference rates: B2ms ~$0.08/hr ($60/mo), D2as_v5 ~$0.09/hr ($65/mo).
 
     subsidies:
       - slug: azure-credits
@@ -1163,7 +1189,9 @@ services:
       unit_label: "Dollars"
       price: 1.00
       billing_period: month
-      note: "Pass-through Azure pricing. Estimate ~$300/month for always-on medium VM."
+      note: |
+        Pass-through Azure pricing (1:1 cost passthrough, no markup).
+        Reference rates: D8as_v5 ~$0.34/hr ($250/mo), E8as_v5 ~$0.45/hr ($330/mo).
 
     subsidies:
       - slug: azure-credits
@@ -1242,7 +1270,10 @@ services:
       unit_label: "Dollars"
       price: 1.00
       billing_period: month
-      note: "Pass-through Azure pricing. GPU VMs can be $3-30+/hour."
+      note: |
+        Pass-through Azure pricing (1:1 cost passthrough, no markup).
+        Reference rates: D32as_v5 ~$1.35/hr ($990/mo), NC24ads_A100 ~$3.70/hr,
+        NC40ads_H100 ~$7/hr. GPU VMs run $2,700-5,000+/mo at full use.
 
     subsidies:
       - slug: azure-credits
@@ -1257,21 +1288,24 @@ services:
 
     estimation:
       prompt: "Estimated monthly Azure spend for large/GPU compute?"
-      default_value: 1500
+      default_value: 2000
       min_value: 500
-      max_value: 20000
-      step: 250
+      max_value: 25000
+      step: 500
       unit_display: "$"
       presets:
-        - label: "Large CPU"
+        - label: "Large CPU only"
           value: 1000
-          description: "Always-on large VM"
-        - label: "Moderate GPU"
-          value: 3000
-          description: "Regular GPU training"
-        - label: "Heavy GPU"
-          value: 8000
-          description: "Intensive ML training"
+          description: "D32as_v5 always-on (~32 vCPU)"
+        - label: "Single GPU (part-time)"
+          value: 2800
+          description: "NC24ads_A100 at ~50% utilization"
+        - label: "Single GPU (full-time)"
+          value: 5500
+          description: "NC24ads_A100 or NC40_H100 always-on"
+        - label: "Multi-GPU training"
+          value: 12000
+          description: "ND96_H100 (8×H100) at ~50%"
 
   - slug: azure-storage-hot
     name: "Azure Storage - Hot (Blob Hot)"
@@ -1485,6 +1519,7 @@ services:
   # =============================================================================
 
   - slug: nwfiles
+    fa_exempt: true  # Internal service center
     name: "University File Server (NWFiles)"
     category: storage
     description: "Campus network storage for general research files"
@@ -1562,6 +1597,7 @@ services:
           description: "Large datasets, many collaborators"
 
   - slug: onedrive
+    fa_exempt: true  # Included with institutional M365
     name: "OneDrive for Business"
     category: storage
     description: "Cloud storage included with university Microsoft 365"
@@ -1648,6 +1684,7 @@ services:
           description: "Requires paid storage"
 
   - slug: labarchives
+    fa_exempt: true  # Institutional license
     name: "LabArchives ELN"
     category: storage
     description: "Electronic lab notebook with institutional license"
@@ -1735,6 +1772,7 @@ services:
           description: "Individual notebooks per team member"
 
   - slug: azure-openai
+    fa_exempt: true  # Internal institutional service
     name: "Azure OpenAI Service"
     category: api
     description: "GPT-4, embeddings, and other Azure-hosted AI models"
@@ -1777,6 +1815,7 @@ services:
   # =============================================================================
 
   - slug: research-vdi-silver
+    fa_exempt: true  # Internal service center
     name: "Research VDI - Silver"
     category: environment
     description: "Entry-level virtual desktop (4 vCPU, 16GB RAM) with daily backups"
@@ -1841,6 +1880,7 @@ services:
           description: "VMs for small group"
 
   - slug: research-vdi-gold
+    fa_exempt: true  # Internal service center
     name: "Research VDI - Gold"
     category: environment
     description: "Mid-tier virtual desktop (8 vCPU, 32GB RAM) with daily backups"
@@ -1905,6 +1945,7 @@ services:
           description: "VMs for data analysis group"
 
   - slug: research-vdi-platinum
+    fa_exempt: true  # Internal service center
     name: "Research VDI - Platinum"
     category: environment
     description: "High-performance virtual desktop (16 vCPU, 64GB RAM) with daily backups"
@@ -1966,6 +2007,7 @@ services:
           description: "One high-memory VM"
 
   - slug: secure-enclave
+    fa_exempt: true  # Internal service center
     name: "Secure Research Enclave"
     category: environment
     description: "Isolated environment for restricted data"
@@ -2014,6 +2056,7 @@ services:
     estimation: null
 
   - slug: web-hosting
+    # Note: Web hosting uses Azure but is pass-through; F&A may apply depending on structure
     name: "Research Web Hosting"
     category: environment
     description: "Managed web application hosting on Azure with CI/CD pipelines"
@@ -2059,8 +2102,9 @@ services:
       price: 1.00
       billing_period: month
       note: |
-        Pass-through Azure pricing with no overhead. Typical small applications
-        run $50-150/month. Complex applications with databases may run $200-500/month.
+        Pass-through Azure pricing (1:1 cost passthrough, no markup).
+        Typical costs: Static site ~$25/mo, Container App ~$50-100/mo,
+        PostgreSQL ~$50-200/mo. Full stack apps typically $150-400/mo.
         Includes pipeline setup consultation.
 
     subsidies: []
@@ -2084,11 +2128,175 @@ services:
           value: 500
           description: "Multi-service architecture"
 
+  - slug: jupyterhub-shared
+    fa_exempt: true  # Free internal service
+    name: "JupyterHub (Shared)"
+    category: environment
+    description: "Free browser-based Jupyter notebooks on shared HPC backend"
+
+    comparison_features:
+      dedicated_resources:
+        value: none
+        detail: "Shared system with resource limits"
+      gui_desktop:
+        value: none
+        detail: "Notebook interface only"
+      web_accessible:
+        value: full
+        detail: "Browser-based, campus or VPN"
+      admin_control:
+        value: partial
+        detail: "Install packages in your environment"
+      high_tier_data:
+        value: none
+        detail: "L1/L2 data only"
+      scalable:
+        value: partial
+        detail: "Spawns HPC jobs for compute"
+      preconfigured_software:
+        value: full
+        detail: "Python, R, Julia pre-installed"
+      cost_predictable:
+        value: full
+        detail: "Free"
+
+    long_description: |
+      Shared JupyterHub provides free browser-based access to Jupyter notebooks
+      backed by HPC compute resources. Includes Python, R, and Julia kernels
+      with common data science packages pre-installed.
+
+      **Features:**
+      - L1/L2 data only (no sensitive/regulated data)
+      - Spawns jobs on HPC cluster
+      - 4-hour session limit
+      - Pre-installed scientific Python stack (numpy, pandas, scikit-learn, etc.)
+      - Conda environments for custom packages
+
+      **Limitations:**
+      - Shared resources; may queue during peak times
+      - Not approved for L3/High tier data
+      - For dedicated resources or sensitive data, see JupyterHub (Dedicated)
+
+    documentation_url: "https://docs.northwinds.edu/jupyterhub"
+
+    cost_model:
+      type: unit
+      unit: "month"
+      unit_label: "Month"
+      price: 0.00
+      billing_period: month
+      note: "Free for L1/L2 data. See JupyterHub (Dedicated) for high-tier data."
+
+    subsidies: []
+    archive_option: null
+
+    recommended_with:
+      - service: hpc-storage
+        reason: "Persistent storage for notebooks and data"
+
+    estimation:
+      prompt: "How many months do you need JupyterHub access?"
+      default_value: 12
+      min_value: 1
+      max_value: 60
+      step: 1
+      presets:
+        - label: "One year"
+          value: 12
+          description: "Standard grant year"
+        - label: "Full grant"
+          value: 36
+          description: "Three-year grant period"
+
+  - slug: jupyterhub-dedicated
+    fa_exempt: true  # Internal service center
+    name: "JupyterHub (Dedicated)"
+    category: environment
+    description: "Dedicated Jupyter environment for sensitive data (L3/High tier)"
+
+    comparison_features:
+      dedicated_resources:
+        value: full
+        detail: "8 vCPU, 32GB RAM guaranteed"
+      gui_desktop:
+        value: none
+        detail: "Notebook interface only"
+      web_accessible:
+        value: full
+        detail: "Browser-based, campus or VPN"
+      admin_control:
+        value: full
+        detail: "Full control over packages and config"
+      high_tier_data:
+        value: full
+        detail: "Approved for L3/High tier data"
+      scalable:
+        value: partial
+        detail: "Upgrade VM size on request"
+      preconfigured_software:
+        value: full
+        detail: "Python, R, Julia pre-installed"
+      cost_predictable:
+        value: full
+        detail: "$150/month fixed"
+
+    long_description: |
+      Dedicated JupyterHub provides an isolated Jupyter environment running on
+      VDI infrastructure, approved for L3/High tier and regulated data.
+
+      **Features:**
+      - Dedicated VM (8 vCPU, 32GB RAM, 200GB disk)
+      - Approved for L3/High tier data including PHI
+      - Full control over packages and configurations
+      - Daily backups with 30-day retention
+      - Isolated network environment
+      - Azure AD authentication with MFA
+
+      **Use cases:**
+      - Analysis of sensitive research data
+      - IRB-governed human subjects data
+      - Proprietary or export-controlled data
+      - Custom ML environments with specific package requirements
+
+      Runs on the same VDI infrastructure as Research VDI Gold.
+
+    documentation_url: "https://docs.northwinds.edu/jupyterhub"
+
+    cost_model:
+      type: unit
+      unit: "VM-month"
+      unit_label: "VM Month"
+      price: 150.00
+      billing_period: month
+      note: "Dedicated VDI-based Jupyter environment. Same pricing as Research VDI Gold."
+
+    subsidies: []
+    archive_option: null
+
+    recommended_with:
+      - service: nwfiles
+        reason: "Secure storage accessible from dedicated environment"
+
+    estimation:
+      prompt: "How many dedicated JupyterHub VMs do you need?"
+      default_value: 1
+      min_value: 1
+      max_value: 10
+      step: 1
+      presets:
+        - label: "Single researcher"
+          value: 1
+          description: "One dedicated environment"
+        - label: "Small team"
+          value: 3
+          description: "Environments for analysis team"
+
   # =============================================================================
   # SUPPORT SERVICES
   # =============================================================================
 
   - slug: rc-consultation
+    fa_exempt: true  # Internal service center
     name: "Research Computing Consultation"
     category: support
     description: "Expert guidance and implementation support from RC specialists"
@@ -2142,6 +2350,7 @@ services:
   # =============================================================================
 
   - slug: access-explore
+    fa_exempt: true  # NSF-funded, no cost
     name: "ACCESS Explore"
     category: external
     description: "Entry-level national HPC allocation (up to 400,000 credits)"
@@ -2235,6 +2444,7 @@ services:
           description: "Maximum for Explore tier"
 
   - slug: access-discover
+    fa_exempt: true  # NSF-funded, no cost
     name: "ACCESS Discover"
     category: external
     description: "Mid-level national HPC allocation (up to 1.5M credits)"
@@ -2329,6 +2539,7 @@ services:
           description: "Maximum for Discover tier"
 
   - slug: access-accelerate
+    fa_exempt: true  # NSF-funded, no cost
     name: "ACCESS Accelerate"
     category: external
     description: "Mid-scale national HPC allocation (up to 3M credits)"
@@ -2424,6 +2635,7 @@ services:
           description: "Maximum for Accelerate tier"
 
   - slug: access-maximize
+    fa_exempt: true  # NSF-funded, no cost
     name: "ACCESS Maximize"
     category: external
     description: "Large-scale national HPC allocation (no upper limit)"

@@ -89,7 +89,10 @@ No backend required.
 
 | Document | Feature |
 |----------|---------|
-| [ELI5-IMPLEMENTATION.md](docs/ELI5-IMPLEMENTATION.md) | Help Me Estimate calculators |
+| [EXPLORE-FIRST.md](docs/EXPLORE-FIRST.md) | Pre-wizard discovery tools |
+| [CALCULATORS.md](docs/CALCULATORS.md) | Individual calculator UI specs |
+| [CALCULATORS-IDENTIFICATION.md](docs/CALCULATORS-IDENTIFICATION.md) | Data identification status helper |
+| [ELI5-IMPLEMENTATION.md](docs/ELI5-IMPLEMENTATION.md) | Calculator architecture |
 | [COMPARISON-FEATURES.md](docs/COMPARISON-FEATURES.md) | Service comparison matrix |
 | [TIER-QUESTIONNAIRE.md](docs/TIER-QUESTIONNAIRE.md) | Data classification helper |
 | [SOFTWARE-CATALOG.md](docs/SOFTWARE-CATALOG.md) | Licensed software lookup |
@@ -97,6 +100,7 @@ No backend required.
 | [POST-WIZARD-ONBOARDING.md](docs/POST-WIZARD-ONBOARDING.md) | Next steps after wizard |
 | [CONCEPT-GRAPH.md](docs/CONCEPT-GRAPH.md) | Policy governance framework |
 | [MULTI-SESSION.md](docs/MULTI-SESSION.md) | Drafts and folder sync |
+| [REQUEST-GATEWAY.md](docs/REQUEST-GATEWAY.md) | Ticketing system integration API |
 | [V2-PLANNING.md](docs/V2-PLANNING.md) | Future roadmap |
 
 ## Design Principles

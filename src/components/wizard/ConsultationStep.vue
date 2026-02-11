@@ -2,12 +2,14 @@
 import { computed } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
+import { usePreferencesStore } from '@/stores/preferencesStore'
 import { Shield, Mail, ExternalLink, ArrowLeft } from 'lucide-vue-next'
 
 const emit = defineEmits(['back'])
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
+const preferencesStore = usePreferencesStore()
 
 const tier = computed(() =>
   configStore.tiersBySlug[sessionStore.selectedTier]
@@ -26,24 +28,42 @@ const consultationUrl = computed(() =>
 <template>
   <div class="p-8">
     <div class="max-w-2xl mx-auto text-center">
-      <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-        <Shield class="w-8 h-8 text-red-600" />
+      <div
+        class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+        :class="preferencesStore.darkMode ? 'bg-red-900/50' : 'bg-red-100'"
+      >
+        <Shield class="w-8 h-8 text-red-500" />
       </div>
 
-      <h2 class="text-2xl font-bold text-gray-900 mb-4">
+      <h2
+        class="text-2xl font-bold mb-4"
+        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+      >
         Consultation Required
       </h2>
 
-      <div class="bg-red-50 rounded-lg p-6 mb-8 text-left">
-        <h3 class="font-semibold text-red-900 mb-2">
+      <div
+        class="rounded-lg p-6 mb-8 text-left"
+        :class="preferencesStore.darkMode ? 'bg-red-900/30' : 'bg-red-50'"
+      >
+        <h3
+          class="font-semibold mb-2"
+          :class="preferencesStore.darkMode ? 'text-red-300' : 'text-red-900'"
+        >
           {{ tier?.name }} Data Classification
         </h3>
-        <p class="text-red-800 whitespace-pre-line">
+        <p
+          class="whitespace-pre-line"
+          :class="preferencesStore.darkMode ? 'text-red-200' : 'text-red-800'"
+        >
           {{ tier?.consultation_message }}
         </p>
       </div>
 
-      <p class="text-gray-600 mb-8">
+      <p
+        class="mb-8"
+        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+      >
         Projects at this security tier require custom infrastructure and pricing
         that cannot be estimated through this self-service tool. Our security
         team will work with you to:
@@ -51,34 +71,46 @@ const consultationUrl = computed(() =>
 
       <ul class="text-left space-y-3 mb-8 max-w-md mx-auto">
         <li class="flex items-start gap-3">
-          <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-            <span class="text-blue-600 text-sm font-medium">1</span>
+          <span
+            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+            :class="preferencesStore.darkMode ? 'bg-blue-900/50' : 'bg-blue-100'"
+          >
+            <span class="text-blue-500 text-sm font-medium">1</span>
           </span>
-          <span class="text-gray-700">
+          <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
             Assess your specific security and compliance requirements
           </span>
         </li>
         <li class="flex items-start gap-3">
-          <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-            <span class="text-blue-600 text-sm font-medium">2</span>
+          <span
+            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+            :class="preferencesStore.darkMode ? 'bg-blue-900/50' : 'bg-blue-100'"
+          >
+            <span class="text-blue-500 text-sm font-medium">2</span>
           </span>
-          <span class="text-gray-700">
+          <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
             Design an appropriate secure enclave configuration
           </span>
         </li>
         <li class="flex items-start gap-3">
-          <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-            <span class="text-blue-600 text-sm font-medium">3</span>
+          <span
+            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+            :class="preferencesStore.darkMode ? 'bg-blue-900/50' : 'bg-blue-100'"
+          >
+            <span class="text-blue-500 text-sm font-medium">3</span>
           </span>
-          <span class="text-gray-700">
+          <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
             Provide a detailed cost estimate for your proposal
           </span>
         </li>
         <li class="flex items-start gap-3">
-          <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-            <span class="text-blue-600 text-sm font-medium">4</span>
+          <span
+            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+            :class="preferencesStore.darkMode ? 'bg-blue-900/50' : 'bg-blue-100'"
+          >
+            <span class="text-blue-500 text-sm font-medium">4</span>
           </span>
-          <span class="text-gray-700">
+          <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
             Help draft appropriate DMP language for your grant
           </span>
         </li>
@@ -107,14 +139,20 @@ const consultationUrl = computed(() =>
         </a>
       </div>
 
-      <p class="text-sm text-gray-500 mb-8">
+      <p
+        class="text-sm mb-8"
+        :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
+      >
         Please allow 4-8 weeks lead time for secure enclave provisioning.
       </p>
 
       <!-- Back button -->
       <button
         @click="emit('back')"
-        class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900"
+        class="inline-flex items-center gap-2"
+        :class="preferencesStore.darkMode
+          ? 'text-gray-400 hover:text-gray-200'
+          : 'text-gray-600 hover:text-gray-900'"
       >
         <ArrowLeft class="w-4 h-4" />
         Back to tier selection

@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
+import { useSlateStore } from '@/stores/slateStore'
 
 /**
  * Wizard step definitions
@@ -32,6 +33,11 @@ const ALL_STEPS = [
     component: 'ServiceSelectStep'
   },
   {
+    id: 'software',
+    label: 'Software',
+    component: 'SoftwareStep'
+  },
+  {
     id: 'estimate',
     label: 'Estimates',
     component: 'EstimateStep'
@@ -53,6 +59,7 @@ const CONSULTATION_STEP = {
 export function useWizard() {
   const configStore = useConfigStore()
   const sessionStore = useSessionStore()
+  const slateStore = useSlateStore()
 
   const pendingNavigation = ref(null)
   const showNavigationWarning = ref(false)
@@ -89,8 +96,8 @@ export function useWizard() {
 
     // Filter steps based on tier requirements
     return ALL_STEPS.filter(step => {
-      // Always show welcome, tier-select, service-select, estimate, results
-      if (['welcome', 'tier-select', 'service-select', 'estimate', 'results'].includes(step.id)) {
+      // Always show welcome, tier-select, service-select, software, estimate, results
+      if (['welcome', 'tier-select', 'service-select', 'software', 'estimate', 'results'].includes(step.id)) {
         return true
       }
 
@@ -143,6 +150,10 @@ export function useWizard() {
 
       case 'service-select':
         return sessionStore.session.selected_services.length > 0
+
+      case 'software':
+        // Software step is optional - always allow proceeding
+        return true
 
       case 'estimate':
         // Check all services have estimates
@@ -253,6 +264,48 @@ export function useWizard() {
   }
 
   /**
+   * Sync wizard estimates to slate store
+   * Called when moving from estimate to results step
+   */
+  function syncToSlate() {
+    // Sync each selected service to the slate
+    for (const selection of sessionStore.session.selected_services) {
+      const serviceConfig = configStore.servicesBySlug[selection.service_slug]
+      if (!serviceConfig) continue
+
+      // Add main service estimate
+      slateStore.addItem({
+        service: selection.service_slug,
+        quantity: selection.estimate || 0,
+        unit: serviceConfig.cost_model?.unit_label || 'units',
+        fromCalculator: 'wizard',
+        calculatorInputs: {
+          subsidy: selection.use_subsidy,
+          acknowledged: selection.acknowledged,
+          notes: selection.notes
+        }
+      })
+
+      // Add archive service if applicable
+      if (selection.archive_estimate && selection.archive_estimate > 0) {
+        const archiveSlug = serviceConfig.archive_option?.service_slug
+        const archiveConfig = archiveSlug ? configStore.servicesBySlug[archiveSlug] : null
+        if (archiveConfig) {
+          slateStore.addItem({
+            service: archiveSlug,
+            quantity: selection.archive_estimate,
+            unit: archiveConfig.cost_model?.unit_label || 'units',
+            fromCalculator: 'wizard-archive',
+            calculatorInputs: {
+              parentService: selection.service_slug
+            }
+          })
+        }
+      }
+    }
+  }
+
+  /**
    * Go to next step
    */
   function nextStep() {
@@ -260,6 +313,11 @@ export function useWizard() {
 
     // Mark current step as completed
     sessionStore.completeStep(sessionStore.currentStep)
+
+    // Sync to slate when moving from estimate to results
+    if (sessionStore.currentStep === 'estimate') {
+      syncToSlate()
+    }
 
     // Move to next step
     const nextIndex = currentStepIndex.value + 1
@@ -298,6 +356,7 @@ export function useWizard() {
     confirmNavigation,
     cancelNavigation,
     wouldClearData,
-    getAffectedSteps
+    getAffectedSteps,
+    syncToSlate
   }
 }

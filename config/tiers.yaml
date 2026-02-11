@@ -7,10 +7,20 @@ tiers:
     description: |
       Open science data, publicly available datasets,
       pre-publication non-sensitive research data.
+    types_of_data:
+      - "Public datasets (NCBI, PDB, etc.)"
+      - "Open source code and models"
+      - "Published research data"
+      - "Synthetic or simulated data"
+      - "Non-sensitive observational data"
     examples:
       - "Publicly available genomic databases"
       - "Open source model weights"
       - "Published datasets being reanalyzed"
+    requirements:
+      - "Standard university authentication"
+      - "Basic access controls"
+      - "Regular backups"
     help_text: |
       Choose this tier if your data could be made public without
       any negative consequences. This includes open science projects,
@@ -27,10 +37,21 @@ tiers:
     description: |
       Proprietary data, IP-sensitive pre-publication work,
       data under DUA with standard terms.
+    types_of_data:
+      - "Pre-publication research data"
+      - "Proprietary algorithms or methods"
+      - "Data under standard DUA"
+      - "Industry collaboration data"
+      - "Licensed commercial datasets"
     examples:
       - "Unpublished research data"
       - "Licensed commercial datasets"
       - "Industry collaboration data"
+    requirements:
+      - "University authentication required"
+      - "Project-based access controls"
+      - "Data Use Agreement on file"
+      - "No public sharing without approval"
     help_text: |
       Choose this tier if your data has IP value or is covered by
       a Data Use Agreement, but does not contain regulated data
@@ -46,10 +67,23 @@ tiers:
     description: |
       HIPAA, FERPA, IRB-governed human subjects data,
       export-controlled research (EAR/ITAR).
+    types_of_data:
+      - "Protected Health Information (PHI)"
+      - "Student education records (FERPA)"
+      - "Human subjects research data"
+      - "Personally Identifiable Information (PII)"
+      - "Export-controlled data (EAR)"
     examples:
       - "Clinical trial data"
       - "Student educational records"
       - "Export-controlled defense research"
+    requirements:
+      - "HIPAA-compliant infrastructure"
+      - "Business Associate Agreement (BAA)"
+      - "IRB approval documentation"
+      - "Audit logging enabled"
+      - "Encryption at rest and in transit"
+      - "Annual security training"
     help_text: |
       Choose this tier if your data is subject to regulatory
       requirements such as HIPAA, FERPA, or export controls.
@@ -65,10 +99,24 @@ tiers:
     description: |
       Secure enclaves, bespoke security requirements,
       DOD/defense contractor work, CUI.
+    types_of_data:
+      - "Controlled Unclassified Information (CUI)"
+      - "ITAR-controlled defense data"
+      - "Classified research"
+      - "Data requiring NIST 800-171 compliance"
+      - "Select Agent research data"
     examples:
       - "Classified research"
       - "Defense contractor projects"
       - "Controlled Unclassified Information (CUI)"
+    requirements:
+      - "Isolated secure enclave"
+      - "NIST 800-171 compliance"
+      - "US persons only access"
+      - "Physical security controls"
+      - "Continuous monitoring"
+      - "Incident response plan"
+      - "Security consultation required"
     help_text: |
       This tier requires a dedicated secure enclave with custom
       security controls. Pricing and services are determined through

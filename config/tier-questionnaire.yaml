@@ -22,10 +22,179 @@ questions:
     options:
       - label: "No"
         value: false
-        next: government_data
+        next: biological_samples
       - label: "Yes"
         value: true
         next: health_data
+
+  - id: biological_samples
+    question: "Does your research involve biological samples or genetic/genomic data?"
+    help_text: "DNA, RNA, tissue samples, cell cultures, or other biological materials - from any organism."
+    icon: "dna"
+    options:
+      - label: "No"
+        value: false
+        next: government_data
+      - label: "Yes"
+        value: true
+        next: organism_source
+
+  - id: organism_source
+    question: "What is the source of your biological samples or genetic data?"
+    help_text: "Select the primary organism type. If working with multiple types, select the most sensitive."
+    icon: "microscope"
+    learn_more:
+      title: "Why does organism source matter?"
+      content: |
+        Different organisms have different data protection requirements:
+
+        **Human-derived materials** - Even without an IRB protocol, human DNA/tissue
+        can potentially re-identify individuals. Requires careful handling.
+
+        **Model organisms** (mice, rats, zebrafish, fruit flies, C. elegans, yeast) -
+        Generally low sensitivity. Standard research data practices apply.
+
+        **Wildlife and field samples** - May have location sensitivity (endangered
+        species, poaching concerns) or permit requirements.
+
+        **Agricultural/livestock** - May have proprietary breeding data or
+        biosecurity considerations.
+    options:
+      - label: "Human-derived (tissue, cell lines, DNA/RNA)"
+        value: "human"
+        next: human_samples_detail
+      - label: "Model organisms (mouse, rat, zebrafish, fly, worm, yeast)"
+        value: "model_organism"
+        sets_tier: low
+        next: government_data
+      - label: "Wildlife, field samples, or endangered species"
+        value: "wildlife"
+        next: wildlife_sensitivity
+      - label: "Agricultural, livestock, or plants"
+        value: "agricultural"
+        next: agricultural_sensitivity
+
+  - id: human_samples_detail
+    question: "What type of human-derived samples are you working with?"
+    help_text: "This helps determine if re-identification risk applies."
+    icon: "user-scan"
+    learn_more:
+      title: "Re-identification risk in genomics"
+      content: |
+        Human genomic data presents unique re-identification challenges:
+
+        **High risk** - Whole genome/exome sequences, large SNP panels, or any
+        genetic data that could uniquely identify an individual or their relatives.
+
+        **Moderate risk** - Targeted sequencing, specific gene panels, or data
+        linked to demographic information.
+
+        **Lower risk** - Immortalized cell lines (HeLa, HEK293), ancient DNA,
+        or fully de-identified samples from commercial biobanks with proper
+        consent documentation.
+
+        When in doubt, treat as identifiable - it's easier to reclassify down
+        than to contain a breach.
+    options:
+      - label: "Research participant samples (with consent/IRB)"
+        value: "participant_samples"
+        sets_tier: high
+        sets_flags:
+          - human_genomic
+        next: government_data
+      - label: "Biobank samples (commercial or repository)"
+        value: "biobank"
+        next: biobank_consent
+      - label: "Immortalized cell lines (HeLa, HEK293, etc.)"
+        value: "cell_lines"
+        sets_tier: low
+        next: government_data
+      - label: "Ancient DNA or archaeological samples"
+        value: "ancient_dna"
+        sets_tier: low
+        next: government_data
+
+  - id: biobank_consent
+    question: "What consent and de-identification applies to your biobank samples?"
+    help_text: "Check the biobank's data use agreement or material transfer agreement."
+    icon: "file-check"
+    options:
+      - label: "Fully de-identified with broad consent"
+        value: "deidentified_broad"
+        sets_tier: low
+        next: government_data
+      - label: "Coded samples (key held by biobank)"
+        value: "coded"
+        sets_tier: medium
+        next: government_data
+      - label: "Identifiable or consent restrictions apply"
+        value: "identifiable"
+        sets_tier: high
+        sets_flags:
+          - human_genomic
+        next: government_data
+      - label: "Not sure - need to check MTA/DUA"
+        value: "unsure"
+        sets_tier: high
+        sets_flags:
+          - human_genomic
+          - needs_review
+        next: government_data
+
+  - id: wildlife_sensitivity
+    question: "Does your wildlife data have location or conservation sensitivity?"
+    help_text: "Endangered species locations, nesting sites, or other data that could enable poaching or harassment."
+    icon: "bird"
+    learn_more:
+      title: "Location sensitivity in wildlife research"
+      content: |
+        Wildlife location data may need protection if it could:
+
+        - Enable poaching of endangered species
+        - Lead to disturbance of nesting sites
+        - Compromise ongoing conservation efforts
+        - Violate collection permit conditions
+
+        Some journals and funders require location data to be obscured or
+        embargoed for sensitive species.
+    options:
+      - label: "No - common species, no location concerns"
+        value: "not_sensitive"
+        sets_tier: low
+        next: government_data
+      - label: "Yes - endangered species or sensitive locations"
+        value: "sensitive"
+        sets_tier: medium
+        sets_flags:
+          - location_sensitive
+        next: government_data
+      - label: "Not sure"
+        value: "unsure"
+        sets_tier: medium
+        next: government_data
+
+  - id: agricultural_sensitivity
+    question: "Does your agricultural/plant data involve proprietary or biosecurity concerns?"
+    help_text: "Breeding programs, patented varieties, or Select Agent pathogens."
+    icon: "wheat"
+    options:
+      - label: "No - standard research crops/livestock"
+        value: "not_sensitive"
+        sets_tier: low
+        next: government_data
+      - label: "Yes - proprietary breeding or commercial partnership"
+        value: "proprietary"
+        sets_tier: medium
+        sets_flags:
+          - proprietary
+        next: government_data
+      - label: "Yes - USDA Select Agent or biosecurity concern"
+        value: "select_agent"
+        sets_tier: restricted
+        sets_flags:
+          - select_agent
+          - biosecurity
+        next: complete
 
   - id: health_data
     question: "Does your data include health or medical information?"
@@ -37,7 +206,7 @@ questions:
         next: student_data
       - label: "Yes"
         value: true
-        sets_tier: L3
+        sets_tier: high
         sets_flags:
           - hipaa
           - phi
@@ -72,18 +241,18 @@ questions:
     options:
       - label: "Fully de-identified (Safe Harbor method)"
         value: "deidentified"
-        sets_tier: L2
+        sets_tier: medium
         clears_flags:
           - hipaa
           - phi
         next: government_data
       - label: "Limited dataset (some identifiers)"
         value: "limited"
-        sets_tier: L3
+        sets_tier: high
         next: government_data
       - label: "Identifiable / not sure"
         value: "identifiable"
-        sets_tier: L3
+        sets_tier: high
         next: government_data
 
   - id: student_data
@@ -96,7 +265,7 @@ questions:
         next: government_data
       - label: "Yes"
         value: true
-        sets_tier: L3
+        sets_tier: high
         sets_flags:
           - ferpa
         next: government_data
@@ -140,7 +309,7 @@ questions:
         next: export_control
       - label: "Yes"
         value: true
-        sets_tier: L4
+        sets_tier: restricted
         sets_flags:
           - cui
           - nist_800_171
@@ -172,13 +341,13 @@ questions:
         next: proprietary_check
       - label: "Yes - ITAR"
         value: "itar"
-        sets_tier: L4
+        sets_tier: restricted
         sets_flags:
           - itar
         next: complete
       - label: "Yes - EAR"
         value: "ear"
-        sets_tier: L4
+        sets_tier: restricted
         sets_flags:
           - ear
         next: complete
@@ -190,11 +359,11 @@ questions:
     options:
       - label: "No - publicly shareable"
         value: false
-        sets_tier: L1
+        sets_tier: low
         next: complete
       - label: "Yes - pre-publication or NDA-protected"
         value: true
-        sets_tier: L2
+        sets_tier: medium
         next: complete
 
   - id: complete
@@ -206,59 +375,95 @@ summary:
   show_flags: true
   show_reasoning: true
 
-  # Call-to-action based on tier
+  # Call-to-action based on tier (keys match tier slugs from tiers.yaml)
   cta:
-    L1:
+    low:
       title: "You're ready to go!"
       message: "Self-service access available for low-tier data."
       action: "Continue to Service Selection"
-    L2:
+    medium:
       title: "You're ready to go!"
       message: "Self-service access available for medium-tier data."
       action: "Continue to Service Selection"
-    L3:
+    high:
       title: "Consultation recommended"
       message: "High-tier data requires verification. We'll walk you through it."
       action: "Continue to Service Selection"
       secondary_action: "Schedule Consultation First"
-    L4:
+    restricted:
       title: "Consultation required"
       message: "Restricted data requires export control review before proceeding."
       action: "Schedule Consultation"
       secondary_action: "Continue Planning (Preliminary)"
 
 # Discipline-specific examples to help users understand
+# Keys under 'examples' must match tier slugs from tiers.yaml (low, medium, high, restricted)
 examples_by_discipline:
   biomedical:
     name: "Biomedical / Life Sciences"
     icon: "microscope"
     examples:
-      L1:
+      low:
         - "Published protein structures from PDB"
-        - "Public genomics datasets from NCBI"
-        - "Anonymized cell line data"
-      L2:
+        - "Public genomics datasets from NCBI (1000 Genomes, GTEx)"
+        - "Immortalized cell line data (HeLa, HEK293)"
+        - "Mouse/rat model organism sequencing"
+        - "Zebrafish, C. elegans, Drosophila data"
+        - "Yeast genomics and proteomics"
+        - "Ancient DNA or archaeological samples"
+        - "Fully de-identified biobank samples with broad consent"
+      medium:
         - "Your lab's unpublished experimental results"
         - "Pre-publication manuscripts and figures"
         - "Proprietary analysis pipelines"
-      L3:
+        - "Coded biobank samples (key held by repository)"
+        - "Wildlife data with location sensitivity"
+        - "Endangered species genetic data"
+      high:
         - "Patient samples with clinical data"
-        - "Genetic data linked to individuals"
+        - "Human genetic data linked to individuals"
+        - "Human whole genome/exome sequencing"
+        - "Research participant samples (even with consent)"
+        - "Biobank samples with consent restrictions"
         - "Clinical trial data"
+        - "dbGaP controlled-access data"
+
+  genomics:
+    name: "Genomics & Bioinformatics"
+    icon: "dna"
+    examples:
+      low:
+        - "Reference genomes (GRCh38, mm10, etc.)"
+        - "Model organism sequencing (mouse, fly, worm, yeast)"
+        - "Public repositories (SRA, ENA, DDBJ)"
+        - "Cell line genomics (CCLE, DepMap)"
+        - "Microbial/viral genomes"
+        - "Plant genomics (non-proprietary)"
+      medium:
+        - "Unpublished sequencing data (non-human)"
+        - "Proprietary breeding program data"
+        - "Coded human samples from repositories"
+        - "Pre-publication analysis results"
+      high:
+        - "Human WGS/WES with individual identifiers"
+        - "Patient tumor sequencing"
+        - "Genetic data linked to phenotype/clinical"
+        - "dbGaP or controlled-access datasets"
+        - "Research participant samples"
 
   engineering:
     name: "Engineering"
     icon: "cog"
     examples:
-      L1:
+      low:
         - "Published simulation results"
         - "Open-source CAD models"
         - "Public benchmark datasets"
-      L2:
+      medium:
         - "Proprietary designs before patent filing"
         - "Industry collaboration data under NDA"
         - "Unpublished experimental results"
-      L4:
+      restricted:
         - "Defense contractor research (ITAR)"
         - "CUI-marked government data"
         - "Export-controlled technology"
@@ -267,15 +472,15 @@ examples_by_discipline:
     name: "Social Sciences"
     icon: "users"
     examples:
-      L1:
+      low:
         - "Census data and public surveys"
         - "Published interview transcripts"
         - "Aggregated demographic data"
-      L2:
+      medium:
         - "Ongoing survey responses (anonymized)"
         - "Interview recordings (consent obtained)"
         - "Unpublished qualitative data"
-      L3:
+      high:
         - "Student educational records (FERPA)"
         - "Identifiable interview data"
         - "Sensitive survey responses"
@@ -284,11 +489,11 @@ examples_by_discipline:
     name: "Humanities & Arts"
     icon: "book"
     examples:
-      L1:
+      low:
         - "Public domain texts and images"
         - "Published research materials"
         - "Open-access archives"
-      L2:
+      medium:
         - "Unpublished manuscripts"
         - "Licensed digital collections"
         - "Pre-publication analyses"
@@ -297,11 +502,11 @@ examples_by_discipline:
     name: "Physical Sciences"
     icon: "atom"
     examples:
-      L1:
+      low:
         - "Published simulation data"
         - "Public astronomy observations"
         - "Open datasets from collaborations"
-      L2:
+      medium:
         - "Unpublished experimental results"
         - "Proprietary instrument data"
         - "Pre-publication findings"

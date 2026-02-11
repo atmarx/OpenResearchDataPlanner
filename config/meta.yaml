@@ -2,16 +2,86 @@
 institution:
   name: "Northwinds University"
   short_name: "Northwinds"
-  logo: null  # Optional: "/images/logo.svg"
+  logo: "/images/northwinds_horizontal.png"
+  footer_logo: "/images/northwinds_logo.png"  # Crest for footer
 
 site:
   title: "Research Data Planner"
   tagline: "Self-service discovery for researchers. Informed requests for support teams."
 
+# Visual branding
+branding:
+  # Hero background for welcome/landing page
+  # Set to null to disable (plain white background)
+  hero_background: "/images/college.png"
+  # Overlay darkness (0 = none, 1 = fully dark). Keeps text readable.
+  hero_overlay: 0.4
+
+  # Custom CSS overrides (inline)
+  # Use CSS custom properties to override theme colors, or add any custom styles
+  # Example:
+  #   custom_css: |
+  #     :root {
+  #       --color-primary: #1e40af;
+  #       --color-primary-hover: #1e3a8a;
+  #     }
+  #     .btn-primary { background-color: var(--color-primary); }
+  custom_css: null
+
+  # External stylesheet URL (loaded after main styles)
+  # Example: "/custom/northwinds-theme.css"
+  custom_css_url: null
+
+# Contact information
+# The 'primary' contact appears in the footer as "Questions? [label]"
+# Set type to "email" or "url" depending on your contact method
 contact:
-  general: "research-computing@northwinds.edu"
-  security: "data-security@northwinds.edu"
+  primary:
+    type: "email"                                    # "email" or "url"
+    value: "research-computing@northwinds.edu"       # Email address or URL
+    label: "research-computing@northwinds.edu"       # Display text for the link
+    # Alternative ticket-based setup:
+    # type: "url"
+    # value: "https://tickets.northwinds.edu/submit"
+    # label: "Submit a ticket"
+  security: "data-security@northwinds.edu"           # Security-specific contact
   consultation_url: "https://northwinds.edu/research-computing/consult"
+
+# Institutional policy links (typically required for university websites)
+links:
+  privacy: "https://northwinds.edu/privacy"
+  accessibility: "https://northwinds.edu/accessibility"
+  terms: "https://northwinds.edu/terms"
+  # Optional additional links
+  # nondiscrimination: "https://northwinds.edu/nondiscrimination"
+
+# Indirect costs / F&A (Facilities & Administration)
+# Used to calculate fully-loaded costs for grant proposals
+indirect_costs:
+  # Federal negotiated rate (MTDC basis)
+  default_rate: 0.54
+  rate_label: "54%"
+  rate_basis: "MTDC"  # Modified Total Direct Costs
+
+  # Common sponsor-specific caps (optional, for future use)
+  sponsor_rates:
+    - sponsor: "Federal (default)"
+      rate: 0.54
+    - sponsor: "Foundation (typical)"
+      rate: 0.15
+    - sponsor: "Industry"
+      rate: 0.54
+    - sponsor: "Internal/No F&A"
+      rate: 0.00
+
+  # Help text shown in budget summary
+  note: |
+    Indirect costs (F&A) are calculated at the federally negotiated rate.
+    Some sponsors cap F&A at lower rates. Confirm with your grants office
+    for sponsor-specific requirements.
+
+  # Link to institution's F&A policy
+  policy_url: "https://northwinds.edu/research/indirect-costs"
 
 # Template version (included in exports for tracking)
 version: "1.0.0"

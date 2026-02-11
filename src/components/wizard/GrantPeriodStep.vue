@@ -1,9 +1,11 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useSessionStore } from '@/stores/sessionStore'
+import { usePreferencesStore } from '@/stores/preferencesStore'
 import { Calendar, Info } from 'lucide-vue-next'
 
 const sessionStore = useSessionStore()
+const preferencesStore = usePreferencesStore()
 
 // Quick presets - numeric order with 3-year as recommended
 const presets = [
@@ -119,10 +121,13 @@ function isPresetSelected(preset) {
 <template>
   <div class="p-8">
     <div class="mb-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">
+      <h2
+        class="text-2xl font-bold mb-2"
+        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+      >
         Grant Period
       </h2>
-      <p class="text-gray-600">
+      <p :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
         Select your grant duration and start date.
         This is used to calculate total costs over the project duration.
       </p>
@@ -130,7 +135,10 @@ function isPresetSelected(preset) {
 
     <!-- Duration presets -->
     <div class="mb-6">
-      <p class="text-sm font-medium text-gray-700 mb-2">Grant duration:</p>
+      <p
+        class="text-sm font-medium mb-2"
+        :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+      >Grant duration:</p>
       <div class="flex flex-wrap gap-2">
         <button
           v-for="preset in presets"
@@ -141,8 +149,12 @@ function isPresetSelected(preset) {
             isPresetSelected(preset)
               ? 'bg-blue-600 text-white'
               : preset.recommended
-                ? 'bg-blue-100 text-blue-700 border-2 border-blue-300 hover:bg-blue-200'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? preferencesStore.darkMode
+                  ? 'bg-blue-900/50 text-blue-300 border-2 border-blue-700 hover:bg-blue-900'
+                  : 'bg-blue-100 text-blue-700 border-2 border-blue-300 hover:bg-blue-200'
+                : preferencesStore.darkMode
+                  ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           ]"
         >
           {{ preset.label }}
@@ -154,7 +166,11 @@ function isPresetSelected(preset) {
     <!-- Date inputs -->
     <div class="grid gap-6 md:grid-cols-2 mb-6">
       <div>
-        <label for="start-date" class="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          for="start-date"
+          class="block text-sm font-medium mb-1"
+          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+        >
           Start Date
         </label>
         <div class="relative">
@@ -162,16 +178,27 @@ function isPresetSelected(preset) {
             id="start-date"
             v-model="startDate"
             type="date"
-            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            :class="preferencesStore.darkMode
+              ? 'bg-gray-700 border-gray-600 text-white'
+              : 'bg-white border-gray-300 text-gray-900'"
           />
           <Calendar class="absolute right-3 top-2.5 w-5 h-5 text-gray-400 pointer-events-none" />
         </div>
       </div>
 
       <div>
-        <label for="end-date" class="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          for="end-date"
+          class="block text-sm font-medium mb-1"
+          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+        >
           End Date
-          <span v-if="!isCustom" class="text-gray-400 font-normal">(auto-calculated)</span>
+          <span
+            v-if="!isCustom"
+            class="font-normal"
+            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+          >(auto-calculated)</span>
         </label>
         <div class="relative">
           <input
@@ -180,7 +207,10 @@ function isPresetSelected(preset) {
             type="date"
             :min="startDate"
             :disabled="!isCustom"
-            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+            class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            :class="preferencesStore.darkMode
+              ? 'bg-gray-700 border-gray-600 text-white disabled:bg-gray-800 disabled:text-gray-500'
+              : 'bg-white border-gray-300 text-gray-900 disabled:bg-gray-50 disabled:text-gray-500'"
           />
           <Calendar class="absolute right-3 top-2.5 w-5 h-5 text-gray-400 pointer-events-none" />
         </div>
@@ -195,14 +225,21 @@ function isPresetSelected(preset) {
     <!-- Duration summary -->
     <div
       v-if="calculatedMonths"
-      class="bg-blue-50 rounded-lg p-4"
+      class="rounded-lg p-4"
+      :class="preferencesStore.darkMode ? 'bg-blue-900/30' : 'bg-blue-50'"
     >
-      <div class="flex items-center gap-2 text-blue-900">
+      <div
+        class="flex items-center gap-2"
+        :class="preferencesStore.darkMode ? 'text-blue-200' : 'text-blue-900'"
+      >
         <Info class="w-5 h-5 text-blue-500" />
         <span class="font-medium">Grant Duration:</span>
         <span>{{ calculatedMonths }} months ({{ years }} years)</span>
       </div>
-      <p class="text-sm text-blue-700 mt-2">
+      <p
+        class="text-sm mt-2"
+        :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-700'"
+      >
         Cost estimates will be calculated for this {{ calculatedMonths }}-month period.
       </p>
     </div>
@@ -210,7 +247,8 @@ function isPresetSelected(preset) {
     <!-- Placeholder when no dates selected -->
     <div
       v-else
-      class="bg-gray-50 rounded-lg p-4 text-center text-gray-500"
+      class="rounded-lg p-4 text-center"
+      :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-50 text-gray-500'"
     >
       Select a duration above or enter custom dates
     </div>

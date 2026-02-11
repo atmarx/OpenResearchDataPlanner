@@ -356,7 +356,7 @@ global:
   show_calculation: true
 
   # Precision for results
-  storage_precision: 1    # decimal places for TB
+  storage_precision: 3    # decimal places for TB (= 1 GB precision, displayed as GB when < 1 TB)
   compute_precision: 0    # decimal places for SU
 
   # Archive ratio suggestion

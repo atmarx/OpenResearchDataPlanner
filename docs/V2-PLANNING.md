@@ -591,8 +591,9 @@ interface ExportedPlan {
 | V1.1 | Multi-session | `draftsStore` abstraction, named drafts |
 | V1.2 | Folder sync | Sync to any folder, conflict detection |
 | V1.3 | Concept graph | Governance principles, researcher acknowledgment |
+| V1.4 | Explore first | Pre-wizard calculators, service matrix, shopping cart |
 | V2.0 | Backend API | Plan storage, SSO, shareable links |
-| V2.x | Helpdesk | ServiceNow/TeamDynamix integration |
+| V2.1 | Request Gateway | Adapter layer for Jira/ServiceNow/TeamDynamix |
 | V3.0 | **OpenChargeback** | Estimate → actual tracking |
 
 ---

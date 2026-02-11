@@ -1,0 +1,814 @@
+# config/help-videos.yaml
+# Contextual help videos for self-service support
+#
+# Videos replace "Talk to a Human" with scalable, on-demand guidance.
+# IT records these once; researchers watch them forever.
+
+# =============================================================================
+# GLOBAL SETTINGS
+# =============================================================================
+
+settings:
+  # Where videos are hosted
+  video_host: "vimeo"  # vimeo, youtube, or self-hosted
+  base_url: "https://vimeo.com/northwindsrc/"
+
+  # Fallback when no contextual video exists
+  default_video: "getting-started"
+
+  # Contact info shown after videos (last resort)
+  fallback_contact:
+    email: "rc-help@northwinds.edu"
+    response_time: "1-2 business days"
+    message: "Still stuck? We're here to help."
+
+# =============================================================================
+# CORE CONCEPTS - "What is...?" videos
+# =============================================================================
+
+concepts:
+  # ---------------------------------------------------------------------------
+  # UNITS & MEASUREMENTS
+  # ---------------------------------------------------------------------------
+
+  - slug: what-is-tb
+    title: "What's a Terabyte?"
+    description: "Convert your files to storage needs in plain English"
+    duration: "1:30"
+    thumbnail: "tb-explainer.jpg"
+
+    # Show this video when user is on these pages/components
+    triggers:
+      - page: "storage-calculator"
+      - component: "storage-input"
+      - term: "TB"
+      - term: "terabyte"
+
+    # Script outline for production
+    script_notes: |
+      - Start with familiar comparisons: "Your phone is probably 128GB or 256GB..."
+      - 1 TB = 1,000 GB = about 200,000 photos or 500 hours of video
+      - Show real examples: "A genome is about 100GB, a microscopy session is 50-200GB"
+      - End with: "When in doubt, round up. Storage is the cheapest thing we offer."
+
+    # For accessibility
+    transcript_available: true
+    captions: true
+
+  - slug: what-is-su
+    title: "What's a Service Unit (SU)?"
+    description: "HPC billing explained without the jargon"
+    duration: "2:00"
+    thumbnail: "su-explainer.jpg"
+    triggers:
+      - page: "compute-calculator"
+      - component: "su-input"
+      - term: "SU"
+      - term: "service unit"
+      - term: "core-hour"
+    script_notes: |
+      - "An SU is like a compute-minute. 1 SU = 1 CPU core for 1 minute."
+      - Show the math: "If you run 32 cores for 1 hour, that's 32 × 60 = 1,920 SU"
+      - Presets: "A typical simulation job is 10,000-50,000 SU"
+      - Free allocation: "Everyone gets 10,000 SU/year free - that's a lot of computing!"
+      - End with: "The calculator does this math for you. Just tell us what you're running."
+
+  - slug: what-is-gpu-hour
+    title: "What's a GPU-Hour?"
+    description: "GPU computing costs for machine learning and simulation"
+    duration: "1:45"
+    thumbnail: "gpu-explainer.jpg"
+    triggers:
+      - page: "gpu-calculator"
+      - component: "gpu-input"
+      - term: "GPU-hour"
+      - term: "V100"
+      - term: "A100"
+    script_notes: |
+      - "A GPU-hour is one graphics card running for one hour"
+      - Types matter: "A V100 is great for simulations, an A100 is better for large AI models"
+      - Real examples: "Training a vision model: 10-100 GPU-hours. Fine-tuning an LLM: 100-1000 GPU-hours."
+      - Cloud vs on-prem: "Our on-campus GPUs are cheaper but older. Cloud GPUs cost more but scale infinitely."
+
+  - slug: what-is-data-tier
+    title: "Choosing Your Data Tier"
+    description: "L1, L2, L3, L4 - which one is your data?"
+    duration: "3:00"
+    thumbnail: "tier-explainer.jpg"
+    triggers:
+      - page: "tier-selection"
+      - page: "tier-questionnaire"
+      - component: "tier-picker"
+      - term: "data tier"
+      - term: "security level"
+    script_notes: |
+      - Start reassuring: "Most research is L1 or L2. Don't overthink this."
+      - L1 (Low): "Published data, public datasets, teaching materials"
+      - L2 (Medium): "Unpublished research, pre-publication, most industry NDAs"
+      - L3 (High): "HIPAA, patient data, student records (FERPA)"
+      - L4 (Restricted): "Defense contracts, export-controlled, classified"
+      - Decision tree: "If you're not sure, answer these 3 questions..."
+      - Reassurance: "You can always start at L2 and upgrade later if needed."
+
+  # ---------------------------------------------------------------------------
+  # THE SERVICE SLATE
+  # ---------------------------------------------------------------------------
+
+  - slug: what-is-service-slate
+    title: "Your Service Slate Explained"
+    description: "Building your research computing shopping list"
+    duration: "1:20"
+    thumbnail: "slate-explainer.jpg"
+    triggers:
+      - page: "slate-review"
+      - component: "slate-footer"
+      - first_slate_item: true  # Show when user adds their first item
+    script_notes: |
+      - "Think of the slate as your shopping list for research computing"
+      - "It's called a 'slate' because it's a proposal - like a 'slate of candidates'"
+      - Show the footer: "This bar shows what you've added so far"
+      - Expand demo: "Click to see details, remove items, or submit"
+      - "Nothing is final until IT confirms. You can change anything."
+      - "When you're ready, submit and we'll set everything up."
+
+  - slug: wipe-slate-clean
+    title: "Starting Over"
+    description: "How to clear your slate and begin fresh"
+    duration: "0:30"
+    thumbnail: "wipe-slate.jpg"
+    triggers:
+      - action: "wipe-slate"
+    script_notes: |
+      - "Click 'Wipe' to clear everything and start over"
+      - "This doesn't affect any submitted requests - just your current draft"
+      - "Your auto-saved progress will be gone, but you can always rebuild"
+
+  # ---------------------------------------------------------------------------
+  # COMPLIANCE & TIERS
+  # ---------------------------------------------------------------------------
+
+  - slug: hipaa-workflow
+    title: "Working with HIPAA Data"
+    description: "What happens when you select regulated data"
+    duration: "2:30"
+    thumbnail: "hipaa-workflow.jpg"
+    triggers:
+      - tier_selected: "L3"
+      - term: "HIPAA"
+      - term: "PHI"
+      - term: "patient data"
+    script_notes: |
+      - "HIPAA data requires extra steps, but we've made it as smooth as possible"
+      - Timeline: "Most researchers are up and running within 1 week"
+      - Step by step: Complete planner → IT consultation → BAA verification → Setup → Training
+      - Pre-approved services: "These services already have BAAs in place..."
+      - What to prepare: "Have your IRB protocol number ready"
+      - Reassurance: "We do this all the time. You're not the first."
+
+  - slug: export-control-workflow
+    title: "Export-Controlled Research (L4)"
+    description: "ITAR, EAR, and CUI data handling"
+    duration: "3:30"
+    thumbnail: "export-control.jpg"
+    triggers:
+      - tier_selected: "L4"
+      - term: "ITAR"
+      - term: "EAR"
+      - term: "CUI"
+      - term: "export control"
+      - term: "classified"
+    script_notes: |
+      - "Export-controlled research requires dedicated infrastructure - but we support it"
+      - Be honest about timeline: "This takes 3-6 weeks. Plan ahead."
+      - Step by step: Planner → IT consultation → Export control review → Security assessment → Enclave setup → Certification → Training
+      - What to prepare: "Contract details, data classification letter, personnel list"
+      - Personnel restrictions: "Only US persons can access L4 data"
+      - Success story: "We currently support 12 defense research projects..."
+
+  - slug: ferpa-workflow
+    title: "Working with Student Data (FERPA)"
+    description: "Educational records and student information"
+    duration: "2:00"
+    thumbnail: "ferpa-workflow.jpg"
+    triggers:
+      - term: "FERPA"
+      - term: "student data"
+      - term: "educational records"
+    script_notes: |
+      - "Student data is protected by FERPA - but the process is similar to HIPAA"
+      - When it applies: "Grades, enrollment, financial aid, disciplinary records..."
+      - De-identification: "If you remove names and IDs, you may not need L3"
+      - IRB connection: "Your IRB approval usually covers FERPA requirements"
+
+  # ---------------------------------------------------------------------------
+  # FDA / REGULATORY
+  # ---------------------------------------------------------------------------
+
+  - slug: fda-21-cfr-part-11
+    title: "FDA 21 CFR Part 11 Compliance"
+    description: "Electronic records for regulatory submissions"
+    duration: "2:45"
+    thumbnail: "fda-compliance.jpg"
+    triggers:
+      - term: "FDA"
+      - term: "21 CFR Part 11"
+      - term: "GxP"
+      - term: "clinical trial"
+    script_notes: |
+      - "If your data goes to the FDA, you need audit trails and change control"
+      - What it means: "Every change is logged, nothing can be deleted, signatures are verified"
+      - Which services qualify: "These services are Part 11 compliant..."
+      - DMP language: "We'll generate the compliance statements for your submission"
+      - Common mistake: "Starting on non-compliant infrastructure then trying to migrate"
+
+# =============================================================================
+# CALCULATOR WALKTHROUGHS
+# =============================================================================
+
+calculators:
+  # ---------------------------------------------------------------------------
+  # STORAGE CALCULATORS
+  # ---------------------------------------------------------------------------
+
+  - slug: storage-calculator-intro
+    title: "Estimating Your Storage Needs"
+    description: "A complete walkthrough of the storage calculator"
+    duration: "2:30"
+    thumbnail: "storage-calc.jpg"
+    triggers:
+      - page: "storage-calculator"
+      - action: "open-help"
+      - first_visit: "storage-calculator"
+    script_notes: |
+      - "Not sure how much storage you need? This calculator figures it out."
+      - Show each option: Microscopy, Genomics, Video, General
+      - Demo the inputs: "Tell us what kind of data, how much, and how long"
+      - Show the output: "Here's your estimate - you can adjust it before adding to your slate"
+      - Archive vs active: "Old data can go to cheaper archive storage"
+
+  - slug: storage-microscopy
+    title: "Storage for Microscopy Data"
+    description: "Confocal, electron microscopy, and imaging data"
+    duration: "2:00"
+    thumbnail: "microscopy-storage.jpg"
+    triggers:
+      - calculator: "microscopy"
+      - term: "microscopy"
+      - term: "confocal"
+      - term: "electron microscopy"
+      - term: "imaging"
+    script_notes: |
+      - "Microscopy data is BIG. A single imaging session can be 50-200GB."
+      - Resolution matters: "4K images are 4x larger than 2K"
+      - Bit depth: "16-bit is twice as big as 8-bit, but you probably need it"
+      - Z-stacks: "Each slice multiplies your storage"
+      - Real example: "Dr. Chen's confocal lab generates 2TB per month..."
+      - Processing headroom: "Add 50% for intermediate files during analysis"
+
+  - slug: storage-genomics
+    title: "Storage for Genomics Data"
+    description: "Sequencing, alignment, and variant calling"
+    duration: "2:15"
+    thumbnail: "genomics-storage.jpg"
+    triggers:
+      - calculator: "genomics"
+      - term: "genomics"
+      - term: "sequencing"
+      - term: "NGS"
+      - term: "FASTQ"
+      - term: "BAM"
+    script_notes: |
+      - "Genomics data grows fast. One sequencing run can be 100-500GB."
+      - File types: "FASTQ (raw), BAM (aligned), VCF (variants)"
+      - Storage stages: "Raw data → Aligned → Analyzed → Archived"
+      - Compression: "BAM files are already compressed. Don't compress twice."
+      - Retention: "NIH requires raw data for 7+ years after publication"
+      - Real example: "A typical RNA-seq project: 50 samples × 5GB = 250GB raw, 500GB processed"
+
+  - slug: storage-video
+    title: "Storage for Video Data"
+    description: "Research video, interviews, and behavioral recordings"
+    duration: "1:45"
+    thumbnail: "video-storage.jpg"
+    triggers:
+      - calculator: "video"
+      - term: "video"
+      - term: "interview"
+      - term: "behavioral"
+      - term: "recording"
+    script_notes: |
+      - "Video is deceptively large. 1 hour of 4K video is 20-50GB."
+      - Resolution guide: "1080p for interviews, 4K for detailed behavioral coding"
+      - Codec matters: "ProRes is huge (editing), H.264 is smaller (archive)"
+      - Multi-camera: "3 cameras = 3x the storage"
+      - Real example: "A 100-participant interview study: 100 hrs × 10GB = 1TB"
+
+  - slug: storage-humanities
+    title: "Storage for Humanities Research"
+    description: "Documents, photographs, and archival materials"
+    duration: "1:30"
+    thumbnail: "humanities-storage.jpg"
+    triggers:
+      - discipline: "humanities"
+      - term: "archive"
+      - term: "photographs"
+      - term: "manuscripts"
+      - term: "digitization"
+    script_notes: |
+      - "Humanities data is often smaller, but preservation matters more"
+      - Photographs: "5,000 high-res scans ≈ 500GB, but your phone photos are much smaller"
+      - Documents: "PDFs are small. 10,000 documents ≈ 50GB"
+      - Audio: "Oral histories at 1hr = 100MB compressed, 500MB uncompressed"
+      - Preservation: "TIFF for archival, JPEG for access copies"
+      - Real example: "Dr. Tonsley's medieval manuscript project: 5,000 photos = about 500GB"
+
+  # ---------------------------------------------------------------------------
+  # COMPUTE CALCULATORS
+  # ---------------------------------------------------------------------------
+
+  - slug: compute-calculator-intro
+    title: "Estimating Your Compute Needs"
+    description: "How much HPC time do you need?"
+    duration: "2:00"
+    thumbnail: "compute-calc.jpg"
+    triggers:
+      - page: "compute-calculator"
+      - action: "open-help"
+    script_notes: |
+      - "Not sure how many SU you need? Let's figure it out."
+      - Show workload types: Simulation, Genomics, Statistics, General
+      - Key question: "How many jobs, and how long does each one run?"
+      - Parallelism: "More cores = faster, but not always linear"
+      - Free tier: "Remember, you get 10,000 SU/year free"
+
+  - slug: compute-simulation
+    title: "Compute for Simulations"
+    description: "Molecular dynamics, CFD, and FEA"
+    duration: "2:30"
+    thumbnail: "simulation-compute.jpg"
+    triggers:
+      - calculator: "simulation"
+      - term: "simulation"
+      - term: "molecular dynamics"
+      - term: "CFD"
+      - term: "FEA"
+      - term: "GROMACS"
+      - term: "ANSYS"
+    script_notes: |
+      - "Simulations can run for hours or weeks. Here's how to estimate."
+      - Benchmark first: "Run a short test to see how fast your code scales"
+      - Scaling: "32 cores is often the sweet spot. 64+ has diminishing returns."
+      - GPU acceleration: "GROMACS on GPU is 10x faster for MD"
+      - Real example: "100 ns of MD simulation ≈ 50,000-100,000 SU on CPU, 5,000 on GPU"
+
+  - slug: compute-genomics
+    title: "Compute for Genomics Pipelines"
+    description: "Alignment, variant calling, and RNA-seq"
+    duration: "2:00"
+    thumbnail: "genomics-compute.jpg"
+    triggers:
+      - calculator: "genomics-compute"
+      - term: "alignment"
+      - term: "variant calling"
+      - term: "RNA-seq"
+      - term: "BWA"
+      - term: "STAR"
+    script_notes: |
+      - "Genomics pipelines are embarrassingly parallel - one sample at a time"
+      - Per-sample estimates: "Alignment: 100-500 SU. Variant calling: 200-1000 SU."
+      - Scaling: "50 samples × 500 SU = 25,000 SU total"
+      - Burst strategy: "Submit all samples at once, they run in parallel"
+      - Real example: "Whole genome sequencing pipeline: 2,000 SU per sample"
+
+  # ---------------------------------------------------------------------------
+  # GPU CALCULATORS
+  # ---------------------------------------------------------------------------
+
+  - slug: gpu-calculator-intro
+    title: "GPU Computing Estimates"
+    description: "Machine learning, rendering, and GPU-accelerated science"
+    duration: "2:15"
+    thumbnail: "gpu-calc.jpg"
+    triggers:
+      - page: "gpu-calculator"
+      - action: "open-help"
+    script_notes: |
+      - "GPUs are essential for ML/AI, but they're also expensive. Let's plan."
+      - On-prem vs cloud: "Our V100s are cheaper, cloud A100/H100s are faster"
+      - Workload types: Training (long), Inference (short), Rendering (variable)
+      - Real costs: "Training a vision model: $50-500. Fine-tuning an LLM: $500-5000."
+
+  - slug: gpu-ml-training
+    title: "GPU for ML/AI Training"
+    description: "Deep learning, LLMs, and neural networks"
+    duration: "2:30"
+    thumbnail: "ml-training.jpg"
+    triggers:
+      - calculator: "ml-training"
+      - term: "machine learning"
+      - term: "deep learning"
+      - term: "LLM"
+      - term: "neural network"
+      - term: "PyTorch"
+      - term: "TensorFlow"
+    script_notes: |
+      - "ML training is the #1 GPU workload. Here's how to estimate."
+      - Model size matters: "Small CNN: 1 GPU. Large transformer: 8+ GPUs"
+      - Training time: "Epochs × time per epoch = total hours"
+      - GPU memory: "If your model doesn't fit in 16GB, you need bigger GPUs"
+      - Cloud bursting: "For large jobs, cloud A100s may be cheaper than waiting"
+      - Real example: "Fine-tuning BERT: 10 GPU-hours. Training GPT-style: 1000+ GPU-hours"
+
+  - slug: gpu-rendering
+    title: "GPU for Rendering & Visualization"
+    description: "Scientific visualization and video rendering"
+    duration: "1:45"
+    thumbnail: "rendering.jpg"
+    triggers:
+      - calculator: "rendering"
+      - term: "rendering"
+      - term: "visualization"
+      - term: "Blender"
+      - term: "ParaView"
+    script_notes: |
+      - "Rendering is GPU-intensive but usually predictable"
+      - Frames × time per frame = total hours
+      - Resolution: "4K takes 4x longer than 1080p"
+      - Real example: "10-minute scientific animation at 4K: 50-100 GPU-hours"
+
+# =============================================================================
+# WIZARD STEP WALKTHROUGHS
+# =============================================================================
+
+wizard_steps:
+  - slug: wizard-overview
+    title: "The Planning Wizard in 2 Minutes"
+    description: "A quick overview of the entire process"
+    duration: "2:00"
+    thumbnail: "wizard-overview.jpg"
+    triggers:
+      - page: "wizard-start"
+      - action: "open-help"
+    script_notes: |
+      - "This wizard helps you plan research computing for your grant"
+      - 7 steps: Project info → Data tier → Duration → Services → Estimates → Review → Export
+      - Time estimate: "Most people finish in 10-15 minutes"
+      - Saving: "Everything auto-saves. You can come back anytime."
+      - The result: "Cost estimates for your budget + DMP text for your proposal"
+
+  - slug: wizard-tier-selection
+    title: "Step 2: Choosing Your Data Tier"
+    description: "How to classify your research data"
+    duration: "2:30"
+    thumbnail: "tier-selection.jpg"
+    triggers:
+      - page: "wizard-tier"
+    # Longer version of what-is-data-tier with wizard-specific guidance
+    script_notes: |
+      - "This step determines which services you can use"
+      - Link to questionnaire: "Not sure? Take the 5-question quiz"
+      - Common patterns by discipline
+      - "If in doubt, pick L2. You can always upgrade."
+
+  - slug: wizard-service-selection
+    title: "Step 4: Choosing Your Services"
+    description: "Bundles vs individual services"
+    duration: "2:00"
+    thumbnail: "service-selection.jpg"
+    triggers:
+      - page: "wizard-services"
+    script_notes: |
+      - "You can pick a bundle (pre-configured package) or build your own"
+      - When to use bundles: "If a bundle matches your work, start there"
+      - Customizing: "You can add/remove services from any bundle"
+      - Comparison: "Click 'Compare' to see services side-by-side"
+
+  - slug: wizard-estimates
+    title: "Step 5: Usage Estimates"
+    description: "How to fill in quantities you don't know"
+    duration: "2:30"
+    thumbnail: "estimates.jpg"
+    triggers:
+      - page: "wizard-estimates"
+    script_notes: |
+      - "This is where people get stuck. Here's how to estimate."
+      - Storage: "Think about your data per year, not per project"
+      - Compute: "If you don't know, start with 50,000 SU"
+      - Link to calculators: "Use 'Help me estimate' for guided calculations"
+      - Rounding: "Round up. It's easier to reduce than increase."
+
+  - slug: wizard-results
+    title: "Understanding Your Results"
+    description: "Reading the cost breakdown and DMP"
+    duration: "1:45"
+    thumbnail: "results.jpg"
+    triggers:
+      - page: "wizard-results"
+    script_notes: |
+      - "Here's what all these numbers mean"
+      - Cost breakdown: "Annual vs monthly, what's included, what's extra"
+      - Subsidies: "Free allocations are already subtracted"
+      - DMP text: "This is draft language - customize it for your proposal"
+      - Next steps: "Export for your grant, or submit to get started now"
+
+# =============================================================================
+# SOFTWARE & TOOLS
+# =============================================================================
+
+software:
+  - slug: software-catalog-intro
+    title: "Finding Research Software"
+    description: "What's available on HPC and VDI"
+    duration: "1:30"
+    thumbnail: "software-catalog.jpg"
+    triggers:
+      - page: "software-catalog"
+      - action: "open-help"
+    script_notes: |
+      - "We have hundreds of research software packages pre-installed"
+      - Stoplight system: Green = included, Yellow = restricted, Gray = bring your own
+      - Search and filter: "Search by name, or browse by discipline"
+      - BYOL: "If you need something we don't have, we can install it"
+
+  - slug: software-byol
+    title: "Bring Your Own License"
+    description: "Using your own software licenses on our systems"
+    duration: "2:00"
+    thumbnail: "byol.jpg"
+    triggers:
+      - license_model: "byol"
+      - term: "bring your own"
+      - term: "license server"
+      - term: "FlexLM"
+    script_notes: |
+      - "Have a software license? We can host it for you."
+      - How it works: "You buy the license, we run the server"
+      - License types: "FlexLM, RLM, cloud licensing all supported"
+      - No cost: "We host license servers at no additional charge"
+      - Contact: "Email us with your license file and we'll set it up"
+
+  - slug: campus-licenses
+    title: "Campus Software Licenses"
+    description: "What's already included at no cost"
+    duration: "1:15"
+    thumbnail: "campus-licenses.jpg"
+    triggers:
+      - page: "software-catalog"
+      - filter: "campus"
+    script_notes: |
+      - "These are already paid for by the university"
+      - Big ones: MATLAB, Mathematica, ANSYS, Stata, SPSS, NVivo
+      - Where to use them: "Check availability by platform (HPC, VDI, local)"
+      - Not on the list? "We may be able to add campus licenses for high-demand tools"
+
+# =============================================================================
+# DISCIPLINE-SPECIFIC GUIDES
+# =============================================================================
+
+disciplines:
+  - slug: guide-humanities
+    title: "Research Computing for Humanities"
+    description: "Storage and tools for digital humanities projects"
+    duration: "3:00"
+    thumbnail: "humanities-guide.jpg"
+    triggers:
+      - discipline: "humanities"
+      - department: "history"
+      - department: "english"
+      - department: "philosophy"
+      - department: "art history"
+    script_notes: |
+      - "You don't need to be a programmer to use research computing"
+      - Common needs: Storage for digitized materials, text analysis tools
+      - Typical project: "5TB storage for 3 years + VDI access for NVivo"
+      - Cost reality: "Most humanities projects are under $2,000/year"
+      - Success stories: "Dr. Pallish's digital humanities project..."
+
+  - slug: guide-social-science
+    title: "Research Computing for Social Sciences"
+    description: "Surveys, statistics, and qualitative data"
+    duration: "2:30"
+    thumbnail: "social-science-guide.jpg"
+    triggers:
+      - discipline: "social-science"
+      - department: "psychology"
+      - department: "sociology"
+      - department: "political science"
+      - department: "economics"
+    script_notes: |
+      - Common needs: Stata, SPSS, R, NVivo, survey storage
+      - Data tiers: "Most survey data is L2, unless you have identifiers"
+      - FERPA note: "Student data requires L3"
+      - Typical project: "10TB storage + VDI with Stata"
+
+  - slug: guide-biomedical
+    title: "Research Computing for Biomedical Sciences"
+    description: "Lab data, genomics, and clinical research"
+    duration: "3:30"
+    thumbnail: "biomedical-guide.jpg"
+    triggers:
+      - discipline: "biomedical"
+      - department: "biology"
+      - department: "biochemistry"
+      - department: "biomedical engineering"
+      - department: "pharmacology"
+    script_notes: |
+      - Common needs: Large storage, genomics pipelines, imaging analysis
+      - Compliance: "Many projects need HIPAA (L3) or FDA compliance"
+      - Typical costs: "$5,000-20,000/year for active research lab"
+      - Data lifecycle: "Raw → Processed → Published → Archived"
+
+  - slug: guide-engineering
+    title: "Research Computing for Engineering"
+    description: "Simulation, FEA, CFD, and EDA"
+    duration: "3:00"
+    thumbnail: "engineering-guide.jpg"
+    triggers:
+      - discipline: "engineering"
+      - department: "mechanical"
+      - department: "civil"
+      - department: "electrical"
+      - department: "chemical"
+    script_notes: |
+      - Common needs: HPC for simulation, GPU for ML, EDA tools
+      - Software: "ANSYS, COMSOL, Cadence, MATLAB included"
+      - Defense research: "L4 available for ITAR/EAR projects"
+      - Typical project: "100K SU + 25TB storage + GPU access"
+
+  - slug: guide-ml-ai
+    title: "Research Computing for ML/AI"
+    description: "Deep learning, LLMs, and data science"
+    duration: "3:00"
+    thumbnail: "ml-guide.jpg"
+    triggers:
+      - discipline: "ml-ai"
+      - term: "machine learning"
+      - term: "artificial intelligence"
+      - term: "deep learning"
+      - term: "data science"
+    script_notes: |
+      - GPU options: "On-prem V100s for development, cloud A100s for training"
+      - Storage: "ML datasets can be huge. Plan for 50-100TB."
+      - Frameworks: "PyTorch, TensorFlow, JAX pre-installed"
+      - Cost reality: "GPU time is the expensive part. Budget $5,000-50,000/year."
+      - Cloud bursting: "When you need 64 GPUs for a week, use cloud"
+
+  - slug: guide-business
+    title: "Research Computing for Business Research"
+    description: "Data analysis for management, finance, and marketing"
+    duration: "2:00"
+    thumbnail: "business-guide.jpg"
+    triggers:
+      - discipline: "business"
+      - department: "business"
+      - department: "management"
+      - department: "finance"
+      - department: "marketing"
+    script_notes: |
+      - "Business research computing is simpler than you might think"
+      - Common needs: Statistical analysis, large datasets, Python/R
+      - Tools: "Stata, SAS, SPSS, Python with pandas all available"
+      - Data sources: "WRDS, Bloomberg, Compustat - we can help with data management"
+      - Typical project: "5TB storage + VDI access for Stata"
+      - AI curious: "Starting with ML? Here's a beginner path..."
+
+# =============================================================================
+# PROCESS & WORKFLOW VIDEOS
+# =============================================================================
+
+process:
+  - slug: what-happens-after-submit
+    title: "What Happens After You Submit"
+    description: "The journey from slate to running services"
+    duration: "1:30"
+    thumbnail: "after-submit.jpg"
+    triggers:
+      - page: "confirmation"
+      - action: "submit-slate"
+    script_notes: |
+      - Timeline: "1-3 days for standard services"
+      - The process: Review → Funding verification → Provisioning → Access email
+      - What you'll receive: "A confirmation PDF with all your access details"
+      - Questions? "Reply to the confirmation email"
+
+  - slug: grant-budget-tips
+    title: "Writing Computing into Your Grant"
+    description: "Budget justification best practices"
+    duration: "2:30"
+    thumbnail: "grant-tips.jpg"
+    triggers:
+      - action: "export-grant"
+      - page: "grant-export"
+    script_notes: |
+      - "Here's how to make your computing costs defensible"
+      - Budget categories: "Usually goes under 'Other Direct Costs'"
+      - Justification language: "Be specific about what you're computing and why"
+      - Reviewers: "They want to see that you've thought about this"
+      - Common mistake: "Underestimating storage and overestimating compute"
+      - Template text: "The exported DMP gives you a starting point"
+
+  - slug: getting-started-access
+    title: "Getting Access to Your Services"
+    description: "First steps after provisioning"
+    duration: "2:00"
+    thumbnail: "getting-started.jpg"
+    triggers:
+      - action: "first-login"
+    script_notes: |
+      - "Your services are ready! Here's how to get started."
+      - HPC: "SSH access, module system, job submission"
+      - Storage: "Mount points, data transfer, permissions"
+      - VDI: "Remote desktop, software access"
+      - Cloud: "Portal access, cost monitoring"
+      - Getting help: "Documentation links, office hours"
+
+# =============================================================================
+# TROUBLESHOOTING & FAQ
+# =============================================================================
+
+troubleshooting:
+  - slug: common-mistakes
+    title: "Common Planning Mistakes"
+    description: "Avoid these pitfalls in your estimate"
+    duration: "2:00"
+    thumbnail: "mistakes.jpg"
+    triggers:
+      - page: "wizard-results"
+      - action: "review-estimate"
+    script_notes: |
+      - Underestimating storage: "Data always grows. Add 50% buffer."
+      - Wrong tier: "When in doubt, go higher. Downgrading is easier."
+      - Forgetting archive: "After 2 years, move old data to cold storage"
+      - Ignoring cloud: "For burst needs, cloud may be cheaper"
+      - Starting too late: "L3/L4 takes weeks. Plan ahead."
+
+  - slug: faq-cost-reality
+    title: "What Does This Actually Cost?"
+    description: "Real-world budget expectations"
+    duration: "2:00"
+    thumbnail: "cost-reality.jpg"
+    triggers:
+      - component: "cost-summary"
+      - action: "view-costs"
+    script_notes: |
+      - Small project (humanities): "$500-2,000/year"
+      - Medium project (typical lab): "$5,000-15,000/year"
+      - Large project (genomics/ML): "$20,000-100,000/year"
+      - What's included: "Support, backups, software at no extra charge"
+      - Subsidies: "Free allocations reduce most bills by 20-40%"
+
+  - slug: faq-change-later
+    title: "Can I Change My Plan Later?"
+    description: "Modifying services after provisioning"
+    duration: "1:00"
+    thumbnail: "change-plan.jpg"
+    triggers:
+      - action: "submit-slate"
+    script_notes: |
+      - "Yes! Nothing is permanent."
+      - Adding services: "Submit a new request anytime"
+      - Removing services: "Email us to reduce or cancel"
+      - Upgrading tier: "Possible, but may require data migration"
+      - Downgrading tier: "Not usually possible for security reasons"
+
+# =============================================================================
+# PRODUCTION NOTES
+# =============================================================================
+
+production:
+  # Guidelines for the media arts class
+  style_guide:
+    tone: "Friendly expert, not condescending"
+    pacing: "Moderate - not too fast, not boring"
+    visuals: "Screen recordings with cursor highlights, simple graphics"
+    narration: "Clear, conversational, avoid jargon"
+    length: "Under 3 minutes whenever possible"
+
+  technical_specs:
+    resolution: "1920x1080 (1080p)"
+    frame_rate: 30
+    audio: "Clear voiceover, minimal background music"
+    captions: "Required for accessibility"
+    format: "MP4 (H.264) for web, ProRes for archive"
+
+  recording_tips:
+    - "Use a consistent intro/outro (5 seconds max)"
+    - "Show the actual UI, not mockups"
+    - "Highlight mouse clicks and important areas"
+    - "Include a 'what you learned' summary at the end"
+    - "Add chapter markers for longer videos"
+
+  accessibility:
+    - "Closed captions required"
+    - "Transcript available for download"
+    - "Don't rely on color alone to convey information"
+    - "Describe visual elements in narration"
+    - "Provide alternative text descriptions"
+
+  # Estimated production effort
+  estimates:
+    planning_per_video: "30 min"
+    recording_per_video: "1-2 hours"
+    editing_per_video: "2-4 hours"
+    total_videos: 45
+    semester_goal: "15-20 videos"

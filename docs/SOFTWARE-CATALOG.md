@@ -24,7 +24,7 @@ Researchers know the software they need but don't know:
 
 A config-driven software catalog with:
 - **Stoplight license status** (green/yellow/red)
-- **Availability by platform** (HPC, VDI, cloud, local)
+- **Availability by platform** (HPC, JupyterHub, VDI, cloud, local)
 - **Access instructions** per platform
 - **License server hosting info**
 - **Searchable UI** with filtering
@@ -127,6 +127,10 @@ software:
     vendor: "Gaussian, Inc."
     category: computational-chemistry
     description: "Electronic structure modeling for molecular systems"
+    description_long: |
+      Gaussian is a general purpose computational chemistry software package.
+      Used for electronic structure modeling including DFT, HF, MP2, and coupled
+      cluster methods. GaussView provides a graphical interface for visualization.
 
     license_status: green
     license_details: |
@@ -141,6 +145,9 @@ software:
         versions: ["g16", "g09"]
         access: "module load gaussian/g16"
         notes: "Linda parallel available for multi-node jobs"
+      jupyterhub:
+        available: false
+        notes: "Batch computation only - use HPC"
       vdi:
         available: true
         versions: ["g16"]
@@ -593,6 +600,29 @@ settings:
 
 ---
 
+## JupyterHub — Zero Setup Computing
+
+JupyterHub is a managed notebook environment where users can start working immediately without installing anything locally.
+
+**Benefits:**
+- Pre-configured Python, R, Julia, and MATLAB kernels
+- GPU access for machine learning (PyTorch, TensorFlow)
+- Common packages pre-installed (numpy, pandas, tidyverse, etc.)
+- No environment setup or dependency management
+- Works from any browser
+
+**Best for:**
+- Exploratory data analysis
+- Teaching and coursework
+- Quick prototyping before scaling to HPC
+- Collaborative notebook sharing
+
+**Access:** https://jupyter.northwinds.edu (or your institution's URL)
+
+Software entries with `no_setup: true` indicate the tool is ready to use on JupyterHub with no configuration required.
+
+---
+
 ## UI Components
 
 ### Software Catalog Page
@@ -676,6 +706,74 @@ A dedicated `/software` page with:
 
 ---
 
+## Integration with Service Slate
+
+Software selections are added to the service slate just like storage or compute:
+
+```typescript
+interface SoftwareSelection {
+  id: string               // Software slug
+  name: string             // Display name
+  license_model: 'campus' | 'byol' | 'free' | 'hybrid'
+  cost_to_user: number | null  // null = "confirm with vendor"
+  cost_period?: string         // 'year', 'month', 'perpetual'
+  note?: string
+  installed_on: string[]       // Services this will be used on
+}
+```
+
+### BYOL Pricing Display
+
+For software requiring lab purchase, show appropriate messaging:
+
+| Scenario | Display |
+|----------|---------|
+| Known price | `[$7,995/yr BYOL]` |
+| Unknown price | `[Contact vendor for pricing]` |
+| Free academic | `[Free - register with vendor]` |
+| Campus included | `[Included]` |
+
+Example config for unknown pricing:
+
+```yaml
+- slug: schrodinger
+  name: "Schrödinger Suite"
+  license_status: red
+  license_model: byol
+  license_info:
+    cost_per_seat: null  # Unknown - varies by modules
+    vendor_contact: "https://www.schrodinger.com/academic"
+    notes: "Academic pricing varies by modules selected. Contact vendor."
+    request_quote_cta: true  # Show "Request Quote" button
+```
+
+### In the Slate Review
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Your Service Slate                               [DRAFT]       │
+│                                                                 │
+│  SERVICES                                                       │
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │  HPC Compute: 100,000 SU                         $900/yr   ││
+│  │  Research Storage: 25 TB                       $1,500/yr   ││
+│  └─────────────────────────────────────────────────────────────┘│
+│                                                                 │
+│  SOFTWARE                                                       │
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │  MATLAB R2024b                              [Included]  ✓  ││
+│  │  Gaussian 16                                [Included]  ✓  ││
+│  │  Schrödinger Suite               [Contact vendor]  ⚠       ││
+│  │    └─ Lab must acquire license separately                  ││
+│  └─────────────────────────────────────────────────────────────┘│
+│                                                                 │
+│  ⚠ 1 software item requires separate licensing                 │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## Integration with Service Selection
 
 When a user selects HPC or VDI services, show relevant software:
@@ -717,7 +815,7 @@ The software catalog should be searchable by:
 interface SoftwareSearchFilters {
   query: string
   categories: string[]
-  platforms: ('hpc' | 'vdi' | 'cloud' | 'local')[]
+  platforms: ('hpc' | 'jupyterhub' | 'vdi' | 'cloud' | 'local')[]
   licenseStatus: ('green' | 'yellow' | 'red')[]
   onlyAvailable: boolean  // Hide "bring your own" by default?
 }

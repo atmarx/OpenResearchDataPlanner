@@ -1,6 +1,25 @@
 # Service-to-tier mappings with metadata
 # If a service-tier combination is not listed, that service
 # is NOT available for that tier.
+#
+# Schema:
+#   service: string          # Service slug from services.yaml
+#   tier: string             # low, medium, high, restricted
+#   approval: string         # automatic, review, consultation
+#   approval_contact: string # Email for review/consultation (optional)
+#   notes: string            # User-facing notes (optional)
+#   dmp_template: string     # DMP template path (optional)
+#
+#   # Compliance metadata (optional, for L3+ services)
+#   compliance:
+#     frameworks: []         # hipaa, fda_21_cfr_11, ferpa, fedramp, etc.
+#     baa_status: string     # in_place, available, not_available
+#     baa_reference: string  # e.g., "Microsoft Cloud Terms"
+#     training_required: []  # List of required training
+#     timeline: string       # Expected provisioning time
+#     audit_logging: bool    # Whether audit logging is enabled
+#     encryption: string     # at_rest, in_transit, both, none
+#     contact: string        # Compliance-specific contact
 
 mappings:
   # =============================================================================
@@ -146,6 +165,16 @@ mappings:
       - All data encrypted with customer-managed KMS keys
       - Requires completed cloud security assessment
     dmp_template: "cloud-compute/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "AWS Business Associate Addendum"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "Cloud Security Fundamentals"
+      timeline: "3-5 business days after security assessment"
+      audit_logging: true
+      encryption: both
 
   # AWS Compute - Medium
   - service: aws-compute-medium
@@ -171,6 +200,16 @@ mappings:
       - All data encrypted with customer-managed KMS keys
       - Requires completed cloud security assessment
     dmp_template: "cloud-compute/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "AWS Business Associate Addendum"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "Cloud Security Fundamentals"
+      timeline: "3-5 business days after security assessment"
+      audit_logging: true
+      encryption: both
 
   # AWS Compute - Large
   - service: aws-compute-large
@@ -196,6 +235,16 @@ mappings:
       - All data encrypted with customer-managed KMS keys
       - Requires completed cloud security assessment
     dmp_template: "cloud-compute/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "AWS Business Associate Addendum"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "Cloud Security Fundamentals"
+      timeline: "3-5 business days after security assessment"
+      audit_logging: true
+      encryption: both
 
   # AWS Storage - Hot
   - service: aws-storage-hot
@@ -221,6 +270,15 @@ mappings:
       - Server-side encryption with KMS
       - Access logging required
     dmp_template: "cloud-storage/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "AWS Business Associate Addendum"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+      timeline: "Same day after security assessment"
+      audit_logging: true
+      encryption: both
 
   # AWS Storage - Cold
   - service: aws-storage-cold
@@ -242,6 +300,15 @@ mappings:
     notes: |
       Same security requirements as hot storage.
     dmp_template: "cloud-storage/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "AWS Business Associate Addendum"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+      timeline: "Same day after security assessment"
+      audit_logging: true
+      encryption: both
 
   # AWS Storage - Archive
   - service: aws-storage-archive
@@ -262,6 +329,15 @@ mappings:
     notes: |
       Archive tier maintains same security controls as source storage.
     dmp_template: "cloud-storage/archive"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "AWS Business Associate Addendum"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+      timeline: "Immediate (archive from existing storage)"
+      audit_logging: true
+      encryption: both
 
   # =============================================================================
   # AZURE CLOUD - Low through High
@@ -292,6 +368,16 @@ mappings:
       - All data encrypted with customer-managed keys
       - Requires completed cloud security assessment
     dmp_template: "cloud-compute/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (signed annually)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "Cloud Security Fundamentals"
+      timeline: "3-5 business days after security assessment"
+      audit_logging: true
+      encryption: both
 
   # Azure Compute - Medium
   - service: azure-compute-medium
@@ -318,6 +404,16 @@ mappings:
       - All data encrypted with customer-managed keys
       - Requires completed cloud security assessment
     dmp_template: "cloud-compute/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (signed annually)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "Cloud Security Fundamentals"
+      timeline: "3-5 business days after security assessment"
+      audit_logging: true
+      encryption: both
 
   # Azure Compute - Large
   - service: azure-compute-large
@@ -344,6 +440,16 @@ mappings:
       - All data encrypted with customer-managed keys
       - Requires completed cloud security assessment
     dmp_template: "cloud-compute/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (signed annually)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "Cloud Security Fundamentals"
+      timeline: "3-5 business days after security assessment"
+      audit_logging: true
+      encryption: both
 
   # Azure Storage - Hot
   - service: azure-storage-hot
@@ -369,6 +475,15 @@ mappings:
       - Customer-managed encryption keys
       - Access logging required
     dmp_template: "cloud-storage/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (signed annually)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+      timeline: "Same day after security assessment"
+      audit_logging: true
+      encryption: both
 
   # Azure Storage - Cold
   - service: azure-storage-cold
@@ -390,6 +505,15 @@ mappings:
     notes: |
       Same security requirements as hot storage.
     dmp_template: "cloud-storage/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (signed annually)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+      timeline: "Same day after security assessment"
+      audit_logging: true
+      encryption: both
 
   # Azure Storage - Archive
   - service: azure-storage-archive
@@ -410,6 +534,15 @@ mappings:
     notes: |
       Archive tier maintains same security controls as source storage.
     dmp_template: "cloud-storage/archive"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (signed annually)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+      timeline: "Immediate (archive from existing storage)"
+      audit_logging: true
+      encryption: both
 
   # =============================================================================
   # UNIVERSITY SERVICES - Low through High
@@ -439,6 +572,15 @@ mappings:
       - Access logging enabled
       - Annual access review required
     dmp_template: "nwfiles/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: not_applicable
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "Data Handling Policy Training"
+      timeline: "1-2 business days"
+      audit_logging: true
+      encryption: at_rest
 
   # OneDrive
   - service: onedrive
@@ -462,6 +604,15 @@ mappings:
       Ensure sharing is disabled or restricted to authorized personnel.
       Use sensitivity labels where appropriate.
     dmp_template: "onedrive/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (signed annually)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+      timeline: "Immediate (already provisioned)"
+      audit_logging: true
+      encryption: both
 
   # LabArchives
   - service: labarchives
@@ -485,6 +636,15 @@ mappings:
       LabArchives is approved for high-tier lab documentation.
       Ensure notebook permissions are restricted to authorized personnel.
     dmp_template: "labarchives/high"
+    compliance:
+      frameworks: [hipaa]
+      baa_status: in_place
+      baa_reference: "LabArchives HIPAA BAA (institutional agreement)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+      timeline: "Immediate (already provisioned)"
+      audit_logging: true
+      encryption: both
 
   # Azure OpenAI - Low/Medium only
   - service: azure-openai
@@ -526,6 +686,16 @@ mappings:
       VDI includes encryption at rest and daily backups.
       Ensure Azure AD MFA is enabled. Do not transfer data to personal devices.
     dmp_template: "research-vdi/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (Azure Virtual Desktop)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "VDI Security Best Practices"
+      timeline: "Same day provisioning"
+      audit_logging: true
+      encryption: both
 
   - service: research-vdi-silver
     tier: restricted
@@ -537,6 +707,17 @@ mappings:
       - No internet access from VM
       - Session logging may be required
     dmp_template: null
+    compliance:
+      frameworks: [cui, itar, ear]
+      baa_status: not_applicable
+      training_required:
+        - "CUI Handling (if applicable)"
+        - "Export Control Awareness"
+        - "VDI Security Best Practices"
+      timeline: "2-4 weeks (security assessment required)"
+      audit_logging: true
+      encryption: both
+      contact: "security@northwinds.edu"
 
   # Research VDI - Gold
   - service: research-vdi-gold
@@ -559,6 +740,16 @@ mappings:
       VDI includes encryption at rest and daily backups.
       Ensure Azure AD MFA is enabled. Do not transfer data to personal devices.
     dmp_template: "research-vdi/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (Azure Virtual Desktop)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "VDI Security Best Practices"
+      timeline: "Same day provisioning"
+      audit_logging: true
+      encryption: both
 
   - service: research-vdi-gold
     tier: restricted
@@ -570,6 +761,17 @@ mappings:
       - No internet access from VM
       - Session logging may be required
     dmp_template: null
+    compliance:
+      frameworks: [cui, itar, ear]
+      baa_status: not_applicable
+      training_required:
+        - "CUI Handling (if applicable)"
+        - "Export Control Awareness"
+        - "VDI Security Best Practices"
+      timeline: "2-4 weeks (security assessment required)"
+      audit_logging: true
+      encryption: both
+      contact: "security@northwinds.edu"
 
   # Research VDI - Platinum
   - service: research-vdi-platinum
@@ -592,6 +794,16 @@ mappings:
       VDI includes encryption at rest and daily backups.
       Ensure Azure AD MFA is enabled. Do not transfer data to personal devices.
     dmp_template: "research-vdi/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (Azure Virtual Desktop)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "VDI Security Best Practices"
+      timeline: "Same day provisioning"
+      audit_logging: true
+      encryption: both
 
   - service: research-vdi-platinum
     tier: restricted
@@ -603,6 +815,72 @@ mappings:
       - No internet access from VM
       - Session logging may be required
     dmp_template: null
+    compliance:
+      frameworks: [cui, itar, ear]
+      baa_status: not_applicable
+      training_required:
+        - "CUI Handling (if applicable)"
+        - "Export Control Awareness"
+        - "VDI Security Best Practices"
+      timeline: "2-4 weeks (security assessment required)"
+      audit_logging: true
+      encryption: both
+      contact: "security@northwinds.edu"
+
+  # JupyterHub (Shared) - Free for L1/L2
+  - service: jupyterhub-shared
+    tier: low
+    approval: automatic
+    notes: null
+    dmp_template: "jupyterhub/shared"
+
+  - service: jupyterhub-shared
+    tier: medium
+    approval: automatic
+    notes: |
+      Shared JupyterHub spawns jobs on HPC cluster. Data stored in your
+      HPC home directory. Do not process L3/High tier data on shared instance.
+    dmp_template: "jupyterhub/shared"
+
+  # JupyterHub (Dedicated) - For L3/High tier data
+  - service: jupyterhub-dedicated
+    tier: high
+    approval: automatic
+    notes: |
+      Dedicated JupyterHub runs on isolated VDI infrastructure.
+      Includes daily backups and encryption at rest.
+      Ensure Azure AD MFA is enabled.
+    dmp_template: "jupyterhub/dedicated"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (Azure Virtual Desktop)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+      timeline: "1-2 business days"
+      audit_logging: true
+      encryption: both
+
+  - service: jupyterhub-dedicated
+    tier: restricted
+    approval: review
+    approval_contact: "security@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Isolated network segment
+      - No internet access from VM (if required by protocol)
+      - Session logging may be required
+    dmp_template: "jupyterhub/dedicated"
+    compliance:
+      frameworks: [cui, itar, ear]
+      baa_status: not_applicable
+      training_required:
+        - "CUI Handling (if applicable)"
+        - "Export Control Awareness"
+      timeline: "2-4 weeks (security assessment required)"
+      audit_logging: true
+      encryption: both
+      contact: "security@northwinds.edu"
 
   # Web Hosting
   - service: web-hosting
@@ -629,6 +907,16 @@ mappings:
       - WAF and DDoS protection enabled
       - Security assessment required before deployment
     dmp_template: "web-hosting/high"
+    compliance:
+      frameworks: [hipaa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (Azure App Service)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "Secure Web Development Practices"
+      timeline: "1-2 weeks (security assessment required)"
+      audit_logging: true
+      encryption: both
 
   # Secure Enclave - Restricted only
   - service: secure-enclave
@@ -639,6 +927,18 @@ mappings:
       Secure enclaves are provisioned through consultation.
       Allow 4-8 weeks lead time for setup.
     dmp_template: null
+    compliance:
+      frameworks: [cui, nist_800_171, itar, ear]
+      baa_status: not_applicable
+      training_required:
+        - "CUI Handling"
+        - "Export Control Awareness"
+        - "NIST 800-171 Security Controls"
+        - "Secure Enclave Operating Procedures"
+      timeline: "4-8 weeks (full security assessment and build-out)"
+      audit_logging: true
+      encryption: both
+      contact: "security@northwinds.edu"
 
   # =============================================================================
   # SUPPORT SERVICES - All Tiers

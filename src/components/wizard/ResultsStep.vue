@@ -3,12 +3,14 @@ import { computed, ref } from 'vue'
 import { marked } from 'marked'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
+import { usePreferencesStore } from '@/stores/preferencesStore'
 import { useWizard } from '@/composables/useWizard'
 import { useDMPGenerator } from '@/composables/useDMPGenerator'
 import { Download, FileText, RefreshCw, ExternalLink, CheckCircle, FileCode, Copy, Check } from 'lucide-vue-next'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
+const preferencesStore = usePreferencesStore()
 const wizard = useWizard()
 const dmpGenerator = useDMPGenerator()
 
@@ -200,26 +202,34 @@ function startOver() {
   <div class="p-8">
     <div class="mb-6 flex items-start justify-between">
       <div>
-        <h2 class="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+        <h2
+          class="text-2xl font-bold mb-2 flex items-center gap-2"
+          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+        >
           <CheckCircle class="w-7 h-7 text-green-500" />
           Your Estimate is Ready
         </h2>
-        <p class="text-gray-600">
+        <p :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
           Review your cost estimates and data management plan below.
         </p>
       </div>
     </div>
 
     <!-- Tab navigation -->
-    <div class="border-b border-gray-200 mb-6">
+    <div
+      class="border-b mb-6"
+      :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+    >
       <nav class="flex gap-4" aria-label="Results tabs">
         <button
           @click="activeTab = 'budget'"
           class="py-3 px-1 border-b-2 font-medium text-sm transition-colors"
           :class="[
             activeTab === 'budget'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'border-blue-500 text-blue-500'
+              : preferencesStore.darkMode
+                ? 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
           ]"
         >
           Budget Estimate
@@ -229,8 +239,10 @@ function startOver() {
           class="py-3 px-1 border-b-2 font-medium text-sm transition-colors"
           :class="[
             activeTab === 'dmp'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'border-blue-500 text-blue-500'
+              : preferencesStore.darkMode
+                ? 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
           ]"
         >
           Data Management Plan
@@ -242,23 +254,41 @@ function startOver() {
     <div v-show="activeTab === 'budget'">
       <!-- Summary cards -->
       <div class="grid gap-4 md:grid-cols-3 mb-8">
-        <div class="bg-blue-50 rounded-lg p-4">
-          <p class="text-sm text-blue-600 font-medium">Monthly Cost</p>
-          <p class="text-2xl font-bold text-blue-900">
+        <div
+          class="rounded-lg p-4"
+          :class="preferencesStore.darkMode ? 'bg-blue-900/30' : 'bg-blue-50'"
+        >
+          <p class="text-sm text-blue-500 font-medium">Monthly Cost</p>
+          <p
+            class="text-2xl font-bold"
+            :class="preferencesStore.darkMode ? 'text-blue-200' : 'text-blue-900'"
+          >
             {{ formatCurrency(costBreakdown.monthlyTotal) }}
           </p>
         </div>
-        <div class="bg-green-50 rounded-lg p-4">
-          <p class="text-sm text-green-600 font-medium">Grant Period ({{ costBreakdown.grantMonths }} mo)</p>
-          <p class="text-2xl font-bold text-green-900">
+        <div
+          class="rounded-lg p-4"
+          :class="preferencesStore.darkMode ? 'bg-green-900/30' : 'bg-green-50'"
+        >
+          <p class="text-sm text-green-500 font-medium">Grant Period ({{ costBreakdown.grantMonths }} mo)</p>
+          <p
+            class="text-2xl font-bold"
+            :class="preferencesStore.darkMode ? 'text-green-200' : 'text-green-900'"
+          >
             {{ formatCurrency(costBreakdown.grantTotal) }}
           </p>
         </div>
-        <div class="bg-purple-50 rounded-lg p-4">
-          <p class="text-sm text-purple-600 font-medium">
+        <div
+          class="rounded-lg p-4"
+          :class="preferencesStore.darkMode ? 'bg-purple-900/30' : 'bg-purple-50'"
+        >
+          <p class="text-sm text-purple-500 font-medium">
             Archive ({{ costBreakdown.archiveYears.toFixed(1) }} yr)
           </p>
-          <p class="text-2xl font-bold text-purple-900">
+          <p
+            class="text-2xl font-bold"
+            :class="preferencesStore.darkMode ? 'text-purple-200' : 'text-purple-900'"
+          >
             {{ formatCurrency(costBreakdown.archiveTotal) }}
           </p>
         </div>
@@ -283,48 +313,100 @@ function startOver() {
 
       <!-- Cost breakdown table -->
       <div class="mb-8">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Cost Breakdown by Service</h3>
+        <h3
+          class="text-lg font-semibold mb-4"
+          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+        >Cost Breakdown by Service</h3>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
-              <tr class="border-b border-gray-200">
-                <th class="text-left py-3 px-4 font-medium text-gray-700">Service</th>
-                <th class="text-right py-3 px-4 font-medium text-gray-700">Monthly</th>
-                <th class="text-right py-3 px-4 font-medium text-gray-700">Grant Period</th>
-                <th class="text-right py-3 px-4 font-medium text-gray-700">Archive</th>
-                <th class="text-right py-3 px-4 font-medium text-gray-700">Total</th>
+              <tr
+                class="border-b"
+                :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+              >
+                <th
+                  class="text-left py-3 px-4 font-medium"
+                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                >Service</th>
+                <th
+                  class="text-right py-3 px-4 font-medium"
+                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                >Monthly</th>
+                <th
+                  class="text-right py-3 px-4 font-medium"
+                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                >Grant Period</th>
+                <th
+                  class="text-right py-3 px-4 font-medium"
+                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                >Archive</th>
+                <th
+                  class="text-right py-3 px-4 font-medium"
+                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                >Total</th>
               </tr>
             </thead>
             <tbody>
               <tr
                 v-for="service in costBreakdown.byService"
                 :key="service.service_slug"
-                class="border-b border-gray-100"
+                class="border-b"
+                :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-100'"
               >
-                <td class="py-3 px-4 text-gray-900">{{ service.name }}</td>
-                <td class="py-3 px-4 text-right text-gray-600">{{ formatCurrency(service.monthly) }}</td>
-                <td class="py-3 px-4 text-right text-gray-600">{{ formatCurrency(service.grant) }}</td>
-                <td class="py-3 px-4 text-right text-gray-600">
+                <td
+                  class="py-3 px-4"
+                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                >{{ service.name }}</td>
+                <td
+                  class="py-3 px-4 text-right"
+                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                >{{ formatCurrency(service.monthly) }}</td>
+                <td
+                  class="py-3 px-4 text-right"
+                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                >{{ formatCurrency(service.grant) }}</td>
+                <td
+                  class="py-3 px-4 text-right"
+                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                >
                   {{ service.archive > 0 ? formatCurrency(service.archive) : '—' }}
                 </td>
-                <td class="py-3 px-4 text-right font-medium text-gray-900">
+                <td
+                  class="py-3 px-4 text-right font-medium"
+                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                >
                   {{ formatCurrency(service.grant + service.archive) }}
                 </td>
               </tr>
             </tbody>
             <tfoot>
-              <tr class="bg-gray-50">
-                <td class="py-3 px-4 font-semibold text-gray-900">Total</td>
-                <td class="py-3 px-4 text-right font-semibold text-gray-900">
+              <tr :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-50'">
+                <td
+                  class="py-3 px-4 font-semibold"
+                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                >Total</td>
+                <td
+                  class="py-3 px-4 text-right font-semibold"
+                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                >
                   {{ formatCurrency(costBreakdown.monthlyTotal) }}
                 </td>
-                <td class="py-3 px-4 text-right font-semibold text-gray-900">
+                <td
+                  class="py-3 px-4 text-right font-semibold"
+                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                >
                   {{ formatCurrency(costBreakdown.grantTotal) }}
                 </td>
-                <td class="py-3 px-4 text-right font-semibold text-gray-900">
+                <td
+                  class="py-3 px-4 text-right font-semibold"
+                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                >
                   {{ formatCurrency(costBreakdown.archiveTotal) }}
                 </td>
-                <td class="py-3 px-4 text-right font-semibold text-gray-900">
+                <td
+                  class="py-3 px-4 text-right font-semibold"
+                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                >
                   {{ formatCurrency(costBreakdown.grandTotal) }}
                 </td>
               </tr>
@@ -355,21 +437,41 @@ function startOver() {
     <!-- DMP Tab -->
     <div v-show="activeTab === 'dmp'">
       <!-- DMP info -->
-      <div class="bg-blue-50 rounded-lg p-4 mb-6">
-        <p class="text-sm text-blue-800">
+      <div
+        class="rounded-lg p-4 mb-6"
+        :class="preferencesStore.darkMode ? 'bg-blue-900/30' : 'bg-blue-50'"
+      >
+        <p
+          class="text-sm"
+          :class="preferencesStore.darkMode ? 'text-blue-200' : 'text-blue-800'"
+        >
           <strong>Data Management Plan</strong> - This document describes how your research data will be stored,
           protected, and retained. Copy or download this content to include in your grant proposal.
         </p>
       </div>
 
       <!-- DMP content -->
-      <div class="border border-gray-200 rounded-lg mb-6">
-        <div class="flex items-center justify-between px-4 py-2 bg-gray-50 border-b border-gray-200">
-          <span class="text-sm font-medium text-gray-700">Preview</span>
+      <div
+        class="border rounded-lg mb-6"
+        :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+      >
+        <div
+          class="flex items-center justify-between px-4 py-2 border-b"
+          :class="preferencesStore.darkMode
+            ? 'bg-gray-700 border-gray-600'
+            : 'bg-gray-50 border-gray-200'"
+        >
+          <span
+            class="text-sm font-medium"
+            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+          >Preview</span>
           <div class="flex gap-2">
             <button
               @click="copyDMP"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors"
+              :class="preferencesStore.darkMode
+                ? 'text-gray-300 hover:text-white hover:bg-gray-600'
+                : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'"
             >
               <component :is="copied ? Check : Copy" class="w-4 h-4" />
               {{ copied ? 'Copied!' : 'Copy' }}
@@ -385,6 +487,7 @@ function startOver() {
         </div>
         <div
           class="p-6 prose prose-sm max-w-none overflow-auto max-h-[600px]"
+          :class="preferencesStore.darkMode ? 'prose-invert' : ''"
           v-html="dmpHtml"
         />
       </div>
@@ -392,9 +495,13 @@ function startOver() {
       <!-- Services without templates warning -->
       <div
         v-if="dmpGenerator.servicesWithoutTemplates.value.length > 0"
-        class="bg-yellow-50 rounded-lg p-4 mb-6"
+        class="rounded-lg p-4 mb-6"
+        :class="preferencesStore.darkMode ? 'bg-yellow-900/30' : 'bg-yellow-50'"
       >
-        <p class="text-sm text-yellow-800">
+        <p
+          class="text-sm"
+          :class="preferencesStore.darkMode ? 'text-yellow-200' : 'text-yellow-800'"
+        >
           <strong>Note:</strong> Some services do not have DMP templates and are not included above:
           {{ dmpGenerator.servicesWithoutTemplates.value.map(s => configStore.servicesBySlug[s.service_slug]?.name).join(', ') }}
         </p>
@@ -402,13 +509,19 @@ function startOver() {
     </div>
 
     <!-- Disclaimer and contact (shown on both tabs) -->
-    <div class="bg-yellow-50 rounded-lg p-4 mb-6">
-      <p class="text-sm text-yellow-800">
+    <div
+      class="rounded-lg p-4 mb-6"
+      :class="preferencesStore.darkMode ? 'bg-yellow-900/30' : 'bg-yellow-50'"
+    >
+      <p
+        class="text-sm"
+        :class="preferencesStore.darkMode ? 'text-yellow-200' : 'text-yellow-800'"
+      >
         <strong>Note:</strong> This is an estimate based on current pricing and your inputs.
         Actual costs may vary. Please consult with
         <a
           :href="'mailto:' + configStore.config?.meta?.contact?.general"
-          class="text-blue-600 hover:underline"
+          class="text-blue-500 hover:underline"
         >
           {{ configStore.config?.meta?.contact?.general }}
         </a>
@@ -417,10 +530,16 @@ function startOver() {
     </div>
 
     <!-- Actions -->
-    <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+    <div
+      class="flex items-center justify-between pt-4 border-t"
+      :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+    >
       <button
         @click="startOver"
-        class="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900"
+        class="inline-flex items-center gap-2 px-4 py-2"
+        :class="preferencesStore.darkMode
+          ? 'text-gray-400 hover:text-gray-200'
+          : 'text-gray-700 hover:text-gray-900'"
       >
         <RefreshCw class="w-4 h-4" />
         Start Over

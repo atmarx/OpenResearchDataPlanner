@@ -55,6 +55,10 @@ export const useSessionStore = defineStore('session', () => {
       selected_services: [],
       // Each service entry: { service_slug, estimate, use_subsidy, notes, archive_estimate }
 
+      selected_software: [],
+      // Each software entry: { software_slug, note, platforms }
+      // platforms = which of their selected services will use this software
+
       // Calculated costs (populated by cost calculator)
       cost_summary: null
     }
@@ -69,10 +73,15 @@ export const useSessionStore = defineStore('session', () => {
     session.value.selected_services.map(s => s.service_slug)
   )
 
+  const selectedSoftwareSlugs = computed(() =>
+    session.value.selected_software.map(s => s.software_slug)
+  )
+
   const hasUnsavedChanges = computed(() => {
     // Check if session has meaningful data
     return session.value.tier !== null ||
-           session.value.selected_services.length > 0
+           session.value.selected_services.length > 0 ||
+           session.value.selected_software.length > 0
   })
 
   /**
@@ -117,10 +126,15 @@ export const useSessionStore = defineStore('session', () => {
     if (stepId === 'tier-select' || allSteps.indexOf(stepId) <= allSteps.indexOf('tier-select')) {
       session.value.tier = null
       session.value.selected_services = []
+      session.value.selected_software = []
       session.value.retention.schedules = []
       session.value.cost_summary = null
     } else if (stepId === 'service-select' || allSteps.indexOf(stepId) <= allSteps.indexOf('service-select')) {
       session.value.selected_services = []
+      session.value.selected_software = []
+      session.value.cost_summary = null
+    } else if (stepId === 'software' || allSteps.indexOf(stepId) <= allSteps.indexOf('software')) {
+      session.value.selected_software = []
       session.value.cost_summary = null
     } else if (stepId === 'estimate') {
       session.value.cost_summary = null
@@ -253,6 +267,58 @@ export const useSessionStore = defineStore('session', () => {
     }
   }
 
+  // =====================================================
+  // SOFTWARE SELECTION METHODS
+  // =====================================================
+
+  /**
+   * Add software to the selection
+   */
+  function addSoftware(softwareSlug, platforms = []) {
+    if (selectedSoftwareSlugs.value.includes(softwareSlug)) return
+
+    session.value.selected_software.push({
+      software_slug: softwareSlug,
+      note: '',
+      platforms: platforms // Which platforms/services they'll use it on
+    })
+    session.value.updated_at = new Date().toISOString()
+  }
+
+  /**
+   * Remove software from the selection
+   */
+  function removeSoftware(softwareSlug) {
+    session.value.selected_software = session.value.selected_software.filter(
+      s => s.software_slug !== softwareSlug
+    )
+    session.value.updated_at = new Date().toISOString()
+  }
+
+  /**
+   * Toggle software selection
+   */
+  function toggleSoftware(softwareSlug, platforms = []) {
+    if (selectedSoftwareSlugs.value.includes(softwareSlug)) {
+      removeSoftware(softwareSlug)
+    } else {
+      addSoftware(softwareSlug, platforms)
+    }
+  }
+
+  /**
+   * Update software note
+   */
+  function updateSoftwareNote(softwareSlug, note) {
+    const software = session.value.selected_software.find(
+      s => s.software_slug === softwareSlug
+    )
+    if (software) {
+      software.note = note
+      session.value.updated_at = new Date().toISOString()
+    }
+  }
+
   /**
    * Set the calculated cost summary
    */
@@ -332,6 +398,7 @@ export const useSessionStore = defineStore('session', () => {
     selectedTier,
     grantMonths,
     selectedServiceSlugs,
+    selectedSoftwareSlugs,
     hasUnsavedChanges,
 
     // Methods
@@ -349,6 +416,10 @@ export const useSessionStore = defineStore('session', () => {
     updateServiceSubsidy,
     updateServiceArchiveEstimate,
     updateServiceAcknowledgment,
+    addSoftware,
+    removeSoftware,
+    toggleSoftware,
+    updateSoftwareNote,
     setCostSummary,
     saveToLocalStorage,
     loadFromLocalStorage,

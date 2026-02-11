@@ -1,6 +1,30 @@
 # config/software.yaml
 # Licensed software available on various platforms
 
+# =============================================================================
+# COMPLIANCE SCHEMA
+# =============================================================================
+#
+# Export Control (software-level):
+#   export_control:
+#     classification: "EAR" | "ITAR" | null   # null = no export control
+#     eccn: "5D002"                            # ECCN if EAR-controlled
+#     restriction: "us_persons" | "us_citizens" | null
+#     notes: "Deemed export rules apply"
+#
+# Tier Restrictions (software-level default, platform can override):
+#   tier_restrictions:
+#     min_tier: "L3" | null    # null = no floor (can use on any tier)
+#     max_tier: "L2" | null    # null = no ceiling (can use on any tier)
+#     notes: "Not certified for restricted data environments"
+#
+#   availability:
+#     hpc:
+#       tier_restrictions:     # Platform-level override (more restrictive only)
+#         max_tier: "L1"
+#
+# =============================================================================
+
 # License status definitions
 license_statuses:
   full:
@@ -20,6 +44,10 @@ license_statuses:
     color: "gray"
     icon: "external-link"
     description: "You must provide your own license"
+    # For slate display, BYOL items show one of:
+    #   - Known price: "$7,995/yr BYOL"
+    #   - Unknown: "Contact vendor for pricing"
+    #   - Free registration: "Free - register with vendor"
 
   unavailable:
     label: "Not Available"
@@ -37,7 +65,13 @@ software:
     name: "Gaussian"
     vendor: "Gaussian, Inc."
     category: "computational-chemistry"
-    description: "Electronic structure modeling"
+    description: "Electronic structure and quantum chemistry calculations"
+    description_long: >
+      Gaussian is the gold standard for ab initio quantum chemistry calculations, widely used
+      for predicting molecular energies, structures, vibrational frequencies, and reaction pathways.
+      It supports density functional theory (DFT), Hartree-Fock, MP2, coupled cluster, and many
+      other methods. Our site license covers all users on HPC for research and teaching.
+      Note: Gaussian has strict license terms that prohibit cloud deployment.
     website: "https://gaussian.com"
 
     availability:
@@ -64,7 +98,13 @@ software:
     name: "ORCA"
     vendor: "Max Planck Institute"
     category: "computational-chemistry"
-    description: "Quantum chemistry program"
+    description: "Free quantum chemistry for spectroscopy and reactions"
+    description_long: >
+      ORCA is a powerful, free quantum chemistry package developed at the Max Planck Institute.
+      It excels at spectroscopy predictions (EPR, NMR, UV-Vis), transition metal chemistry, and
+      excited state calculations. ORCA offers excellent performance for DFT and wavefunction
+      methods, with strong support for open-shell systems and spin-orbit coupling. Free for
+      academic use after registration.
     website: "https://orcaforum.kofo.mpg.de"
 
     availability:
@@ -84,6 +124,53 @@ software:
       - quantum
       - free
 
+  - slug: schrodinger
+    name: "Schrödinger Suite"
+    vendor: "Schrödinger, Inc."
+    category: "computational-chemistry"
+    description: "Commercial drug discovery and materials modeling platform"
+    description_long: >
+      Schrödinger Suite is a comprehensive platform for computational drug discovery and materials
+      science. It includes Maestro (molecular visualization), Glide (docking), Prime (homology
+      modeling), Desmond (molecular dynamics), and Jaguar (quantum mechanics). The suite is
+      industry-standard for pharmaceutical research. Licenses are expensive and modular—contact
+      us for help navigating academic pricing options.
+    website: "https://www.schrodinger.com"
+
+    availability:
+      hpc:
+        status: byol
+        notes: "We can install if you provide license"
+        requires_own_license: true
+      vdi:
+        status: byol
+        notes: "Maestro GUI available if licensed"
+        requires_own_license: true
+      cloud:
+        status: byol
+        notes: "Cloud licensing available from vendor"
+        requires_own_license: true
+
+    # BYOL pricing info for slate display
+    license_model: byol
+    license_info:
+      cost_per_seat: null  # Unknown - varies by modules
+      cost_period: null
+      vendor_contact: "https://www.schrodinger.com/academic"
+      notes: "Academic pricing varies significantly by modules selected"
+      request_quote_cta: true  # Show "Request Quote" button in UI
+
+    # We can host their license server
+    license_server:
+      we_can_host: true
+      contact: "rc-help@northwinds.edu"
+
+    tags:
+      - chemistry
+      - drug-discovery
+      - molecular-modeling
+      - byol
+
   # ============================================================
   # MOLECULAR DYNAMICS
   # ============================================================
@@ -92,7 +179,13 @@ software:
     name: "AMBER"
     vendor: "AMBER Development Team"
     category: "molecular-dynamics"
-    description: "Molecular dynamics for biomolecules"
+    description: "Biomolecular simulation with GPU acceleration"
+    description_long: >
+      AMBER (Assisted Model Building with Energy Refinement) is a leading molecular dynamics
+      package for simulating proteins, nucleic acids, and other biomolecules. It's known for
+      highly optimized GPU code that can achieve microsecond-scale simulations. The package
+      includes force fields (ff19SB, GAFF2), free energy methods, and enhanced sampling
+      techniques. Our HPC license includes pmemd.cuda for GPU-accelerated simulations.
     website: "https://ambermd.org"
 
     availability:
@@ -116,7 +209,13 @@ software:
     name: "GROMACS"
     vendor: "Open Source"
     category: "molecular-dynamics"
-    description: "High-performance molecular dynamics"
+    description: "Fast, free molecular dynamics for biomolecules"
+    description_long: >
+      GROMACS is one of the fastest open-source molecular dynamics packages available, optimized
+      for simulating proteins, lipids, and nucleic acids. It supports CHARMM, AMBER, and GROMOS
+      force fields, with excellent GPU acceleration and parallel scaling. Popular for membrane
+      simulations, protein folding studies, and free energy calculations. Analysis tools like
+      MDAnalysis are available on JupyterHub for post-processing trajectories.
     website: "https://www.gromacs.org"
 
     availability:
@@ -126,6 +225,10 @@ software:
         module: "gromacs/2024.1"
         gpu_support: true
         notes: "Open source, GPU-accelerated"
+      jupyterhub:
+        status: full
+        notes: "MDAnalysis and analysis tools available for post-processing"
+        no_setup: true
       vdi:
         status: full
       cloud:
@@ -140,7 +243,13 @@ software:
     name: "NAMD"
     vendor: "UIUC"
     category: "molecular-dynamics"
-    description: "Scalable molecular dynamics"
+    description: "Highly parallel MD for large biomolecular systems"
+    description_long: >
+      NAMD is designed for high-performance simulation of large biomolecular systems, scaling
+      efficiently to thousands of CPU cores and multiple GPUs. Developed at UIUC alongside VMD
+      (visualization), it's ideal for simulating viruses, ribosomes, and other massive molecular
+      assemblies. Supports CHARMM and AMBER force fields, enhanced sampling methods, and
+      integrates with the QwikMD rapid simulation setup tool. Free for academic use.
     website: "https://www.ks.uiuc.edu/Research/namd/"
 
     availability:
@@ -169,6 +278,11 @@ software:
     vendor: "MathWorks"
     category: "numerical-computing"
     description: "Numerical computing and visualization"
+    description_long: >
+      MATLAB is a programming platform for numeric computing, data analysis, and visualization.
+      Our campus license includes the Parallel Computing Toolbox for multi-core and GPU computing,
+      plus popular toolboxes for statistics, image processing, signal processing, and deep learning.
+      Available on HPC (batch jobs), JupyterHub (interactive notebooks), and VDI (desktop GUI).
     website: "https://mathworks.com/products/matlab.html"
 
     availability:
@@ -178,6 +292,11 @@ software:
         module: "matlab/R2024a"
         parallel_toolbox: true
         notes: "Campus license with Parallel Computing Toolbox"
+      jupyterhub:
+        status: full
+        versions: ["R2024a"]
+        notes: "MATLAB kernel available, all toolboxes included"
+        no_setup: true
       vdi:
         status: full
         versions: ["R2024a"]
@@ -207,7 +326,13 @@ software:
     name: "Mathematica"
     vendor: "Wolfram Research"
     category: "numerical-computing"
-    description: "Technical computing system"
+    description: "Symbolic math, visualization, and technical computing"
+    description_long: >
+      Mathematica is a comprehensive system for symbolic and numerical computation, combining
+      a powerful programming language with extensive mathematical functions and stunning
+      visualizations. Ideal for algebraic manipulation, calculus, differential equations, and
+      creating publication-quality figures. The Wolfram Language makes complex analyses
+      expressible in compact code. Our campus license provides unlimited access on HPC and VDI.
     website: "https://www.wolfram.com/mathematica/"
 
     availability:
@@ -235,7 +360,13 @@ software:
     name: "Stata"
     vendor: "StataCorp"
     category: "statistics"
-    description: "Statistical software for data science"
+    description: "Statistical analysis for economics and social sciences"
+    description_long: >
+      Stata is the preferred statistical package in economics, political science, sociology, and
+      epidemiology. It combines an intuitive command syntax with powerful capabilities for panel
+      data, survival analysis, causal inference, and survey statistics. Our Stata/MP license
+      supports parallel processing for large datasets. PyStata integration is available on
+      JupyterHub for combining Stata's statistical power with Python's flexibility.
     website: "https://stata.com"
 
     availability:
@@ -244,6 +375,11 @@ software:
         versions: ["18-MP"]
         module: "stata/18"
         notes: "Stata/MP with 32 cores"
+      jupyterhub:
+        status: full
+        versions: ["18"]
+        notes: "PyStata kernel available for notebook workflows"
+        no_setup: true
       vdi:
         status: full
         versions: ["18"]
@@ -259,7 +395,13 @@ software:
     name: "SAS"
     vendor: "SAS Institute"
     category: "statistics"
-    description: "Statistical analysis system"
+    description: "Enterprise analytics and statistical software"
+    description_long: >
+      SAS is an industry-standard platform for advanced analytics, business intelligence, and
+      statistical analysis. It's widely used in healthcare, pharmaceuticals, and finance for
+      regulatory reporting and clinical trials. SAS excels at handling large datasets, complex
+      survey designs, and mixed models. Our campus license includes Base SAS, SAS/STAT, and
+      SAS/GRAPH. SAS Viya (cloud version) is available for teams needing modern interfaces.
     website: "https://www.sas.com"
 
     availability:
@@ -284,7 +426,13 @@ software:
     name: "SPSS Statistics"
     vendor: "IBM"
     category: "statistics"
-    description: "Statistical analysis software"
+    description: "Point-and-click statistical analysis"
+    description_long: >
+      IBM SPSS Statistics provides an accessible interface for statistical analysis, popular in
+      social sciences, education, and market research. Its menu-driven approach makes it easy
+      to run t-tests, ANOVA, regression, and factor analysis without coding. SPSS also supports
+      syntax files for reproducible workflows. Best suited for survey analysis and behavioral
+      research. VDI provides the best experience with its full graphical interface.
     website: "https://www.ibm.com/products/spss-statistics"
 
     availability:
@@ -306,6 +454,11 @@ software:
     vendor: "R Foundation"
     category: "statistics"
     description: "Statistical computing and graphics"
+    description_long: >
+      R is the leading open-source language for statistical analysis and data visualization.
+      The tidyverse collection (dplyr, ggplot2, tidyr) is pre-installed on JupyterHub for
+      immediate use. RStudio Desktop is available on VDI for a full GUI experience. On HPC,
+      R is optimized for large-scale statistical computing with parallel processing support.
     website: "https://www.r-project.org"
 
     availability:
@@ -314,6 +467,11 @@ software:
         versions: ["4.3.2", "4.2.3"]
         module: "R/4.3.2"
         notes: "Open source, many packages pre-installed"
+      jupyterhub:
+        status: full
+        versions: ["4.3.2"]
+        notes: "IRkernel pre-installed, tidyverse ready"
+        no_setup: true
       vdi:
         status: full
         versions: ["4.3.2"]
@@ -335,7 +493,13 @@ software:
     name: "ANSYS"
     vendor: "ANSYS, Inc."
     category: "simulation"
-    description: "Multi-physics simulation suite"
+    description: "Industry-standard multi-physics FEA and CFD"
+    description_long: >
+      ANSYS is a comprehensive engineering simulation suite covering structural mechanics (ANSYS
+      Mechanical), fluid dynamics (Fluent, CFX), electromagnetics (HFSS, Maxwell), and more.
+      Widely used in aerospace, automotive, and mechanical engineering for design validation
+      and optimization. Our license includes teaching and research tokens. The Workbench GUI
+      is available on VDI; HPC is best for large parallel jobs.
     website: "https://ansys.com"
 
     availability:
@@ -374,7 +538,13 @@ software:
     name: "COMSOL Multiphysics"
     vendor: "COMSOL"
     category: "simulation"
-    description: "Multi-physics simulation software"
+    description: "Coupled physics simulation with intuitive GUI"
+    description_long: >
+      COMSOL Multiphysics excels at simulating coupled physical phenomena—for example, combining
+      heat transfer with structural deformation, or electromagnetics with fluid flow. Its
+      intuitive interface makes it accessible for researchers without deep FEA expertise. Popular
+      in biomedical engineering, MEMS design, and materials science. Our campus license includes
+      Heat Transfer, Structural Mechanics, AC/DC, and CFD modules.
     website: "https://www.comsol.com"
 
     availability:
@@ -404,7 +574,13 @@ software:
     name: "OpenFOAM"
     vendor: "OpenCFD"
     category: "simulation"
-    description: "Open source CFD software"
+    description: "Free, open-source computational fluid dynamics"
+    description_long: >
+      OpenFOAM is the leading open-source CFD toolkit, offering complete freedom to customize
+      solvers and boundary conditions. It handles incompressible and compressible flows,
+      turbulence modeling, multiphase flows, and combustion. Requires command-line proficiency
+      but provides unmatched flexibility. Scales well on HPC clusters. ParaView (also open
+      source) is available for visualization of results.
     website: "https://www.openfoam.com"
 
     availability:
@@ -423,6 +599,93 @@ software:
       - simulation
       - open-source
 
+  - slug: abaqus
+    name: "Abaqus"
+    vendor: "Dassault Systèmes"
+    category: "simulation"
+    description: "Advanced nonlinear FEA for structures"
+    description_long: >
+      Abaqus is an industry-leading finite element analysis suite, particularly strong for
+      nonlinear problems: large deformations, contact mechanics, material plasticity, and
+      fracture. Widely used in automotive crashworthiness, aerospace structures, and biomechanics.
+      Abaqus/Standard handles implicit problems; Abaqus/Explicit is optimized for high-speed
+      dynamics. License terms prohibit cloud deployment; we can host your license server.
+    website: "https://www.3ds.com/products-services/simulia/products/abaqus/"
+
+    availability:
+      hpc:
+        status: byol
+        notes: "Installed and supported if you provide license"
+        requires_own_license: true
+      vdi:
+        status: byol
+        requires_own_license: true
+      cloud:
+        status: unavailable
+        notes: "License terms prohibit cloud"
+
+    # BYOL pricing info for slate display
+    license_model: byol
+    license_info:
+      cost_per_seat: null  # Contact vendor
+      cost_period: "year"
+      vendor_contact: "https://www.3ds.com/products-services/simulia/"
+      notes: "Contact vendor for academic pricing"
+      request_quote_cta: true
+
+    license_server:
+      we_can_host: true
+      contact: "rc-help@northwinds.edu"
+
+    tags:
+      - fea
+      - simulation
+      - engineering
+      - byol
+
+  - slug: ls-dyna
+    name: "LS-DYNA"
+    vendor: "Ansys/LST"
+    category: "simulation"
+    description: "Crash, impact, and explosion simulation"
+    description_long: >
+      LS-DYNA is the industry standard for explicit dynamics simulation—crash testing, blast
+      analysis, metal forming, and high-velocity impacts. Used extensively in automotive safety,
+      defense, and manufacturing. GPU acceleration (LS-DYNA GPU) dramatically speeds up large
+      models. The software supports complex material models, fluid-structure interaction, and
+      coupled multi-physics. Academic licenses are available at reduced rates.
+    website: "https://www.ansys.com/products/structures/ansys-ls-dyna"
+
+    availability:
+      hpc:
+        status: byol
+        notes: "We support LS-DYNA on HPC if you have license"
+        requires_own_license: true
+        gpu_support: true
+      vdi:
+        status: byol
+        requires_own_license: true
+      cloud:
+        status: byol
+        requires_own_license: true
+
+    license_model: byol
+    license_info:
+      cost_per_seat: 15000  # Approximate academic pricing
+      cost_period: "year"
+      vendor_contact: "https://www.ansys.com/contact-us"
+      notes: "Academic licenses available, pricing varies by solver type"
+      request_quote_cta: true
+
+    license_server:
+      we_can_host: true
+
+    tags:
+      - fea
+      - explicit-dynamics
+      - crash-simulation
+      - byol
+
   # ============================================================
   # BIOINFORMATICS
   # ============================================================
@@ -431,7 +694,13 @@ software:
     name: "Cell Ranger"
     vendor: "10x Genomics"
     category: "bioinformatics"
-    description: "Single-cell RNA-seq analysis"
+    description: "Process 10x Genomics single-cell sequencing data"
+    description_long: >
+      Cell Ranger is the official pipeline for processing 10x Genomics Chromium single-cell
+      RNA-seq, ATAC-seq, and multiome data. It performs alignment, feature counting, cell
+      calling, and generates analysis-ready matrices. Required as the first step before
+      downstream analysis with Seurat, Scanpy, or similar tools. Memory-intensive—our HPC
+      nodes have sufficient RAM for typical experiments.
     website: "https://www.10xgenomics.com/support/software/cell-ranger"
 
     availability:
@@ -454,7 +723,13 @@ software:
     name: "GATK"
     vendor: "Broad Institute"
     category: "bioinformatics"
-    description: "Genome Analysis Toolkit"
+    description: "Gold-standard variant calling for genomics"
+    description_long: >
+      GATK (Genome Analysis Toolkit) is the industry standard for calling germline and somatic
+      variants from next-generation sequencing data. Developed at the Broad Institute, it
+      implements best practices for variant discovery in whole-genome, exome, and targeted
+      sequencing. Key tools include HaplotypeCaller, Mutect2, and the BQSR/VQSR quality
+      calibration workflows. Fully open source.
     website: "https://gatk.broadinstitute.org"
 
     availability:
@@ -481,7 +756,13 @@ software:
     name: "PyTorch"
     vendor: "Meta/Linux Foundation"
     category: "deep-learning"
-    description: "Deep learning framework"
+    description: "Flexible deep learning framework for research"
+    description_long: >
+      PyTorch is the most popular deep learning framework in academic research, known for its
+      Pythonic design and dynamic computation graphs that make debugging and experimentation
+      easy. Supports CNNs, RNNs, transformers, and reinforcement learning. Our GPU nodes have
+      CUDA-optimized builds ready to use. JupyterHub offers GPU notebooks for interactive
+      development. Integrates with Hugging Face Transformers for NLP.
     website: "https://pytorch.org"
 
     availability:
@@ -491,6 +772,12 @@ software:
         module: "pytorch/2.2"
         gpu_support: true
         notes: "Open source, CUDA-optimized builds"
+      jupyterhub:
+        status: full
+        versions: ["2.2"]
+        gpu_support: true
+        notes: "GPU notebooks available, pre-configured CUDA environment"
+        no_setup: true
       vdi:
         status: full
         notes: "CPU-only on standard VDI"
@@ -506,7 +793,13 @@ software:
     name: "TensorFlow"
     vendor: "Google"
     category: "deep-learning"
-    description: "Machine learning platform"
+    description: "Production-ready ML platform from Google"
+    description_long: >
+      TensorFlow is Google's end-to-end machine learning platform, optimized for deploying
+      models at scale. It includes Keras for high-level model building, TensorBoard for
+      visualization, and TensorFlow Lite for edge deployment. Strong ecosystem for production
+      workflows and model serving. GPU-accelerated builds are available on HPC and JupyterHub.
+      Good choice when deployment to Google Cloud or mobile is planned.
     website: "https://www.tensorflow.org"
 
     availability:
@@ -516,6 +809,12 @@ software:
         module: "tensorflow/2.15"
         gpu_support: true
         notes: "Open source, GPU builds available"
+      jupyterhub:
+        status: full
+        versions: ["2.15"]
+        gpu_support: true
+        notes: "GPU notebooks available, Keras included"
+        no_setup: true
       vdi:
         status: full
         notes: "CPU-only on standard VDI"
@@ -528,6 +827,88 @@ software:
       - open-source
 
   # ============================================================
+  # DATA SCIENCE & PROGRAMMING
+  # ============================================================
+
+  - slug: python
+    name: "Python"
+    vendor: "Python Software Foundation"
+    category: "data-science"
+    description: "General-purpose programming language for data science"
+    description_long: >
+      Python is the most popular language for data science, machine learning, and scientific computing.
+      On JupyterHub, common packages like NumPy, Pandas, SciPy, Matplotlib, and scikit-learn are
+      pre-installed and ready to use. On HPC, you can create custom conda environments for
+      reproducible analysis pipelines. GPU computing with PyTorch and TensorFlow is available
+      on both platforms.
+    website: "https://www.python.org"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["3.12", "3.11", "3.10"]
+        module: "python/3.12"
+        notes: "Open source, conda environments supported"
+      jupyterhub:
+        status: full
+        versions: ["3.12", "3.11"]
+        notes: "Default kernel, numpy/pandas/scipy pre-installed"
+        no_setup: true
+        packages_included:
+          - numpy
+          - pandas
+          - scipy
+          - matplotlib
+          - scikit-learn
+          - seaborn
+      vdi:
+        status: full
+        versions: ["3.12"]
+        notes: "Anaconda distribution available"
+      cloud:
+        status: full
+
+    tags:
+      - programming
+      - data-science
+      - open-source
+
+  - slug: julia
+    name: "Julia"
+    vendor: "JuliaLang"
+    category: "data-science"
+    description: "Fast, dynamic language for technical computing"
+    description_long: >
+      Julia combines Python-like ease of use with C-like speed, making it ideal for computational
+      science when performance matters. It excels at numerical computing, differential equations,
+      optimization, and machine learning. Built-in parallelism makes it easy to scale from laptop
+      to HPC cluster. Growing ecosystem includes Flux.jl (deep learning), DifferentialEquations.jl,
+      and JuMP (optimization). Open source and free.
+    website: "https://julialang.org"
+
+    availability:
+      hpc:
+        status: full
+        versions: ["1.10", "1.9"]
+        module: "julia/1.10"
+        notes: "Open source, parallel computing support"
+      jupyterhub:
+        status: full
+        versions: ["1.10"]
+        notes: "IJulia kernel available"
+        no_setup: true
+      vdi:
+        status: full
+        versions: ["1.10"]
+      cloud:
+        status: full
+
+    tags:
+      - programming
+      - scientific-computing
+      - open-source
+
+  # ============================================================
   # EDA TOOLS
   # ============================================================
 
@@ -535,13 +916,32 @@ software:
     name: "Cadence Virtuoso"
     vendor: "Cadence Design Systems"
     category: "eda"
-    description: "IC design and verification"
+    description: "Analog and mixed-signal IC design"
+    description_long: >
+      Cadence Virtuoso is the industry standard for custom analog, mixed-signal, and RF IC design.
+      It includes schematic capture, layout editing (with DRC/LVS), parasitic extraction, and
+      analog simulation (Spectre). Essential for chip designers working on amplifiers, PLLs, ADCs,
+      and other custom circuits. Access requires ECE department approval or BYOL. Export
+      controlled (EAR) with restrictions for foreign nationals.
     website: "https://cadence.com"
+
+    # Export control - EDA tools are often EAR-controlled
+    export_control:
+      classification: "EAR"
+      eccn: "3D001"
+      restriction: "us_persons"
+      notes: "Deemed export license required for foreign nationals"
+
+    # Tier restrictions - EDA tools typically can't be used with restricted data
+    tier_restrictions:
+      min_tier: null          # No floor - can use on L1 data
+      max_tier: "L2"          # Cannot be used with L3/L4 restricted data
+      notes: "Not approved for controlled/restricted data environments"
 
     availability:
       hpc:
         status: restricted
-        notes: "ECE department license only"
+        notes: "ECE department license, or BYOL"
         contact: "ece-it@northwinds.edu"
         approval_required: true
       vdi:
@@ -549,28 +949,63 @@ software:
         notes: "Dedicated EDA VDI pool"
       cloud:
         status: unavailable
+        notes: "License terms prohibit cloud use"
 
+    # BYOL option for researchers with funding
+    byol_available: true
+    license_model: byol
     license_info:
       type: "FlexLM"
       server: "Internal"
-      contact: "ece-it@northwinds.edu"
+      cost_estimate: "50000-150000"
+      cost_period: "year"
+      cost_notes: "Varies by tools: Virtuoso IC ~$50K, full analog suite $100K+"
+      vendor_contact: "https://www.cadence.com/en_US/home/company/cadence-academic-network.html"
+      request_quote_cta: true
+
+    license_server:
+      we_can_host: true
+      contact: "rc-help@northwinds.edu"
+
+    documentation_url: "https://docs.rc.northwinds.edu/software/cadence"
 
     tags:
       - eda
       - vlsi
       - engineering
+      - byol
+      - export-controlled
 
   - slug: synopsys
-    name: "Synopsys Design Compiler"
+    name: "Synopsys EDA Suite"
     vendor: "Synopsys"
     category: "eda"
-    description: "RTL synthesis"
+    description: "Digital IC synthesis and verification"
+    description_long: >
+      Synopsys provides industry-leading tools for digital IC design: Design Compiler (RTL
+      synthesis), VCS (Verilog/SystemVerilog simulation), Formality (equivalence checking), and
+      PrimeTime (static timing analysis). Used for ASIC and FPGA development, from behavioral
+      design to tapeout. Access requires ECE department approval or BYOL. Export controlled
+      (EAR) with restrictions for foreign nationals.
     website: "https://www.synopsys.com"
+
+    # Export control - EDA tools are often EAR-controlled
+    export_control:
+      classification: "EAR"
+      eccn: "3D001"
+      restriction: "us_persons"
+      notes: "Deemed export license required for foreign nationals"
+
+    # Tier restrictions
+    tier_restrictions:
+      min_tier: null
+      max_tier: "L2"
+      notes: "Not approved for controlled/restricted data environments"
 
     availability:
       hpc:
         status: restricted
-        notes: "ECE department license only"
+        notes: "ECE department license, or BYOL"
         contact: "ece-it@northwinds.edu"
         approval_required: true
       vdi:
@@ -578,11 +1013,31 @@ software:
         notes: "Dedicated EDA VDI pool"
       cloud:
         status: unavailable
+        notes: "License terms prohibit cloud use"
+
+    # BYOL option for researchers with funding
+    byol_available: true
+    license_model: byol
+    license_info:
+      type: "FlexLM (SCL)"
+      cost_estimate: "30000-100000"
+      cost_period: "year"
+      cost_notes: "Design Compiler ~$30K, VCS ~$25K, full RTL flow $80K+"
+      vendor_contact: "https://www.synopsys.com/academic.html"
+      request_quote_cta: true
+
+    license_server:
+      we_can_host: true
+      contact: "rc-help@northwinds.edu"
+
+    documentation_url: "https://docs.rc.northwinds.edu/software/synopsys"
 
     tags:
       - eda
       - vlsi
       - synthesis
+      - byol
+      - export-controlled
 
 # Categories for filtering
 categories:
@@ -614,6 +1069,10 @@ categories:
     name: "Deep Learning"
     icon: "brain"
 
+  - slug: data-science
+    name: "Data Science & Programming"
+    icon: "code"
+
   - slug: eda
     name: "Electronic Design Automation"
     icon: "cpu"
@@ -624,6 +1083,17 @@ platforms:
     name: "HPC Cluster"
     description: "High-performance computing cluster"
     typical_use: "Batch jobs, parallel computing"
+
+  jupyterhub:
+    name: "JupyterHub"
+    description: "Managed Jupyter notebook environment - no setup required"
+    typical_use: "Interactive notebooks, teaching, exploratory analysis"
+    url: "https://jupyter.northwinds.edu"
+    features:
+      - "Pre-configured environments"
+      - "No local installation needed"
+      - "GPU access available"
+      - "Shared team workspaces"
 
   vdi:
     name: "Virtual Desktop"

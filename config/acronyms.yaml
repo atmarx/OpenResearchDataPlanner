@@ -477,8 +477,30 @@ acronyms:
     related: ["data sharing", "citation", "repository"]
     category: "tools"
 
+  - term: "BYOL"
+    expansion: "Bring Your Own License"
+    short_def: "You must provide your own software license"
+    long_def: |
+      Bring Your Own License (BYOL) means the institution does not provide
+      a license for this software - you need to purchase or obtain one
+      yourself. This is common for expensive commercial software where:
+
+      - Your department or grant has funding for licenses
+      - You have an existing license from a previous institution
+      - The vendor offers individual academic pricing
+
+      BYOL software can still run on institutional infrastructure, but
+      license compliance is your responsibility.
+    examples:
+      - "Cadence Virtuoso with ECE department license"
+      - "MATLAB with grant-funded licenses"
+      - "Commercial simulation tools for funded research"
+    related: ["license", "software"]
+    category: "tools"
+
 # Annotation behavior settings
 annotation_config:
+  enabled: true            # Enable auto-annotation of terms throughout the app
   word_boundary: true      # Match whole words only
   case_sensitive: true     # "HPC" but not "hpc"
   max_per_term: 3          # Max annotations per page per term

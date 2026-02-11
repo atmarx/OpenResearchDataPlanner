@@ -1,68 +1,61 @@
 <script setup>
-import { onMounted, computed, defineAsyncComponent } from 'vue'
+import { onMounted, watch, computed } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
-import { useWizard } from '@/composables/useWizard'
+import { useSlateStore } from '@/stores/slateStore'
+import { usePreferencesStore } from '@/stores/preferencesStore'
 
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
-import WizardProgress from '@/components/layout/WizardProgress.vue'
-
-// Lazy load step components
-const WelcomeStep = defineAsyncComponent(() =>
-  import('@/components/wizard/WelcomeStep.vue')
-)
-const TierSelectStep = defineAsyncComponent(() =>
-  import('@/components/wizard/TierSelectStep.vue')
-)
-const GrantPeriodStep = defineAsyncComponent(() =>
-  import('@/components/wizard/GrantPeriodStep.vue')
-)
-const RetentionStep = defineAsyncComponent(() =>
-  import('@/components/wizard/RetentionStep.vue')
-)
-const ServiceSelectStep = defineAsyncComponent(() =>
-  import('@/components/wizard/ServiceSelectStep.vue')
-)
-const EstimateStep = defineAsyncComponent(() =>
-  import('@/components/wizard/EstimateStep.vue')
-)
-const ResultsStep = defineAsyncComponent(() =>
-  import('@/components/wizard/ResultsStep.vue')
-)
-const ConsultationStep = defineAsyncComponent(() =>
-  import('@/components/wizard/ConsultationStep.vue')
-)
+import SlateFooter from '@/components/slate/SlateFooter.vue'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
-const wizard = useWizard()
+const slateStore = useSlateStore()
+const preferencesStore = usePreferencesStore()
 
-// Map step IDs to components
-const stepComponents = {
-  'welcome': WelcomeStep,
-  'tier-select': TierSelectStep,
-  'grant-period': GrantPeriodStep,
-  'retention': RetentionStep,
-  'service-select': ServiceSelectStep,
-  'estimate': EstimateStep,
-  'results': ResultsStep,
-  'consultation': ConsultationStep
+// Background image from config
+const heroBackgroundUrl = computed(() => configStore.config?.meta?.branding?.hero_background)
+const heroOverlay = computed(() => configStore.config?.meta?.branding?.hero_overlay ?? 0.4)
+const showBackground = computed(() => heroBackgroundUrl.value && preferencesStore.showWallpaper)
+
+// Inject custom CSS from config
+function injectCustomStyles() {
+  const branding = configStore.config?.meta?.branding
+  if (!branding) return
+
+  // Remove any previously injected styles
+  document.getElementById('custom-css-inline')?.remove()
+  document.getElementById('custom-css-external')?.remove()
+
+  // Inject inline custom CSS
+  if (branding.custom_css) {
+    const style = document.createElement('style')
+    style.id = 'custom-css-inline'
+    style.textContent = branding.custom_css
+    document.head.appendChild(style)
+  }
+
+  // Inject external stylesheet
+  if (branding.custom_css_url) {
+    const link = document.createElement('link')
+    link.id = 'custom-css-external'
+    link.rel = 'stylesheet'
+    link.href = branding.custom_css_url
+    document.head.appendChild(link)
+  }
 }
-
-const currentComponent = computed(() => {
-  return stepComponents[sessionStore.currentStep] || WelcomeStep
-})
 
 onMounted(async () => {
   await configStore.loadConfig()
   // Try to restore session from localStorage
   sessionStore.loadFromLocalStorage()
+  // Inject any custom styles from config
+  injectCustomStyles()
 })
 
-function handleStepNavigate(stepId) {
-  wizard.navigateTo(stepId)
-}
+// Re-inject if config reloads (hot reload during dev)
+watch(() => configStore.config?.meta?.branding, injectCustomStyles)
 </script>
 
 <template>
@@ -92,93 +85,30 @@ function handleStepNavigate(stepId) {
   </div>
 
   <!-- Main app -->
-  <div v-else class="min-h-screen flex flex-col bg-gray-50">
-    <AppHeader />
+  <div
+    v-else
+    class="min-h-screen flex flex-col transition-colors duration-200 relative"
+    :class="[
+      showBackground ? 'bg-cover bg-center bg-fixed' : '',
+      preferencesStore.darkMode ? 'bg-gray-900' : 'bg-gray-50'
+    ]"
+    :style="showBackground ? { backgroundImage: `url(${heroBackgroundUrl})` } : {}"
+  >
+    <!-- Overlay for readability when background is shown -->
+    <div
+      v-if="showBackground"
+      class="absolute inset-0 pointer-events-none"
+      :class="preferencesStore.darkMode ? 'bg-gray-900' : 'bg-white'"
+      :style="{ opacity: heroOverlay }"
+    ></div>
 
-    <main id="main-content" class="flex-1 px-4 sm:px-6 py-8">
-      <div class="max-w-4xl mx-auto">
-        <!-- Progress indicator (hide on welcome and consultation) -->
-        <WizardProgress
-          v-if="sessionStore.currentStep !== 'welcome' && sessionStore.currentStep !== 'consultation'"
-          :steps="wizard.activeSteps.value"
-          :current-step="sessionStore.currentStep"
-          :completed-steps="sessionStore.session.completed_steps"
-          @navigate="handleStepNavigate"
-        />
+    <AppHeader class="relative z-10" />
 
-        <!-- Step content -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-          <component
-            :is="currentComponent"
-            @next="wizard.nextStep"
-            @back="wizard.previousStep"
-          />
-        </div>
-
-        <!-- Navigation buttons (except on welcome and results) -->
-        <div
-          v-if="sessionStore.currentStep !== 'welcome' && sessionStore.currentStep !== 'results' && sessionStore.currentStep !== 'consultation'"
-          class="mt-6 flex justify-between"
-        >
-          <button
-            v-if="wizard.hasPreviousStep.value"
-            @click="wizard.previousStep"
-            class="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Back
-          </button>
-          <div v-else></div>
-
-          <button
-            v-if="wizard.hasNextStep.value"
-            @click="wizard.nextStep"
-            :disabled="!wizard.canProceed.value"
-            class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Continue
-          </button>
-        </div>
-      </div>
+    <main id="main-content" class="flex-1 px-4 sm:px-6 py-8 relative z-10">
+      <router-view />
     </main>
 
-    <AppFooter />
-
-    <!-- Navigation warning modal -->
-    <Teleport to="body">
-      <div
-        v-if="wizard.showNavigationWarning.value"
-        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-        @click.self="wizard.cancelNavigation"
-      >
-        <div
-          class="bg-white rounded-lg shadow-xl max-w-md w-full p-6"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="warning-title"
-        >
-          <h2 id="warning-title" class="text-lg font-semibold text-gray-900 mb-2">
-            Clear existing selections?
-          </h2>
-          <p class="text-gray-600 mb-6">
-            Going back to this step will clear your selections from later steps.
-            This cannot be undone.
-          </p>
-          <div class="flex justify-end gap-3">
-            <button
-              @click="wizard.cancelNavigation"
-              class="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              @click="wizard.confirmNavigation"
-              class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-            >
-              Clear and continue
-            </button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <SlateFooter class="relative z-10" />
+    <AppFooter class="relative z-10" />
   </div>
 </template>

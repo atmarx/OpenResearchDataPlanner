@@ -1,6 +1,6 @@
-# "Talk to a Human" Feature
+# Get Help Feature
 
-This document describes the escape valve for users who need human assistance at any point in the planning process.
+This document describes the help system for users who need assistance at any point in the planning process.
 
 ---
 
@@ -18,17 +18,85 @@ The wizard is designed to be self-service, but some users:
 1. Get stuck and don't know how to proceed
 2. Have edge cases the wizard doesn't cover
 3. Want validation before submitting
-4. Simply prefer human interaction
+4. Simply prefer guided walkthroughs over reading docs
+
+### The Staffing Reality
+
+Research IT teams don't have unlimited staff to field calls. The original "Talk to a Human" design assumed consultants were readily available. Reality check:
+
+> "We don't have the staff! That's the whole point of this tool!"
+
+If we route everyone to humans, we've just built a ticketing system with extra steps.
 
 ---
 
-## The Solution
+## The Solution: Video-First Help
 
-A prominent, always-visible "Get Help" button that:
-1. Saves current wizard state (mid-progress export)
-2. Packages it for easy handoff to Research IT
-3. Provides multiple contact options
-4. Never feels like "giving up" - it's a feature, not a failure
+A prominent "Get Help" button that opens a modal with **contextual video walkthroughs** as the primary assistance method. These short, narrated videos answer the same questions a staff member would - but they scale infinitely.
+
+### Hierarchy of Help
+
+1. **Video walkthrough** (default) - Short narrated videos for common questions
+2. **Save progress** - Download state to continue later or share with colleagues
+3. **Email request** - For genuinely complex cases that need human review
+4. **Schedule consultation** - Last resort for edge cases
+
+The key insight: **Most "I need to talk to someone" requests are actually "I need someone to explain this to me."** Videos do that.
+
+---
+
+## Video Help System
+
+### Video Configuration
+
+All help videos are defined in `config/help-videos.yaml`. Each video has:
+
+```yaml
+- slug: what-is-tb
+  title: "What is a TB?"
+  description: "Explains terabytes using real-world examples"
+  duration_seconds: 90
+  thumbnail: "what-is-tb.jpg"  # Optional
+  category: concepts
+  contexts:
+    - storage-estimate
+    - storage-calculator
+  url: null  # Production URL added when video is produced
+```
+
+### Video Categories
+
+| Category | Purpose | Example |
+|----------|---------|---------|
+| `concepts` | Core terminology | "What is a TB?", "What is a data tier?" |
+| `calculators` | Calculator walkthroughs | "Estimating storage for microscopy data" |
+| `wizard` | Step-by-step guides | "Selecting the right data tier" |
+| `software` | Software questions | "Finding software licenses" |
+| `discipline` | Field-specific guides | "Guide for humanities researchers" |
+| `process` | Institutional workflows | "What happens after I submit?" |
+| `troubleshooting` | Common problems | "My estimate seems too high" |
+
+### Contextual Video Display
+
+Videos surface based on where the user is in the wizard:
+
+| User Location | Suggested Videos |
+|---------------|------------------|
+| Storage calculator | "What is a TB?", "Estimating storage for [discipline]" |
+| Tier selection | "What is a data tier?", "[discipline] tier examples" |
+| Service selection | "Understanding service categories", "HIPAA compliance" |
+| Results page | "Reading your cost estimate", "What happens next?" |
+
+### Production Notes
+
+Videos should be produced with:
+- **Accessibility**: Captions required, audio descriptions for visual content
+- **Length**: 60-180 seconds (short attention spans)
+- **Format**: MP4 (H.264), multiple quality levels for bandwidth
+- **Style**: Screen recordings with voiceover, minimal talking-head
+- **Updates**: Modular so individual videos can be replaced without reshooting everything
+
+See `config/help-videos.yaml` for the full video catalog and production specifications.
 
 ---
 
@@ -76,38 +144,63 @@ A floating button in the bottom-right corner (or top nav):
 
 ### Help Modal
 
-When clicked, opens a modal with options:
+When clicked, opens a modal with videos first, then fallback options:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  Need Help?                                                [X]  │
+│  Get Help                                                  [X]  │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  We're here to help! Choose how you'd like to connect:         │
-│                                                                 │
+│  Quick Answers                                                  │
 │  ┌───────────────────────────────────────────────────────────┐ │
-│  │  📧  Email Us                                              │ │
-│  │  Send your current progress to our team.                  │ │
-│  │  We'll review and respond within 1 business day.          │ │
-│  │                                                [Send →]    │ │
-│  └───────────────────────────────────────────────────────────┘ │
-│                                                                 │
-│  ┌───────────────────────────────────────────────────────────┐ │
-│  │  📅  Schedule a Consultation                               │ │
-│  │  30-minute call with a Research IT specialist.            │ │
-│  │  We'll review your needs together.                        │ │
-│  │                                          [Book Time →]     │ │
-│  └───────────────────────────────────────────────────────────┘ │
-│                                                                 │
-│  ┌───────────────────────────────────────────────────────────┐ │
-│  │  💾  Save & Continue Later                                 │ │
-│  │  Download your progress to continue on your own time.     │ │
-│  │                                          [Download →]      │ │
+│  │ ▶ What is a TB?                                    1:30   │ │
+│  │ ▶ Understanding data tiers                         2:15   │ │
+│  │ ▶ Estimating storage for [your discipline]        3:00   │ │
+│  │ ▶ What happens after I submit?                     2:00   │ │
+│  │                                                           │ │
+│  │                            [Browse All Videos →]          │ │
 │  └───────────────────────────────────────────────────────────┘ │
 │                                                                 │
 │  ─────────────────────────────────────────────────────────────  │
-│  📞 Prefer to call? (555) 123-4567 during business hours       │
-│  📍 Or visit us: Research IT, Building 42, Room 101            │
+│  Still need help?                                               │
+│                                                                 │
+│  ┌─────────────────────┐  ┌─────────────────────┐              │
+│  │  💾 Save Progress   │  │  📧 Email Us        │              │
+│  │  Continue later     │  │  Complex questions  │              │
+│  └─────────────────────┘  └─────────────────────┘              │
+│                                                                 │
+│  📞 (555) 123-4567 during business hours                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Video Player Modal
+
+When a video is selected:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  What is a TB?                                     [← Back] [X] │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │                                                           │ │
+│  │                    (Video Player)                         │ │
+│  │                                                           │ │
+│  │                       ▶ 1:30                              │ │
+│  │                                                           │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  A terabyte (TB) is about 1,000 gigabytes. For reference:     │
+│  • 200,000 photos                                              │
+│  • 500 hours of HD video                                       │
+│  • 40,000 songs                                                │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│  Related videos:                                                │
+│  ▶ Estimating storage for genomics  ▶ What is archive storage? │
+│                                                                 │
+│  Was this helpful?  [👍 Yes]  [👎 No]                          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -364,29 +457,24 @@ Integration with Calendly, Microsoft Bookings, or similar:
 
 ## Config Schema
 
+### help.yaml - Contact Options (Fallback)
+
 ```yaml
 # config/help.yaml
 
 help:
-  # Enable/disable help button
   enabled: true
+  button_position: "bottom-right"
 
-  # Position of floating button
-  button_position: "bottom-right"  # or "top-nav", "bottom-left"
-
-  # Contact options
+  # Contact options (fallback after videos)
   email:
     enabled: true
     address: "research-it@northwinds.edu"
     response_time: "1 business day"
-    include_state: true  # Attach wizard state to email
+    include_state: true
 
   scheduling:
-    enabled: true
-    provider: "calendly"  # or "microsoft-bookings", "custom"
-    url: "https://calendly.com/northwinds-research-it/consultation"
-    duration_minutes: 30
-    include_state: true  # Share state before call
+    enabled: false  # Disable if no staff for 1:1 consultations
 
   phone:
     enabled: true
@@ -394,29 +482,35 @@ help:
     hours: "Monday-Friday, 9am-5pm EST"
 
   walkin:
-    enabled: true
-    location: "Research IT, Building 42, Room 101"
-    hours: "Monday-Friday, 9am-5pm EST"
+    enabled: false  # Disable if no walk-in hours
 
-  # Save/download option
   save_progress:
     enabled: true
-    format: "json"  # or "yaml"
+    format: "json"
 
-  # Shareable links (requires backend)
-  shareable_links:
-    enabled: false
-    expiry_days: 30
-
-  # Contextual help triggers
   auto_prompt:
-    # Show help prompt after N seconds of inactivity on a step
-    inactivity_seconds: 180  # 3 minutes
-    message: "Need help? We're here if you get stuck."
-
-    # Show help prompt after N failed interactions
+    inactivity_seconds: 180
+    message: "Need help? Watch a quick video walkthrough."
     failed_interactions: 3
-    failed_message: "This step can be tricky. Want to talk to someone?"
+    failed_message: "This step can be tricky. Would a video help?"
+```
+
+### help-videos.yaml - Video Catalog
+
+See `config/help-videos.yaml` for the complete video catalog with ~45 topics organized by category (concepts, calculators, wizard steps, discipline guides, etc.)
+
+```yaml
+# Example video definition
+videos:
+  - slug: what-is-tb
+    title: "What is a TB?"
+    description: "Terabytes explained with real-world examples"
+    duration_seconds: 90
+    category: concepts
+    contexts:
+      - storage-estimate
+      - storage-calculator
+    url: null  # null = not yet produced
 ```
 
 ---

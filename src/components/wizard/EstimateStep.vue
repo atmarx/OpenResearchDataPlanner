@@ -2,10 +2,12 @@
 import { computed, ref } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
+import { usePreferencesStore } from '@/stores/preferencesStore'
 import { Info, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-vue-next'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
+const preferencesStore = usePreferencesStore()
 
 // Track which services have expanded details
 const expandedServices = ref(new Set())
@@ -84,10 +86,13 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
 <template>
   <div class="p-8">
     <div class="mb-6">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">
+      <h2
+        class="text-2xl font-bold mb-2"
+        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+      >
         Usage Estimates
       </h2>
-      <p class="text-gray-600">
+      <p :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
         Enter your estimated usage for each service.
         These estimates will be used to calculate your budget.
       </p>
@@ -97,18 +102,26 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
       <div
         v-for="service in selectedServices"
         :key="service.service_slug"
-        class="border border-gray-200 rounded-lg overflow-hidden"
+        class="border rounded-lg overflow-hidden"
+        :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
       >
         <!-- Service header -->
         <button
           @click="toggleExpand(service.service_slug)"
-          class="w-full px-4 py-3 bg-gray-50 flex items-center justify-between text-left"
+          class="w-full px-4 py-3 flex items-center justify-between text-left"
+          :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-50'"
         >
           <div>
-            <h3 class="font-medium text-gray-900">
+            <h3
+              class="font-medium"
+              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            >
               {{ service.config?.name }}
             </h3>
-            <p class="text-sm text-gray-500">
+            <p
+              class="text-sm"
+              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+            >
               {{ service.config?.description }}
             </p>
           </div>
@@ -122,7 +135,10 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
         <div class="p-4 space-y-4">
           <!-- Main estimate input -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              class="block text-sm font-medium mb-1"
+              :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+            >
               {{ service.config?.estimation?.prompt || 'Estimated usage' }}
             </label>
 
@@ -134,9 +150,12 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                 :min="service.config?.estimation?.min_value || 0"
                 :max="service.config?.estimation?.max_value"
                 :step="service.config?.estimation?.step || 1"
-                class="block w-40 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                class="block w-40 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                :class="preferencesStore.darkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'bg-white border-gray-300 text-gray-900'"
               />
-              <span class="text-gray-600">
+              <span :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
                 {{ service.config?.estimation?.unit_display || service.config?.cost_model?.unit_label || 'units' }}
                 /month
               </span>
@@ -144,7 +163,10 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
 
             <!-- Presets -->
             <div v-if="service.config?.estimation?.presets?.length" class="mt-3">
-              <p class="text-xs text-gray-500 mb-2">Quick estimates:</p>
+              <p
+                class="text-xs mb-2"
+                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              >Quick estimates:</p>
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="preset in service.config.estimation.presets"
@@ -154,7 +176,9 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                   :class="[
                     service.estimate === preset.value
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : preferencesStore.darkMode
+                        ? 'bg-gray-600 text-gray-300 hover:bg-gray-500'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   ]"
                   :title="preset.description"
                 >
@@ -166,7 +190,10 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
 
           <!-- Subsidies -->
           <div v-if="service.config?.subsidies?.filter(s => !s.auto_apply)?.length">
-            <p class="text-sm font-medium text-gray-700 mb-2">Available subsidies:</p>
+            <p
+              class="text-sm font-medium mb-2"
+              :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+            >Available subsidies:</p>
             <div class="space-y-2">
               <label
                 v-for="subsidy in service.config.subsidies.filter(s => !s.auto_apply)"
@@ -174,8 +201,12 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                 class="flex items-start gap-3 p-3 rounded-md border cursor-pointer transition-colors"
                 :class="[
                   service.use_subsidy === subsidy.slug
-                    ? 'border-green-500 bg-green-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? preferencesStore.darkMode
+                      ? 'border-green-500 bg-green-900/30'
+                      : 'border-green-500 bg-green-50'
+                    : preferencesStore.darkMode
+                      ? 'border-gray-600 hover:border-gray-500'
+                      : 'border-gray-200 hover:border-gray-300'
                 ]"
               >
                 <input
@@ -185,9 +216,19 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                   class="mt-0.5 rounded border-gray-300 text-green-600 focus:ring-green-500"
                 />
                 <div>
-                  <p class="font-medium text-gray-900 text-sm">{{ subsidy.name }}</p>
-                  <p class="text-xs text-gray-600">{{ subsidy.description }}</p>
-                  <p v-if="subsidy.condition" class="text-xs text-yellow-700 mt-1">
+                  <p
+                    class="font-medium text-sm"
+                    :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  >{{ subsidy.name }}</p>
+                  <p
+                    class="text-xs"
+                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                  >{{ subsidy.description }}</p>
+                  <p
+                    v-if="subsidy.condition"
+                    class="text-xs mt-1"
+                    :class="preferencesStore.darkMode ? 'text-yellow-300' : 'text-yellow-700'"
+                  >
                     {{ subsidy.condition }}
                   </p>
                 </div>
@@ -196,32 +237,47 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
           </div>
 
           <!-- Service limitations acknowledgment -->
-          <div v-if="service.config?.acknowledgment?.required" class="border-t border-gray-200 pt-4 mt-4">
+          <div
+            v-if="service.config?.acknowledgment?.required"
+            class="border-t pt-4 mt-4"
+            :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+          >
             <div
-              class="p-4 rounded-lg"
+              class="p-4 rounded-lg border"
               :class="[
                 service.acknowledged
-                  ? 'bg-green-50 border border-green-200'
-                  : 'bg-amber-50 border border-amber-200'
+                  ? preferencesStore.darkMode
+                    ? 'bg-green-900/30 border-green-700'
+                    : 'bg-green-50 border-green-200'
+                  : preferencesStore.darkMode
+                    ? 'bg-amber-900/30 border-amber-700'
+                    : 'bg-amber-50 border-amber-200'
               ]"
             >
               <div class="flex items-start gap-3">
                 <AlertTriangle
                   class="w-5 h-5 flex-shrink-0 mt-0.5"
-                  :class="service.acknowledged ? 'text-green-600' : 'text-amber-600'"
+                  :class="service.acknowledged ? 'text-green-600' : 'text-amber-500'"
                 />
                 <div class="flex-1">
-                  <h4 class="font-medium text-gray-900 text-sm">
+                  <h4
+                    class="font-medium text-sm"
+                    :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  >
                     {{ service.config.acknowledgment.title }}
                   </h4>
-                  <p class="text-sm text-gray-600 mt-1">
+                  <p
+                    class="text-sm mt-1"
+                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                  >
                     {{ service.config.acknowledgment.message }}
                   </p>
                   <ul class="mt-2 space-y-1">
                     <li
                       v-for="(item, idx) in service.config.acknowledgment.items"
                       :key="idx"
-                      class="text-sm text-gray-700 flex items-start gap-2"
+                      class="text-sm flex items-start gap-2"
+                      :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
                     >
                       <span class="text-amber-500 mt-0.5">•</span>
                       {{ item }}
@@ -234,7 +290,10 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                       @change="toggleAcknowledgment(service.service_slug, $event.target.checked)"
                       class="rounded border-gray-300 text-green-600 focus:ring-green-500"
                     />
-                    <span class="text-sm font-medium text-gray-700">
+                    <span
+                      class="text-sm font-medium"
+                      :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                    >
                       I understand these limitations
                     </span>
                   </label>
@@ -245,12 +304,21 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
 
           <!-- Archive storage (for storage services) -->
           <div v-if="getArchiveService(service) && sessionStore.session.retention.longest_years > 0">
-            <div class="border-t border-gray-200 pt-4 mt-4">
-              <p class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
+            <div
+              class="border-t pt-4 mt-4"
+              :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+            >
+              <p
+                class="text-sm font-medium mb-2 flex items-center gap-1"
+                :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+              >
                 <Info class="w-4 h-4 text-gray-400" />
                 Long-term archive storage
               </p>
-              <p class="text-xs text-gray-500 mb-3">
+              <p
+                class="text-xs mb-3"
+                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              >
                 {{ service.config.archive_option.description }}
               </p>
 
@@ -261,14 +329,20 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                   @input="updateArchiveEstimate(service.service_slug, $event.target.value)"
                   min="0"
                   step="1"
-                  class="block w-32 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  class="block w-32 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  :class="preferencesStore.darkMode
+                    ? 'bg-gray-700 border-gray-600 text-white'
+                    : 'bg-white border-gray-300 text-gray-900'"
                 />
-                <span class="text-gray-600 text-sm">
+                <span
+                  class="text-sm"
+                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                >
                   {{ getArchiveService(service)?.cost_model?.unit_label }} for archive
                 </span>
                 <button
                   @click="updateArchiveEstimate(service.service_slug, getDefaultArchiveEstimate(service))"
-                  class="text-xs text-blue-600 hover:underline"
+                  class="text-xs text-blue-500 hover:underline"
                 >
                   Reset to {{ Math.round(sessionStore.session.retention.archive_ratio * 100) }}%
                 </button>
@@ -277,9 +351,19 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
           </div>
 
           <!-- Expanded details -->
-          <div v-if="expandedServices.has(service.service_slug)" class="border-t border-gray-200 pt-4 mt-4">
-            <h4 class="text-sm font-medium text-gray-700 mb-2">Pricing Details</h4>
-            <div class="text-sm text-gray-600 space-y-1">
+          <div
+            v-if="expandedServices.has(service.service_slug)"
+            class="border-t pt-4 mt-4"
+            :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+          >
+            <h4
+              class="text-sm font-medium mb-2"
+              :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+            >Pricing Details</h4>
+            <div
+              class="text-sm space-y-1"
+              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+            >
               <p v-if="service.config?.cost_model?.type === 'unit'">
                 Unit price: ${{ service.config.cost_model.price }}/{{ service.config.cost_model.unit }}/month
               </p>
@@ -298,8 +382,14 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
 
             <!-- Auto-applied subsidies -->
             <div v-if="service.config?.subsidies?.filter(s => s.auto_apply)?.length" class="mt-3">
-              <p class="text-sm font-medium text-gray-700 mb-1">Auto-applied subsidies:</p>
-              <ul class="text-sm text-green-700 space-y-1">
+              <p
+                class="text-sm font-medium mb-1"
+                :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+              >Auto-applied subsidies:</p>
+              <ul
+                class="text-sm space-y-1"
+                :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-700'"
+              >
                 <li v-for="subsidy in service.config.subsidies.filter(s => s.auto_apply)" :key="subsidy.slug">
                   {{ subsidy.name }}: {{ subsidy.description }}
                 </li>
@@ -307,8 +397,15 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
             </div>
 
             <!-- Service notes -->
-            <div v-if="service.mapping?.notes" class="mt-3 p-3 bg-yellow-50 rounded-md">
-              <p class="text-sm text-yellow-800 whitespace-pre-line">{{ service.mapping.notes }}</p>
+            <div
+              v-if="service.mapping?.notes"
+              class="mt-3 p-3 rounded-md"
+              :class="preferencesStore.darkMode ? 'bg-yellow-900/30' : 'bg-yellow-50'"
+            >
+              <p
+                class="text-sm whitespace-pre-line"
+                :class="preferencesStore.darkMode ? 'text-yellow-200' : 'text-yellow-800'"
+              >{{ service.mapping.notes }}</p>
             </div>
           </div>
         </div>
@@ -318,20 +415,28 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
     <!-- Validation messages -->
     <div
       v-if="selectedServices.some(s => !s.estimate || s.estimate <= 0)"
-      class="mt-6 p-4 bg-yellow-50 rounded-lg flex items-start gap-3"
+      class="mt-6 p-4 rounded-lg flex items-start gap-3"
+      :class="preferencesStore.darkMode ? 'bg-yellow-900/30' : 'bg-yellow-50'"
     >
       <Info class="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
-      <p class="text-sm text-yellow-800">
+      <p
+        class="text-sm"
+        :class="preferencesStore.darkMode ? 'text-yellow-200' : 'text-yellow-800'"
+      >
         Please enter usage estimates for all selected services to continue.
       </p>
     </div>
 
     <div
       v-if="pendingAcknowledgments.length > 0"
-      class="mt-4 p-4 bg-amber-50 rounded-lg flex items-start gap-3"
+      class="mt-4 p-4 rounded-lg flex items-start gap-3"
+      :class="preferencesStore.darkMode ? 'bg-amber-900/30' : 'bg-amber-50'"
     >
       <AlertTriangle class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-      <div class="text-sm text-amber-800">
+      <div
+        class="text-sm"
+        :class="preferencesStore.darkMode ? 'text-amber-200' : 'text-amber-800'"
+      >
         <p class="font-medium">Acknowledgment required</p>
         <p>
           Please review and acknowledge the limitations for:

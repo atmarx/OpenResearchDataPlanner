@@ -31,10 +31,17 @@ const CONFIG_FILES = [
   'meta.yaml',
   'categories.yaml',
   'tiers.yaml',
+  'tier-questionnaire.yaml',
+  'tier-workflow.yaml',
   'services.yaml',
   'mappings.yaml',
   'bundles.yaml',
-  'retention.yaml'
+  'retention.yaml',
+  'software.yaml',
+  'acronyms.yaml',
+  'calculators.yaml',
+  'help.yaml',
+  'help-videos.yaml'
 ]
 
 /**
@@ -163,14 +170,22 @@ function buildConfig() {
 
   // Load each YAML config file
   for (const file of CONFIG_FILES) {
-    const key = path.basename(file, '.yaml')
+    // Convert hyphens to underscores for JS object key compatibility
+    const key = path.basename(file, '.yaml').replace(/-/g, '_')
     console.log(`  Loading ${file}...`)
 
     try {
       const data = loadYamlFile(file)
       // Most files have a root key matching the filename (e.g., tiers.yaml has { tiers: [...] })
       // We flatten this to just the array/object
-      config[key] = data[key] || data
+      // Exception: some YAML files have multiple root keys that need to be preserved
+      // - software.yaml: software, categories, license_statuses
+      // - acronyms.yaml: acronyms, annotation_config
+      if (key === 'software' || key === 'acronyms') {
+        config[key] = data // Keep full structure
+      } else {
+        config[key] = data[key] || data
+      }
     } catch (e) {
       console.error(`  Error loading ${file}: ${e.message}`)
       process.exit(1)

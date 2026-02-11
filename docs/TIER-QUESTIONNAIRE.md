@@ -122,6 +122,10 @@ Does your data include health or medical information?
       Data has been stripped of identifiers per HIPAA Safe Harbor
       or Expert Determination method
 
+      ⚠️ "I replaced names with codes" is NOT de-identified!
+         [Help me figure out if my data is truly de-identified →]
+         (Opens Data Identification Status helper)
+
 ( ) Yes, with identifiers (PHI)
       Includes names, dates, medical record numbers, or other
       identifiers linked to health information
@@ -595,5 +599,6 @@ const tierMultiplier = {
 
 ## References
 
+- [CALCULATORS-IDENTIFICATION.md](./CALCULATORS-IDENTIFICATION.md) - Encoded vs de-identified helper
 - [ELI5.md](./ELI5.md) - Compliance term definitions
 - [TALK-TO-HUMAN.md](./TALK-TO-HUMAN.md) - Escape valve for complex cases
