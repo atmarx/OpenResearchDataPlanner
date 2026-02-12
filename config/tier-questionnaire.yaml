@@ -95,6 +95,10 @@ questions:
 
         When in doubt, treat as identifiable - it's easier to reclassify down
         than to contain a breach.
+      link:
+        label: "Check your data's identification status →"
+        action: "open_calculator"
+        calculator: "data-identification"
     options:
       - label: "Research participant samples (with consent/IRB)"
         value: "participant_samples"
@@ -118,6 +122,22 @@ questions:
     question: "What consent and de-identification applies to your biobank samples?"
     help_text: "Check the biobank's data use agreement or material transfer agreement."
     icon: "file-check"
+    learn_more:
+      title: "Coded vs. De-identified Biobank Samples"
+      content: |
+        **Coded samples** — The biobank can link sample IDs back to donors.
+        Even if YOU don't have the key, the data is still re-identifiable
+        and requires appropriate protections.
+
+        **De-identified samples** — No linking key exists anywhere. The
+        biobank has permanently destroyed or never created the link.
+
+        Check your MTA or DUA for terms like "coded," "linked," or
+        "identifiable" vs. "de-identified" or "anonymized."
+      link:
+        label: "Learn more about data identification →"
+        action: "open_calculator"
+        calculator: "data-identification"
     options:
       - label: "Fully de-identified with broad consent"
         value: "deidentified_broad"
@@ -214,43 +234,41 @@ questions:
 
   - id: identifiable
     question: "Is the health data identifiable or de-identified?"
-    help_text: "De-identified means all 18 HIPAA identifiers have been removed (names, dates, locations, etc.)"
+    help_text: "De-identified means all 18 HIPAA identifiers have been removed AND no linking key exists."
     icon: "user-check"
     learn_more:
-      title: "HIPAA De-identification"
+      title: "Identified vs. Encoded vs. De-identified"
       content: |
-        The HIPAA Safe Harbor method requires removing these 18 identifiers:
-        1. Names
-        2. Geographic data (smaller than state)
-        3. Dates (except year) related to an individual
-        4. Phone numbers
-        5. Fax numbers
-        6. Email addresses
-        7. Social Security numbers
-        8. Medical record numbers
-        9. Health plan beneficiary numbers
-        10. Account numbers
-        11. Certificate/license numbers
-        12. Vehicle identifiers and serial numbers
-        13. Device identifiers and serial numbers
-        14. Web URLs
-        15. IP addresses
-        16. Biometric identifiers
-        17. Full-face photographs
-        18. Any other unique identifying number or code
+        **Common confusion:** Replacing names with codes is NOT de-identification
+        if you keep a linking key (even in a separate file).
+
+        - **Identified** — Contains names, SSNs, etc. directly
+        - **Encoded** — Codes instead of names, but a key exists somewhere
+        - **De-identified** — No identifiers AND no way to link back
+
+        As long as a linking key exists anywhere (Excel file, database, paper
+        list, collaborator's copy), the data can be re-identified.
+      link:
+        label: "Help me figure out my data's status →"
+        action: "open_calculator"
+        calculator: "data-identification"
     options:
-      - label: "Fully de-identified (Safe Harbor method)"
+      - label: "Fully de-identified (Safe Harbor, no linking key)"
         value: "deidentified"
         sets_tier: medium
         clears_flags:
           - hipaa
           - phi
         next: government_data
-      - label: "Limited dataset (some identifiers)"
+      - label: "Encoded (codes with a linking key somewhere)"
+        value: "encoded"
+        sets_tier: high
+        next: government_data
+      - label: "Limited dataset (some identifiers remain)"
         value: "limited"
         sets_tier: high
         next: government_data
-      - label: "Identifiable / not sure"
+      - label: "Identifiable (names, SSNs, etc. in the data)"
         value: "identifiable"
         sets_tier: high
         next: government_data

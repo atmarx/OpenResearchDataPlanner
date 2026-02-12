@@ -27,9 +27,11 @@ import {
   List,
   MessageCircleQuestion,
   Check,
-  BookOpen
+  BookOpen,
+  Fingerprint
 } from 'lucide-vue-next'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
+import DataIdentificationFlow from '@/components/explore/DataIdentificationFlow.vue'
 
 const router = useRouter()
 const configStore = useConfigStore()
@@ -44,13 +46,12 @@ const summary = computed(() => questionnaireConfig.value.summary || {})
 const examples = computed(() => questionnaireConfig.value.examples_by_discipline || {})
 
 // State
-const viewMode = ref('questionnaire') // 'questionnaire', 'table', or 'examples'
+const viewMode = ref('questionnaire') // 'questionnaire', 'table', 'examples', or 'identification'
 const currentQuestionId = ref(null) // null = intro screen
 const answers = ref({})
 const flags = ref([])
 const determinedTier = ref(null)
 const showLearnMore = ref(false)
-const showExamples = ref(false)
 const selectedDiscipline = ref(null)
 
 // Sorted tiers for table view
@@ -202,6 +203,29 @@ function getTierColor(tierSlug) {
 function getIcon(iconName) {
   return iconMap[iconName] || Info
 }
+
+// Handle completion of data identification flow
+function handleIdentificationComplete(result) {
+  // Based on the result, we can guide the user to the appropriate tier
+  // The result has: status ('identified', 'encoded', 'deidentified'), tier suggestion, etc.
+  if (result.status === 'deidentified') {
+    // De-identified data might qualify for L1/L2, switch to questionnaire for full assessment
+    viewMode.value = 'questionnaire'
+    currentQuestionId.value = null
+  } else {
+    // Identified or encoded data - switch to questionnaire to determine exact tier
+    viewMode.value = 'questionnaire'
+    currentQuestionId.value = null
+  }
+}
+
+// Handle learn_more link clicks
+function handleLearnMoreLink(link) {
+  if (link.action === 'open_calculator' && link.calculator === 'data-identification') {
+    viewMode.value = 'identification'
+    showLearnMore.value = false
+  }
+}
 </script>
 
 <template>
@@ -266,6 +290,20 @@ function getIcon(iconName) {
           >
             <BookOpen class="w-4 h-4" />
             Examples
+          </button>
+          <button
+            @click="viewMode = 'identification'"
+            class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-t-lg transition-colors"
+            :class="viewMode === 'identification'
+              ? (preferencesStore.darkMode
+                ? 'bg-gray-900 text-white'
+                : 'bg-gray-50 text-gray-900')
+              : (preferencesStore.darkMode
+                ? 'text-gray-400 hover:text-gray-200'
+                : 'text-gray-500 hover:text-gray-700')"
+          >
+            <Fingerprint class="w-4 h-4" />
+            Data Status
           </button>
           </div>
         </div>
@@ -532,6 +570,14 @@ function getIcon(iconName) {
         </div>
       </div>
 
+      <!-- Data Identification Flow View -->
+      <div v-else-if="viewMode === 'identification'">
+        <DataIdentificationFlow
+          @complete="handleIdentificationComplete"
+          @back="viewMode = 'questionnaire'; currentQuestionId = null"
+        />
+      </div>
+
       <!-- Questionnaire: Intro Screen -->
       <div v-else-if="viewMode === 'questionnaire' && !currentQuestionId" class="space-y-8">
         <div class="text-center">
@@ -552,64 +598,18 @@ function getIcon(iconName) {
           </p>
         </div>
 
-        <!-- Discipline Examples -->
-        <div
-          class="rounded-lg border p-6"
+        <!-- Link to Examples Tab -->
+        <button
+          @click="viewMode = 'examples'"
+          class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-colors"
           :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700'
-            : 'bg-white border-gray-200'"
+            ? 'bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600'
+            : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'"
         >
-          <button
-            @click="showExamples = !showExamples"
-            class="w-full flex items-center justify-between text-left"
-          >
-            <span
-              class="font-medium"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-            >See examples by discipline</span>
-            <component :is="showExamples ? ChevronUp : ChevronDown" class="w-5 h-5 text-gray-400" />
-          </button>
-
-          <div v-if="showExamples" class="mt-4 space-y-4">
-            <div class="flex flex-wrap gap-2">
-              <button
-                v-for="(disc, key) in examples"
-                :key="key"
-                @click="selectedDiscipline = selectedDiscipline === key ? null : key"
-                class="px-3 py-1.5 text-sm rounded-full border transition-colors"
-                :class="selectedDiscipline === key
-                  ? 'bg-blue-100 border-blue-300 text-blue-800'
-                  : (preferencesStore.darkMode
-                    ? 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gray-500'
-                    : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300')"
-              >
-                {{ disc.name }}
-              </button>
-            </div>
-
-            <div v-if="selectedDiscipline && examples[selectedDiscipline]" class="space-y-3">
-              <template v-for="tier in configStore.tiers" :key="tier.slug">
-                <div
-                  v-if="examples[selectedDiscipline].examples?.[tier.slug]"
-                  class="p-3 rounded-lg border"
-                  :class="getTierColor(tier.slug)"
-                >
-                  <div class="font-medium mb-1">{{ tier.short_name }} - {{ tier.name }}</div>
-                  <ul class="text-sm space-y-1">
-                    <li
-                      v-for="(example, idx) in examples[selectedDiscipline].examples?.[tier.slug]"
-                      :key="idx"
-                      class="flex items-start gap-2"
-                    >
-                      <span class="opacity-60">•</span>
-                      {{ example }}
-                    </li>
-                  </ul>
-                </div>
-              </template>
-            </div>
-          </div>
-        </div>
+          <BookOpen class="w-5 h-5 text-gray-400" />
+          <span class="font-medium">See examples by discipline</span>
+          <ArrowRight class="w-4 h-4 text-gray-400" />
+        </button>
 
         <!-- Action Buttons -->
         <div class="flex flex-col gap-3">
@@ -677,12 +677,24 @@ function getIcon(iconName) {
             </button>
             <div
               v-if="showLearnMore"
-              class="mt-3 p-4 rounded-lg text-sm whitespace-pre-line"
+              class="mt-3 p-4 rounded-lg text-sm"
               :class="preferencesStore.darkMode
                 ? 'bg-blue-900/30 text-blue-200'
                 : 'bg-blue-50 text-blue-900'"
             >
-              {{ currentQuestion.learn_more.content }}
+              <div class="whitespace-pre-line">{{ currentQuestion.learn_more.content }}</div>
+              <!-- Link to calculator if specified -->
+              <button
+                v-if="currentQuestion.learn_more.link?.action === 'open_calculator'"
+                @click="handleLearnMoreLink(currentQuestion.learn_more.link)"
+                class="mt-3 inline-flex items-center gap-2 font-medium"
+                :class="preferencesStore.darkMode
+                  ? 'text-blue-300 hover:text-blue-200'
+                  : 'text-blue-700 hover:text-blue-800'"
+              >
+                <Fingerprint class="w-4 h-4" />
+                {{ currentQuestion.learn_more.link.label }}
+              </button>
             </div>
           </div>
         </div>

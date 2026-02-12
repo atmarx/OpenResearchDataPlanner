@@ -1,0 +1,62 @@
+id: "nakamoto-piper"
+name: "Piper Nakamoto"
+department: "Central IT - Service Desk"
+title: "Research Computing Support Specialist"
+specialty: "First-line support, researcher onboarding, documentation, user training"
+tech_level: "medium"
+years_at_institution: 1.5
+role_type: "it_staff"
+
+archetype: "learning_first_line"
+vibe: "Fresh out of an IT support program, enthusiastic about helping researchers, but still learning the institutional quirks. Has to talk faculty through using the Research Data Planner daily. Sometimes knows the tool better than the policies behind it."
+frustrations:
+  - "Researchers ask questions I don't know the answers to yet"
+  - "The tier system is confusing even to me — how am I supposed to explain it?"
+  - "Marco knows everything but he's always busy"
+  - "Faculty get frustrated with me when the real problem is policy"
+hopes:
+  - "Tools with good documentation so I can learn while I help"
+  - "Clear escalation paths when I'm out of my depth"
+  - "Being able to give researchers confident answers"
+  - "Understanding the 'why' behind policies, not just the rules"
+
+expertise:
+  - "ServiceNow ticketing"
+  - "Basic SLURM job submission"
+  - "Quota management"
+  - "Account provisioning"
+  - "Learning fast under pressure"
+
+daily_interactions:
+  - type: "wizard_walkthroughs"
+    frequency: "multiple_daily"
+    description: "Walking researchers through the Data Planner step by step"
+  - type: "tier_questions"
+    frequency: "daily"
+    description: "Explaining which tier is appropriate — often needs to escalate"
+  - type: "account_issues"
+    frequency: "daily"
+    description: "Password resets, access requests, quota increases"
+  - type: "job_troubleshooting"
+    frequency: "few_times_weekly"
+    description: "Basic SLURM issues — escalates complex ones to Marco"
+  - type: "confused_faculty"
+    frequency: "daily"
+    description: "Researchers who don't understand technology but need to use it"
+
+tools_used:
+  - "ServiceNow"
+  - "Knowledge base articles"
+  - "Research Data Planner (daily!)"
+  - "Slack for quick questions to Marco"
+
+learning_from:
+  - name: "Marco Delavigne"
+    role: "Senior specialist, escalation point"
+    relationship: "Mentor — patient with questions, teaches the 'why'"
+  - name: "Knowledge base"
+    role: "Documentation"
+    relationship: "Hit or miss — some articles are great, some are outdated"
+  - name: "Researchers themselves"
+    role: "Users"
+    relationship: "Often learns about workflows by helping troubleshoot"

@@ -1,0 +1,102 @@
+id: "nordvik-tessa"
+name: "Dr. Tessa Nordvik"
+department: "Aerospace Engineering"
+title: "Associate Professor"
+specialty: "Physics-informed neural networks, CFD surrogate models, digital twins, autonomous systems"
+tech_level: "high"
+years_at_institution: 7
+
+archetype: "ai_engineering"
+vibe: "Uses ML to make physics simulations 1000x faster. Thinks traditional CFD is too slow, traditional ML doesn't understand physics. Builds hybrid systems that combine both. Her PhD students can write CUDA kernels AND derive Navier-Stokes."
+frustrations:
+  - "Traditional HPC people don't understand why I need GPUs for 'engineering'"
+  - "ML researchers don't understand why physics constraints matter"
+  - "My simulations need both massive memory AND GPU acceleration"
+  - "ANSYS licenses cost more than my grad student salaries"
+hopes:
+  - "Infrastructure that understands hybrid physics+ML workloads"
+  - "A way to burst to cloud for conference deadlines without bureaucracy"
+  - "Clear guidance on what's available — I've been told 3 different things by 3 different people"
+
+workarounds:
+  - type: "custom_scripts"
+    description: "Custom CUDA kernels for physics-informed loss functions"
+  - type: "paid_out_of_pocket"
+    description: "Conference deadline crunches on personal cloud accounts"
+  - type: "closet_workstation"
+    description: "4x A6000 workstation under her desk for 'urgent' experiments"
+
+lab:
+  name: "Nordvik Computational Aerospace Lab"
+  size: 9
+  composition:
+    postdocs: 2
+    phd_students: 4
+    masters_students: 2
+    undergrads: 1
+  tech_person: "PhD student Kai — built most of the lab's GPU infrastructure"
+
+projects:
+  - id: "nordvik-pinn"
+    title: "Physics-Informed Neural Networks for Turbulence"
+    tier: "low"
+    tier_justification: "Open research, reproducibility focused"
+    type: "gpu_heavy"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 60000
+      pattern: "sustained"
+    storage:
+      active_tb: 12
+      archive_tb: 20
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 4
+
+  - id: "nordvik-digital-twin"
+    title: "Real-time Digital Twin for Aircraft Engines"
+    tier: "medium"
+    tier_justification: "Industry partnership with GE, proprietary engine data"
+    type: "gpu_heavy"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 40000
+      pattern: "sustained"
+    storage:
+      active_tb: 25
+      archive_tb: 15
+    retention: "industry_partner"
+    grant_years: 2
+    team_size: 3
+
+  - id: "nordvik-autonomous"
+    title: "ML-based Flight Control for Autonomous Vehicles"
+    tier: "high"
+    tier_justification: "NASA SBIR subcontract, CUI data"
+    type: "gpu_heavy"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 30000
+      pattern: "bursty"
+    storage:
+      active_tb: 8
+      archive_tb: 5
+    retention: "federal_contract"
+    grant_years: 2
+    team_size: 3
+
+  - id: "nordvik-surrogate"
+    title: "CFD Surrogate Models Benchmark"
+    tier: "low"
+    tier_justification: "Public benchmark for community"
+    type: "compute_moderate"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 15000
+      pattern: "bursty"
+    storage:
+      active_tb: 5
+      archive_tb: 10
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 2

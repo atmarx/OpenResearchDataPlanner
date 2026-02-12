@@ -1,0 +1,102 @@
+id: "okonkwo-ada"
+name: "Dr. Ada Okonkwo"
+department: "Medical Informatics"
+title: "Associate Professor"
+specialty: "Clinical ML, medical imaging AI, federated learning, de-identification pipelines, FDA software validation"
+tech_level: "high"
+years_at_institution: 6
+
+archetype: "ai_regulated"
+vibe: "Deep AI expertise meets regulatory reality. Knows that healthcare ML is 20% model development and 80% compliance, de-identification, and validation. Thinks most ML researchers underestimate how hard it is to deploy models in clinical settings."
+frustrations:
+  - "Everyone wants to 'do AI for healthcare' but nobody wants to deal with HIPAA"
+  - "My models work great on benchmarks but deploying them requires FDA 510(k) documentation"
+  - "De-identification takes longer than model training"
+  - "I need both L1 data for public benchmarks AND L3 data for clinical validation"
+hopes:
+  - "Clear infrastructure separation between de-identified and identified data"
+  - "Someone who understands that 'just add more GPUs' doesn't solve compliance"
+  - "A way to explain computational needs in terms hospital administrators understand"
+
+workarounds:
+  - type: "manual_processes"
+    description: "Manual de-identification review for every dataset before any ML work"
+  - type: "separate_environments"
+    description: "Completely separate machines for L1 benchmark vs L3 clinical data"
+  - type: "industry_collaboration"
+    description: "Uses hospital partner's secure enclave for identified data work"
+
+lab:
+  name: "Okonkwo Clinical AI Lab"
+  size: 8
+  composition:
+    postdocs: 2
+    phd_students: 3
+    masters_students: 2
+    undergrads: 1
+  tech_person: "Postdoc Dr. Chen — security clearance, manages compliance infrastructure"
+
+projects:
+  - id: "okonkwo-radiology"
+    title: "Deep Learning for Chest X-ray Interpretation"
+    tier: "high"
+    tier_justification: "PHI from hospital partner, HIPAA covered"
+    type: "gpu_heavy"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 35000
+      pattern: "bursty"
+    storage:
+      active_tb: 8
+      archive_tb: 15
+    retention: "hipaa_compliant"
+    grant_years: 3
+    team_size: 4
+
+  - id: "okonkwo-benchmark"
+    title: "Medical Imaging Benchmark (Public)"
+    tier: "low"
+    tier_justification: "De-identified public datasets only"
+    type: "gpu_heavy"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 25000
+      pattern: "sustained"
+    storage:
+      active_tb: 15
+      archive_tb: 20
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 3
+
+  - id: "okonkwo-federated"
+    title: "Federated Learning for Multi-site Clinical Models"
+    tier: "high"
+    tier_justification: "Coordinates across multiple hospitals, each with PHI"
+    type: "compute_moderate"
+    compute:
+      type: "hpc_slurm"
+      monthly_su: 15000
+      pattern: "sustained"
+    storage:
+      active_tb: 5
+      archive_tb: 10
+    retention: "hipaa_compliant"
+    grant_years: 4
+    team_size: 3
+
+  - id: "okonkwo-fda"
+    title: "FDA 510(k) Validation Study"
+    tier: "high"
+    tier_justification: "Clinical trial data for regulatory submission"
+    type: "compute_moderate"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 10000
+      pattern: "bursty"
+    storage:
+      active_tb: 3
+      archive_tb: 8
+    retention: "fda_compliance"
+    grant_years: 2
+    team_size: 2

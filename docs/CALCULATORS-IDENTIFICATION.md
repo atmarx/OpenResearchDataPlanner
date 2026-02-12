@@ -806,8 +806,34 @@ can be re-identified and must be protected accordingly.
 
 ---
 
+## Implementation Status
+
+### Completed
+
+- **Terminology** — Added to `config/acronyms.yaml`:
+  - identified data, encoded data, de-identified data
+  - linking key (crosswalk), quasi-identifier
+  - HIPAA Safe Harbor, Expert Determination
+  - Added `see_also` links to calculator from PHI, PII entries
+
+- **Tier Questionnaire Integration** — Updated `config/tier-questionnaire.yaml`:
+  - `identifiable` question: Added "Encoded" option, linked learn_more to calculator
+  - `biobank_consent` question: Added learn_more explaining coded vs de-identified
+  - `human_samples_detail` question: Added calculator link in learn_more
+
+### Pending
+
+- [ ] UI component: `DataIdentificationCalculator.vue`
+- [ ] Integration with CalculatorBrowser
+- [ ] Modal/panel wrapper for tier questionnaire invocation
+- [ ] Export summary functionality
+- [ ] Result handoff to tier questionnaire
+
+---
+
 ## Related Documentation
 
-- [TIER-QUESTIONNAIRE.md](TIER-QUESTIONNAIRE.md) — Classification decision tree
+- [TIER-QUESTIONNAIRE.md](TIER-QUESTIONNAIRE.md) — Classification decision tree (links here)
 - [CALCULATORS.md](CALCULATORS.md) — Other calculator specs
 - [EXPLORE-FIRST.md](EXPLORE-FIRST.md) — Pre-wizard discovery
+- [IT-WORKBENCH.md](IT-WORKBENCH.md) — IT review interface (may flag identification issues)

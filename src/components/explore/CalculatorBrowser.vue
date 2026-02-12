@@ -20,7 +20,9 @@ import {
   Layers,
   BarChart,
   Brain,
-  Zap
+  Zap,
+  MessageSquareText,
+  DollarSign
 } from 'lucide-vue-next'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 
@@ -44,7 +46,8 @@ const calculatorComponents = {
   statistics: defineAsyncComponent(() => import('@/components/estimate/StatisticsCalculator.vue')),
   'ml-training': defineAsyncComponent(() => import('@/components/estimate/MLTrainingCalculator.vue')),
   'ml-inference': defineAsyncComponent(() => import('@/components/estimate/MLInferenceCalculator.vue')),
-  'gpu-simulation': defineAsyncComponent(() => import('@/components/estimate/GPUSimulationCalculator.vue'))
+  'gpu-simulation': defineAsyncComponent(() => import('@/components/estimate/GPUSimulationCalculator.vue')),
+  'llm-api-costs': defineAsyncComponent(() => import('@/components/estimate/LLMApiCalculator.vue'))
 }
 
 // Icon mapping
@@ -61,14 +64,16 @@ const iconMap = {
   'bar-chart': BarChart,
   brain: Brain,
   zap: Zap,
-  cpu: Cpu
+  cpu: Cpu,
+  'message-square-text': MessageSquareText
 }
 
 // Category icons and labels
 const categoryInfo = {
   storage: { icon: HardDrive, label: 'Storage', description: 'Estimate data storage needs' },
   cpu: { icon: Cpu, label: 'Compute', description: 'Estimate CPU/SU requirements' },
-  gpu: { icon: MonitorSmartphone, label: 'GPU', description: 'Estimate GPU time requirements' }
+  gpu: { icon: MonitorSmartphone, label: 'GPU', description: 'Estimate GPU time requirements' },
+  api: { icon: DollarSign, label: 'API Costs', description: 'Estimate LLM API costs for budgeting' }
 }
 
 // Active calculator for modal
@@ -182,7 +187,8 @@ function handleAdded() {
             :class="{
               'bg-blue-100 text-blue-600': category.key === 'storage',
               'bg-green-100 text-green-600': category.key === 'cpu',
-              'bg-purple-100 text-purple-600': category.key === 'gpu'
+              'bg-purple-100 text-purple-600': category.key === 'gpu',
+              'bg-amber-100 text-amber-600': category.key === 'api'
             }"
           >
             <component :is="category.icon" class="w-5 h-5" />
@@ -219,7 +225,9 @@ function handleAdded() {
                   'bg-gray-100 text-gray-600 group-hover:bg-green-100 group-hover:text-green-600': category.key === 'cpu' && !preferencesStore.darkMode,
                   'bg-gray-700 text-gray-400 group-hover:bg-green-900/50 group-hover:text-green-400': category.key === 'cpu' && preferencesStore.darkMode,
                   'bg-gray-100 text-gray-600 group-hover:bg-purple-100 group-hover:text-purple-600': category.key === 'gpu' && !preferencesStore.darkMode,
-                  'bg-gray-700 text-gray-400 group-hover:bg-purple-900/50 group-hover:text-purple-400': category.key === 'gpu' && preferencesStore.darkMode
+                  'bg-gray-700 text-gray-400 group-hover:bg-purple-900/50 group-hover:text-purple-400': category.key === 'gpu' && preferencesStore.darkMode,
+                  'bg-gray-100 text-gray-600 group-hover:bg-amber-100 group-hover:text-amber-600': category.key === 'api' && !preferencesStore.darkMode,
+                  'bg-gray-700 text-gray-400 group-hover:bg-amber-900/50 group-hover:text-amber-400': category.key === 'api' && preferencesStore.darkMode
                 }"
               >
                 <component :is="calc.icon" class="w-5 h-5" />

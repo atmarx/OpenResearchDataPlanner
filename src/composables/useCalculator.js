@@ -77,6 +77,8 @@ export function useCalculator(calculatorId) {
         return { label: 'SU', plural: 'SU' }
       case 'gpu':
         return { label: 'GPU-hour', plural: 'GPU-hours' }
+      case 'api':
+        return { label: '$', plural: '$' }
       default:
         return { label: 'units', plural: 'units' }
     }
@@ -145,6 +147,9 @@ export function useCalculator(calculatorId) {
           break
         case 'gpu':
           calculateGPU()
+          break
+        case 'api':
+          calculateAPI()
           break
         default:
           error.value = `Unknown calculator category: ${category.value}`
@@ -527,6 +532,72 @@ export function useCalculator(calculatorId) {
   }
 
   /**
+   * Calculate API costs (dollars)
+   */
+  function calculateAPI() {
+    const cfg = config.value
+    let totalCost = 0
+
+    switch (calculatorId) {
+      case 'llm-api-costs': {
+        const model = cfg.models?.find(m => m.label === inputs.model)
+
+        if (!model) {
+          error.value = 'Please select an LLM model'
+          return
+        }
+
+        const inputTokens = inputs.input_tokens || 0
+        const outputTokens = inputs.output_tokens || 0
+        const requestsPerDay = inputs.requests_per_day || 1
+
+        // Get time period multiplier
+        const timePeriod = cfg.time_periods?.find(p => p.label === inputs.time_period)
+        let days = timePeriod?.multiplier || 1
+        if (days === 0) {
+          // Custom grant period
+          days = inputs.custom_days || 365
+        }
+
+        // Calculate total tokens
+        const totalRequests = requestsPerDay * days
+        const totalInputTokens = inputTokens * totalRequests
+        const totalOutputTokens = outputTokens * totalRequests
+
+        // Calculate costs (prices are per million tokens)
+        const inputCost = (totalInputTokens / 1000000) * model.input_per_million
+        const outputCost = (totalOutputTokens / 1000000) * model.output_per_million
+        totalCost = inputCost + outputCost
+
+        breakdown.value = [
+          { label: 'Model', value: `${model.label} (${model.provider})` },
+          { label: 'Input tokens/request', value: inputTokens.toLocaleString() },
+          { label: 'Output tokens/request', value: outputTokens.toLocaleString() },
+          { label: 'Requests/day', value: requestsPerDay.toLocaleString() },
+          { label: 'Time period', value: `${days} days` },
+          { label: 'Total requests', value: totalRequests.toLocaleString() },
+          { label: 'Input cost', value: `$${inputCost.toFixed(2)}` },
+          { label: 'Output cost', value: `$${outputCost.toFixed(2)}` }
+        ]
+        break
+      }
+
+      default:
+        error.value = `Unknown API calculator: ${calculatorId}`
+        return
+    }
+
+    // Round to 2 decimal places for dollars
+    result.value = Math.ceil(totalCost * 100) / 100
+
+    breakdown.value.push({
+      label: 'Total estimated cost',
+      value: `$${result.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      highlight: true
+    })
+  }
+
+  /**
    * Add current result to the slate
    * @param {string} serviceSlug - Optional service to add to (defaults to targetService)
    */
@@ -589,6 +660,20 @@ export function useCalculator(calculatorId) {
           return `Would take ${Math.round(hours / 8)} days non-stop on a gaming GPU`
         } else {
           return `Serious compute - would take ${Math.round(hours / 24 / 7)} weeks on a single GPU`
+        }
+      }
+      case 'api': {
+        const dollars = result.value
+        if (dollars < 1) {
+          return `Less than a cup of coffee`
+        } else if (dollars < 10) {
+          return `About ${Math.round(dollars)} coffee runs`
+        } else if (dollars < 100) {
+          return `About ${Math.round(dollars / 15)} nice lunches`
+        } else if (dollars < 1000) {
+          return `Roughly ${Math.round(dollars / 50)} textbooks worth`
+        } else {
+          return `About ${(dollars / 1000).toFixed(1)}K - budget line item territory`
         }
       }
       default:

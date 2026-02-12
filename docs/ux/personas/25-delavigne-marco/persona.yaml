@@ -1,0 +1,56 @@
+id: "delavigne-marco"
+name: "Marco Delavigne"
+department: "Central IT - Research Computing"
+title: "Senior Research Computing Specialist"
+specialty: "HPC administration, storage systems, researcher support, institutional memory"
+tech_level: "very_high"
+years_at_institution: 28
+role_type: "it_staff"
+
+archetype: "institutional_veteran"
+vibe: "Has been at the university since tape drives and mainframes. Seen every technology trend come and go. Skeptical of hype, trusts what works. Knows every researcher's workarounds, every shadow IT server, every undocumented process. The person you call when you're really stuck."
+frustrations:
+  - "Every year there's a new 'revolution' that's going to change everything. Usually doesn't."
+  - "Researchers don't read documentation, then blame IT when things don't work"
+  - "New tools mean retraining support staff, again"
+  - "Leadership wants 'self-service' but also wants me to handle every exception"
+hopes:
+  - "A tool that actually reduces my support tickets, not just shifts them"
+  - "Clear documentation so researchers can help themselves"
+  - "Something that respects the complexity of our environment"
+  - "Not having to explain the tier system for the 500th time"
+
+expertise:
+  - "SLURM administration and troubleshooting"
+  - "Isilon/NetApp storage systems"
+  - "Legacy system migration"
+  - "Researcher workflow optimization"
+  - "Institutional policy archaeology"
+
+common_support_cases:
+  - type: "tier_confusion"
+    frequency: "daily"
+    description: "Researchers don't know what tier they need"
+  - type: "storage_migration"
+    frequency: "weekly"
+    description: "Helping researchers move off shadow IT to supported storage"
+  - type: "job_failures"
+    frequency: "daily"
+    description: "SLURM jobs failing, usually user error or resource misconfiguration"
+  - type: "compliance_questions"
+    frequency: "weekly"
+    description: "What can and can't go where"
+  - type: "legacy_rescue"
+    frequency: "monthly"
+    description: "Recovering data from ancient systems when the grad student who set it up graduated"
+
+tools_used:
+  - "Terminal (mostly)"
+  - "ServiceNow (reluctantly)"
+  - "Grafana dashboards"
+  - "Custom monitoring scripts written over the years"
+
+relationships:
+  faculty_view: "Mixed — some respect his expertise, others see IT as an obstacle"
+  management_view: "Valuable institutional knowledge, but needs to embrace change"
+  helpdesk_view: "The escalation point. Marco knows everything."

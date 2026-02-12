@@ -22,6 +22,9 @@ enabled_calculators:
     - ml-inference
     - gpu-simulation
 
+  api:
+    - llm-api-costs
+
 # Calculator-specific configuration
 calculator_config:
   # ============================================================
@@ -345,6 +348,174 @@ calculator_config:
         speedup: "3-5x vs CPU"
         gpu_hours_per_ns: 2
         description: "Large-scale MD"
+
+  # ============================================================
+  # API COST CALCULATORS
+  # ============================================================
+
+  llm-api-costs:
+    name: "LLM API Costs"
+    icon: "message-square-text"
+    description: "Estimate costs for commercial LLM APIs (OpenAI, Anthropic, Google, DeepSeek). OpenAI models also available via Microsoft AI Foundry."
+
+    # Pricing as of February 2026 - update periodically
+    # Prices are per million tokens (direct API pricing)
+    # Azure AI Foundry uses same per-token rates as OpenAI direct
+    # No academic discount on per-token pricing; check institutional agreements
+    models:
+      # OpenAI
+      - label: "GPT-5"
+        provider: "OpenAI"
+        input_per_million: 1.25
+        output_per_million: 10.00
+        context_window: 400000
+        description: "Latest flagship model, strong general performance"
+      - label: "GPT-4o"
+        provider: "OpenAI"
+        input_per_million: 2.50
+        output_per_million: 10.00
+        context_window: 128000
+        description: "Multimodal workhorse, good balance of cost/quality"
+      - label: "GPT-4o mini"
+        provider: "OpenAI"
+        input_per_million: 0.15
+        output_per_million: 0.60
+        context_window: 128000
+        description: "Affordable for high-volume tasks"
+      - label: "o3 (reasoning)"
+        provider: "OpenAI"
+        input_per_million: 2.00
+        output_per_million: 8.00
+        context_window: 200000
+        description: "Advanced reasoning, chain-of-thought (hidden reasoning tokens billed as output)"
+      - label: "o4-mini"
+        provider: "OpenAI"
+        input_per_million: 1.10
+        output_per_million: 4.40
+        context_window: 128000
+        description: "Affordable reasoning model"
+
+      # Anthropic
+      - label: "Claude Opus 4.5"
+        provider: "Anthropic"
+        input_per_million: 5.00
+        output_per_million: 25.00
+        context_window: 200000
+        description: "Most capable Claude, excellent for complex tasks"
+      - label: "Claude Sonnet 4.5"
+        provider: "Anthropic"
+        input_per_million: 3.00
+        output_per_million: 15.00
+        context_window: 200000
+        description: "Best balance of intelligence and speed"
+      - label: "Claude Haiku 4.5"
+        provider: "Anthropic"
+        input_per_million: 1.00
+        output_per_million: 5.00
+        context_window: 200000
+        description: "Fast and affordable"
+
+      # Google
+      - label: "Gemini 2.5 Pro"
+        provider: "Google"
+        input_per_million: 1.25
+        output_per_million: 10.00
+        context_window: 1000000
+        description: "Flagship model, long context, competitive pricing"
+      - label: "Gemini 2.5 Flash"
+        provider: "Google"
+        input_per_million: 0.30
+        output_per_million: 2.50
+        context_window: 1000000
+        description: "Good balance of speed and capability"
+      - label: "Gemini 2.0 Flash"
+        provider: "Google"
+        input_per_million: 0.10
+        output_per_million: 0.40
+        context_window: 1000000
+        description: "Very affordable, fast, good for high-volume"
+
+      # DeepSeek
+      - label: "DeepSeek R1"
+        provider: "DeepSeek"
+        input_per_million: 0.55
+        output_per_million: 2.19
+        context_window: 128000
+        description: "Reasoning model rivaling o1 at ~95% lower cost"
+      - label: "DeepSeek V3"
+        provider: "DeepSeek"
+        input_per_million: 0.27
+        output_per_million: 1.10
+        context_window: 128000
+        description: "GPT-4 class performance, extremely affordable"
+
+    # Use case presets with typical token estimates
+    use_cases:
+      - label: "Document summarization"
+        avg_input_tokens: 4000
+        avg_output_tokens: 500
+        description: "Summarize a 10-page document"
+      - label: "Q&A / Chat"
+        avg_input_tokens: 500
+        avg_output_tokens: 300
+        description: "Single question-answer exchange"
+      - label: "Code generation"
+        avg_input_tokens: 1000
+        avg_output_tokens: 2000
+        description: "Generate function or module"
+      - label: "Data extraction"
+        avg_input_tokens: 2000
+        avg_output_tokens: 200
+        description: "Extract structured data from text"
+      - label: "Translation"
+        avg_input_tokens: 1000
+        avg_output_tokens: 1200
+        description: "Translate document section"
+      - label: "Literature review"
+        avg_input_tokens: 8000
+        avg_output_tokens: 1500
+        description: "Analyze paper, extract key findings"
+      - label: "Custom (manual entry)"
+        avg_input_tokens: 0
+        avg_output_tokens: 0
+        description: "Enter your own token estimates"
+
+    # Time period options for budgeting
+    time_periods:
+      - label: "Per request"
+        multiplier: 1
+      - label: "Daily"
+        multiplier: 1
+      - label: "Weekly"
+        multiplier: 7
+      - label: "Monthly"
+        multiplier: 30
+      - label: "Per semester (4 months)"
+        multiplier: 120
+      - label: "Per year"
+        multiplier: 365
+      - label: "Grant period (custom)"
+        multiplier: 0
+
+    # Tips for researchers
+    tips:
+      - "Token count ≈ words × 1.3 for English text"
+      - "Code typically uses more tokens than prose"
+      - "Input tokens are usually cheaper than output"
+      - "Batch API (50% off) available from all major providers for non-urgent workloads"
+      - "Prompt caching saves 50-90% on repeated content (e.g., system prompts, few-shot examples)"
+      - "Reasoning models (o3, R1) use hidden 'thinking tokens' billed as output—actual costs may be 2-5× visible tokens"
+      - "DeepSeek offers 50-75% off-peak discounts (16:30-00:30 GMT)"
+      - "Azure AI Foundry: check your institution's enterprise agreement for negotiated rates"
+      - "Prices change frequently - verify with IT before finalizing grants"
+
+    # Factors that affect cost
+    factors:
+      - "Model choice (10-100× cost difference between providers)"
+      - "Input vs output ratio"
+      - "Request volume and timing (batch vs real-time)"
+      - "Use of reasoning models (hidden token overhead)"
+      - "Prompt caching eligibility"
 
 # Global calculator settings
 global:

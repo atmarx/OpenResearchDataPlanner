@@ -219,11 +219,18 @@ acronyms:
 
       PHI requires HIPAA-compliant storage and handling. At Northwinds,
       this means using High-tier services with BAAs in place.
+
+      **Note:** If you've replaced names with codes but kept a linking key,
+      the data is still considered identifiable PHI.
     examples:
       - "Patient medical records from a clinical study"
       - "Genetic data linked to individual participants"
-    related: ["HIPAA", "BAA", "IRB", "high-tier"]
+    related: ["HIPAA", "BAA", "IRB", "high-tier", "encoded data", "de-identified data"]
     category: "compliance"
+    see_also:
+      - label: "Is My Data De-identified?"
+        action: "open_calculator"
+        calculator: "data-identification"
 
   - term: "HIPAA"
     expansion: "Health Insurance Portability and Accountability Act"
@@ -279,11 +286,18 @@ acronyms:
       potentially identify a specific individual. This includes names,
       Social Security numbers, addresses, phone numbers, and email
       addresses. PII requires appropriate security controls.
+
+      **Note:** If you've replaced identifiers with codes but kept a linking
+      key, the data is still considered identifiable PII.
     examples:
       - "Names and addresses from survey respondents"
       - "Social Security numbers in administrative data"
-    related: ["PHI", "HIPAA", "FERPA"]
+    related: ["PHI", "HIPAA", "FERPA", "encoded data", "de-identified data"]
     category: "compliance"
+    see_also:
+      - label: "Is My Data De-identified?"
+        action: "open_calculator"
+        calculator: "data-identification"
 
   - term: "CUI"
     expansion: "Controlled Unclassified Information"
@@ -359,6 +373,182 @@ acronyms:
       used, stored, and shared. DUAs are commonly required when receiving
       data from external sources or sharing data with collaborators.
     related: ["MOU", "IRB", "data sharing"]
+    category: "compliance"
+
+  # ============================================================
+  # DATA IDENTIFICATION TERMS
+  # ============================================================
+
+  - term: "identified data"
+    expansion: null
+    short_def: "Data with names, SSNs, or other direct identifiers"
+    long_def: |
+      Identified data contains direct identifiers (names, SSNs, email addresses,
+      etc.) that can identify individuals without any additional information.
+
+      Identified data always requires appropriate security controls based on
+      the data type (PHI, FERPA, etc.).
+    examples:
+      - "Medical records with patient names"
+      - "Survey responses linked to email addresses"
+    related: ["encoded data", "de-identified data", "PHI", "PII"]
+    category: "data-classification"
+    see_also:
+      - label: "Check Your Data Status"
+        action: "open_calculator"
+        calculator: "data-identification"
+
+  - term: "encoded data"
+    display: "Encoded Data (Pseudonymized)"
+    synonyms: ["pseudonymized data", "coded data", "keyed data"]
+    expansion: null
+    short_def: "Names replaced with codes, but a key exists"
+    long_def: |
+      Encoded (or pseudonymized) data has direct identifiers replaced with
+      codes or pseudonyms, BUT a linking key exists that could re-identify
+      individuals.
+
+      **Important:** Encoded data is NOT de-identified. As long as the key
+      exists anywhere (Excel file, database, filing cabinet, collaborator's
+      copy), the data can be re-identified and must be protected accordingly.
+
+      Both the data AND the key need appropriate security controls.
+    examples:
+      - "Study data with subject IDs + separate key file mapping IDs to names"
+      - "Medical records with MRNs replaced by study codes"
+    related: ["linking key", "de-identified data", "identified data"]
+    category: "data-classification"
+    see_also:
+      - label: "Check Your Data Status"
+        action: "open_calculator"
+        calculator: "data-identification"
+
+  - term: "de-identified data"
+    display: "De-identified Data (Anonymized)"
+    synonyms: ["anonymized data"]
+    expansion: null
+    short_def: "Cannot be linked back to individuals"
+    long_def: |
+      De-identified data cannot reasonably be used to identify individuals.
+      This requires EITHER:
+
+      1. **No linking key ever existed** (truly anonymous collection)
+      2. **Linking key has been destroyed** (with documentation)
+      3. **HIPAA Safe Harbor** - all 18 identifier types removed
+      4. **Expert Determination** - statistician certified low re-ID risk
+
+      De-identified data may qualify for lower security tiers, but always
+      confirm with your IRB for human subjects data.
+    examples:
+      - "Anonymous survey with no tracking (no key ever existed)"
+      - "Clinical data with all 18 HIPAA identifiers removed"
+    related: ["encoded data", "identified data", "HIPAA Safe Harbor"]
+    category: "data-classification"
+    see_also:
+      - label: "Check Your Data Status"
+        action: "open_calculator"
+        calculator: "data-identification"
+
+  - term: "linking key"
+    display: "Linking Key (Crosswalk)"
+    synonyms: ["crosswalk", "code key", "link file", "key file"]
+    expansion: null
+    short_def: "File that maps codes back to identities"
+    long_def: |
+      A linking key (or crosswalk) is any file, database, or record that
+      maps codes or pseudonyms back to identifiable individuals.
+
+      **Critical:** As long as a linking key exists ANYWHERE, the coded
+      data is considered identifiable. This includes:
+      - Excel files on your laptop
+      - Database tables
+      - Paper lists in filing cabinets
+      - Copies held by collaborators
+      - The source system (EMR, registrar)
+      - Your memory (if you'd recognize participants)
+
+      Protect the key at least as carefully as the data - often more so.
+    examples:
+      - "Excel spreadsheet mapping SUBJ-001 to John Doe"
+      - "REDCap linking log"
+    related: ["encoded data", "de-identified data"]
+    category: "data-classification"
+    see_also:
+      - label: "Check Your Data Status"
+        action: "open_calculator"
+        calculator: "data-identification"
+
+  - term: "quasi-identifier"
+    expansion: null
+    short_def: "Data that can identify someone when combined"
+    long_def: |
+      Quasi-identifiers are data elements that don't identify individuals
+      alone but can be combined to do so.
+
+      **Startling fact:** ZIP code + birthdate + gender can uniquely identify
+      87% of the US population.
+
+      Other risky combinations include:
+      - Age + occupation + education + location
+      - Rare disease + geographic region
+      - Detailed timestamps + behavioral patterns
+
+      Even "de-identified" data may be re-identifiable through quasi-identifiers.
+    examples:
+      - "5-digit ZIP + exact birthdate + gender"
+      - "Rare disease in small geographic area"
+    related: ["de-identified data", "re-identification"]
+    category: "data-classification"
+
+  - term: "HIPAA Safe Harbor"
+    display: "Safe Harbor (HIPAA)"
+    expansion: null
+    short_def: "De-identification by removing 18 identifier types"
+    long_def: |
+      HIPAA Safe Harbor is a method of de-identification that requires
+      removing ALL 18 categories of identifiers:
+
+      1. Names
+      2. Geographic data smaller than state
+      3. Dates (except year) related to individual
+      4. Phone numbers
+      5. Fax numbers
+      6. Email addresses
+      7. SSN
+      8. Medical record numbers
+      9. Health plan beneficiary numbers
+      10. Account numbers
+      11. Certificate/license numbers
+      12. Vehicle identifiers
+      13. Device identifiers
+      14. Web URLs
+      15. IP addresses
+      16. Biometric identifiers
+      17. Full-face photos
+      18. Any other unique identifier
+
+      AND you must have no actual knowledge that remaining information
+      could identify an individual.
+    related: ["de-identified data", "Expert Determination", "HIPAA"]
+    category: "compliance"
+    see_also:
+      - label: "Check Your Data Status"
+        action: "open_calculator"
+        calculator: "data-identification"
+
+  - term: "Expert Determination"
+    expansion: null
+    short_def: "Statistician-certified low re-identification risk"
+    long_def: |
+      Expert Determination is a HIPAA de-identification method where a
+      qualified statistical expert certifies that the risk of re-identifying
+      any individual is very small.
+
+      This is an alternative to Safe Harbor when you can't remove all
+      18 identifier types but still need de-identified status.
+
+      The expert must document their methods and results.
+    related: ["de-identified data", "HIPAA Safe Harbor", "HIPAA"]
     category: "compliance"
 
   # ============================================================

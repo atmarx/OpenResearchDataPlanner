@@ -1,0 +1,102 @@
+id: "khandari-raj"
+name: "Dr. Raj Khandari"
+department: "Business School"
+title: "Professor"
+specialty: "Quantitative Finance, ML for market prediction, NLP sentiment analysis, algorithmic trading research"
+tech_level: "high"
+years_at_institution: 12
+
+archetype: "ai_production"
+vibe: "Runs production ML pipelines for research. Thinks in terms of model drift, retraining schedules, and A/B testing. Has strong opinions about MLOps. Previously worked in hedge fund quantitative research."
+frustrations:
+  - "Academic infrastructure wasn't built for production ML workloads"
+  - "My models need to retrain on fresh market data daily — batch jobs aren't enough"
+  - "Feature stores? Model registries? Versioning? We're still figuring this out"
+  - "The business school thinks I'm weird because I code"
+hopes:
+  - "Infrastructure that understands ML lifecycle, not just batch compute"
+  - "A way to explain to colleagues why I need GPUs for 'business research'"
+  - "Clear cost breakdown so I can justify cloud spend to the dean"
+
+workarounds:
+  - type: "paid_out_of_pocket"
+    description: "Personal AWS account for real-time model serving experiments"
+  - type: "custom_scripts"
+    description: "Elaborate MLflow + DVC pipeline for experiment tracking"
+  - type: "industry_collaboration"
+    description: "Uses former colleagues' hedge fund compute for validation"
+
+lab:
+  name: "Khandari Quantitative Research Lab"
+  size: 7
+  composition:
+    postdocs: 1
+    phd_students: 3
+    masters_students: 2
+    undergrads: 1
+  tech_person: "Postdoc Dr. Liu — former ML engineer at Bloomberg"
+
+projects:
+  - id: "khandari-sentiment"
+    title: "Real-time Market Sentiment Analysis"
+    tier: "medium"
+    tier_justification: "Proprietary NLP models and trading signals"
+    type: "gpu_heavy"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 45000
+      pattern: "sustained"
+    storage:
+      active_tb: 8
+      archive_tb: 25
+    retention: "federal_grant_standard"
+    grant_years: 3
+    team_size: 4
+
+  - id: "khandari-prediction"
+    title: "Equity Return Prediction with Transformers"
+    tier: "medium"
+    tier_justification: "Proprietary model architecture and training data from data vendor"
+    type: "gpu_heavy"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 80000
+      pattern: "bursty"
+    storage:
+      active_tb: 15
+      archive_tb: 10
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 3
+
+  - id: "khandari-esg"
+    title: "ESG Scoring from Corporate Filings"
+    tier: "low"
+    tier_justification: "Public SEC filings, open methodology"
+    type: "compute_moderate"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 20000
+      pattern: "bursty"
+    storage:
+      active_tb: 5
+      archive_tb: 8
+    retention: "federal_grant_standard"
+    grant_years: 2
+    team_size: 2
+
+  - id: "khandari-industry"
+    title: "Hedge Fund Partnership: Alternative Data"
+    tier: "medium"
+    tier_justification: "Industry NDA, proprietary alternative data sources"
+    type: "gpu_heavy"
+    compute:
+      type: "gpu_cluster"
+      monthly_su: 50000
+      pattern: "sustained"
+    storage:
+      active_tb: 20
+      archive_tb: 15
+    retention: "industry_partner"
+    grant_years: 2
+    team_size: 3

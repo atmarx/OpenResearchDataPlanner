@@ -1,6 +1,6 @@
 # UX Personas for OpenResearchDataPlanner
 
-This directory contains 21 faculty personas designed for UX testing of the OpenResearchDataPlanner wizard. Each persona represents a realistic faculty member at **Northwinds University** — a bottom-tier R1 institution that punches above its weight.
+This directory contains 24 faculty personas and 2 IT staff personas designed for UX testing of the OpenResearchDataPlanner wizard. Each persona represents a realistic person at **Northwinds University** — a bottom-tier R1 institution that punches above its weight.
 
 > **Note:** All names are entirely fictional. Any resemblance to actual persons is coincidental.
 
@@ -29,6 +29,13 @@ This directory contains 21 faculty personas designed for UX testing of the OpenR
 | 19 | Dr. Andras Volgin | Economics | Medium | Excel escapee |
 | 20 | Dr. Cris Mellendo | Digital Media | High | **Deadline panic**, burst compute |
 | 21 | Dr. Marge Tonsley | History | Very Low | **True technophobe** |
+| 22 | Dr. Raj Khandari | Business School | High | **Production ML** for finance |
+| 23 | Dr. Tessa Nordvik | Aerospace Eng | High | **Physics-informed AI** |
+| 24 | Dr. Ada Okonkwo | Medical Informatics | High | **Clinical AI**, FDA/HIPAA |
+| | | | | |
+| **IT Staff** | | | | |
+| 25 | Marco Delavigne | IT - Research Computing | Very High | **28-year veteran**, institutional memory |
+| 26 | Piper Nakamoto | IT - Service Desk | Medium | **New helpdesk**, first-line support |
 
 ## Institutional Context
 
@@ -59,6 +66,11 @@ This directory contains 21 faculty personas designed for UX testing of the OpenR
 | Compliance expert | Dr. Ama Rilston | Tier logic correctness |
 | Overwhelmed clinician | Dr. Nelle Quarrin | Speed, clarity |
 | Legacy workaround migration | Dr. Jort Gobleson | Gentle guidance |
+| Production ML workload | Dr. Raj Khandari | MLOps, daily retraining, GPU-heavy |
+| Physics + AI hybrid | Dr. Tessa Nordvik | PINNs, multi-tier lab |
+| Clinical AI compliance | Dr. Ada Okonkwo | HIPAA + FDA + public benchmarks |
+| IT support onboarding | Piper Nakamoto | Can new staff guide researchers? |
+| Ticket reduction | Marco Delavigne | Does self-service actually work? |
 
 ## File Structure
 
@@ -79,7 +91,7 @@ docs/ux/personas/
 ├── 02-selwick-mira/
 │   └── ...
 │
-... (21 persona folders)
+... (24 faculty + 2 IT staff persona folders)
 ```
 
 ## Using Personas for Testing
