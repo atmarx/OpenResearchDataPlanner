@@ -135,6 +135,7 @@ If you're deploying for a different institution:
 
 3. **Edit these files minimum**:
    - `meta.yaml` — Institution name, logo, contacts
+     - Leave `links.privacy`, `links.terms`, etc. blank to hide them
    - `services.yaml` — Your actual services and pricing
    - `tiers.yaml` — Your tier names (if different)
    - `help.yaml` — Your support contacts

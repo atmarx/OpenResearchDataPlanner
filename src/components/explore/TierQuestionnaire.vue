@@ -34,6 +34,7 @@ import {
   RotateCcw
 } from 'lucide-vue-next'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
+import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
 import DataIdentificationFlow from '@/components/explore/DataIdentificationFlow.vue'
 import QuestionnairePathViewer from '@/components/explore/QuestionnairePathViewer.vue'
 
@@ -707,10 +708,10 @@ function handleDataIdentificationBack() {
             <MessageCircleQuestion class="w-5 h-5" />
             {{ intro.audience_note.title }}
           </h3>
-          <div
+          <AnnotatedHtml
             class="prose prose-sm max-w-none"
             :class="preferencesStore.darkMode ? 'prose-invert' : 'prose-amber'"
-            v-html="renderMarkdown(intro.audience_note.description)"
+            :html="renderMarkdown(intro.audience_note.description)"
           />
         </div>
 
@@ -811,7 +812,7 @@ function handleDataIdentificationBack() {
                 ? 'bg-blue-900/30 text-blue-200'
                 : 'bg-blue-50 text-blue-900'"
             >
-              <div class="prose prose-sm max-w-none" :class="preferencesStore.darkMode ? 'prose-invert' : ''" v-html="renderMarkdown(currentQuestion.learn_more.content)"></div>
+              <AnnotatedHtml class="prose prose-sm max-w-none" :class="preferencesStore.darkMode ? 'prose-invert' : ''" :html="renderMarkdown(currentQuestion.learn_more.content)" />
               <!-- Link to calculator if specified -->
               <button
                 v-if="currentQuestion.learn_more.link?.action === 'open_calculator'"

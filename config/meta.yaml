@@ -48,6 +48,7 @@ contact:
   consultation_url: "https://northwinds.edu/research-computing/consult"
 
 # Institutional policy links (typically required for university websites)
+# Leave blank or remove any links you don't need - they'll be hidden automatically
 links:
   privacy: "https://northwinds.edu/privacy"
   accessibility: "https://northwinds.edu/accessibility"

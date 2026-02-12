@@ -27,9 +27,17 @@ const consultationUrl = computed(() =>
   configStore.config?.meta?.contact?.consultation_url
 )
 
-const links = computed(() =>
-  configStore.config?.meta?.links || {}
-)
+const links = computed(() => {
+  const raw = configStore.config?.meta?.links || {}
+  // Filter out empty/whitespace-only values so they don't render
+  const filtered = {}
+  for (const [key, value] of Object.entries(raw)) {
+    if (value && typeof value === 'string' && value.trim()) {
+      filtered[key] = value
+    }
+  }
+  return filtered
+})
 </script>
 
 <template>
