@@ -22,6 +22,13 @@ if [ -f /app/config/images/favicon.ico ]; then
     cp /app/config/images/favicon.ico /app/public/favicon.ico
 fi
 
+# Copy custom CSS if it exists
+if [ -d /app/config/css ]; then
+    echo "Copying custom CSS..."
+    mkdir -p /app/public/custom
+    cp -r /app/config/css/* /app/public/custom/ 2>/dev/null || true
+fi
+
 echo "Building config..."
 npm run build:config
 

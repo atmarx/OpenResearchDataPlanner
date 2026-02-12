@@ -84,10 +84,12 @@ config-local/
 ├── software.yaml
 ├── dmp-templates/         # Handlebars templates for DMP output
 │   └── *.hbs
-└── images/                # Branding (optional)
-    ├── logo.png
-    ├── logo-dark.png
-    └── favicon.ico
+├── images/                # Branding (optional)
+│   ├── logo.png
+│   ├── logo-dark.png
+│   └── favicon.ico
+└── css/                   # Custom styles (optional)
+    └── custom.css         # → loaded as /custom/custom.css
 ```
 
 ---
@@ -148,6 +150,32 @@ If you're deploying for a different institution:
    - `images/logo.png` — Header logo
    - `images/logo-dark.png` — Logo for dark mode (optional)
    - `images/favicon.ico` — Browser favicon
+
+5. **Add custom CSS** (optional):
+   ```bash
+   mkdir -p config-local/css
+   cat > config-local/css/custom.css << 'EOF'
+   :root {
+     --color-primary: #1a365d;
+     --color-accent: #c53030;
+   }
+   EOF
+   ```
+
+   Then in `config-local/meta.yaml`:
+   ```yaml
+   branding:
+     custom_css_url: "/custom/custom.css"
+   ```
+
+   Or use inline CSS directly in meta.yaml:
+   ```yaml
+   branding:
+     custom_css: |
+       :root {
+         --color-primary: #1a365d;
+       }
+   ```
 
 4. **Run with dev compose** (for testing):
    ```bash
