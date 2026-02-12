@@ -66,6 +66,32 @@ docker-compose -f docker-compose.dev.yml restart
 
 ---
 
+## config-local Structure
+
+```
+config-local/
+├── meta.yaml              # Institution name, contacts (required)
+├── services.yaml          # Your services and pricing (required)
+├── tiers.yaml             # Tier definitions (required)
+├── help.yaml              # Support contacts
+├── categories.yaml        # Service categories
+├── bundles.yaml           # Pre-configured bundles
+├── mappings.yaml          # Tier-to-service matrix
+├── acronyms.yaml          # Terminology (usually keep default)
+├── calculators.yaml       # Calculator config (usually keep default)
+├── tier-questionnaire.yaml
+├── retention.yaml
+├── software.yaml
+├── dmp-templates/         # Handlebars templates for DMP output
+│   └── *.hbs
+└── images/                # Branding (optional)
+    ├── logo.png
+    ├── logo-dark.png
+    └── favicon.ico
+```
+
+---
+
 ## Architecture
 
 ```
@@ -110,6 +136,18 @@ If you're deploying for a different institution:
    - `services.yaml` — Your actual services and pricing
    - `tiers.yaml` — Your tier names (if different)
    - `help.yaml` — Your support contacts
+
+4. **Add your branding** (optional):
+   ```bash
+   mkdir -p config-local/images
+   cp your-logo.png config-local/images/logo.png
+   cp your-favicon.ico config-local/images/favicon.ico
+   ```
+
+   Supported image overrides:
+   - `images/logo.png` — Header logo
+   - `images/logo-dark.png` — Logo for dark mode (optional)
+   - `images/favicon.ico` — Browser favicon
 
 4. **Run with dev compose** (for testing):
    ```bash

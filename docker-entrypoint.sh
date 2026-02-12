@@ -11,6 +11,17 @@ if [ ! -f /app/config/meta.yaml ]; then
     exit 1
 fi
 
+# Copy institution images if they exist
+if [ -d /app/config/images ]; then
+    echo "Copying institution images..."
+    cp -r /app/config/images/* /app/public/images/ 2>/dev/null || true
+fi
+
+# Copy favicon if it exists
+if [ -f /app/config/images/favicon.ico ]; then
+    cp /app/config/images/favicon.ico /app/public/favicon.ico
+fi
+
 echo "Building config..."
 npm run build:config
 
