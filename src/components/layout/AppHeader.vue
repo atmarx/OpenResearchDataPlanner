@@ -14,6 +14,7 @@ import {
   Grid,
   Package,
   HelpCircle,
+  Sparkles,
   Book
 } from 'lucide-vue-next'
 
@@ -29,6 +30,7 @@ const navTabs = [
   { path: '/services', name: 'Services', icon: Grid },
   { path: '/software', name: 'Software', icon: Package },
   { path: '/tier-check', name: 'Tier Check', icon: HelpCircle },
+  { path: '/ai', name: 'AI Guide', icon: Sparkles },
   { path: '/glossary', name: 'Glossary', icon: Book }
 ]
 
