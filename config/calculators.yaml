@@ -364,24 +364,30 @@ calculator_config:
     # No academic discount on per-token pricing; check institutional agreements
     models:
       # OpenAI
-      - label: "GPT-5"
+      - label: "GPT-5.3"
         provider: "OpenAI"
         input_per_million: 1.25
         output_per_million: 10.00
         context_window: 400000
         description: "Latest flagship model, strong general performance"
+      - label: "GPT-5 Mini"
+        provider: "OpenAI"
+        input_per_million: 0.25
+        output_per_million: 2.00
+        context_window: 200000
+        description: "Balanced cost and capability"
       - label: "GPT-4o"
         provider: "OpenAI"
         input_per_million: 2.50
         output_per_million: 10.00
         context_window: 128000
-        description: "Multimodal workhorse, good balance of cost/quality"
+        description: "Previous gen multimodal, still widely used"
       - label: "GPT-4o mini"
         provider: "OpenAI"
         input_per_million: 0.15
         output_per_million: 0.60
         context_window: 128000
-        description: "Affordable for high-volume tasks"
+        description: "Very affordable for high-volume tasks"
       - label: "o3 (reasoning)"
         provider: "OpenAI"
         input_per_million: 2.00
@@ -396,12 +402,12 @@ calculator_config:
         description: "Affordable reasoning model"
 
       # Anthropic
-      - label: "Claude Opus 4.5"
+      - label: "Claude Opus 4.6"
         provider: "Anthropic"
         input_per_million: 5.00
         output_per_million: 25.00
         context_window: 200000
-        description: "Most capable Claude, excellent for complex tasks"
+        description: "Most capable Claude (Feb 2026), excellent for complex tasks"
       - label: "Claude Sonnet 4.5"
         provider: "Anthropic"
         input_per_million: 3.00
@@ -416,24 +422,24 @@ calculator_config:
         description: "Fast and affordable"
 
       # Google
-      - label: "Gemini 2.5 Pro"
+      - label: "Gemini 3 Pro"
         provider: "Google"
-        input_per_million: 1.25
-        output_per_million: 10.00
+        input_per_million: 2.00
+        output_per_million: 12.00
         context_window: 1000000
-        description: "Flagship model, long context, competitive pricing"
+        description: "Flagship model, strong multimodal, long context"
+      - label: "Gemini 3 Flash"
+        provider: "Google"
+        input_per_million: 0.50
+        output_per_million: 3.00
+        context_window: 1000000
+        description: "Fast and capable, free tier available"
       - label: "Gemini 2.5 Flash"
         provider: "Google"
         input_per_million: 0.30
         output_per_million: 2.50
         context_window: 1000000
-        description: "Good balance of speed and capability"
-      - label: "Gemini 2.0 Flash"
-        provider: "Google"
-        input_per_million: 0.10
-        output_per_million: 0.40
-        context_window: 1000000
-        description: "Very affordable, fast, good for high-volume"
+        description: "Budget option, good for high-volume"
 
       # DeepSeek
       - label: "DeepSeek R1"

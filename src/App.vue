@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, watch, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { useSlateStore } from '@/stores/slateStore'
@@ -9,10 +10,14 @@ import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import SlateFooter from '@/components/slate/SlateFooter.vue'
 
+const route = useRoute()
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
 const slateStore = useSlateStore()
 const preferencesStore = usePreferencesStore()
+
+// Some routes (like tier-check) hide the slate footer
+const showSlateFooter = computed(() => !route.meta?.hideSlate)
 
 // Background image from config
 const heroBackgroundUrl = computed(() => configStore.config?.meta?.branding?.hero_background)
@@ -108,7 +113,7 @@ watch(() => configStore.config?.meta?.branding, injectCustomStyles)
       <router-view />
     </main>
 
-    <SlateFooter class="relative z-10" />
+    <SlateFooter v-if="showSlateFooter" class="relative z-10" />
     <AppFooter class="relative z-10" />
   </div>
 </template>

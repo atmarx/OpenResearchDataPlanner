@@ -42,6 +42,10 @@ export const useSlateStore = defineStore('slate', () => {
       items: [],       // SlateItem[]
       software: [],    // SoftwareSelection[]
 
+      // Export metadata
+      projectName: null,
+      finalNotes: null,
+
       // Submission details (populated when submitting)
       fundingSource: null,
       contact: null,
@@ -240,6 +244,7 @@ export const useSlateStore = defineStore('slate', () => {
         annualEstimate: costs.annual,
         fromCalculator: item.fromCalculator || null,
         calculatorInputs: item.calculatorInputs || null,
+        notes: null,
         addedAt: new Date().toISOString()
       })
     }
@@ -259,6 +264,7 @@ export const useSlateStore = defineStore('slate', () => {
       annualEstimate: costs.annual,
       fromCalculator: item.fromCalculator || null,
       calculatorInputs: item.calculatorInputs || null,
+      notes: null,
       addedAt: new Date().toISOString()
     })
   }
@@ -280,6 +286,16 @@ export const useSlateStore = defineStore('slate', () => {
       const costs = calculateItemCosts(item.service, quantity)
       item.monthlyEstimate = costs.monthly
       item.annualEstimate = costs.annual
+    }
+  }
+
+  /**
+   * Update an item's notes
+   */
+  function updateItemNotes(itemId, notes) {
+    const item = slate.value.items.find(i => i.id === itemId)
+    if (item) {
+      item.notes = notes || null
     }
   }
 
@@ -336,6 +352,20 @@ export const useSlateStore = defineStore('slate', () => {
     slate.value.fundingSource = fundingSource
     slate.value.contact = contact
     slate.value.timeline = timeline
+  }
+
+  /**
+   * Set project name for export
+   */
+  function setProjectName(name) {
+    slate.value.projectName = name || null
+  }
+
+  /**
+   * Set final notes for export
+   */
+  function setFinalNotes(notes) {
+    slate.value.finalNotes = notes || null
   }
 
   /**
@@ -433,6 +463,7 @@ export const useSlateStore = defineStore('slate', () => {
     addItemSeparate,
     removeItem,
     updateQuantity,
+    updateItemNotes,
     getServiceUnit,
 
     // Software management
@@ -442,6 +473,8 @@ export const useSlateStore = defineStore('slate', () => {
     // Lifecycle
     wipeSlate,
     setSubmissionDetails,
+    setProjectName,
+    setFinalNotes,
     markSubmitted,
     resetToDraft,
 

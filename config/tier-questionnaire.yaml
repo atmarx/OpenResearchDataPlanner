@@ -8,10 +8,32 @@ intro:
     Answer a few questions to help us recommend the right security level
     for your research data. If you're unsure, err on the side of caution -
     you can always adjust later with our team.
+  audience_note:
+    title: "Who needs this questionnaire?"
+    description: |
+      **This applies to you if your research involves:**
+      - Human subjects (surveys, interviews, health records, genetic data)
+      - Biological samples (human, animal, or plant-derived)
+      - Government-controlled or export-restricted data (CUI, ITAR, EAR)
+      - Industry partnerships with data use agreements
+      - Student records (FERPA-protected)
+
+      **You can likely skip this if:**
+      - You work purely with simulations, models, or computational data
+      - Your data is already publicly available (published datasets, open source)
+      - You study physical phenomena without biological or human components
+      - Your research generates no sensitive intellectual property
+
+      *Most engineering, physics, mathematics, and computer science research
+      without external data agreements falls into our standard tier (L1).*
   skip_option:
     enabled: true
     label: "I already know my data tier"
     link: "/tier-select"
+  quick_select:
+    enabled: true
+    label: "My data is not sensitive - use standard tier"
+    tier: "low"
 
 # Questions in order
 questions:

@@ -348,7 +348,7 @@ function getColorClasses(color, isDark) {
         ? 'bg-gray-800 border-gray-700'
         : 'bg-white border-gray-200'"
     >
-      <div class="max-w-4xl mx-auto px-4 py-6">
+      <div class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-6">
         <div class="flex items-center justify-between">
           <div>
             <h1
@@ -390,7 +390,7 @@ function getColorClasses(color, isDark) {
     </header>
 
     <!-- Main content -->
-    <main class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+    <main class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-8 space-y-8">
       <!-- Tier Context Card -->
       <div
         class="p-6 rounded-lg border"

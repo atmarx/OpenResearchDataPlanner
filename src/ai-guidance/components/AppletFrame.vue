@@ -92,7 +92,7 @@ function goToNext() {
         ? 'bg-gray-800 border-gray-700'
         : 'bg-white border-gray-200'"
     >
-      <div class="max-w-3xl mx-auto px-4 py-4">
+      <div class="max-w-3xl 2xl:max-w-4xl mx-auto px-4 py-4">
         <div class="flex items-center justify-between">
           <!-- Back / Home -->
           <div class="flex items-center gap-2">
@@ -146,7 +146,7 @@ function goToNext() {
     </header>
 
     <!-- Main content -->
-    <main class="max-w-3xl mx-auto px-4 py-8">
+    <main class="max-w-3xl 2xl:max-w-4xl mx-auto px-4 py-8">
       <!-- Core Question -->
       <div
         class="mb-8 p-4 rounded-lg border-l-4"

@@ -38,11 +38,11 @@ const modelFamilies = [
     id: 'deepseek',
     name: 'DeepSeek V3.2 / R1',
     provider: 'DeepSeek',
-    strengths: 'Best-in-class reasoning, code, math. Beats GPT-5 on reasoning benchmarks.',
+    strengths: 'Best-in-class reasoning, code, math. Beats GPT-5.3 on reasoning benchmarks.',
     sizes: ['V3.2: 685B (37B active)', 'R1: 671B (37B active)'],
     license: 'MIT License',
     bestFor: ['reasoning', 'code', 'math', 'agentic'],
-    notes: 'R1 rivals OpenAI o1. V3.2 uses Sparse Attention for 128K context. Industry leading efficiency.'
+    notes: 'R1 rivals OpenAI o3. V3.2 uses Sparse Attention for 128K context. Industry leading efficiency.'
   },
   {
     id: 'qwen3',
@@ -104,7 +104,7 @@ const taskRecommendations = {
     label: 'Reasoning & Math',
     icon: Scale,
     recommended: ['deepseek', 'phi4', 'qwen3'],
-    notes: 'DeepSeek R1 rivals OpenAI o1. Phi-4-reasoning punches above its weight.'
+    notes: 'DeepSeek R1 rivals OpenAI o3. Phi-4-reasoning punches above its weight.'
   },
   'writing': {
     label: 'Writing & Text',

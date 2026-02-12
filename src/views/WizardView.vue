@@ -61,7 +61,7 @@ function handleStepNavigate(stepId) {
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto">
+  <div class="max-w-4xl 2xl:max-w-5xl mx-auto">
     <!-- Progress indicator (hide on welcome and consultation) -->
     <WizardProgress
       v-if="sessionStore.currentStep !== 'welcome' && sessionStore.currentStep !== 'consultation'"

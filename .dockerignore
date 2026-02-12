@@ -1,0 +1,34 @@
+# Dependencies (will be installed fresh)
+node_modules
+
+# Build output (will be rebuilt)
+dist
+public/config.json
+
+# Local config (mounted at runtime for dev)
+config-local
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docs (not needed in container)
+docs
+planning
+*.md
+!README.md
+
+# Docker files (prevent recursive context)
+Dockerfile*
+docker-compose*.yml
+.dockerignore

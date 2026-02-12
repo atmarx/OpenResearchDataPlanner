@@ -10,6 +10,9 @@ const Glossary = () => import('@/components/explore/Glossary.vue')
 // Main app (wizard)
 const WizardView = () => import('@/views/WizardView.vue')
 
+// Support Workbench (staff only)
+const WorkbenchPage = () => import('@/views/WorkbenchPage.vue')
+
 // AI Guidance (standalone, extractable)
 const AiGuidanceHome = () => import('@/ai-guidance/views/AiGuidanceHome.vue')
 
@@ -65,13 +68,21 @@ const routes = [
     path: '/tier-check',
     name: 'tier-check',
     component: TierQuestionnaire,
-    meta: { title: 'Check Your Tier' }
+    meta: { title: 'Check Your Tier', hideSlate: true }
   },
   {
     path: '/glossary',
     name: 'glossary',
     component: Glossary,
     meta: { title: 'Glossary' }
+  },
+
+  // Support Workbench (staff only)
+  {
+    path: '/workbench',
+    name: 'workbench',
+    component: WorkbenchPage,
+    meta: { title: 'Support Workbench', hideSlate: true, hideNav: true }
   },
 
   // AI Guidance (standalone, extractable)

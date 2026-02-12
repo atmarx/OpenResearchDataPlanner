@@ -1,0 +1,29 @@
+# Development Dockerfile: builds at runtime from mounted config
+#
+# Use with docker-compose.dev.yml for testing config changes
+# Config is mounted as a volume and built at container start
+
+FROM node:20-alpine AS base
+
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Copy source code (config will be mounted over this)
+COPY . .
+
+# Install Caddy
+RUN apk add --no-cache caddy
+
+# Copy Caddyfile (dev version serves from /app/dist)
+COPY Caddyfile.dev /etc/caddy/Caddyfile
+
+# Entrypoint builds and serves
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+EXPOSE 4000
+
+ENTRYPOINT ["/docker-entrypoint.sh"]

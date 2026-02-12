@@ -724,6 +724,66 @@ export default defineConfig({
 </div>
 ```
 
+### Official Plugins (Tailwind v4)
+
+In Tailwind v4, first-party plugins are loaded using the `@plugin` directive in CSS instead of the config file.
+
+#### Typography Plugin
+
+Provides beautiful typographic defaults for rendering user-generated or markdown content.
+
+```bash
+npm install @tailwindcss/typography
+```
+
+```css
+/* src/assets/styles/main.css */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+```
+
+```html
+<!-- Basic usage -->
+<article class="prose">
+  <h1>Article Title</h1>
+  <p>This content gets beautiful typography defaults...</p>
+</article>
+
+<!-- Size variants -->
+<div class="prose prose-sm">Small prose</div>
+<div class="prose prose-base">Default prose</div>
+<div class="prose prose-lg">Large prose</div>
+<div class="prose prose-xl">Extra large prose</div>
+
+<!-- Dark mode -->
+<article class="prose dark:prose-invert">
+  Content adapts to dark mode
+</article>
+
+<!-- Constrain width -->
+<article class="prose max-w-none">
+  Full-width prose content
+</article>
+
+<!-- Color themes -->
+<article class="prose prose-blue">Blue links and accents</article>
+<article class="prose prose-slate">Slate color scheme</article>
+
+<!-- Disable prose styles for specific elements -->
+<article class="prose">
+  <p>This gets prose styles</p>
+  <div class="not-prose">
+    <p>This is unstyled</p>
+  </div>
+</article>
+```
+
+**Common use cases:**
+- Rendering markdown content (DMP sections, learn_more text)
+- Blog posts or documentation
+- User-generated content displays
+- Rich text editor output
+
 ### Responsive Design
 
 ```html
@@ -1305,6 +1365,7 @@ function validateConfig(config) {
 | pinia | 3.0.x | Vue 3 only, TS 5+ |
 | tailwindcss | 4.1.x | CSS-first config |
 | @tailwindcss/vite | 4.x | Vite plugin |
+| @tailwindcss/typography | 0.5.x | Prose styles for markdown |
 | lucide-vue-next | 0.546.x | Vue 3 icons |
 | handlebars | 4.7.8 | Template engine |
 | marked | 17.0.x | Markdown parser |
@@ -1327,6 +1388,7 @@ function validateConfig(config) {
     "@vitejs/plugin-vue": "^5.0.0",
     "tailwindcss": "^4.1.0",
     "@tailwindcss/vite": "^4.0.0",
+    "@tailwindcss/typography": "^0.5.0",
     "lucide-vue-next": "^0.546.0",
     "js-yaml": "^4.1.0"
   }

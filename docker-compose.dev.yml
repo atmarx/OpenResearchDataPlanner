@@ -1,0 +1,33 @@
+# Docker Compose for development/testing with mounted config
+#
+# Use this when iterating on config - changes rebuild automatically.
+#
+# Setup:
+# 1. Create your config directory: mkdir -p ./config-local
+# 2. Copy and edit config files: cp -r config/* ./config-local/
+# 3. Run: docker-compose -f docker-compose.dev.yml up
+#
+# Config changes require container restart to rebuild.
+
+services:
+  planner-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "4000:4000"
+    volumes:
+      # Mount your institution config (overwrites default config)
+      - ./config-local:/app/config:ro
+      # Mount DMP templates if customized
+      - ./config-local/dmp-templates:/app/config/dmp-templates:ro
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s  # Longer for build time

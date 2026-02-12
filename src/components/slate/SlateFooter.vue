@@ -4,12 +4,16 @@ import { useSlateStore } from '@/stores/slateStore'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { usePreferencesStore } from '@/stores/preferencesStore'
-import { ChevronUp, ChevronDown, ArrowRight, FileText, Trash2, CheckCircle, Shield } from 'lucide-vue-next'
+import { ChevronUp, ChevronDown, ArrowRight, FileText, Trash2, CheckCircle, Shield, MessageSquare } from 'lucide-vue-next'
+import ExportModal from './ExportModal.vue'
 
 const slateStore = useSlateStore()
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
 const preferencesStore = usePreferencesStore()
+
+// Export modal state
+const showExportModal = ref(false)
 
 /**
  * Get the selected tier config for display
@@ -127,7 +131,7 @@ function handleWipeSlate() {
       class="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg border-t border-blue-500"
       :class="{ 'rounded-t-lg': isExpanded }"
     >
-      <div class="max-w-5xl mx-auto px-4 py-3">
+      <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-3">
         <!-- Empty State -->
         <div v-if="slateStore.isEmpty && !slateStore.isSubmitted" class="flex items-center justify-center gap-3 text-blue-100">
           <FileText class="w-5 h-5" />
@@ -218,7 +222,7 @@ function handleWipeSlate() {
         : 'bg-white border-gray-200'"
       :style="{ height: 'calc(40vh - 56px)' }"
     >
-      <div class="max-w-5xl mx-auto px-4 py-4">
+      <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-4">
         <!-- Services Section -->
         <div v-if="slateStore.itemCount > 0" class="mb-6">
           <h3
@@ -227,52 +231,78 @@ function handleWipeSlate() {
           >
             Services
           </h3>
-          <div class="space-y-2">
+          <div class="space-y-3">
             <div
               v-for="item in slateStore.slate.items"
               :key="item.id"
-              class="flex items-center justify-between rounded-lg px-4 py-3"
+              class="rounded-lg overflow-hidden"
               :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-50'"
             >
-              <div class="flex-1">
-                <div
-                  class="font-medium"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                >
-                  {{ getServiceName(item.service) }}
-                </div>
-                <div
-                  class="text-sm"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-                >
-                  {{ item.quantity.toLocaleString() }} {{ item.unit }}
-                </div>
-              </div>
-              <div class="flex items-center gap-4">
-                <div class="text-right">
+              <!-- Main row -->
+              <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex-1">
                   <div
-                    class="font-semibold"
+                    class="font-medium"
                     :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
                   >
-                    {{ formatCurrency(item.annualEstimate) }}/yr
+                    {{ getServiceName(item.service) }}
                   </div>
                   <div
-                    class="text-xs"
+                    class="text-sm"
                     :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
                   >
-                    {{ formatCurrency(item.monthlyEstimate) }}/mo
+                    {{ item.quantity.toLocaleString() }} {{ item.unit }}
                   </div>
                 </div>
-                <button
-                  @click="handleRemoveItem(item.id)"
-                  class="p-2 rounded-lg transition-colors"
-                  :class="preferencesStore.darkMode
-                    ? 'text-gray-400 hover:text-red-400 hover:bg-red-900/30'
-                    : 'text-gray-400 hover:text-red-600 hover:bg-red-50'"
-                  title="Remove from slate"
-                >
-                  <Trash2 class="w-4 h-4" />
-                </button>
+                <div class="flex items-center gap-4">
+                  <div class="text-right">
+                    <div
+                      class="font-semibold"
+                      :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                    >
+                      {{ formatCurrency(item.annualEstimate) }}/yr
+                    </div>
+                    <div
+                      class="text-xs"
+                      :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                    >
+                      {{ formatCurrency(item.monthlyEstimate) }}/mo
+                    </div>
+                  </div>
+                  <button
+                    @click="handleRemoveItem(item.id)"
+                    class="p-2 rounded-lg transition-colors"
+                    :class="preferencesStore.darkMode
+                      ? 'text-gray-400 hover:text-red-400 hover:bg-red-900/30'
+                      : 'text-gray-400 hover:text-red-600 hover:bg-red-50'"
+                    title="Remove from slate"
+                  >
+                    <Trash2 class="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notes section -->
+              <div
+                class="px-4 pb-3 border-t"
+                :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+              >
+                <div class="flex items-start gap-2 mt-2">
+                  <MessageSquare
+                    class="w-4 h-4 mt-2 flex-shrink-0"
+                    :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+                  />
+                  <textarea
+                    :value="item.notes || ''"
+                    @input="slateStore.updateItemNotes(item.id, $event.target.value)"
+                    placeholder="Add notes for IT (optional)..."
+                    rows="2"
+                    class="flex-1 text-sm px-2 py-1.5 rounded border resize-none"
+                    :class="preferencesStore.darkMode
+                      ? 'bg-gray-800 border-gray-600 text-gray-200 placeholder-gray-500'
+                      : 'bg-white border-gray-300 text-gray-700 placeholder-gray-400'"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -363,6 +393,7 @@ function handleWipeSlate() {
           </button>
           <button
             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            @click="showExportModal = true"
           >
             Export for Grant
           </button>
@@ -375,6 +406,12 @@ function handleWipeSlate() {
       </div>
     </div>
   </div>
+
+  <!-- Export Modal -->
+  <ExportModal
+    v-if="showExportModal"
+    @close="showExportModal = false"
+  />
 
   <!-- Spacer to prevent content from being hidden under fixed footer -->
   <div v-if="configStore.config" class="h-14"></div>

@@ -92,6 +92,31 @@ function loadDmpTemplates() {
 }
 
 /**
+ * Load export templates from the export-templates directory
+ */
+function loadExportTemplates() {
+  const templates = {}
+  const templatesDir = path.join(CONFIG_DIR, 'export-templates')
+
+  if (!fs.existsSync(templatesDir)) {
+    console.warn('Warning: export-templates directory not found')
+    return templates
+  }
+
+  const files = fs.readdirSync(templatesDir)
+
+  for (const file of files) {
+    if (file.endsWith('.md.hbs')) {
+      // Key format: "slate-export" (without .md.hbs extension)
+      const key = file.replace(/\.md\.hbs$/, '')
+      templates[key] = fs.readFileSync(path.join(templatesDir, file), 'utf8')
+    }
+  }
+
+  return templates
+}
+
+/**
  * Validate referential integrity of the configuration
  */
 function validateConfig(config) {
@@ -196,6 +221,11 @@ function buildConfig() {
   console.log('  Loading DMP templates...')
   config.dmpTemplates = loadDmpTemplates()
   console.log(`    Found ${Object.keys(config.dmpTemplates).length} templates`)
+
+  // Load export templates
+  console.log('  Loading export templates...')
+  config.exportTemplates = loadExportTemplates()
+  console.log(`    Found ${Object.keys(config.exportTemplates).length} templates`)
 
   // Validate configuration
   console.log('\nValidating configuration...')

@@ -134,7 +134,7 @@ function getCategoryClasses(cat, type = 'bg') {
         ? 'bg-gray-800 border-gray-700'
         : 'bg-white border-gray-200'"
     >
-      <div class="max-w-4xl mx-auto px-4 py-4">
+      <div class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-4">
         <div class="flex items-center gap-3 mb-4">
           <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
             <BookOpen class="w-5 h-5" />
@@ -186,7 +186,7 @@ function getCategoryClasses(cat, type = 'bg') {
       </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4 py-6">
+    <main class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-6">
       <!-- No results -->
       <div
         v-if="filteredTerms.length === 0"

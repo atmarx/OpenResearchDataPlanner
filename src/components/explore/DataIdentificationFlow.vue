@@ -264,43 +264,78 @@ function applyResult() {
           Is Your Data De-identified?
         </h2>
         <p
-          class="max-w-lg mx-auto"
+          class="max-w-xl mx-auto"
           :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
         >
           Many researchers believe they've "de-identified" data when they've only <strong>encoded</strong> it.
+          This distinction matters for HIPAA, FERPA, and IRB compliance.
           Let's figure out your data's actual status.
         </p>
       </div>
 
-      <!-- The common scenario -->
-      <div
-        class="p-4 rounded-lg border-2 border-dashed"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-600'
-          : 'bg-amber-50 border-amber-200'"
-      >
-        <div class="flex items-start gap-3">
-          <FileSpreadsheet class="w-6 h-6 flex-shrink-0 text-amber-600 mt-0.5" />
-          <div>
-            <p
-              class="font-medium mb-1"
-              :class="preferencesStore.darkMode ? 'text-amber-400' : 'text-amber-800'"
-            >
-              Common confusion:
-            </p>
-            <p
-              class="text-sm"
-              :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-amber-900'"
-            >
-              "I replaced names with study IDs, so it's de-identified!"
-            </p>
-            <p
-              class="text-sm mt-2"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-amber-700'"
-            >
-              <strong>Reality:</strong> If you have a file that maps IDs back to names,
-              that's <em>encoded</em> data, not de-identified. It can still be re-identified.
-            </p>
+      <!-- Two-column layout: Who this applies to + Common confusion -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Who this applies to -->
+        <div
+          class="p-4 rounded-lg text-left text-sm"
+          :class="preferencesStore.darkMode
+            ? 'bg-gray-800 border border-gray-700'
+            : 'bg-blue-50 border border-blue-200'"
+        >
+          <p
+            class="font-medium mb-2"
+            :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-800'"
+          >
+            This applies to research involving:
+          </p>
+          <ul
+            class="list-disc list-inside space-y-1"
+            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-blue-900'"
+          >
+            <li>Health or medical data (EMR extracts, claims, clinical trials)</li>
+            <li>Student records (grades, transcripts, assessments)</li>
+            <li>Human subjects research (surveys, interviews, observations)</li>
+            <li>Employee or HR data (evaluations, payroll, benefits)</li>
+          </ul>
+          <p
+            class="mt-3 text-xs italic"
+            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-blue-600'"
+          >
+            Not applicable: lab instrument data, simulations, climate/environmental
+            measurements, or published aggregate datasets.
+          </p>
+        </div>
+
+        <!-- The common scenario -->
+        <div
+          class="p-4 rounded-lg border-2 border-dashed"
+          :class="preferencesStore.darkMode
+            ? 'bg-gray-800 border-gray-600'
+            : 'bg-amber-50 border-amber-200'"
+        >
+          <div class="flex items-start gap-3">
+            <FileSpreadsheet class="w-6 h-6 flex-shrink-0 text-amber-600 mt-0.5" />
+            <div>
+              <p
+                class="font-medium mb-1"
+                :class="preferencesStore.darkMode ? 'text-amber-400' : 'text-amber-800'"
+              >
+                Common confusion:
+              </p>
+              <p
+                class="text-sm"
+                :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-amber-900'"
+              >
+                "I replaced student names with random IDs, so it's de-identified!"
+              </p>
+              <p
+                class="text-sm mt-2"
+                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-amber-700'"
+              >
+                <strong>Reality:</strong> If you or the registrar can link those IDs back to students,
+                that's <em>encoded</em> data. FERPA and HIPAA still apply.
+              </p>
+            </div>
           </div>
         </div>
       </div>

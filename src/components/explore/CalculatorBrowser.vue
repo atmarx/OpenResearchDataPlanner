@@ -158,7 +158,7 @@ function handleAdded() {
         ? 'bg-gray-800 border-gray-700'
         : 'bg-white border-gray-200'"
     >
-      <div class="max-w-5xl mx-auto px-4 py-6">
+      <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-6">
         <div>
           <h1
             class="text-2xl font-bold"
@@ -175,7 +175,7 @@ function handleAdded() {
     </div>
 
     <!-- Categories -->
-    <div class="max-w-5xl mx-auto px-4 py-8 space-y-10">
+    <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-8 space-y-10">
       <div
         v-for="category in categories"
         :key="category.key"

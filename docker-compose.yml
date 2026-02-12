@@ -1,0 +1,29 @@
+# Docker Compose for OpenResearchDataPlanner
+#
+# For institutions deploying their own instance:
+# 1. Copy config/ to ./my-config/
+# 2. Edit files in ./my-config/ with your institution's info
+# 3. Run: docker-compose up --build
+#
+# The config is baked into the image at build time.
+# To update config, rebuild: docker-compose up --build
+
+services:
+  planner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+# For development with live config changes, use the dev compose instead:
+# docker-compose -f docker-compose.dev.yml up
