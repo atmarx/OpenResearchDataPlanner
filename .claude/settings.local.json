@@ -6,7 +6,9 @@
       "Bash(pgrep:*)",
       "Bash(find:*)",
       "Bash(timeout 15 npm run dev:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(wc:*)",
+      "Bash(git add:*)"
     ]
   }
 }

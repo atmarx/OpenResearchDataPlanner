@@ -34,7 +34,7 @@ const checklistItems = [
     id: 'date',
     question: 'Did you record the date of use?',
     helpText: 'Models update without version changes',
-    example: '2025-01-15 — models may behave differently next month',
+    example: '2026-02-15 — models may behave differently next month',
     icon: Calendar,
     critical: true
   },

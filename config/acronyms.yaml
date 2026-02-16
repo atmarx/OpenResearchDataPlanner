@@ -506,11 +506,11 @@ acronyms:
     short_def: "De-identification by removing 18 identifier types"
     long_def: |
       HIPAA Safe Harbor is a method of de-identification that requires
-      removing ALL 18 categories of identifiers:
+      removing ALL 18 categories of identifiers (45 CFR § 164.514(b)(2)):
 
       1. Names
-      2. Geographic data smaller than state
-      3. Dates (except year) related to individual
+      2. Geographic data smaller than state (ZIP: 3-digit only if >20,000 people)
+      3. Dates (EXCEPT year) - birth, admission, discharge, death
       4. Phone numbers
       5. Fax numbers
       6. Email addresses
@@ -519,19 +519,31 @@ acronyms:
       9. Health plan beneficiary numbers
       10. Account numbers
       11. Certificate/license numbers
-      12. Vehicle identifiers
-      13. Device identifiers
+      12. Vehicle identifiers (VINs, license plates)
+      13. Device identifiers and serial numbers
       14. Web URLs
       15. IP addresses
-      16. Biometric identifiers
-      17. Full-face photos
+      16. Biometric identifiers (fingerprints, voiceprints)
+      17. Full-face photos and comparable images
       18. Any other unique identifier
 
-      AND you must have no actual knowledge that remaining information
-      could identify an individual.
-    related: ["de-identified data", "Expert Determination", "HIPAA"]
+      **Special rules:**
+      - ZIP codes: 3-digit only if area >20,000 people; 17 restricted ZIPs → "000"
+      - Dates: ONLY year permitted
+      - Ages 90+: Must aggregate to "90 or older"
+
+      **Plus:** No actual knowledge that remaining data could identify individuals.
+
+      **Re-identification risk:** Date of birth + Sex + 5-digit ZIP uniquely identifies
+      over 50% of US residents (HHS guidance).
+
+      **Official guidance:** https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/
+    related: ["de-identified data", "Expert Determination", "HIPAA", "PHI"]
     category: "compliance"
     see_also:
+      - label: "HIPAA De-identification Applet"
+        action: "open_route"
+        route: "/ai/clinical/hipaa-deident"
       - label: "Check Your Data Status"
         action: "open_calculator"
         calculator: "data-identification"
@@ -540,15 +552,52 @@ acronyms:
     expansion: null
     short_def: "Statistician-certified low re-identification risk"
     long_def: |
-      Expert Determination is a HIPAA de-identification method where a
-      qualified statistical expert certifies that the risk of re-identifying
-      any individual is very small.
+      Expert Determination is a HIPAA de-identification method under 45 CFR § 164.514(b)(1)
+      where a qualified statistical/scientific expert certifies that the risk of
+      re-identifying any individual is "very small."
 
-      This is an alternative to Safe Harbor when you can't remove all
-      18 identifier types but still need de-identified status.
+      **Requirements:**
+      - Expert with appropriate knowledge of statistical/scientific de-identification methods
+      - Determines risk is very small considering information reasonably available to recipients
+      - Documents methods and results of the analysis
 
-      The expert must document their methods and results.
-    related: ["de-identified data", "HIPAA Safe Harbor", "HIPAA"]
+      **Advantages over Safe Harbor:**
+      - Can retain some identifiers if justified (e.g., month/day of dates, 5-digit ZIPs)
+      - Flexible based on data utility needs and recipient context
+
+      **Disadvantages:**
+      - Requires hiring qualified expert (cost)
+      - Must maintain documentation for compliance audits
+      - More complex than Safe Harbor's clear rules
+
+      Use Expert Determination when you need richer data granularity than Safe Harbor allows.
+
+      **Official guidance:** https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/
+    related: ["de-identified data", "HIPAA Safe Harbor", "HIPAA", "k-anonymity"]
+    category: "compliance"
+    see_also:
+      - label: "HIPAA De-identification Applet"
+        action: "open_route"
+        route: "/ai/clinical/hipaa-deident"
+
+  - term: "k-anonymity"
+    expansion: null
+    short_def: "Statistical privacy model requiring k indistinguishable records"
+    long_def: |
+      k-anonymity is a statistical disclosure limitation model where each record in
+      a dataset corresponds to at least k individuals in the population.
+
+      **Example:** If k=5, each combination of quasi-identifiers (age, ZIP, sex)
+      must appear for at least 5 people in your dataset. This prevents singling
+      out individuals.
+
+      **Used in:** Expert Determination de-identification, statistical disclosure control
+
+      **Trade-off:** Higher k = more privacy, less data utility. No universal "correct" k value.
+
+      **Referenced in:** HHS HIPAA De-identification Guidance as one approach experts
+      may use to mitigate re-identification risk.
+    related: ["Expert Determination", "de-identified data", "quasi-identifiers"]
     category: "compliance"
 
   # ============================================================

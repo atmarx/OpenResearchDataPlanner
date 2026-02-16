@@ -95,7 +95,7 @@ async function handleSubmit() {
             <input
               v-model="staffName"
               type="text"
-              placeholder="e.g., Marco DeVries"
+              placeholder="Your name"
               autocomplete="name"
               class="w-full pl-10 pr-3 py-2 rounded-lg border text-sm"
               :class="preferencesStore.darkMode

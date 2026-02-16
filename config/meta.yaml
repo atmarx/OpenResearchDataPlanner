@@ -84,6 +84,37 @@ indirect_costs:
   # Link to institution's F&A policy
   policy_url: "https://northwinds.edu/research/indirect-costs"
 
+# AI Disclosure (transparency about AI assistance in development)
+# Shown in a dismissable banner on first visit and in the footer
+ai_disclosure:
+  # Enable/disable AI disclosure features
+  enabled: true
+
+  # Welcome banner (shown once, dismissable)
+  banner:
+    title: "About This Tool"
+    message: |
+      OpenDataPlanner was developed with AI coding assistance (Claude by Anthropic).
+      All code, content, and recommendations have been reviewed by Research IT staff.
+      We follow the same responsible AI practices we recommend to researchers: human oversight,
+      transparent disclosure, and continuous verification.
+    learn_more_label: "Learn more"
+    report_issue_url: "https://github.com/anthropics/claude-code"
+    report_issue_label: "Report an issue"
+
+  # Footer acknowledgment (always visible if enabled)
+  footer:
+    text: "Built with AI assistance."
+    learn_more_label: "Learn more"
+
+  # About AI page content (structured sections)
+  # If you need deeper customization, edit AboutAIPage.vue directly
+  about_page:
+    intro: "How we used AI to build this tool, and why transparency matters."
+    citation: |
+      OpenDataPlanner. (2024-2026). Developed by {institution} with AI coding
+      assistance from Claude (Anthropic). All code and content reviewed by human staff.
+
 # Template version (included in exports for tracking)
 version: "1.0.0"
 schema_version: "1.0"             # Schema version for upgrade compatibility

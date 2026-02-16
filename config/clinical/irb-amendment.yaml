@@ -1,0 +1,329 @@
+# IRB Amendment Guide for AI Tools
+# Helps researchers determine if they need to amend their protocol to cover AI use
+
+meta:
+  applet_id: irb-amendment
+  title: IRB Amendment Guide
+  core_question: How do I amend my protocol for AI use?
+  version: "1.0"
+  last_updated: "2026-02-13"
+
+intro:
+  text: |
+    Most IRB protocols approved before 2023 don't explicitly mention AI tools. This guide helps
+    you determine if you need an amendment and provides sample language for your submission.
+  source_note: "Based on NIH AI use policy (NOT-OD-25-132, July 2025) and IRB best practices."
+
+# Decision tree
+questions:
+  - id: protocol-date
+    question: When was your IRB protocol originally approved?
+    help_text: Protocols approved before 2020 rarely anticipated AI use
+    options:
+      - value: recent
+        label: After 2020
+        description: May have contemplated AI
+        next: protocol-mentions-ai
+
+      - value: older
+        label: Before 2020
+        description: Likely did not anticipate AI tools
+        sets_flags:
+          - likely-needs-amendment
+        next: protocol-mentions-ai
+
+  - id: protocol-mentions-ai
+    question: Does your protocol mention AI, ML, or computational analysis?
+    help_text: Check your methods section for language about analysis approaches
+    options:
+      - value: explicit-ai
+        label: Yes — explicitly mentions AI/ML tools
+        description: Protocol says "artificial intelligence" or "machine learning"
+        next: tool-specificity
+
+      - value: computational
+        label: Mentions "computational methods" or "data analysis"
+        description: Generic language that might cover AI
+        sets_flags:
+          - clarification-needed
+        next: gray-area
+
+      - value: silent
+        label: No mention of analysis methods
+        description: Silent on how data will be analyzed
+        sets_output:
+          needs_amendment: true
+          reason: protocol-silent
+        next: consent-check
+
+  - id: tool-specificity
+    question: Which AI tools does your protocol permit?
+    help_text: Does it name specific tools or use broad categories?
+    options:
+      - value: specific-tools
+        label: Names specific tools (e.g., "GPT-4", "Claude")
+        description: Protocol lists exact AI systems
+        next: tool-match
+
+      - value: categories
+        label: Allows categories (e.g., "institutionally approved AI")
+        description: Broad language covering multiple tools
+        sets_output:
+          needs_amendment: false
+          action: verify-tool-covered
+        next: complete
+
+      - value: unrestricted
+        label: Allows any computational analysis
+        description: Very broad "we may use computational methods" language
+        sets_output:
+          needs_amendment: false
+          action: document-usage
+        sets_flags:
+          - document-anyway
+        next: complete
+
+  - id: tool-match
+    question: Is the AI tool you want to use listed in your protocol?
+    help_text: Check if your specific tool is named in the approved protocol
+    options:
+      - value: yes-listed
+        label: Yes — my tool is explicitly listed
+        description: The AI tool I want to use is in the protocol
+        sets_output:
+          needs_amendment: false
+          covered: true
+        next: complete
+
+      - value: not-listed
+        label: No — I want to use a different tool
+        description: My tool isn't listed in the approved protocol
+        sets_output:
+          needs_amendment: true
+          reason: different-tool
+        next: consent-check
+
+  - id: gray-area
+    question: Does your AI analysis fit within the protocol's "computational methods"?
+    help_text: This is a judgment call. When in doubt, ask your IRB.
+    learn_more:
+      title: When "computational methods" might cover AI
+      content: |
+        Some IRB protocols use broad language like "data will be analyzed using computational methods."
+        Whether this covers AI depends on:
+
+        **Likely covered if:**
+        - Protocol mentions automated analysis or algorithmic processing
+        - Methods section describes general data analysis pipelines
+        - AI use is clearly within the scope of described analysis
+
+        **Likely NOT covered if:**
+        - Protocol was very specific about other analysis methods
+        - AI represents a fundamentally different approach than described
+        - Protocol predates widespread AI availability (pre-2020)
+
+        **When uncertain:** Submit a determination request to your IRB. Better to ask than assume.
+    options:
+      - value: clear-fit
+        label: Yes — AI clearly fits existing protocol language
+        description: Comfortable that AI is within described methods
+        sets_output:
+          needs_amendment: false
+          action: document-rationale
+        next: complete
+
+      - value: unclear
+        label: Uncertain — would prefer IRB confirmation
+        description: Want IRB to make the determination
+        sets_output:
+          needs_amendment: false
+          action: request-determination
+        sets_flags:
+          - irb-consultation-needed
+        next: complete
+
+      - value: stretch
+        label: Feels like a stretch — probably need amendment
+        description: AI goes beyond original protocol scope
+        sets_output:
+          needs_amendment: true
+          reason: beyond-original-scope
+        next: consent-check
+
+  - id: consent-check
+    question: What do your consent forms say about data analysis?
+    help_text: Review what participants agreed to when they consented
+    options:
+      - value: mentions-ai
+        label: Consent mentions AI or machine learning
+        description: Participants were informed about AI use
+        sets_output:
+          consent_covers: true
+        next: amendment-type
+
+      - value: broad-analysis
+        label: Says "data will be analyzed" without specifics
+        description: Generic language about analysis
+        sets_output:
+          consent_covers: unclear
+          consent_action: may-need-update
+        next: amendment-type
+
+      - value: no-mention
+        label: Silent on how data will be analyzed
+        description: No mention of analysis methods
+        sets_output:
+          consent_covers: false
+          consent_action: amendment-required
+        sets_flags:
+          - consent-amendment-needed
+        next: amendment-type
+
+  - id: amendment-type
+    question: Based on your answers, what type of amendment do you need?
+    help_text: Amendment type determines timeline and review process
+    options:
+      - value: minor
+        label: Minor modification (administrative change)
+        description: Adding analysis method, no consent changes needed
+        sets_output:
+          amendment_type: minor
+          needs_amendment: true
+        next: complete
+
+      - value: full
+        label: Full amendment with consent form updates
+        description: Need to modify participant-facing materials
+        sets_output:
+          amendment_type: full
+          needs_amendment: true
+        next: complete
+
+# Outcomes
+outcomes:
+  no-amendment-needed:
+    title: No Amendment Needed
+    color: green
+    icon: check-circle
+    description: Your protocol covers your intended AI use.
+    recommendations:
+      - Document your rationale for why the protocol covers this use
+      - Keep records in case of future audit
+      - Still follow all other protocol requirements
+
+  needs-minor-amendment:
+    title: Minor Amendment Recommended
+    color: yellow
+    icon: alert-triangle
+    description: You should submit a minor protocol modification.
+    timeline: "Typical review: 2-4 weeks"
+    next_steps:
+      - Review sample protocol language below
+      - Prepare amendment submission
+      - Submit via your IRB portal
+
+  needs-full-amendment:
+    title: Full Amendment Required
+    color: orange
+    icon: alert-triangle
+    description: You need to submit a full amendment with consent form changes.
+    timeline: "Typical review: 4-8 weeks. Add 2-6 months if participants must be re-consented."
+    next_steps:
+      - Review sample protocol and consent language below
+      - Update all participant-facing materials
+      - Submit amendment via IRB portal
+      - May need to re-consent existing participants (ask your IRB)
+
+# Sample language for amendments
+# Fork owners: customize these for your institution
+sample_language:
+  protocol_amendment:
+    title: Sample Protocol Amendment Language
+    sections:
+      - section: Data Analysis Methods
+        content: |
+          We will use large language model (LLM) AI tools to assist with [specific task: e.g., coding qualitative
+          interview transcripts / extracting structured data from clinical notes / generating research summaries].
+
+          **Specific tools to be used:**
+          - [Tool name, version/date if known, e.g., "OpenAI GPT-4 (accessed via institutional Azure deployment)"]
+          - [Tool name 2 if applicable]
+
+          **Data handling:**
+          - Only [de-identified / Safe Harbor de-identified / aggregated] data will be input into AI tools
+          - [If cloud-based: "Data will be transmitted to [vendor name] servers. We have verified that
+            [institution name] has a Business Associate Agreement (BAA) with [vendor]."]
+          - [If local: "AI analysis will be performed using locally-hosted models; data will not leave
+            university infrastructure."]
+          - All AI-generated outputs will be reviewed and verified by domain experts before use
+
+          **The AI tools will NOT:**
+          - Make autonomous decisions about participant care or welfare
+          - Have access to direct identifiers [unless specifically justified]
+          - Be used for purposes beyond those described in this protocol
+
+  consent_form_additions:
+    title: Sample Consent Form Language
+    variants:
+      - name: Minimal Addition
+        use_when: AI is auxiliary to main analysis, data is de-identified
+        content: |
+          Your de-identified data may be analyzed using artificial intelligence (AI) tools as part of
+          our research methods. All AI-assisted analysis will be reviewed by the research team.
+
+      - name: Detailed Disclosure
+        use_when: AI is primary analysis method, participants should understand the approach
+        content: |
+          This study will use artificial intelligence (AI) tools to analyze your data. Specifically,
+          we will use [type of AI, e.g., large language models] to [task, e.g., analyze your interview responses].
+
+          Your data will be [de-identified / coded / aggregated] before AI analysis. The AI tools are provided
+          by [company name], and your data may be processed on their servers as part of the analysis.
+          [Institution name] has reviewed their data security and privacy practices.
+
+          AI-generated results will always be checked by human researchers before any conclusions are drawn.
+          The AI is a tool to help us analyze data, not a replacement for human judgment.
+
+      - name: Participant Opt-Out
+        use_when: Offering choice about AI use
+        content: |
+          We plan to use AI tools for some data analysis. If you prefer that your data NOT be analyzed
+          using AI, you may still participate in the study. Your data will be analyzed using traditional
+          methods instead. This choice will not affect your care or study participation.
+
+          [ ] I consent to AI-assisted analysis of my data
+          [ ] I prefer traditional (non-AI) analysis methods
+
+  submission_checklist:
+    title: IRB Amendment Submission Checklist
+    items:
+      - Before you submit
+      - Identify specific section(s) of protocol to modify
+      - List specific AI tools by name (or define approval categories)
+      - Describe data de-identification status
+      - Confirm BAA status if using cloud tools
+      - Update consent form if needed
+      - Justify why AI is being added (scientific rationale)
+      - Address any risks (data privacy, algorithmic bias, output reliability)
+      - Describe verification/validation plans for AI outputs
+
+      - Documents to update
+      - Protocol narrative (methods section)
+      - Consent form (if data handling or analysis approach changes)
+      - Data security plan (if applicable)
+      - Recruitment materials (if mentioning AI in outreach)
+
+    expected_timelines:
+      - "Minor administrative amendment: 2-4 weeks"
+      - "Full amendment with consent changes: 4-8 weeks"
+      - "If participants must be re-consented: Add 2-6 months"
+
+# Institutional customization
+institutional:
+  irb_office_contact: irb@northwinds.edu
+  irb_portal_url: https://irb.northwinds.edu
+  irb_help_email: irb-help@northwinds.edu
+  amendment_form_url: https://irb.northwinds.edu/forms/amendment
+  typical_turnaround:
+    minor: "2-4 weeks"
+    full: "4-8 weeks"

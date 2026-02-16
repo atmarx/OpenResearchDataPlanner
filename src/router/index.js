@@ -13,8 +13,17 @@ const WizardView = () => import('@/views/WizardView.vue')
 // Support Workbench (staff only)
 const WorkbenchPage = () => import('@/views/WorkbenchPage.vue')
 
+// About pages
+const AboutAIPage = () => import('@/views/AboutAIPage.vue')
+
 // AI Guidance (standalone, extractable)
 const AiGuidanceHome = () => import('@/ai-guidance/views/AiGuidanceHome.vue')
+
+// Clinical AI Track
+const ClinicalGuidanceHome = () => import('@/ai-guidance/views/ClinicalGuidanceHome.vue')
+const HipaaDeidentification = () => import('@/ai-guidance/applets/clinical/HipaaDeidentification.vue')
+const IrbAmendment = () => import('@/ai-guidance/applets/clinical/IrbAmendment.vue')
+const ClinicalValidation = () => import('@/ai-guidance/applets/clinical/ClinicalValidation.vue')
 
 // Phase 1: Core Flow
 const StakesAssessment = () => import('@/ai-guidance/applets/StakesAssessment.vue')
@@ -85,6 +94,14 @@ const routes = [
     meta: { title: 'Support Workbench', hideSlate: true, hideNav: true }
   },
 
+  // About pages
+  {
+    path: '/about-ai',
+    name: 'about-ai',
+    component: AboutAIPage,
+    meta: { title: 'AI in OpenDataPlanner' }
+  },
+
   // AI Guidance (standalone, extractable)
   {
     path: '/ai',
@@ -92,6 +109,33 @@ const routes = [
     component: AiGuidanceHome,
     meta: { title: 'AI Guidance' }
   },
+
+  // Clinical AI Track
+  {
+    path: '/ai/clinical',
+    name: 'clinical-guidance',
+    component: ClinicalGuidanceHome,
+    meta: { title: 'Clinical & Healthcare AI | AI Guidance' }
+  },
+  {
+    path: '/ai/clinical/hipaa-deident',
+    name: 'hipaa-deidentification',
+    component: HipaaDeidentification,
+    meta: { title: 'HIPAA De-identification | Clinical AI' }
+  },
+  {
+    path: '/ai/clinical/irb-amendment',
+    name: 'irb-amendment',
+    component: IrbAmendment,
+    meta: { title: 'IRB Amendment Guide | Clinical AI' }
+  },
+  {
+    path: '/ai/clinical/clinical-validation',
+    name: 'clinical-validation',
+    component: ClinicalValidation,
+    meta: { title: 'Clinical Validation | Clinical AI' }
+  },
+
   {
     path: '/ai/stakes-assessment',
     name: 'stakes-assessment',

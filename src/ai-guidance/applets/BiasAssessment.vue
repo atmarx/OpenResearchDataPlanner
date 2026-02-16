@@ -179,14 +179,9 @@ function getNextApplet() {
       class="p-4 rounded-lg border mb-6"
       :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
     >
-      <blockquote
-        class="italic text-lg mb-2"
-        :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-      >
-        "Every AI system has biases baked into its training data... This is not a bug to be fixed later. It is fundamental."
-      </blockquote>
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'">
-        — Dr. Ada Okonkwo
+      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+        Every AI system has biases baked into its training data. This is not a bug to be fixed later — it is fundamental.
+        Different use cases have different bias relevance. Select yours below to see tailored guidance.
       </p>
     </div>
 

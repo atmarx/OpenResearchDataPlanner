@@ -117,6 +117,58 @@ function loadExportTemplates() {
 }
 
 /**
+ * Load AI guidance applet configs from the ai-guidance directory (general track)
+ */
+function loadAiGuidance() {
+  const aiGuidance = {}
+  const guidanceDir = path.join(CONFIG_DIR, 'ai-guidance')
+
+  if (!fs.existsSync(guidanceDir)) {
+    console.warn('Warning: config/ai-guidance/ directory not found')
+    return aiGuidance
+  }
+
+  const files = fs.readdirSync(guidanceDir)
+
+  for (const file of files) {
+    if (file.endsWith('.yaml')) {
+      const key = file.replace(/\.yaml$/, '')
+      const filepath = path.join(guidanceDir, file)
+      const content = fs.readFileSync(filepath, 'utf8')
+      aiGuidance[key] = yaml.load(content)
+    }
+  }
+
+  return aiGuidance
+}
+
+/**
+ * Load clinical guidance applet configs from the clinical directory
+ */
+function loadClinicalGuidance() {
+  const clinical = {}
+  const clinicalDir = path.join(CONFIG_DIR, 'clinical')
+
+  if (!fs.existsSync(clinicalDir)) {
+    console.warn('Warning: config/clinical/ directory not found')
+    return clinical
+  }
+
+  const files = fs.readdirSync(clinicalDir)
+
+  for (const file of files) {
+    if (file.endsWith('.yaml')) {
+      const key = file.replace(/\.yaml$/, '')
+      const filepath = path.join(clinicalDir, file)
+      const content = fs.readFileSync(filepath, 'utf8')
+      clinical[key] = yaml.load(content)
+    }
+  }
+
+  return clinical
+}
+
+/**
  * Validate referential integrity of the configuration
  */
 function validateConfig(config) {
@@ -226,6 +278,16 @@ function buildConfig() {
   console.log('  Loading export templates...')
   config.exportTemplates = loadExportTemplates()
   console.log(`    Found ${Object.keys(config.exportTemplates).length} templates`)
+
+  // Load AI guidance configs (general track)
+  console.log('  Loading AI guidance configs...')
+  config.aiGuidance = loadAiGuidance()
+  console.log(`    Found ${Object.keys(config.aiGuidance).length} AI guidance applets`)
+
+  // Load clinical guidance configs
+  console.log('  Loading clinical guidance configs...')
+  config.clinicalGuidance = loadClinicalGuidance()
+  console.log(`    Found ${Object.keys(config.clinicalGuidance).length} clinical applets`)
 
   // Validate configuration
   console.log('\nValidating configuration...')

@@ -41,7 +41,7 @@ const documentationElements = [
     name: 'Date of Use',
     why: 'Models change over time, even without version changes',
     how: 'Timestamp of interaction',
-    example: '2025-01-15 14:30 UTC',
+    example: '2026-02-15 14:30 UTC',
     icon: Calendar,
     required: true
   },
@@ -68,7 +68,7 @@ const documentationElements = [
     name: 'Outputs Received',
     why: 'For verification and reproducibility',
     how: 'Save full response, not just excerpts',
-    example: 'Complete AI response saved to project-logs/2025-01-15-analysis.md',
+    example: 'Complete AI response saved to project-logs/2026-02-15-analysis.md',
     icon: FileOutput,
     required: true
   },

@@ -9,6 +9,7 @@ import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import SlateFooter from '@/components/slate/SlateFooter.vue'
+import WelcomeBanner from '@/components/layout/WelcomeBanner.vue'
 
 const route = useRoute()
 const configStore = useConfigStore()
@@ -18,6 +19,9 @@ const preferencesStore = usePreferencesStore()
 
 // Some routes (like tier-check) hide the slate footer
 const showSlateFooter = computed(() => !route.meta?.hideSlate)
+
+// Some routes (like workbench) hide nav elements including the welcome banner
+const showWelcomeBanner = computed(() => !route.meta?.hideNav)
 
 // Background image from config
 const heroBackgroundUrl = computed(() => configStore.config?.meta?.branding?.hero_background)
@@ -108,6 +112,7 @@ watch(() => configStore.config?.meta?.branding, injectCustomStyles)
     ></div>
 
     <AppHeader class="relative z-10" />
+    <WelcomeBanner v-if="showWelcomeBanner" class="relative z-10" />
 
     <main id="main-content" class="flex-1 px-4 sm:px-6 py-8 relative z-10">
       <router-view />

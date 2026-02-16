@@ -1,0 +1,201 @@
+# Stakes Assessment Decision Tree
+# Helps users understand the consequences of AI errors before proceeding
+
+meta:
+  applet_id: stakes-assessment
+  title: Stakes Assessment
+  core_question: What happens if AI gets this wrong?
+  version: "1.0"
+  last_updated: "2026-02-13"
+
+intro:
+  why_first_title: Why This Comes First
+  why_first_content: |
+    Stakes determine everything downstream. If you're working on something where errors
+    could cause real harm, you need to know that <em>before</em> deciding whether AI is
+    appropriate, not after. Stakes can veto other decisions—task fit can't veto stakes.
+
+questions:
+  - id: audience
+    question: Who will see this output?
+    help_text: Consider the broadest possible audience for this work.
+    options:
+      - value: just-me
+        label: Just me
+        description: Personal notes, exploration, learning
+        sets_output:
+          audience_level: 1
+        next: decisions
+
+      - value: collaborators
+        label: Collaborators or lab members
+        description: Internal team use, shared drafts
+        sets_output:
+          audience_level: 2
+        next: decisions
+
+      - value: public
+        label: Public or publication
+        description: Conference papers, journal articles, reports
+        sets_output:
+          audience_level: 3
+        next: decisions
+
+      - value: affected-parties
+        label: Patients, students, or affected parties
+        description: People whose wellbeing may be impacted
+        sets_output:
+          audience_level: 4
+        sets_flags:
+          - affects-people
+        next: decisions
+
+  - id: decisions
+    question: What decisions will be made based on this?
+    help_text: Consider downstream uses of AI-generated content.
+    options:
+      - value: none
+        label: No decisions — just exploration
+        description: Brainstorming, learning, curiosity
+        sets_output:
+          decision_level: 1
+        next: catchable
+
+      - value: direction
+        label: Research direction or approach
+        description: Informing what to work on next
+        sets_output:
+          decision_level: 2
+        next: catchable
+
+      - value: resources
+        label: Resource allocation or commitments
+        description: Grant proposals, budgets, hiring
+        sets_output:
+          decision_level: 3
+        next: catchable
+
+      - value: safety-legal
+        label: Health, safety, or legal matters
+        description: Clinical decisions, legal advice, safety-critical
+        sets_output:
+          decision_level: 4
+        sets_flags:
+          - safety-critical
+        next: catchable
+
+  - id: catchable
+    question: Can errors be caught later?
+    help_text: Consider the review and correction process.
+    options:
+      - value: easily
+        label: Yes, easily
+        description: Multiple review stages, low-stakes context
+        sets_output:
+          catch_level: 1
+        next: correction-cost
+
+      - value: with-effort
+        label: Maybe, with effort
+        description: Would require active checking to find
+        sets_output:
+          catch_level: 2
+        next: correction-cost
+
+      - value: difficult
+        label: Difficult or unlikely
+        description: Errors might propagate undetected
+        sets_output:
+          catch_level: 3
+        next: correction-cost
+
+      - value: impossible
+        label: No — errors would be permanent
+        description: Once published or acted on, cannot undo
+        sets_output:
+          catch_level: 4
+        sets_flags:
+          - irreversible
+        next: correction-cost
+
+  - id: correction-cost
+    question: What's the correction cost if something is wrong?
+    help_text: Think about the effort and impact of fixing errors.
+    options:
+      - value: trivial
+        label: Trivial rework
+        description: Minor edits, quick fixes
+        sets_output:
+          cost_level: 1
+        next: complete
+
+      - value: significant
+        label: Significant rework
+        description: Hours or days of effort to correct
+        sets_output:
+          cost_level: 2
+        next: complete
+
+      - value: reputation
+        label: Reputation damage or retraction
+        description: Public correction, professional impact
+        sets_output:
+          cost_level: 3
+        sets_flags:
+          - reputation-risk
+        next: complete
+
+      - value: harm
+        label: Harm to others
+        description: People could be hurt by errors
+        sets_output:
+          cost_level: 4
+        sets_flags:
+          - harm-risk
+        next: complete
+
+# Outcome levels (calculated by Vue component using max(audience, decision, catch, cost))
+outcomes:
+  low:
+    label: Low Stakes
+    description: Proceed with basic review. AI errors would cause embarrassment or minor rework at most.
+    color: green
+    icon: check-circle
+    recommendation: Basic verification is sufficient. Proceed with standard care.
+
+  medium:
+    label: Medium Stakes
+    description: Thorough verification required. Errors could affect professional reputation or waste significant effort.
+    color: yellow
+    icon: info
+    recommendation: Plan verification time. Check outputs against authoritative sources.
+
+  high:
+    label: High Stakes
+    description: Independent verification required. Errors could cause career impact, institutional liability, or require public correction.
+    color: orange
+    icon: alert-triangle
+    recommendation: Have someone else review AI-assisted work. Document your verification process.
+
+  critical:
+    label: Critical Stakes
+    description: AI may not be appropriate. Errors could cause safety issues, legal liability, or harm to people.
+    color: red
+    icon: x-circle
+    recommendation: Strongly consider whether AI should be used at all. If proceeding, implement maximum verification rigor.
+
+# Critical-level warning (shown when outcome is critical)
+critical_warning:
+  title: Consider carefully before proceeding
+  content: |
+    For critical-stakes work, the potential harm from AI errors may outweigh
+    any efficiency gains. If you proceed, implement maximum verification rigor
+    and consider having all AI-assisted outputs reviewed by independent experts.
+
+# Institutional customization
+institutional:
+  responsible_ai_contact: null  # e.g., responsible-ai@northwinds.edu
+  policy_url: null              # Institution's AI use policy
+  escalation_guidance: |
+    For critical-stakes research involving AI, consult your department chair,
+    IRB (if human subjects), or institutional compliance office before proceeding.

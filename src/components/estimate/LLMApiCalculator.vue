@@ -285,7 +285,7 @@ function formatCurrency(amount) {
             <p class="text-yellow-700 text-xs">
               <strong>Note:</strong> API pricing changes frequently. Verify current prices
               with providers before finalizing grant budgets. Prices shown are estimates
-              as of early 2025.
+              as of February 2026.
             </p>
           </div>
         </div>

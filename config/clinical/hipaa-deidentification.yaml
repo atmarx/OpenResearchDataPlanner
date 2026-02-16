@@ -1,0 +1,417 @@
+# HIPAA De-identification Decision Tree
+# Based on HHS HIPAA De-identification Guidance (45 CFR § 164.514)
+# Last reviewed: February 2025
+
+meta:
+  applet_id: hipaa-deidentification
+  title: HIPAA De-identification
+  core_question: Is your health data truly de-identified?
+  version: "1.0"
+  last_updated: "2026-02-13"
+  regulatory_basis: "45 CFR § 164.514(b)"
+  official_guidance_url: "https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html"
+
+intro:
+  text: |
+    HIPAA provides two methods for de-identification: **Safe Harbor** (remove 18 specific identifiers)
+    and **Expert Determination** (statistical risk analysis by qualified professional).
+    This applet helps you determine your de-identification status.
+  source_note: "Based on official HHS guidance (45 CFR § 164.514, reviewed February 2025)."
+
+# Decision tree questions
+questions:
+  - id: data-type
+    question: What type of health data are you working with?
+    help_text: Different data types have different de-identification considerations
+    options:
+      - value: structured
+        label: Structured clinical data
+        description: EMR extracts, claims data, tabular databases
+        sets_output:
+          data_type: structured
+        next: safe-harbor-check
+
+      - value: free-text
+        label: Free-text clinical notes
+        description: Provider notes, discharge summaries, pathology reports
+        sets_output:
+          data_type: free-text
+        sets_flags:
+          - high-reident-risk
+          - free-text-present
+        next: safe-harbor-check
+
+      - value: imaging
+        label: Medical images (DICOM)
+        description: X-rays, MRIs, CT scans with metadata
+        sets_output:
+          data_type: imaging
+        sets_flags:
+          - metadata-risk
+        next: imaging-check
+
+      - value: genomic
+        label: Genomic/genetic data
+        description: DNA sequences, variant data, biobank samples
+        sets_output:
+          data_type: genomic
+        sets_flags:
+          - inherently-identifying
+        next: genomic-warning
+
+  - id: imaging-check
+    question: Have you addressed imaging-specific identifiers?
+    help_text: Medical images often contain burned-in text, patient faces, or identifying metadata
+    learn_more:
+      title: Imaging de-identification requirements
+      content: |
+        DICOM files contain multiple layers of potential identifiers:
+
+        **DICOM Headers** — Must remove:
+        - Patient name, ID, birth date
+        - Institution name, physician names
+        - Study date/time, accession numbers
+
+        **Burned-in annotations** — Check for:
+        - Patient names written on images
+        - Dates visible in image corners
+        - Unique study identifiers
+
+        **Facial features** — For head/neck imaging:
+        - Full-face photos must be removed (HIPAA identifier #17)
+        - May need defacing algorithms for 3D reconstructions
+    options:
+      - value: yes-imaging
+        label: Yes — DICOM headers stripped and images reviewed
+        description: All metadata and burned-in identifiers removed
+        sets_output:
+          imaging_reviewed: true
+        next: safe-harbor-check
+
+      - value: no-imaging
+        label: No — haven't checked imaging-specific identifiers
+        description: Images may still contain identifiers
+        sets_output:
+          imaging_reviewed: false
+          compliant: false
+        sets_flags:
+          - imaging-risk-unaddressed
+        next: complete
+
+  - id: genomic-warning
+    question: Understand that genomic data is inherently identifying?
+    help_text: DNA is unique to each individual (except identical twins). Safe Harbor does NOT apply.
+    learn_more:
+      title: Why genomic data cannot be de-identified with Safe Harbor
+      content: |
+        Genomic data presents unique challenges:
+
+        **Inherent uniqueness:** Your DNA is biologically unique. Removing names and dates doesn't change this.
+
+        **Re-identification potential:**
+        - Public genealogy databases (GEDmatch, etc.) can identify individuals from DNA
+        - Even aggregated genomic data can reveal individual identities through linkage attacks
+        - Rare variants are especially identifying
+
+        **What to do instead:**
+        - Expert Determination may be appropriate with specific controls
+        - Consider NIH dbGaP controlled-access repository
+        - Federated analysis (computation goes to data, not vice versa)
+        - Consent forms must explicitly address genomic data sharing and re-identification risk
+
+        **HIPAA perspective:** Safe Harbor's 18 identifiers don't address biological uniqueness.
+        Expert Determination is the only path if you must share genomic data.
+    options:
+      - value: understand-genomic
+        label: I understand — genomic data requires special handling
+        description: Cannot use Safe Harbor method
+        sets_output:
+          data_type: genomic
+          compliant: false
+          method: not-applicable
+        sets_flags:
+          - genomic-special-handling
+        next: complete
+
+  - id: safe-harbor-check
+    question: Have you removed all 18 HIPAA Safe Harbor identifiers?
+    help_text: Safe Harbor requires removing ALL 18 specific identifiers
+    learn_more:
+      title: The 18 HIPAA Safe Harbor Identifiers
+      content: |
+        Under 45 CFR § 164.514(b)(2), you must remove:
+
+        1. **Names** (patient, relatives, employers, household members)
+        2. **Geographic subdivisions smaller than state** — except 3-digit ZIP if area >20,000 people
+        3. **Dates** (except year) — birth, admission, discharge, death dates
+        4. **Telephone numbers**
+        5. **Fax numbers**
+        6. **Email addresses**
+        7. **Social Security numbers**
+        8. **Medical record numbers (MRN)**
+        9. **Health plan beneficiary numbers**
+        10. **Account numbers**
+        11. **Certificate/license numbers**
+        12. **Vehicle identifiers** (VINs, license plates)
+        13. **Device identifiers and serial numbers**
+        14. **Web URLs**
+        15. **IP addresses**
+        16. **Biometric identifiers** (fingerprints, voiceprints)
+        17. **Full-face photographs** and comparable images
+        18. **Any other unique identifying number, characteristic, or code**
+
+        **Plus special rules:**
+        - ZIP codes: 3-digit only if >20,000 people; 17 restricted ZIPs → "000"
+        - Dates: ONLY year permitted
+        - Ages 90+: Aggregate to "90 or older"
+
+        Source: HHS HIPAA De-identification Guidance (Feb 2025)
+    options:
+      - value: all-18-removed
+        label: Yes — all 18 identifiers removed
+        description: Followed complete Safe Harbor method
+        sets_output:
+          safeharbor_18: true
+        next: actual-knowledge
+
+      - value: partial-removal
+        label: Some removed but not all
+        description: Incomplete de-identification
+        sets_output:
+          safeharbor_18: false
+          compliant: false
+          method: incomplete
+        next: complete
+
+      - value: unsure-what-18-are
+        label: I'm not sure what all 18 are
+        description: Need to review complete list
+        sets_output:
+          safeharbor_18: false
+          compliant: false
+          method: unknown
+        sets_flags:
+          - needs-guidance
+        next: complete
+
+      - value: expert-determination
+        label: Used Expert Determination instead
+        description: Qualified expert certified very small risk
+        sets_output:
+          method: expert-determination
+        next: expert-documentation
+
+  - id: actual-knowledge
+    question: Do you have actual knowledge that the data could still identify individuals?
+    help_text: Even with Safe Harbor identifiers removed, if you KNOW individuals can be identified, it's not de-identified
+    learn_more:
+      title: The "Actual Knowledge" Requirement
+      content: |
+        HIPAA requires that even after removing the 18 identifiers, you must NOT have "actual knowledge"
+        that the information could be used alone or in combination with other information to identify an individual.
+
+        **Examples of actual knowledge:**
+        - You know Patient X is the only person with a rare condition in the dataset
+        - The dataset is from a small clinic where recipients could recognize patients
+        - You're aware of a publicly available dataset that could be linked to re-identify individuals
+        - The data includes rare clinical events covered by media (births of sextuplets, etc.)
+        - You know a data recipient has access to identifying information about the individuals
+
+        **What "actual knowledge" does NOT mean:**
+        - General awareness that re-identification methods exist in academic literature
+        - Theoretical possibility of re-identification
+        - Studies about linking methods (unless you know recipient has such capabilities)
+
+        If you have actual knowledge, the data is NOT de-identified under Safe Harbor.
+    options:
+      - value: no-knowledge
+        label: No — I don't have knowledge of re-identification routes
+        description: No specific knowledge that individuals could be identified
+        sets_output:
+          actual_knowledge: false
+          compliant: true
+          method: safe-harbor
+        next: complete
+
+      - value: yes-knowledge
+        label: Yes — I believe individuals could still be identified
+        description: Specific concerns about re-identification
+        sets_output:
+          actual_knowledge: true
+          compliant: false
+          method: incomplete
+        sets_flags:
+          - not-deidentified
+        next: complete
+
+      - value: unsure-knowledge
+        label: Uncertain — need expert risk assessment
+        description: Would prefer expert determination
+        sets_output:
+          actual_knowledge: uncertain
+          compliant: false
+          method: expert-needed
+        sets_flags:
+          - expert-determination-recommended
+        next: complete
+
+  - id: expert-documentation
+    question: Do you have signed expert determination documentation?
+    help_text: Expert Determination requires a qualified expert to certify the methodology
+    learn_more:
+      title: Expert Determination Requirements
+      content: |
+        Under 45 CFR § 164.514(b)(1), Expert Determination requires:
+
+        **Qualified Expert:**
+        - Appropriate knowledge of statistical/scientific principles
+        - Experience with de-identification methodologies
+        - No specific certification required, but must be truly qualified
+
+        **Must Determine:**
+        - Risk is "very small" that information could be used to identify an individual
+        - Considers information "reasonably available" to anticipated recipients
+        - Accounts for potential linkage with other data sources
+
+        **Must Document:**
+        - Methods used to assess risk
+        - Results of the analysis
+        - Justification for the determination
+        - Should be available for OCR review
+
+        **Advantages:**
+        - Can retain some identifiers if justified (e.g., month/day of dates, 5-digit ZIPs)
+        - Flexible based on use case
+
+        **Disadvantages:**
+        - Requires hiring qualified expert (cost)
+        - Must document methodology
+        - More complex than Safe Harbor
+    options:
+      - value: documented-expert
+        label: Yes — have signed expert determination report
+        description: Expert certified very small risk with documentation
+        sets_output:
+          expert_documented: true
+          compliant: true
+          method: expert-determination
+        next: complete
+
+      - value: informal-review
+        label: Someone reviewed it but no formal documentation
+        description: Informal assessment not compliant with HIPAA
+        sets_output:
+          expert_documented: false
+          compliant: false
+          method: incomplete
+        sets_flags:
+          - documentation-needed
+        next: complete
+
+# Outcome definitions
+outcomes:
+  safe-harbor-compliant:
+    status: compliant
+    title: Safe Harbor De-identified ✓
+    color: green
+    icon: shield-check
+    description: Your data meets HIPAA Safe Harbor requirements for de-identification.
+    implications:
+      - Can be used without HIPAA restrictions (but verify IRB coverage)
+      - No BAA required for AI tools
+      - May still need consent for research use
+      - Should document de-identification process for publications
+    recommendations:
+      - Verify your IRB protocol covers de-identified data use
+      - Consider residual re-identification risks from quasi-identifiers (e.g., ZIP + age + rare condition)
+      - Document which Safe Harbor method steps you followed
+
+  expert-determination:
+    status: compliant
+    title: Expert Determination De-identified ✓
+    color: green
+    icon: shield-check
+    description: A qualified expert has certified very small re-identification risk.
+    implications:
+      - HIPAA de-identification requirements met
+      - More flexible than Safe Harbor (can retain some identifiers)
+      - Must keep expert report for compliance audits
+      - Expert determination may expire — check certification period
+    recommendations:
+      - Store expert report with your protocol and data governance documents
+      - Review expert qualifications to ensure truly qualified
+      - Update determination if dataset or anticipated recipients change
+      - Verify with IRB even though HIPAA-compliant
+
+  not-compliant:
+    status: not-compliant
+    title: NOT De-identified
+    color: red
+    icon: x-circle
+    description: Your data does not meet HIPAA de-identification standards. This is identifiable PHI.
+    implications:
+      - Full HIPAA Privacy Rule requirements apply
+      - Must have Business Associate Agreement (BAA) for any third-party AI tool
+      - Cannot share without patient authorization or specific HIPAA exception
+      - Must be stored on HIPAA-compliant infrastructure (L3 High tier minimum)
+      - All AI tool vendors must be HIPAA-compliant with signed BAAs
+    recommendations:
+      - Complete de-identification using Safe Harbor method (remove all 18 identifiers)
+      - OR obtain Expert Determination from qualified professional
+      - OR treat as identified PHI with full protections
+      - Consult your institutional privacy/compliance office before proceeding
+    warnings:
+      - Do NOT use consumer AI tools (ChatGPT Free, Claude.ai, etc.) with this data
+      - Do NOT paste any portion of this data into non-BAA-covered AI services
+      - Cannot claim data is "anonymous" for IRB or publication purposes
+
+  genomic-special:
+    status: special
+    title: Genomic Data - Inherently Identifying
+    color: orange
+    icon: alert-triangle
+    description: Genomic data cannot be de-identified using HIPAA Safe Harbor. Special handling required.
+    implications:
+      - DNA is biologically unique — Safe Harbor method does not apply
+      - Can be re-identified through public genealogy databases
+      - Requires explicit, informed consent for any data sharing
+      - May require NIH dbGaP controlled-access repository
+      - Expert Determination possible but complex for genomic data
+    recommendations:
+      - Work with your IRB on genomic data consent language
+      - Explicitly inform participants about re-identification risks
+      - Consider federated learning approaches (analysis goes to data, not vice versa)
+      - If using cloud AI, verify genomic data is explicitly covered in BAA
+      - Document re-identification risks in consent forms and data management plans
+
+  expert-needed:
+    status: conditional
+    title: Expert Determination Recommended
+    color: yellow
+    icon: alert-triangle
+    description: Your situation requires professional de-identification expertise.
+    implications:
+      - Safe Harbor alone may not be sufficient
+      - Need qualified expert to assess re-identification risk
+      - Expert can determine if additional mitigation needed
+      - Documentation required for compliance
+    recommendations:
+      - Contact your institutional privacy/compliance office
+      - Request expert determination from qualified professional
+      - Expect costs for professional de-identification services
+      - Consider whether data utility justifies expert determination vs. Safe Harbor
+
+# Institutional customization
+# Fork owners: add your institution-specific contacts and resources here
+institutional:
+  privacy_office_contact: privacy@northwinds.edu
+  privacy_office_url: https://compliance.northwinds.edu/hipaa
+  irb_contact: irb@northwinds.edu
+  expert_determination_vendors:
+    - name: Privacy Analytics (example)
+      url: https://privacy-analytics.com
+      notes: Third-party de-identification service
+  local_resources:
+    - title: Northwinds HIPAA Compliance Guide
+      url: /institutional/hipaa-guide
+      description: Internal compliance procedures

@@ -99,6 +99,11 @@ onMounted(() => {
   }
 })
 
+// Clinical context detection
+const hasClinicalContext = computed(() => {
+  return sessionStore.tier === 'l3-high' || aiStore.allFlags.includes('hipaa')
+})
+
 // Tier icons
 const tierIcons = {
   green: ShieldCheck,
@@ -597,6 +602,55 @@ function getColorClasses(color, isDark) {
           applet that addresses your specific question.
           {{ hasTierContext ? 'Guidance is tailored to your ' + tierConfig?.short_name + ' data requirements.' : '' }}
         </p>
+      </div>
+
+      <!-- Clinical & Healthcare AI Track -->
+      <div
+        class="p-6 rounded-lg border"
+        :class="preferencesStore.darkMode
+          ? 'bg-blue-900/20 border-blue-800'
+          : 'bg-blue-50 border-blue-200'"
+      >
+        <div class="flex items-start gap-4">
+          <div
+            class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
+            :class="preferencesStore.darkMode
+              ? 'bg-blue-900/50'
+              : 'bg-blue-100'"
+          >
+            <ShieldAlert
+              class="w-6 h-6"
+              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+            />
+          </div>
+          <div class="flex-1">
+            <h2
+              class="text-lg font-semibold mb-1"
+              :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-800'"
+            >
+              Clinical & Healthcare AI Track
+            </h2>
+            <p
+              class="mb-3"
+              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-700'"
+            >
+              {{ hasClinicalContext
+                ? "You're working with healthcare data. We have specialized guidance for HIPAA, IRB, FDA, and clinical validation requirements."
+                : "Working with clinical or healthcare AI? Specialized guidance for HIPAA de-identification, IRB amendments, and FDA validation requirements."
+              }}
+            </p>
+            <router-link
+              to="/ai/clinical"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all hover:scale-105"
+              :class="preferencesStore.darkMode
+                ? 'bg-blue-600 text-white hover:bg-blue-500'
+                : 'bg-blue-600 text-white hover:bg-blue-700'"
+            >
+              <span>Enter Clinical Track</span>
+              <ArrowRight class="w-4 h-4" />
+            </router-link>
+          </div>
+        </div>
       </div>
 
       <!-- Phases -->

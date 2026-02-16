@@ -2,6 +2,7 @@
 import { useConfigStore } from '@/stores/configStore'
 import { usePreferencesStore } from '@/stores/preferencesStore'
 import { computed } from 'vue'
+import { Bot } from 'lucide-vue-next'
 
 const configStore = useConfigStore()
 const preferencesStore = usePreferencesStore()
@@ -38,6 +39,12 @@ const links = computed(() => {
   }
   return filtered
 })
+
+// AI Disclosure config
+const aiDisclosure = computed(() => configStore.config?.meta?.ai_disclosure)
+const showAiFooter = computed(() => aiDisclosure.value?.enabled !== false)
+const aiFooterText = computed(() => aiDisclosure.value?.footer?.text || 'Built with AI assistance.')
+const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_label || 'Learn more')
 </script>
 
 <template>
@@ -115,6 +122,22 @@ const links = computed(() => {
             >
               Terms
             </a>
+          </div>
+
+          <!-- AI Acknowledgment -->
+          <div
+            v-if="showAiFooter"
+            class="flex items-center gap-1.5 text-xs"
+            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+          >
+            <Bot class="w-3 h-3" />
+            <span>{{ aiFooterText }}</span>
+            <router-link
+              to="/about-ai"
+              :class="preferencesStore.darkMode ? 'hover:text-gray-300' : 'hover:text-gray-600'"
+            >
+              {{ aiFooterLearnMore }}
+            </router-link>
           </div>
 
           <!-- Version -->

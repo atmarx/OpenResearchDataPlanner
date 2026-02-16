@@ -1,0 +1,249 @@
+# Clinical AI Validation Checklist
+# Comprehensive checklist for clinical deployment readiness
+# Aligned with FDA good machine learning practices and clinical research standards
+
+meta:
+  applet_id: clinical-validation
+  title: Clinical Validation Checklist
+  core_question: Is my AI ready for clinical deployment?
+  version: "1.0"
+  last_updated: "2026-02-13"
+  regulatory_basis: "FDA AI/ML SaMD Guidance (2025), Good Machine Learning Practice"
+
+intro:
+  text: |
+    Clinical AI requires rigorous validation beyond typical research standards. This checklist
+    helps you track readiness for clinical deployment or publication in medical journals.
+  source_note: "Based on FDA AI/ML guidance (2025) and clinical research best practices."
+
+# Validation sections with items
+sections:
+  - id: technical
+    title: Technical Validation
+    description: Does the AI work correctly from a technical standpoint?
+    items:
+      - id: test-set-performance
+        text: Performance measured on held-out test set
+        required: true
+        details: |
+          Training, validation, AND test sets must be completely separate. Test set should
+          represent the clinical population where the AI will be deployed.
+
+          Report: sensitivity, specificity, AUC, PPV, NPV (as appropriate for your task)
+
+      - id: confidence-intervals
+        text: Performance metrics reported with confidence intervals
+        required: true
+        details: |
+          Single-number accuracy is insufficient. Report 95% confidence intervals for all metrics.
+
+          Example: "Sensitivity: 92.3% (95% CI: 88.7-95.1%)"
+
+      - id: failure-modes
+        text: Known failure modes documented
+        required: true
+        details: |
+          When does your model fail? Document:
+          - Edge cases and out-of-distribution inputs
+          - Systematic errors or bias patterns
+          - Adversarial or unusual inputs
+          - Confidence thresholds for flagging uncertain cases
+
+      - id: computational-requirements
+        text: Computational requirements specified
+        required: false
+        details: |
+          Inference time, memory usage, hardware needed. Can it run in the clinical environment?
+
+          Consider: Is real-time performance required? Batch processing acceptable?
+
+  - id: clinical
+    title: Clinical Validity
+    description: Does it work for the intended clinical purpose?
+    items:
+      - id: gold-standard-comparison
+        text: Compared to clinical gold standard
+        required: true
+        details: |
+          Not just other AI models. Compare to:
+          - Expert clinician diagnosis
+          - Pathology/lab confirmed outcomes
+          - Established diagnostic criteria
+
+          AI should match or exceed current standard of care.
+
+      - id: prospective-validation
+        text: Prospective validation (not just retrospective)
+        required: true
+        details: |
+          Retrospective data is for development. Prospective data proves clinical utility.
+
+          Prospective validation tests the AI on new, unseen patients as they arrive.
+
+      - id: clinician-in-loop
+        text: Clinician-in-the-loop testing completed
+        required: true
+        details: |
+          Real clinicians using the AI in realistic workflows:
+          - Do they understand the output?
+          - Can they act on recommendations?
+          - Does it integrate into their workflow?
+          - Are there usability issues?
+
+      - id: clinical-utility
+        text: Clinical utility demonstrated (not just accuracy)
+        required: true
+        details: |
+          Does it improve patient outcomes? Reduce time? Cut costs? Change clinical decisions?
+
+          Accuracy alone doesn't prove utility. You need to show it helps in practice.
+
+  - id: bias
+    title: Bias & Fairness Audit
+    description: Does it work equitably across patient populations?
+    items:
+      - id: demographic-performance
+        text: Performance disaggregated by race, ethnicity, sex, age
+        required: true
+        details: |
+          **FDA requirement for clinical AI:** Performance must be reported across demographic groups.
+
+          Stratify results by:
+          - Race/ethnicity
+          - Sex/gender
+          - Age groups
+          - [Other relevant characteristics for your clinical context]
+
+          Flag any significant performance differences.
+
+      - id: representation
+        text: Training data demographics documented
+        required: true
+        details: |
+          What populations are represented in training data? What are the gaps?
+
+          Document:
+          - Demographic breakdown of training/validation/test sets
+          - Known underrepresented groups
+          - Geographic diversity (if relevant)
+
+      - id: bias-mitigation
+        text: Bias mitigation strategies implemented if disparities found
+        required: true
+        details: |
+          If performance differs across groups, document mitigation:
+          - Re-sampling or re-weighting training data
+          - Fairness constraints in training
+          - Ensemble methods for underrepresented groups
+          - If mitigation not possible, document limitations
+
+      - id: external-validation
+        text: External validation on diverse sites/populations
+        required: false
+        details: |
+          Test at hospitals beyond your development site:
+          - Different patient populations
+          - Different equipment/imaging protocols
+          - Different clinical workflows
+
+          Proves generalizability beyond your institution.
+
+  - id: deployment
+    title: Deployment Readiness
+    description: Can it be safely deployed in clinical settings?
+    items:
+      - id: integration-testing
+        text: Integration testing with clinical systems (EMR, PACS, etc.)
+        required: true
+        details: |
+          Does it work with real clinical IT infrastructure?
+          - EMR integration tested
+          - Data flow verified
+          - Authentication/authorization working
+          - Handles EMR downtime gracefully
+
+      - id: error-handling
+        text: Error handling and fallback procedures defined
+        required: true
+        details: |
+          What happens when AI fails? Document:
+          - How clinicians are notified of failures
+          - Fallback to manual/traditional methods
+          - User-friendly error messages
+          - Escalation procedures
+
+      - id: monitoring-plan
+        text: Post-deployment monitoring plan established
+        required: true
+        details: |
+          How will you detect performance degradation?
+          - What metrics are tracked?
+          - Alert thresholds?
+          - Frequency of monitoring?
+          - Who receives alerts?
+
+      - id: adverse-event-reporting
+        text: Adverse event reporting mechanism in place
+        required: true
+        details: |
+          How are clinical errors or patient harms reported and tracked?
+          - Incident reporting system integrated
+          - Criteria for AI-related adverse events defined
+          - Review process for incidents
+
+      - id: user-training
+        text: Clinician training materials prepared
+        required: true
+        details: |
+          How will clinicians learn to use this?
+          - Training modules or sessions
+          - Quick reference guides
+          - Prerequisites (technical literacy)
+          - Competency assessment
+
+      - id: rollback-plan
+        text: Rollback plan if deployment fails
+        required: true
+        details: |
+          Can you safely remove this from clinical workflow if needed?
+          - Documented rollback procedure
+          - Data preservation during rollback
+          - Communication plan for users
+          - Decision criteria for rollback
+
+# Export template for validation report
+validation_report_template: |
+  # Clinical AI Validation Report
+
+  **System:** [AI system name]
+  **Date:** {{date}}
+  **Reviewer:** {{reviewer}}
+
+  ## Validation Status
+
+  {{#each sections}}
+  ### {{title}}
+  {{#each items}}
+  - [{{#if checked}}✓{{else}} {{/if}}] {{text}} {{#if required}}(Required){{else}}(Optional){{/if}}
+  {{/each}}
+  {{/each}}
+
+  ## Summary
+
+  **Completed:** {{completed}} / {{total_required}} required items ({{percent}}%)
+
+  **Status:** {{#if all_required_complete}}✓ Ready for clinical deployment{{else}}⚠ Additional validation needed{{/if}}
+
+  ## Next Steps
+
+  {{#unless all_required_complete}}
+  The following required items must be completed:
+  {{#each missing_required}}
+  - {{text}}
+  {{/each}}
+  {{/unless}}
+
+  ---
+
+  *Generated by OpenDataPlanner Clinical AI Guidance*
+  *This is a checklist tracker, not a substitute for formal validation documentation*
