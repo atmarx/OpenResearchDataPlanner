@@ -7,6 +7,7 @@ import { usePreferencesStore } from '@/stores/preferencesStore'
 import { useWizard } from '@/composables/useWizard'
 import { useDMPGenerator } from '@/composables/useDMPGenerator'
 import { Download, FileText, RefreshCw, ExternalLink, CheckCircle, FileCode, Copy, Check } from 'lucide-vue-next'
+import PageFeedback from '@/components/feedback/PageFeedback.vue'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
@@ -528,6 +529,13 @@ function startOver() {
         for final budget approval.
       </p>
     </div>
+
+    <!-- Feedback -->
+    <PageFeedback
+      page-id="wizard-complete"
+      prompt="Was the Research Data Planner helpful for your grant planning?"
+      :metadata="{ tier: sessionStore.session?.selected_tier }"
+    />
 
     <!-- Actions -->
     <div

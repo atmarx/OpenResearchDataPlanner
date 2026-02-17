@@ -6,11 +6,10 @@ import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   ArrowLeft,
   ArrowRight,
-  ThumbsUp,
-  ThumbsDown,
   CheckCircle,
   Home
 } from 'lucide-vue-next'
+import PageFeedback from '@/components/feedback/PageFeedback.vue'
 
 const props = defineProps({
   appletId: {
@@ -52,11 +51,8 @@ const router = useRouter()
 const aiStore = useAiGuidanceStore()
 const preferencesStore = usePreferencesStore()
 
-// Feedback state for this applet
-const currentFeedback = computed(() => aiStore.feedback[props.appletId])
-
-function handleFeedback(vote) {
-  aiStore.setFeedback(props.appletId, vote)
+function handleFeedbackEvent(event) {
+  aiStore.setFeedback(props.appletId, event.sentiment)
 }
 
 function goBack() {
@@ -165,45 +161,12 @@ function goToNext() {
       <!-- Completion Actions -->
       <div v-if="isComplete" class="mt-8 space-y-6">
         <!-- Feedback -->
-        <div
-          class="p-4 rounded-lg border"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700'
-            : 'bg-white border-gray-200'"
-        >
-          <p
-            class="text-sm mb-3"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-          >
-            Was this applet helpful?
-          </p>
-          <div class="flex items-center gap-3">
-            <button
-              @click="handleFeedback('up')"
-              class="flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors"
-              :class="currentFeedback === 'up'
-                ? 'bg-green-100 border-green-300 text-green-700'
-                : (preferencesStore.darkMode
-                  ? 'border-gray-600 text-gray-400 hover:border-green-500 hover:text-green-400'
-                  : 'border-gray-200 text-gray-500 hover:border-green-300 hover:text-green-600')"
-            >
-              <ThumbsUp class="w-4 h-4" />
-              Helpful
-            </button>
-            <button
-              @click="handleFeedback('down')"
-              class="flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors"
-              :class="currentFeedback === 'down'
-                ? 'bg-red-100 border-red-300 text-red-700'
-                : (preferencesStore.darkMode
-                  ? 'border-gray-600 text-gray-400 hover:border-red-500 hover:text-red-400'
-                  : 'border-gray-200 text-gray-500 hover:border-red-300 hover:text-red-600')"
-            >
-              <ThumbsDown class="w-4 h-4" />
-              Not helpful
-            </button>
-          </div>
-        </div>
+        <PageFeedback
+          :page-id="appletId"
+          prompt="Was this applet helpful?"
+          :metadata="{ appletId, type: 'ai-guidance' }"
+          @feedback="handleFeedbackEvent"
+        />
 
         <!-- Next Action -->
         <div v-if="nextApplet || getNextApplet" class="flex justify-end">

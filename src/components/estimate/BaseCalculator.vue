@@ -9,6 +9,7 @@ import {
   RefreshCw,
   AlertCircle
 } from 'lucide-vue-next'
+import PageFeedback from '@/components/feedback/PageFeedback.vue'
 
 const props = defineProps({
   /**
@@ -325,6 +326,13 @@ function handleReset() {
             Added to Slate!
           </div>
         </div>
+
+        <!-- Feedback -->
+        <PageFeedback
+          variant="inline"
+          prompt="Was this calculator helpful?"
+          :metadata="{ type: 'calculator' }"
+        />
       </div>
     </div>
   </div>

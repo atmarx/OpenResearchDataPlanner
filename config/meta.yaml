@@ -115,6 +115,14 @@ ai_disclosure:
       OpenDataPlanner. (2024-2026). Developed by {institution} with AI coding
       assistance from Claude (Anthropic). All code and content reviewed by human staff.
 
+# Feedback collection (optional)
+# Requires the feedback-api microservice to be running
+# Set enabled: false or remove this section to disable feedback widgets
+feedback:
+  enabled: true
+  api_url: "http://localhost:4001/api/v1"
+  api_key: "changeme-write"
+
 # Template version (included in exports for tracking)
 version: "1.0.0"
 schema_version: "1.0"             # Schema version for upgrade compatibility

@@ -1,0 +1,215 @@
+openapi: 3.0.3
+info:
+  title: OpenDataPlanner Feedback API
+  version: 1.0.0
+  description: |
+    Collects page-level feedback from OpenDataPlanner instances.
+    This API is designed to be backend-swappable — any service that implements
+    this contract can replace the default SQLite-based implementation.
+
+servers:
+  - url: http://localhost:4001/api/v1
+    description: Local development
+
+security:
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: |
+        Two keys exist:
+        - Write key (API_KEY_WRITE): permits POST only, safe for frontend config
+        - Admin key (API_KEY_ADMIN): permits GET endpoints, keep secret
+
+  schemas:
+    FeedbackSubmission:
+      type: object
+      required: [page, sentiment]
+      properties:
+        page:
+          type: string
+          maxLength: 500
+          description: Route path where feedback was given
+          example: "/ai/bias-assessment"
+        sentiment:
+          type: string
+          enum: [up, down]
+          description: Thumbs up or thumbs down
+        comment:
+          type: string
+          maxLength: 2000
+          description: Optional free-text comment
+        contact_name:
+          type: string
+          maxLength: 200
+          description: Optional name for follow-up
+        contact_email:
+          type: string
+          format: email
+          maxLength: 200
+          description: Optional email for follow-up
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Arbitrary context (applet ID, tier, etc.)
+
+    FeedbackRecord:
+      allOf:
+        - $ref: '#/components/schemas/FeedbackSubmission'
+        - type: object
+          properties:
+            id:
+              type: integer
+            user_agent:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+
+    FeedbackStats:
+      type: object
+      properties:
+        total:
+          type: integer
+        by_sentiment:
+          type: object
+          properties:
+            up:
+              type: integer
+            down:
+              type: integer
+        by_page:
+          type: array
+          items:
+            type: object
+            properties:
+              page:
+                type: string
+              up:
+                type: integer
+              down:
+                type: integer
+              total:
+                type: integer
+        recent:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedbackRecord'
+
+paths:
+  /api/v1/feedback:
+    post:
+      summary: Submit feedback
+      description: Public endpoint requiring write API key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackSubmission'
+      responses:
+        '201':
+          description: Feedback recorded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+        '400':
+          description: Validation error
+        '401':
+          description: Invalid API key
+    get:
+      summary: List feedback (admin)
+      description: Paginated list for admin review, requires admin API key
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: string
+          description: Filter by route path
+        - name: sentiment
+          in: query
+          schema:
+            type: string
+            enum: [up, down]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+            maximum: 200
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [newest, oldest]
+            default: newest
+      responses:
+        '200':
+          description: Paginated feedback list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FeedbackRecord'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        '401':
+          description: Admin access required
+
+  /api/v1/feedback/stats:
+    get:
+      summary: Aggregate feedback statistics
+      description: Requires admin API key
+      parameters:
+        - name: since
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Only include feedback since this date
+      responses:
+        '200':
+          description: Aggregated stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackStats'
+        '401':
+          description: Admin access required
+
+  /health:
+    get:
+      summary: Health check
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
