@@ -521,10 +521,10 @@ function startOver() {
         <strong>Note:</strong> This is an estimate based on current pricing and your inputs.
         Actual costs may vary. Please consult with
         <a
-          :href="'mailto:' + configStore.config?.meta?.contact?.general"
+          :href="'mailto:' + configStore.config?.meta?.contact?.primary?.value"
           class="text-blue-500 hover:underline"
         >
-          {{ configStore.config?.meta?.contact?.general }}
+          {{ configStore.config?.meta?.contact?.primary?.label || configStore.config?.meta?.contact?.primary?.value }}
         </a>
         for final budget approval.
       </p>
