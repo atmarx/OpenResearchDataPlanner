@@ -23,6 +23,13 @@ const consultationEmail = computed(() =>
 const consultationUrl = computed(() =>
   configStore.config?.meta?.contact?.consultation_url
 )
+
+const fallbackContact = computed(() => {
+  if (consultationEmail.value || consultationUrl.value) return null
+  const primary = configStore.config?.meta?.contact?.primary
+  if (!primary) return null
+  return primary
+})
 </script>
 
 <template>
@@ -137,6 +144,28 @@ const consultationUrl = computed(() =>
           Schedule Consultation
           <ExternalLink class="w-5 h-5" />
         </a>
+
+        <!-- Fallback when neither consultation email nor URL is configured -->
+        <div v-if="fallbackContact" class="text-center">
+          <a
+            v-if="fallbackContact.type === 'email'"
+            :href="'mailto:' + fallbackContact.value + '?subject=Secure%20Enclave%20Consultation%20Request'"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            <Mail class="w-5 h-5" />
+            Contact {{ fallbackContact.label || fallbackContact.value }}
+          </a>
+          <a
+            v-else
+            :href="fallbackContact.value"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            <ExternalLink class="w-5 h-5" />
+            {{ fallbackContact.label || 'Contact Us' }}
+          </a>
+        </div>
       </div>
 
       <p

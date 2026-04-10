@@ -4,7 +4,7 @@
 schedules:
   - slug: federal-grant-standard
     name: "Federal Grant (Standard)"
-    description: "Standard federal grant data retention requirement"
+    description: "Most federally funded research must keep data for 3 years after the grant closes.  If you're not sure which schedule applies, this is a safe default."
     years: 3
     regulation: "2 CFR 200.334"
     regulation_url: "https://www.ecfr.gov/current/title-2/section-200.334"
@@ -18,7 +18,7 @@ schedules:
 
   - slug: nih-gds
     name: "NIH Genomic Data Sharing"
-    description: "Genomic data under NIH GDS Policy"
+    description: "If your NIH-funded research generates genomic data, the GDS policy requires it to remain accessible for 10 years."
     years: 10
     regulation: "NIH GDS Policy"
     regulation_url: "https://sharing.nih.gov/genomic-data-sharing-policy"
@@ -32,7 +32,7 @@ schedules:
 
   - slug: irb-human-subjects
     name: "IRB Human Subjects Research"
-    description: "Research involving human subjects under IRB protocol"
+    description: "Research with human participants under an IRB protocol requires records for up to 20 years to support potential audits or follow-up studies."
     years: 20
     regulation: "45 CFR 46 / 21 CFR 50"
     regulation_url: "https://www.hhs.gov/ohrp/regulations-and-policy"
@@ -45,7 +45,7 @@ schedules:
 
   - slug: ferpa
     name: "FERPA Student Records"
-    description: "Educational records covered by FERPA"
+    description: "If your research uses student educational records, FERPA requires retaining them for 7 years with access controls in place."
     years: 7
     regulation: "20 U.S.C. § 1232g"
     regulation_url: "https://www2.ed.gov/policy/gen/guid/fpco/ferpa"
@@ -58,7 +58,7 @@ schedules:
 
   - slug: export-control
     name: "Export Controlled Data"
-    description: "Data subject to EAR or ITAR export controls"
+    description: "Data subject to export controls (EAR/ITAR) must be retained for 5 years with restricted access — your export control officer can confirm specifics."
     years: 5
     regulation: "EAR/ITAR"
     applies_to_tiers:
@@ -77,5 +77,7 @@ archive_settings:
   # Prompt user to estimate if they expect different
   allow_custom_ratio: true
   custom_ratio_prompt: |
-    What percentage of your active data will need long-term retention?
-    (Default: 70% - accounts for temporary files, duplicates, etc.)
+    After your grant ends, some data still needs to be kept in "archive" storage — a
+    lower-cost option for data you must retain but won't access regularly.  Not all of
+    your active data needs archiving (temporary files, duplicates, and intermediate
+    results can usually be cleaned up).  The default 70% is a reasonable starting point.

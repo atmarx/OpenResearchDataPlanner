@@ -316,6 +316,14 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                 Long-term archive storage
               </p>
               <p
+                class="text-xs mb-1"
+                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              >
+                Archive storage is a lower-cost option for data you need to keep after your grant ends
+                but won't access day-to-day.  The amount below is based on your archive ratio
+                ({{ Math.round(sessionStore.session.retention.archive_ratio * 100) }}% of active storage).
+              </p>
+              <p
                 class="text-xs mb-3"
                 :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
               >

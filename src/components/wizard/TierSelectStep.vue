@@ -83,8 +83,9 @@ function getIcon(color) {
         Select Your Data Security Tier
       </h2>
       <p :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
-        Choose the tier that best matches the sensitivity of your research data.
-        This determines which services are available and any additional requirements.
+        Your security tier determines which storage and computing services are available to you,
+        and what compliance steps (if any) are needed before your project starts.
+        Choose the level that best matches the sensitivity of your research data.
       </p>
 
       <!-- Tier finder link -->
