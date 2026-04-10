@@ -1,0 +1,8 @@
+name: openresearchdataplanner
+services:
+  app:
+    image: git.dev.xram.net/atmarx/openresearchdataplanner:latest
+    container_name: openresearchdataplanner-prod
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3017:3000"

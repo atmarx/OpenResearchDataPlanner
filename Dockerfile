@@ -24,7 +24,7 @@ COPY --from=builder /app/dist /srv
 # Copy Caddyfile
 COPY Caddyfile /etc/caddy/Caddyfile
 
-EXPOSE 4000
+EXPOSE 3000
 
 # Caddy runs as PID 1
 CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]

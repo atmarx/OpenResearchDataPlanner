@@ -1,0 +1,15 @@
+name: openresearchdataplanner
+services:
+  app:
+    image: git.dev.xram.net/atmarx/openresearchdataplanner:latest
+    container_name: openresearchdataplanner-app
+    restart: unless-stopped
+    expose:
+      - "3000"
+    networks:
+      - gateway
+
+networks:
+  gateway:
+    external: true
+    name: gateway-stack_gateway

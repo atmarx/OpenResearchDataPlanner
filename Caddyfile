@@ -1,7 +1,7 @@
 # Caddyfile for OpenResearchDataPlanner
 # Serves static SPA with proper routing
 
-:4000 {
+:3000 {
     # For production (multi-stage build): /srv
     # For dev (runtime build): /app/dist
     root * /srv

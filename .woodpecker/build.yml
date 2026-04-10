@@ -1,0 +1,22 @@
+when:
+  - event: push
+    branch: main
+  - event: tag
+
+labels:
+  platform: build
+
+steps:
+  - name: build-and-push
+    image: docker:cli
+    environment:
+      GITEA_TOKEN:
+        from_secret: gitea_token
+    commands:
+      - echo "$GITEA_TOKEN" | docker login -u ${CI_REPO_OWNER} --password-stdin git.dev.xram.net
+      - docker build -t git.dev.xram.net/${CI_REPO}:${CI_COMMIT_SHA:0:7} -t git.dev.xram.net/${CI_REPO}:latest .
+      - docker push git.dev.xram.net/${CI_REPO}:${CI_COMMIT_SHA:0:7}
+      - docker push git.dev.xram.net/${CI_REPO}:latest
+      - docker image prune -f || true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

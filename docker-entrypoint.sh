@@ -36,7 +36,7 @@ echo "Building app..."
 npm run build
 
 echo ""
-echo "Starting Caddy on port 4000..."
+echo "Starting Caddy on port 3000..."
 echo ""
 
 # Start Caddy (serves /app/dist via Caddyfile)

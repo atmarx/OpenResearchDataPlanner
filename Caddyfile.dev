@@ -1,7 +1,7 @@
 # Caddyfile for development (runtime build)
 # Serves from /app/dist
 
-:4000 {
+:3000 {
     root * /app/dist
 
     encode gzip zstd

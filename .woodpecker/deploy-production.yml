@@ -1,0 +1,32 @@
+# OpenResearchDataPlanner — Deploy to Production (xdroplet02)
+#
+# Tag-triggered only. SSHs into xdroplet02 and pulls latest image.
+
+when:
+  - event: tag
+
+labels:
+  host: xdocker01
+
+depends_on:
+  - build
+
+steps:
+  - name: deploy-production
+    image: alpine:latest
+    environment:
+      DROPLET_SSH_KEY:
+        from_secret: deploy_ssh_key
+      DROPLET_HOST:
+        from_secret: deploy_host
+    commands:
+      - apk add --no-cache openssh-client
+      - mkdir -p ~/.ssh
+      - echo "$DROPLET_SSH_KEY" > ~/.ssh/id_ed25519
+      - chmod 600 ~/.ssh/id_ed25519
+      - ssh-keyscan -H "$DROPLET_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+      - >
+        ssh -o StrictHostKeyChecking=accept-new deploy@"$DROPLET_HOST"
+        "cd /opt/projects/openresearchdataplanner &&
+        docker compose -f deploy/compose.prod.yml pull &&
+        docker compose -f deploy/compose.prod.yml up -d"

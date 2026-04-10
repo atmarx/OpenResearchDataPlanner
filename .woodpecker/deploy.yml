@@ -1,0 +1,30 @@
+when:
+  - event: push
+    branch: main
+
+labels:
+  host: xdocker01
+
+depends_on:
+  - build
+
+steps:
+  - name: deploy
+    image: docker:cli
+    environment:
+      GITEA_TOKEN:
+        from_secret: gitea_token
+    commands:
+      - apk add --no-cache git
+      - git config --global --add safe.directory /projects/${CI_REPO_NAME}
+      - |
+        if [ ! -d /projects/${CI_REPO_NAME} ]; then
+          git clone ${CI_REPO_CLONE_URL} /projects/${CI_REPO_NAME}
+        fi
+      - cd /projects/${CI_REPO_NAME}
+      - git fetch origin && git checkout ${CI_COMMIT_BRANCH} && git pull origin ${CI_COMMIT_BRANCH}
+      - echo "$GITEA_TOKEN" | docker login -u ${CI_REPO_OWNER} --password-stdin git.dev.xram.net
+      - cd deploy && docker compose pull && docker compose up -d
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/projects:/projects
