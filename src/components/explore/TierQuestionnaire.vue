@@ -163,9 +163,14 @@ function selectAnswer(option) {
   // Store answer
   answers.value[currentQuestionId.value] = option.value
 
-  // Apply tier if set
+  // Apply tier if set — only upgrade, never downgrade
   if (option.sets_tier) {
-    determinedTier.value = option.sets_tier
+    const TIER_RANK = { low: 1, medium: 2, high: 3, restricted: 4 }
+    const currentRank = TIER_RANK[determinedTier.value] || 0
+    const newRank = TIER_RANK[option.sets_tier] || 0
+    if (newRank > currentRank) {
+      determinedTier.value = option.sets_tier
+    }
   }
 
   // Apply flags if set
