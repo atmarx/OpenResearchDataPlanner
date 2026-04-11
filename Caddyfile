@@ -1,18 +1,27 @@
 # Caddyfile for OpenResearchDataPlanner
-# Serves static SPA with proper routing
+# Serves static SPA with proper routing + proxies feedback API
 
 :3000 {
-    # For production (multi-stage build): /srv
-    # For dev (runtime build): /app/dist
     root * /srv
 
     # Enable compression
     encode gzip zstd
 
-    # SPA routing: try file, then index.html
-    try_files {path} /index.html
+    # Health check endpoint
+    handle /health {
+        respond 200
+    }
 
-    file_server
+    # Proxy feedback API to sidecar service
+    handle /api/* {
+        reverse_proxy feedback-api:4001
+    }
+
+    # SPA routing: try file, then index.html
+    handle {
+        try_files {path} /index.html
+        file_server
+    }
 
     # Cache static assets aggressively
     @static {
@@ -32,7 +41,4 @@
         X-Frame-Options "DENY"
         Referrer-Policy "strict-origin-when-cross-origin"
     }
-
-    # Health check endpoint
-    respond /health 200
 }

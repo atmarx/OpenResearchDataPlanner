@@ -120,7 +120,7 @@ ai_disclosure:
 # Set enabled: false or remove this section to disable feedback widgets
 feedback:
   enabled: true
-  api_url: "http://localhost:4001/api/v1"
+  api_url: "/api/v1"
   api_key: "changeme-write"
 
 # Template version (included in exports for tracking)

@@ -205,6 +205,7 @@ See `docs/ADMIN-GUIDE/VALIDATION.md` for common errors and fixes.
 - **Feedback collection** — PageFeedback widget + Node.js API backend
 - **Questionnaire history** tracking
 - **Docker deployment** — production and dev configs with Caddy reverse proxy
+- **Woodpecker CI** — builds + pushes app and feedback-api images; auto-deploys staging on main, production on tag
 - **About AI page** — transparency about AI usage in the tool
 
 ### Designed (docs exist, code pending)
@@ -214,7 +215,6 @@ See `docs/ADMIN-GUIDE/VALIDATION.md` for common errors and fixes.
 - Policy concept graph (`docs/CONCEPT-GRAPH.md`) — V1.3
 
 ### Infrastructure gaps
-- No CI pipeline — Docker files exist but no Woodpecker/Gitea Actions automation
 - No automated tests
 
 ### Config

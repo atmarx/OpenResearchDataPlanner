@@ -6,9 +6,41 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:3017:3000"
+    networks:
+      - internal
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
+
+  feedback-api:
+    image: git.dev.xram.net/atmarx/openresearchdataplanner-feedback:latest
+    container_name: openresearchdataplanner-feedback-prod
+    restart: unless-stopped
+    expose:
+      - "4001"
+    volumes:
+      - feedback-data:/app/data
+    environment:
+      - PORT=4001
+      - DB_PATH=/app/data/feedback.db
+      - API_KEY_WRITE=${FEEDBACK_API_KEY_WRITE:-changeme-write}
+      - API_KEY_ADMIN=${FEEDBACK_API_KEY_ADMIN:-changeme-admin}
+      - CORS_ORIGIN=*
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  feedback-data:
+
+networks:
+  internal:
+    internal: true
