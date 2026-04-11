@@ -399,7 +399,6 @@ questions:
     options:
       - label: "No - publicly shareable"
         value: false
-        sets_tier: low
         next: complete
       - label: "Yes - pre-publication or NDA-protected"
         value: true
