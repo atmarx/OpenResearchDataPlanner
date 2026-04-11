@@ -487,7 +487,7 @@ function startOver() {
           </div>
         </div>
         <div
-          class="p-6 prose prose-sm max-w-none overflow-auto max-h-[600px]"
+          class="p-6 prose prose-sm max-w-none overflow-auto max-h-[60vh]"
           :class="preferencesStore.darkMode ? 'prose-invert' : ''"
           v-html="dmpHtml"
         />
