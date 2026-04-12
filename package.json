@@ -1,7 +1,7 @@
 {
   "name": "openresearchdataplanner",
   "description": "Self-service discovery for researchers. Informed requests for support teams.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
