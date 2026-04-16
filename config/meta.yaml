@@ -88,7 +88,7 @@ indirect_costs:
 # Shown in a dismissable banner on first visit and in the footer
 ai_disclosure:
   # Enable/disable AI disclosure features
-  enabled: true
+  enabled: false
 
   # Welcome banner (shown once, dismissable)
   banner:

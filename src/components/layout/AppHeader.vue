@@ -24,15 +24,21 @@ const sessionStore = useSessionStore()
 const preferencesStore = usePreferencesStore()
 
 // Navigation tabs
-const navTabs = [
-  { path: '/', name: 'Planner', icon: Compass },
-  { path: '/calculators', name: 'Calculators', icon: Calculator },
-  { path: '/services', name: 'Services', icon: Grid },
-  { path: '/software', name: 'Software', icon: Package },
-  { path: '/tier-check', name: 'Tier Check', icon: HelpCircle },
-  { path: '/ai', name: 'AI Guide', icon: Sparkles },
-  { path: '/glossary', name: 'Glossary', icon: Book }
-]
+const navTabs = computed(() => {
+  const tabs = [
+    { path: '/', name: 'Planner', icon: Compass },
+    { path: '/calculators', name: 'Calculators', icon: Calculator },
+    { path: '/services', name: 'Services', icon: Grid },
+    { path: '/software', name: 'Software', icon: Package },
+    { path: '/tier-check', name: 'Tier Check', icon: HelpCircle },
+    { path: '/ai', name: 'AI Guide', icon: Sparkles },
+    { path: '/glossary', name: 'Glossary', icon: Book }
+  ]
+  if (!configStore.config?.meta?.ai_disclosure?.enabled) {
+    return tabs.filter(t => t.path !== '/ai')
+  }
+  return tabs
+})
 
 const currentPath = computed(() => route.path)
 
