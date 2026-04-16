@@ -266,6 +266,8 @@ export function useDMPGenerator() {
     sections.push(`*This Data Management Plan was generated using OpenResearchDataPlanner on ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}.*`)
     sections.push('')
     sections.push(`*Template version: ${configStore.config?.meta?.version || 'unknown'}*`)
+    sections.push('')
+    sections.push('> **Draft — requires review before submission.** This document is a starting point generated from your inputs. Review and customize it with your institution\'s research office or grants administrator before submitting to any funding agency. It does not guarantee compliance with funder requirements.')
 
     return sections.join('\n')
   })

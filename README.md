@@ -110,6 +110,10 @@ No backend required.
 3. **Progressive disclosure** — Complex concepts revealed only when needed
 4. **Escape hatches** — Human help always accessible
 
+## Important Notice
+
+This tool generates draft content to assist with research planning. It does not provide legal, regulatory, or compliance advice. Tier classifications are illustrative — validate with your institution's IT security or research compliance office before making data management decisions. DMP output requires review by your research office before submission to any funding agency. Deployed under the MIT License, as-is, without warranty.
+
 ## License
 
 MIT License - see [LICENSE](LICENSE)

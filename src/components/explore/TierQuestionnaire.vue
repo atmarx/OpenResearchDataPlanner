@@ -963,6 +963,17 @@ function handleDataIdentificationBack() {
           </div>
         </div>
 
+        <!-- Classification disclaimer -->
+        <div
+          class="rounded-lg border p-4 text-sm"
+          :class="preferencesStore.darkMode
+            ? 'bg-amber-900/20 border-amber-700 text-amber-300'
+            : 'bg-amber-50 border-amber-200 text-amber-800'"
+        >
+          <p class="font-medium mb-1">Classification guidance, not a final determination</p>
+          <p>This result is a starting point based on common data sensitivity patterns. Validate your classification with your institution's IT security or research compliance office before making data management or storage decisions.</p>
+        </div>
+
         <!-- Back button -->
         <button
           @click="goBack"
