@@ -1241,52 +1241,65 @@ bundles:
 
 ### mappings.yaml
 
-Explicit tier-to-service availability matrix with approval workflows.
+Explicit tier-to-service availability matrix.  If a `service` + `tier` combination is **not** listed, that service is **not available** for that tier — the wizard will hide it.
 
 ```yaml
 # config/mappings.yaml
 
-# Default mapping rules (can be overridden per-service in services.yaml)
-defaults:
-  L1:
-    approval: automatic
-    self_service: true
-  L2:
-    approval: automatic
-    self_service: true
-  L3:
-    approval: review
-    self_service: false
-    consultation_required: true
-  L4:
-    approval: security_review
-    self_service: false
-    consultation_required: true
-    security_review_required: true
-
-# Service-specific overrides
 mappings:
-  # High-security cloud is pre-approved for L3
-  - service: cloud-high-security
-    tier: L3
+  # HPC compute available at low and medium risk
+  - service: hpc-compute
+    tier: low
     approval: automatic
-    approval_notes: "Pre-approved HIPAA environment"
-    dmp_template: "compute/cloud-hipaa"
+    notes: null
+    dmp_template: "hpc-compute/default"
 
-  # VDI HIPAA is pre-approved for L3
-  - service: vdi-hipaa
-    tier: L3
+  - service: hpc-compute
+    tier: medium
     approval: automatic
-    dmp_template: "environment/vdi-hipaa"
+    notes: |
+      Data must remain on cluster filesystems during processing.
+      Do not copy data to personal devices.
+    dmp_template: "hpc-compute/default"
 
-  # Standard services need review for L3
-  - service: hpc-standard
-    tier: L3
+  # High-risk cloud requires review and a contact
+  - service: aws-compute-high
+    tier: high
     approval: review
-    approval_contact: "rc-security@northwinds.edu"
-    notes: "Requires security configuration review"
-    dmp_template: "compute/hpc-high"
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - Dedicated VPC with restricted access
+      - All data encrypted with customer-managed KMS keys
+    dmp_template: "cloud-compute/high"
+    # Optional compliance metadata — recorded with the mapping for
+    # institutional reference; not currently surfaced in the wizard UI.
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "AWS Business Associate Addendum"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+      timeline: "3-5 business days after security assessment"
+      audit_logging: true
+      encryption: both
 ```
+
+**Schema (per mapping entry):**
+
+| Field | Required | Notes |
+|-------|----------|-------|
+| `service` | yes | Service slug from `services.yaml` |
+| `tier` | yes | Tier slug from `tiers.yaml` (`low`, `medium`, `high`, `restricted`) |
+| `approval` | yes | `automatic`, `review`, or `consultation` |
+| `approval_contact` | optional | Email shown to the researcher when approval is required |
+| `notes` | optional | User-facing notes (Markdown).  Use `null` for none. |
+| `dmp_template` | optional | Path under `config/dmp-templates/` (no `.md` extension) |
+| `compliance` | optional | Metadata block — recorded for reference, not currently rendered |
+
+> **Note — schema changes from earlier versions:**
+>
+> Older drafts of this doc described a top-level `defaults:` block (per-tier defaults like `self_service` or `security_review_required`).  No such block exists in the current schema — all approval behavior is per-mapping, and tier-level rules live in `tiers.yaml` (e.g. `consultation_required`).  If you have an older config with a `defaults:` block, you can delete it.
 
 ---
 
