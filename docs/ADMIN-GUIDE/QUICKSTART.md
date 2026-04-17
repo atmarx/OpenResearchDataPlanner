@@ -54,7 +54,7 @@ contact:
 
 version: "1.0.0"
 schema_version: "1.0"               # For upgrade compatibility
-last_updated: "2024-01-15"
+last_updated: "2026-04-17"
 ```
 
 If you have a logo, add it to `public/images/logo.svg`.
@@ -72,35 +72,42 @@ tiers:
   - slug: public
     name: "Public"
     short_name: "Public"
-    description: "Non-sensitive, publishable data"
+    sort_order: 1
     color: "green"
+    description: "Non-sensitive, publishable data"
     examples:
       - "Published datasets"
       - "Public domain images"
-    self_service: true
+    consultation_required: false
+    retention_questions_required: false
 
   - slug: internal
     name: "Internal"
     short_name: "Internal"
-    description: "Pre-publication research data"
+    sort_order: 2
     color: "yellow"
+    description: "Pre-publication research data"
     examples:
       - "Unpublished experimental results"
       - "Proprietary methods"
-    self_service: true
+    consultation_required: false
+    retention_questions_required: false
 
   - slug: regulated
     name: "Regulated"
     short_name: "Regulated"
-    description: "PHI, FERPA, PII - requires compliance controls"
+    sort_order: 3
     color: "orange"
+    description: "PHI, FERPA, PII - requires compliance controls"
     examples:
       - "Patient medical records"
       - "Student education records"
     consultation_required: true
-    show_workflow_modal: true
-
-default_tier: internal
+    retention_questions_required: true
+    consultation_message: |
+      Regulated data requires consultation with the
+      Research Security team before provisioning.
+    consultation_contact: "data-security@contoso.edu"
 ```
 
 ---
