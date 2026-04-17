@@ -12,8 +12,9 @@ tiers:
   - slug: standard
     name: "Standard"
     short_name: "Standard"
-    description: "Non-sensitive research data"
+    sort_order: 1
     color: "green"                # UI color: green, yellow, orange, red
+    description: "Non-sensitive research data"
 
     # Examples help users understand what belongs here
     examples:
@@ -23,8 +24,8 @@ tiers:
       - "Non-identifiable survey data"
 
     # Workflow settings
-    self_service: true            # Users can provision without approval
-    consultation_required: false  # No consultation needed
+    consultation_required: false        # No consultation needed
+    retention_questions_required: false # Skip the retention questions step
 
   # -------------------------------------------------------------------------
   # TIER 2: Sensitive / Regulated
@@ -32,8 +33,9 @@ tiers:
   - slug: sensitive
     name: "Sensitive"
     short_name: "Sensitive"
-    description: "PHI, PII, or other regulated data requiring compliance controls"
+    sort_order: 2
     color: "orange"
+    description: "PHI, PII, or other regulated data requiring compliance controls"
 
     examples:
       - "Patient medical records (HIPAA)"
@@ -41,9 +43,9 @@ tiers:
       - "Identifiable human subjects data"
 
     # Workflow settings
-    self_service: false           # Requires RC involvement
-    consultation_required: true   # Must consult before provisioning
-    show_workflow_modal: true     # Show compliance workflow when selected
-
-# Default tier if user doesn't complete questionnaire
-default_tier: standard
+    consultation_required: true        # Show the consultation step before service selection
+    retention_questions_required: true # Ask retention questions for regulated data
+    consultation_message: |
+      Projects with sensitive data require a consultation to verify
+      compliance requirements before provisioning services.
+    consultation_contact: "rc-help@example.edu"

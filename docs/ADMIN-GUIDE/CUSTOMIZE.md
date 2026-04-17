@@ -160,98 +160,104 @@ tiers:
   - slug: L1
     name: "Low (Public Data)"
     short_name: "Low"
-    description: "Public or non-sensitive research data"
-    color: "green"
-    icon: "unlock"
-
-    # What this tier means for users
-    examples:
+    sort_order: 1                   # Display order in the wizard and matrix
+    color: "green"                  # green, yellow, orange, red
+    description: |
+      Public or non-sensitive research data
+    types_of_data:                  # Shown on the tier card
+      - "Public datasets"
+      - "Open source code and models"
+      - "Synthetic or simulated data"
+    examples:                       # Shown on the tier card
       - "Published datasets"
       - "Public domain images"
       - "Non-sensitive simulations"
+    requirements:                   # Shown on the tier card
+      - "Standard university authentication"
+      - "Basic access controls"
+    help_text: |
+      Shown when this tier is selected to help users confirm their choice.
 
     # Workflow implications
-    consultation_required: false
-    security_review_required: false
-    self_service: true
-    typical_provisioning_time: "Same day"
+    consultation_required: false        # Skip the consultation step in the wizard
+    retention_questions_required: false # Skip the retention questions step
 
   - slug: L2
     name: "Medium (Internal Data)"
     short_name: "Medium"
-    description: "Pre-publication research, proprietary methods"
+    sort_order: 2
     color: "yellow"
-    icon: "shield"
-
+    description: |
+      Pre-publication research, proprietary methods
+    types_of_data:
+      - "Pre-publication research data"
+      - "Proprietary analysis methods"
     examples:
       - "Unpublished experimental results"
-      - "Proprietary analysis methods"
       - "Internal collaboration data"
+    requirements:
+      - "University authentication required"
+      - "Project-based access controls"
+    help_text: |
+      Choose this tier if your data has IP value but isn't regulated.
 
     consultation_required: false
-    security_review_required: false
-    self_service: true
-    typical_provisioning_time: "Same day"
+    retention_questions_required: false
 
   - slug: L3
     name: "High (Regulated Data)"
     short_name: "High"
-    description: "PHI, FERPA, PII - requires compliance controls"
+    sort_order: 3
     color: "orange"
-    icon: "shield-check"
-
+    description: |
+      PHI, FERPA, PII - requires compliance controls
+    types_of_data:
+      - "Protected Health Information (PHI)"
+      - "Student education records (FERPA)"
+      - "Personally Identifiable Information (PII)"
     examples:
       - "Patient medical records (HIPAA/PHI)"
       - "Student education records (FERPA)"
       - "Identifiable human subjects data"
+    requirements:
+      - "HIPAA-compliant infrastructure"
+      - "IRB approval documentation"
+      - "Audit logging enabled"
+    help_text: |
+      This tier requires additional retention planning.
 
-    compliance_types:
-      - hipaa
-      - ferpa
-      - pii
-
-    consultation_required: true
-    security_review_required: false  # Usually pre-approved services
-    self_service: false
-    typical_provisioning_time: "3-7 business days"
-
-    # Show workflow explainer modal when selected
-    show_workflow_modal: true
+    consultation_required: false       # Regulated tiers often skip consultation when services are pre-approved
+    retention_questions_required: true # Ask retention questions for regulated data
 
   - slug: L4
     name: "Restricted (Export-Controlled)"
     short_name: "Restricted"
-    description: "ITAR, EAR, CUI - requires dedicated infrastructure"
+    sort_order: 4
     color: "red"
-    icon: "lock"
-
+    description: |
+      ITAR, EAR, CUI - requires dedicated infrastructure
+    types_of_data:
+      - "Controlled Unclassified Information (CUI)"
+      - "ITAR-controlled defense data"
     examples:
       - "Defense research data (ITAR)"
-      - "Controlled Unclassified Information (CUI)"
       - "Export-controlled technology (EAR)"
+    requirements:
+      - "Isolated secure enclave"
+      - "NIST 800-171 compliance"
+      - "US persons only access"
+    help_text: |
+      Projects at this tier require consultation with the security team.
 
-    compliance_types:
-      - itar
-      - ear
-      - cui
-      - nist_800_171
-
-    consultation_required: true
-    security_review_required: true
-    self_service: false
-    typical_provisioning_time: "3-6 weeks"
-
-    show_workflow_modal: true
-
-    # Special warnings
-    warnings:
-      - "Only US persons may access this data"
-      - "Requires dedicated isolated infrastructure"
-      - "Annual recertification required"
-
-# Default tier if user skips questionnaire
-default_tier: L2
+    consultation_required: true       # Forces the wizard to show a consultation step
+    retention_questions_required: true
+    consultation_message: |           # Shown on the consultation step
+      Projects at this tier require a consultation with the Research
+      Security team to determine appropriate controls and budget.
+    consultation_contact: "security@example.edu"
 ```
+
+> **Note on fields:** Only the fields above are read by the app. You may see older example configs with `icon`, `self_service`, `security_review_required`, `typical_provisioning_time`, `show_workflow_modal`, `compliance_types`, `warnings`, or a top-level `default_tier` — none of those are wired into the current Vue components. Adding them won't cause errors, but they won't affect behavior either.
 
 ---
 
