@@ -33,6 +33,7 @@ import {
   Fingerprint,
   RotateCcw
 } from 'lucide-vue-next'
+import { applyAnswerToState } from '@/lib/classifyTier'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
 import DataIdentificationFlow from '@/components/explore/DataIdentificationFlow.vue'
@@ -163,25 +164,13 @@ function selectAnswer(option) {
   // Store answer
   answers.value[currentQuestionId.value] = option.value
 
-  // Apply tier if set — only upgrade, never downgrade
-  if (option.sets_tier) {
-    const TIER_RANK = { low: 1, medium: 2, high: 3, restricted: 4 }
-    const currentRank = TIER_RANK[determinedTier.value] || 0
-    const newRank = TIER_RANK[option.sets_tier] || 0
-    if (newRank > currentRank) {
-      determinedTier.value = option.sets_tier
-    }
-  }
-
-  // Apply flags if set
-  if (option.sets_flags) {
-    flags.value = [...new Set([...flags.value, ...option.sets_flags])]
-  }
-
-  // Clear flags if specified
-  if (option.clears_flags) {
-    flags.value = flags.value.filter(f => !option.clears_flags.includes(f))
-  }
+  // Apply tier + flags using shared pure logic (see src/lib/classifyTier.js)
+  const next = applyAnswerToState(
+    { tier: determinedTier.value, flags: flags.value },
+    option,
+  )
+  determinedTier.value = next.tier
+  flags.value = next.flags
 
   // Navigate to next question
   if (option.next === 'complete') {

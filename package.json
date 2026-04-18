@@ -9,7 +9,9 @@
     "build": "npm run build:config && vite build",
     "build:config": "node scripts/build-config.js",
     "validate:config": "node scripts/build-config.js --validate-only",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",
@@ -28,6 +30,7 @@
     "js-yaml": "^4.1.0",
     "lucide-vue-next": "^0.469.0",
     "tailwindcss": "^4.0.0",
-    "vite": "^6.0.0"
+    "vite": "^6.0.0",
+    "vitest": "^4.1.4"
   }
 }
