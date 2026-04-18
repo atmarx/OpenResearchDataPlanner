@@ -2,7 +2,10 @@
 # MINIMAL CONFIG: services.yaml
 # =============================================================================
 # Three essential services: HPC compute, standard storage, compliant storage.
-# This demonstrates key concepts: tiers, cost models, subsidies.
+# Demonstrates key concepts: cost models, subsidies, estimation UI.
+#
+# Tier availability is set in mappings.yaml, not on the service itself.
+# Every service used in the wizard needs at least one mappings entry.
 # =============================================================================
 
 services:
@@ -14,10 +17,6 @@ services:
     category: compute                       # Must match categories.yaml
 
     description: "CPU compute time on the campus cluster"
-
-    # Which tiers can use this service
-    available_tiers:
-      - standard                            # References slug from tiers.yaml
 
     # Pricing model
     cost_model:
@@ -50,9 +49,6 @@ services:
     category: storage
 
     description: "Shared storage for active research data"
-
-    available_tiers:
-      - standard
 
     # Tiered pricing model
     cost_model:
@@ -93,19 +89,11 @@ services:
 
     description: "Encrypted storage for regulated data (HIPAA, FERPA)"
 
-    available_tiers:
-      - sensitive                           # Only for sensitive tier
-
     cost_model:
       type: unit
       unit: "TB"
       price: 30                             # Higher price for compliance
       billing_period: month
-
-    # Compliance badges
-    compliance:
-      - hipaa
-      - ferpa
 
     estimation:
       unit: "TB"

@@ -114,7 +114,7 @@ tiers:
 
 ## Step 4: Add Your First Services (5 min)
 
-Replace the demo services in `config/services.yaml` with your own. Here's a minimal example:
+Replace the demo services in `config/services.yaml` with your own. Define each service once — tier availability is wired separately in `mappings.yaml`.
 
 ```yaml
 # config/services.yaml
@@ -128,10 +128,6 @@ services:
     name: "HPC Compute"
     category: compute
     description: "Campus cluster compute time"
-
-    available_tiers:
-      - public
-      - internal
 
     cost_model:
       type: unit
@@ -154,10 +150,6 @@ services:
     name: "Research Storage"
     category: storage
     description: "Shared storage for active research"
-
-    available_tiers:
-      - public
-      - internal
 
     cost_model:
       type: tiered
@@ -191,21 +183,45 @@ services:
     category: storage
     description: "Encrypted storage for regulated data"
 
-    available_tiers:
-      - regulated
-
     cost_model:
       type: unit
       unit: "TB"
       price: 25
       billing_period: month
 
-    compliance:
-      - hipaa
-      - baa
-
     documentation_url: "https://storage.contoso.edu/hipaa"
 ```
+
+Now wire each service to the tiers that can use it in `config/mappings.yaml`:
+
+```yaml
+# config/mappings.yaml
+# If a service-tier pair isn't listed here, that service is hidden for that tier.
+
+mappings:
+  - service: hpc-compute
+    tier: public
+    approval: automatic
+
+  - service: hpc-compute
+    tier: internal
+    approval: automatic
+
+  - service: research-storage
+    tier: public
+    approval: automatic
+
+  - service: research-storage
+    tier: internal
+    approval: automatic
+
+  - service: hipaa-storage
+    tier: regulated
+    approval: consultation
+    approval_contact: "data-security@contoso.edu"
+```
+
+See [CUSTOMIZE.md](./CUSTOMIZE.md#mappingsyaml) for optional mapping fields (`notes`, `dmp_template`, `compliance` metadata).
 
 ---
 

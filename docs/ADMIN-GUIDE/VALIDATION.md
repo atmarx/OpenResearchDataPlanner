@@ -1,6 +1,6 @@
 # Validation & Troubleshooting
 
-This guide helps you diagnose and fix configuration errors when `npm run build:config` fails.
+This guide helps you diagnose and fix configuration errors when `npm run build:config` fails, plus common runtime surprises the validator doesn't catch.
 
 ---
 
@@ -10,11 +10,29 @@ This guide helps you diagnose and fix configuration errors when `npm run build:c
 # Validate only (no build)
 npm run validate:config
 
-# Validate and build
+# Validate and build config.json
 npm run build:config
 ```
 
-Validation output shows errors with file locations and suggestions.
+Both commands run the same checks. `validate:config` stops after validation; `build:config` also writes `public/config.json` if validation passes.
+
+---
+
+## What the Validator Checks
+
+The build script enforces **referential integrity** between config files — it makes sure every slug you reference actually exists. It does **not** check YAML schema shape (field types, required fields, enum values). If a required field is missing or a value is malformed, you'll usually see the symptom at runtime in the wizard, not during validation.
+
+| Check | What it catches |
+|-------|-----------------|
+| YAML syntax | Indentation, missing colons, tab/space mixing |
+| Service → category | Services that reference a category slug not in `categories.yaml` |
+| Service archive_option → service | Archive links that point at a nonexistent service |
+| Mapping → service | Mappings for a service that isn't in `services.yaml` |
+| Mapping → tier | Mappings for a tier that isn't in `tiers.yaml` |
+| Mapping → DMP template | `dmp_template` paths that don't have a matching `.md` file |
+| Bundle → service | Bundle items that reference a nonexistent service |
+| Bundle → tier | `recommended_tiers` that reference a nonexistent tier |
+| Retention → tier | `applies_to_tiers` that reference a nonexistent tier |
 
 ---
 
@@ -29,189 +47,76 @@ YAMLException: bad indentation of a mapping entry at line 15, column 3
 
 **Cause:** Incorrect indentation or missing colons.
 
-**Fix:** Check the line number. YAML requires consistent indentation (2 spaces recommended). Common issues:
-- Tabs instead of spaces
+**Fix:** YAML requires consistent indentation (2 spaces recommended). Common issues:
+- Tabs mixed with spaces
 - Inconsistent indentation levels
-- Missing colon after key names
+- Missing colon after a key
 
 ```yaml
-# Wrong
+# Wrong — "name" not aligned under "slug"
 services:
   - slug: my-service
-  name: "My Service"    # Missing proper indentation
+  name: "My Service"
 
 # Right
 services:
   - slug: my-service
-    name: "My Service"  # Aligned under slug
+    name: "My Service"
 ```
 
 ---
 
-### Missing Required Fields
+### Unknown Category
 
 **Error:**
 ```
-ValidationError: services[0] missing required field 'slug'
+Service "hpc-gpu" references unknown category: "gpu-compute"
 ```
 
-**Cause:** A service (or tier, bundle, etc.) is missing a required field.
+**Cause:** The service's `category` field doesn't match any `slug` in `categories.yaml`.
 
-**Required fields by type:**
-
-| Type | Required Fields |
-|------|-----------------|
-| Service | `slug`, `name`, `category`, `available_tiers` |
-| Tier | `slug`, `name`, `description` |
-| Bundle | `slug`, `name`, `services` |
-| Category | `slug`, `name` |
-
-**Fix:** Add the missing field:
+**Fix:** Check spelling (slugs are case-sensitive) and make sure the category exists:
 
 ```yaml
-services:
-  - slug: hpc-compute        # Required
-    name: "HPC Compute"      # Required
-    category: compute        # Required
-    available_tiers:         # Required
-      - public
-      - internal
-    # ... rest of service
-```
-
----
-
-### Invalid Reference
-
-**Error:**
-```
-ValidationError: Service 'hpc-gpu' references unknown category 'gpu-compute'
-```
-
-**Cause:** A service, bundle, or mapping references something that doesn't exist.
-
-**Common reference errors:**
-- Service references non-existent category
-- Bundle references non-existent service slug
-- Mapping references non-existent tier slug
-- Service references non-existent DMP template
-
-**Fix:** Check spelling and ensure the referenced item exists:
-
-```yaml
-# In categories.yaml, verify this exists:
-categories:
-  - slug: compute        # This must match...
-    name: "Compute"
-
-# In services.yaml:
-services:
-  - slug: hpc-gpu
-    category: compute    # ...this reference
-```
-
----
-
-### Comparison Feature Mismatch
-
-**Error:**
-```
-ValidationError: Service 'hpc-gpu' has comparison_feature 'quantum_support'
-not defined in category 'compute'
-```
-
-**Cause:** A service declares a comparison feature that isn't defined in its category.
-
-**Fix:** Either add the feature to the category or remove it from the service:
-
-```yaml
-# Option 1: Add to category (categories.yaml)
+# categories.yaml — verify this slug exists
 categories:
   - slug: compute
-    comparison_features:
-      - key: quantum_support        # Add this
-        label: "Quantum Support"
+    name: "Compute"
 
-# Option 2: Remove from service (services.yaml)
+# services.yaml — must match
 services:
   - slug: hpc-gpu
-    comparison_features:
-      gpu_available:               # Keep valid features
-        value: full
-      # quantum_support: ...       # Remove invalid feature
+    category: compute
 ```
 
 ---
 
-### Invalid comparison_features Value
+### Mapping References Unknown Service or Tier
 
 **Error:**
 ```
-ValidationError: Service 'research-storage' comparison_feature 'snapshots'
-has invalid value 'yes'. Must be 'full', 'partial', or 'none'.
+Mapping references unknown service: "hpc-gpu"
+Mapping references unknown tier: "L3"
 ```
 
-**Cause:** Comparison feature values must be one of three specific strings.
+**Cause:** A `mappings.yaml` entry points at a service or tier slug that doesn't exist.
 
-**Valid values:**
-- `full` - Feature fully available
-- `partial` - Feature available with limitations (add `detail` to explain)
-- `none` - Feature not available
-
-**Fix:**
-```yaml
-comparison_features:
-  snapshots:
-    value: full              # Not "yes", "true", or "available"
-    detail: "Daily, 30-day retention"
-```
-
----
-
-### Duplicate Slugs
-
-**Error:**
-```
-ValidationError: Duplicate service slug 'hpc-compute' found
-```
-
-**Cause:** Two items of the same type have the same slug.
-
-**Fix:** Slugs must be unique within their type. Rename one:
+**Fix:** Most common cause for tier errors is stale slugs from older examples. The current reference uses `low` / `medium` / `high` / `restricted` — not `L1` / `L2` / `L3` / `L4`. Make sure your mapping matches what's actually in `tiers.yaml`:
 
 ```yaml
-services:
-  - slug: hpc-compute-cpu    # Changed from hpc-compute
-    name: "HPC CPU Compute"
+# tiers.yaml
+tiers:
+  - slug: high          # Use this slug...
+    name: "High Risk"
 
-  - slug: hpc-compute-gpu    # Changed from hpc-compute
-    name: "HPC GPU Compute"
+# mappings.yaml
+mappings:
+  - service: hpc-gpu
+    tier: high          # ...here, not "L3"
+    approval: consultation
 ```
 
----
-
-### Invalid Cost Model
-
-**Error:**
-```
-ValidationError: Service 'cloud-aws' has cost_model type 'variable'
-which is not a valid type
-```
-
-**Valid cost model types:**
-- `free` - No cost
-- `unit` - Per-unit pricing (e.g., $0.05/SU)
-- `tiered` - Volume-based pricing tiers
-- `subscription` - Fixed options (e.g., VM sizes)
-- `consultation` - Price varies, requires quote
-- `passthrough` - External billing (e.g., cloud provider)
-
-**Fix:**
-```yaml
-cost_model:
-  type: passthrough          # Use a valid type
-  notes: "AWS pricing + 5% admin fee"
-```
+For service errors, either add the service to `services.yaml` or fix the typo in the mapping.
 
 ---
 
@@ -219,52 +124,109 @@ cost_model:
 
 **Error:**
 ```
-ValidationError: Mapping for service 'cloud-hipaa' tier 'L3' references
-DMP template 'compute/cloud-hipaa' which does not exist
+Mapping "hpc-gpu:high" references missing DMP template: "hpc-gpu/high-risk"
 ```
 
-**Cause:** A mapping specifies a DMP template file that doesn't exist.
+**Cause:** A mapping's `dmp_template` points at a Handlebars file that isn't in `config/dmp-templates/`.
 
-**Fix:** Create the template or update the reference:
+**Fix:** Create the template or drop the reference:
 
 ```bash
-# Create the missing template
-mkdir -p config/dmp-templates/compute
-touch config/dmp-templates/compute/cloud-hipaa.md
+# Create the file (omit .md in the mapping — it's added automatically)
+mkdir -p config/dmp-templates/hpc-gpu
+touch config/dmp-templates/hpc-gpu/high-risk.md
 ```
 
-Or remove the template reference to use the default:
+Or remove the line to use whatever the service falls back to:
 
 ```yaml
 mappings:
-  - service: cloud-hipaa
-    tier: L3
-    approval: automatic
-    # dmp_template: "compute/cloud-hipaa"  # Remove if not needed
+  - service: hpc-gpu
+    tier: high
+    approval: consultation
+    # dmp_template: "hpc-gpu/high-risk"  # Remove if not needed
 ```
 
 ---
 
-### Circular Bundle Reference
+### Bundle References Unknown Service
 
 **Error:**
 ```
-ValidationError: Circular reference detected in bundle 'genomics-complete':
-genomics-complete -> ml-bundle -> genomics-complete
+Bundle "genomics-complete" references unknown service: "hpc-gpu-v100"
 ```
 
-**Cause:** Bundles that include other bundles create a loop.
+**Cause:** A `bundles.yaml` entry lists a `service:` slug that isn't in `services.yaml`.
 
-**Fix:** Remove the circular reference. Bundles should only include services, not other bundles:
+**Fix:** Fix the slug or add the service:
 
 ```yaml
 bundles:
   - slug: genomics-complete
     services:
-      - service: hpc-gpu           # Services only
+      - service: hpc-gpu       # Must exist in services.yaml
       - service: research-storage
-      # - bundle: ml-bundle        # Don't include bundles
 ```
+
+---
+
+### Bundle `recommended_tiers` References Unknown Tier
+
+**Error:**
+```
+Bundle "genomics-complete" references unknown tier in recommended_tiers: "L2"
+```
+
+**Cause:** Same as the mapping case — stale tier slug. Use the slugs that are actually in `tiers.yaml`.
+
+---
+
+### Retention Schedule References Unknown Tier
+
+**Error:**
+```
+Retention schedule "clinical-7yr" references unknown tier: "sensitive"
+```
+
+**Cause:** `applies_to_tiers` on a schedule in `retention.yaml` references a tier that isn't defined.
+
+**Fix:** Align the slug with `tiers.yaml`.
+
+---
+
+## What the Validator *Doesn't* Catch
+
+The build only enforces referential integrity. These issues slip past validation and surface later:
+
+### Missing or typo'd field names
+
+If you write `namee:` instead of `name:`, the build still passes — you'll just see an empty label in the wizard. Same for `slog:` instead of `slug:`. The app generally renders blanks rather than erroring.
+
+**How to notice:** Walk through the wizard after any config change. If a service shows up unnamed, you've got a field typo.
+
+### Invalid enum values
+
+Fields like `cost_model.type` (`free`, `unit`, `tiered`, `subscription`, `consultation`, `passthrough`) and `approval` on mappings (`automatic`, `review`, `consultation`) aren't enum-validated. An unknown value won't break the build; the wizard either renders a blank state or falls through to a default.
+
+**How to notice:** Cost display looks wrong, or approval flow doesn't match what you intended.
+
+### Duplicate slugs
+
+Two services with the same slug won't fail validation. The second entry silently wins (Map-style overwrite during build).
+
+**How to notice:** One of your services seems to be missing from the wizard, or shows the wrong pricing.
+
+### Comparison feature mismatches
+
+The current schema for `comparison_features` on a service expects `full` / `partial` / `none` values. Other strings don't error — they just don't render a badge.
+
+### Circular bundle references
+
+Bundles should only reference services, never other bundles. The validator doesn't enforce this; nesting bundles won't break the build but also isn't supported.
+
+### Ghost fields
+
+Older examples in the wild may show fields like `available_tiers` (on services), `self_service`, `show_workflow_modal`, `security_review_required`, `default_tier`, or service-level `compliance`. These are legacy no-ops — the app doesn't read them. They won't error, they just don't do anything. If you see them in your config, they're safe to delete. The current reference config (`config/` in the repo) shows which fields are actually wired up.
 
 ---
 
@@ -272,11 +234,16 @@ bundles:
 
 When validation fails:
 
-1. **Read the error message carefully** - it usually tells you the file, line, and problem
-2. **Check YAML syntax** - use a YAML linter or online validator
-3. **Verify references exist** - slugs must match exactly (case-sensitive)
-4. **Check required fields** - see table above
-5. **Validate incrementally** - if adding many items, add one at a time
+1. **Read the error message** — it names the file, the offending slug, and what's missing.
+2. **Check slug spelling** — slugs are case-sensitive and have to match exactly.
+3. **Verify the referenced item exists** — open the target YAML and confirm the slug is there.
+4. **Validate incrementally** — if you're adding many items, add one at a time so errors are easy to attribute.
+
+When the build passes but the wizard looks wrong:
+
+1. **Walk through the wizard manually** — missing names, misrouted approvals, and duplicate-slug shadowing all show up here.
+2. **Check the browser console** for runtime warnings.
+3. **Compare against `config/` in the repo** — the reference config is the source of truth for which fields are wired up.
 
 ---
 
@@ -284,12 +251,12 @@ When validation fails:
 
 ### Use a Linter
 
-Install a YAML extension in your editor (VS Code, vim, etc.) for real-time syntax checking.
+Install a YAML extension in your editor (VS Code, vim, etc.) for real-time syntax checking. It'll catch indentation and colon issues before you run the build.
 
 ### Quote Strings with Special Characters
 
 ```yaml
-# Might cause issues
+# Might cause issues — unquoted colon
 description: Price: $10/month
 
 # Safe
@@ -304,7 +271,7 @@ long_description: |
   This is line one.
   This is line two.
 
-# Folded block (joins lines)
+# Folded block (joins lines with spaces)
 long_description: >
   This will all be
   on one line.
@@ -323,9 +290,10 @@ slug: my-service  # Inline comment
 
 If you're stuck:
 
-1. Check [CUSTOMIZE.md](./CUSTOMIZE.md) for the full schema documentation
-2. Look at [examples/minimal-config/](./examples/minimal-config/) for a working reference
-3. Open a GitHub issue with:
+1. Check [CUSTOMIZE.md](./CUSTOMIZE.md) for field-by-field schema documentation.
+2. Look at [examples/minimal-config/](./examples/minimal-config/) for a minimal working reference.
+3. Compare your config to `config/` in the repo root — that's the live Northwinds reference.
+4. Open a GitHub issue with:
    - The full error message
    - The relevant YAML section
    - What you were trying to do
