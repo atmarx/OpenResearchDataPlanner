@@ -398,844 +398,268 @@ categories:
 
 ### services.yaml
 
-Complete service definitions including pricing, tier availability, and comparison features.
+Service definitions — pricing, estimation UI, and comparison-matrix feature values.
+
+**Tier availability is NOT defined here** — it's configured in `mappings.yaml` (see below). That separation lets you add a service once and control which tiers see it from a single file.
 
 ```yaml
 # config/services.yaml
 
 services:
   # ============================================================
-  # COMPUTE SERVICES
+  # Tiered-pricing unit service (per-unit rate, volume discounts)
   # ============================================================
 
-  - slug: hpc-free-tier
-    name: "HPC Free Tier"
-    category: compute
-
-    description: "No-cost introduction to HPC with limited resources"
+  - slug: hpc-compute
+    fa_exempt: true                              # Optional — internal service center flag (metadata, not yet rendered)
+    name: "HPC Compute (CPU)"
+    category: compute                            # Must match a category slug in categories.yaml
+    description: "CPU compute on SLURM cluster for batch workloads"
     long_description: |
-      Perfect for learning HPC basics, testing workflows, or small analyses.
-      Includes 100 GPU-hours and 10,000 CPU-hours per year at no cost.
+      CPU-focused compute on our SLURM-managed HPC cluster. Supports
+      genomics pipelines, data processing, and parallel workloads.
+      Billed per core-hour with tiered volume discounts.
+    documentation_url: "https://docs.rc.northwinds.edu/hpc"
 
-    # Tier availability (which data tiers can use this service)
-    available_tiers:
-      - L1
-      - L2
-
-    # Cost model
-    cost_model:
-      type: free
-      notes: "No cost - included with university affiliation"
-
-    # Limits for free tier
-    limits:
-      cpu_hours_per_year: 10000
-      gpu_hours_per_year: 100
-      max_concurrent_jobs: 2
-      max_job_duration_hours: 24
-
-    # Estimation UI
-    estimation:
-      unit: "SU"
-      prompt: "How many Service Units do you need?"
-      default_value: 5000
-      help_calculator: "cpu"  # Opens Help Me Estimate on CPU tab
-
-    # Comparison features (matches keys from categories.yaml)
-    # Each feature has a 'value' and optional 'detail':
-    #   - value: "full"    = Feature fully available (green checkmark)
-    #   - value: "partial" = Available with limitations (yellow, show detail)
-    #   - value: "none"    = Not available (red X)
+    # Comparison-matrix feature values (keys must match categories.yaml features)
+    # Each feature: value ∈ {full, partial, none}, plus optional detail string
     comparison_features:
       gpu_available:
-        value: partial
-        detail: "100 GPU-hours/year included"
+        value: none
+        detail: "CPU-only; see HPC GPU"
       batch_jobs:
         value: full
       interactive:
         value: partial
-        detail: "2-hour interactive limit"
-      auto_scaling:
-        value: none
-        detail: "Queue-based scheduling"
+        detail: "4-hour interactive limit"
       cost_predictable:
         value: full
-        detail: "Always free"
-      beginner_friendly:
-        value: partial
-        detail: "Requires SLURM basics"
-      high_tier_data:
-        value: none
-        detail: "L1/L2 only"
-      free_tier:
-        value: full
-
-    # Links
-    documentation_url: "https://docs.rc.northwinds.edu/hpc/free-tier"
-    request_url: "https://rc.northwinds.edu/request/hpc-free"
-
-    # Tags for filtering
-    tags:
-      - free
-      - beginner
-      - hpc
-
-  - slug: hpc-standard
-    name: "HPC Standard (CPU)"
-    category: compute
-
-    description: "Production CPU compute on the campus cluster"
-    long_description: |
-      Full access to the campus HPC cluster for CPU-based workloads.
-      Supports multi-node MPI jobs, large memory nodes, and long-running
-      batch jobs. Billed per Service Unit (1 SU = 1 core-hour).
-
-    available_tiers:
-      - L1
-      - L2
+        detail: "Tiered per-SU pricing"
 
     cost_model:
-      type: unit
-      unit: "SU"
-      price: 0.08
-      billing_period: usage
-      minimum_purchase: 1000
-      bulk_discounts:
-        - threshold: 100000
-          price: 0.07
-        - threshold: 500000
+      type: tiered                               # "unit" | "tiered" | "consultation"
+      unit: "core-hour"                          # Internal unit identifier
+      unit_label: "CPU Core Hour"                # Display label (shown in UI)
+      tiers:
+        - up_to: 10000                           # Rate applies up to this quantity
+          price: 0.08
+          label: "Standard"
+        - up_to: 100000
           price: 0.06
+          label: "Volume"
+        - up_to: null                            # null = unbounded top tier
+          price: 0.04
+          label: "High Volume"
+
+    subsidies: []                                # No auto-applied subsidies
+    archive_option: null                         # No paired archive service
+
+    # Optional cross-sell (metadata, not yet rendered in wizard)
+    recommended_with:
+      - service: hpc-storage
+        reason: "Persistent storage required — BeeGFS scratch is ephemeral"
 
     estimation:
-      unit: "SU"
-      prompt: "How many Service Units do you need per year?"
-      default_value: 50000
+      prompt: "How many CPU core-hours do you expect per month?"
+      default_value: 10000
       min_value: 1000
+      max_value: 1000000
+      step: 1000
       presets:
-        - label: "Small project"
-          value: 10000
-          description: "~10 genome alignments"
-        - label: "Medium project"
+        - label: "Light"
+          value: 5000
+          description: "Small jobs, occasional use"
+        - label: "Moderate"
+          value: 25000
+          description: "Regular multi-node jobs"
+        - label: "Heavy"
           value: 100000
-          description: "Typical funded project"
-        - label: "Large project"
-          value: 500000
-          description: "Large-scale simulations"
-      help_calculator: "cpu"
+          description: "Continuous large-scale workloads"
+
+  # ============================================================
+  # Flat unit-rate service with paired archive + auto subsidy
+  # ============================================================
+
+  - slug: research-storage
+    fa_exempt: true
+    name: "Research Storage"
+    category: storage
+    description: "Shared storage for active research data (parallel filesystem)"
+    long_description: |
+      GPFS-based parallel filesystem mounted on HPC cluster and available
+      via Globus. Includes daily snapshots with 30-day retention.
+    documentation_url: "https://docs.rc.northwinds.edu/storage/research"
 
     comparison_features:
-      gpu_available:
-        value: none
-        detail: "CPU only; see HPC GPU"
-      batch_jobs:
+      hpc_mounted:
         value: full
-      interactive:
-        value: partial
-        detail: "4-hour interactive limit"
-      auto_scaling:
-        value: none
-        detail: "Queue-based scheduling"
-      cost_predictable:
+      snapshots:
         value: full
-        detail: "$0.08/SU"
-      beginner_friendly:
-        value: partial
-        detail: "Requires SLURM knowledge"
-      high_tier_data:
-        value: none
-        detail: "L1/L2 only"
-      free_tier:
-        value: none
-        detail: "See HPC Free Tier"
-
-    documentation_url: "https://docs.rc.northwinds.edu/hpc/standard"
-    request_url: "https://rc.northwinds.edu/request/hpc"
-
-    tags:
-      - hpc
-      - cpu
-      - batch
-
-  - slug: hpc-gpu
-    name: "HPC GPU"
-    category: compute
-
-    description: "GPU-accelerated compute on NVIDIA V100 GPUs"
-    long_description: |
-      Access to NVIDIA V100 GPUs (32GB HBM2) for machine learning,
-      deep learning, and GPU-accelerated simulations. Supports CUDA,
-      cuDNN, and common ML frameworks.
-
-    available_tiers:
-      - L1
-      - L2
+        detail: "Daily, 30-day retention"
 
     cost_model:
       type: unit
-      unit: "GPU-hour"
-      price: 0.35
-      billing_period: usage
+      unit: "TB"
+      unit_label: "TB"
+      price: 5.00                                # Flat monthly rate per unit
+
+    # Auto-applied subsidy — reduces billable units
+    subsidies:
+      auto_apply: true
+      free_units: 1                              # First 1 TB free
+      label: "Base Allocation (1 TB free)"
+
+    # Pair this service with an archive service (shown as "also archive?" in wizard)
+    archive_option:
+      service_slug: archive-storage              # Must match another service's slug
+      description: "Archive cold data to tape for long-term retention"
 
     estimation:
-      unit: "GPU-hours"
-      prompt: "How many GPU-hours do you need per year?"
-      default_value: 1000
-      help_calculator: "gpu"
+      prompt: "How much active storage do you need?"
+      default_value: 5
+      min_value: 1
+      max_value: 500
+      step: 1
 
-    comparison_features:
-      gpu_available:
-        value: full
-        detail: "NVIDIA V100 32GB"
-      batch_jobs:
-        value: full
-      interactive:
-        value: partial
-        detail: "4-hour interactive limit"
-      auto_scaling:
-        value: none
-      cost_predictable:
-        value: full
-        detail: "$0.35/GPU-hour"
-      beginner_friendly:
-        value: partial
-        detail: "Requires SLURM + CUDA"
-      high_tier_data:
-        value: none
-      free_tier:
-        value: none
-        detail: "See HPC Free Tier"
-
-    documentation_url: "https://docs.rc.northwinds.edu/hpc/gpu"
-
-    tags:
-      - hpc
-      - gpu
-      - ml
-
-  - slug: cloud-aws-standard
-    name: "AWS Research Cloud (Standard)"
-    category: compute
-
-    description: "Self-service AWS access for L1/L2 workloads"
-    long_description: |
-      Managed AWS account with pre-configured security controls,
-      cost guardrails, and streamlined billing through the university.
-      Supports EC2, S3, Lambda, and most AWS services.
-
-    available_tiers:
-      - L1
-      - L2
-
-    cost_model:
-      type: passthrough
-      notes: "AWS pricing + 5% admin fee"
-      billing_period: month
-      typical_monthly:
-        small: 100
-        medium: 500
-        large: 2000
-
-    estimation:
-      unit: "$/month"
-      prompt: "Estimated monthly AWS spend?"
-      default_value: 500
-      presets:
-        - label: "Development"
-          value: 100
-        - label: "Production"
-          value: 1000
-        - label: "Large scale"
-          value: 5000
-
-    comparison_features:
-      gpu_available:
-        value: full
-        detail: "P3, P4, G4 instances"
-      batch_jobs:
-        value: partial
-        detail: "Via AWS Batch"
-      interactive:
-        value: full
-        detail: "SSH, SSM, web consoles"
-      auto_scaling:
-        value: full
-        detail: "Native ASG support"
-      cost_predictable:
-        value: none
-        detail: "Variable; use budgets"
-      beginner_friendly:
-        value: none
-        detail: "AWS expertise required"
-      high_tier_data:
-        value: none
-        detail: "See AWS High-Security"
-      free_tier:
-        value: none
-
-    documentation_url: "https://docs.rc.northwinds.edu/cloud/aws"
-
-    tags:
-      - cloud
-      - aws
-      - flexible
+  # ============================================================
+  # Consultation service (no self-service price, contact required)
+  # ============================================================
 
   - slug: cloud-high-security
     name: "Cloud High-Security (HIPAA/PHI)"
     category: compute
-
     description: "HIPAA-compliant cloud environment for regulated data"
     long_description: |
-      Fully managed cloud environment with HIPAA BAA, encryption at rest,
-      audit logging, and compliance controls pre-configured. Supports
-      AWS and Azure backends.
-
-    available_tiers:
-      - L3
-
-    cost_model:
-      type: consultation
-      notes: "Pricing varies by requirements; contact for quote"
-      typical_monthly:
-        small: 500
-        medium: 2000
-        large: 10000
+      Managed cloud environment with BAA, encryption at rest, audit logging,
+      and compliance controls. Pricing varies by requirements — contact for quote.
+    documentation_url: "https://docs.rc.northwinds.edu/cloud/high-security"
 
     comparison_features:
-      gpu_available:
-        value: full
-        detail: "With approval"
-      batch_jobs:
-        value: full
-      interactive:
-        value: full
-      auto_scaling:
-        value: full
-      cost_predictable:
-        value: partial
-        detail: "Depends on usage"
-      beginner_friendly:
-        value: partial
-        detail: "Managed by RC"
       high_tier_data:
         value: full
         detail: "HIPAA BAA in place"
-      free_tier:
-        value: none
-
-    # Compliance badges
-    compliance:
-      - hipaa
-      - baa
-
-    documentation_url: "https://docs.rc.northwinds.edu/cloud/high-security"
-
-    tags:
-      - cloud
-      - hipaa
-      - compliant
-
-  # ============================================================
-  # STORAGE SERVICES
-  # ============================================================
-
-  - slug: research-storage
-    name: "Research Storage"
-    category: storage
-
-    description: "High-performance shared storage for active research data"
-    long_description: |
-      GPFS-based parallel filesystem mounted on HPC cluster and available
-      via Globus. Includes daily snapshots with 30-day retention.
-
-    available_tiers:
-      - L1
-      - L2
-
-    cost_model:
-      type: tiered
-      unit: "TB"
-      billing_period: month
-      tiers:
-        - up_to: 1
-          price: 0
-          note: "First 1 TB free"
-        - up_to: 10
-          price: 5
-        - up_to: 100
-          price: 4
-        - above: 100
-          price: 3
-
-    # Subsidies that auto-apply
-    subsidies:
-      - slug: base-allocation
-        name: "Base Allocation"
-        description: "First 1 TB included at no cost"
-        discount_type: free_units
-        discount_value: 1
-        auto_apply: true
-
-    estimation:
-      unit: "TB"
-      prompt: "How much active storage do you need?"
-      default_value: 5
-      help_calculator: "storage"
-
-    comparison_features:
-      hpc_mounted:
-        value: full
-        detail: "Direct HPC access"
-      high_throughput:
-        value: full
-        detail: "Parallel filesystem"
-      snapshots:
-        value: full
-        detail: "Daily, 30-day retention"
-      collaboration:
-        value: full
-        detail: "Unix groups"
-      external_sharing:
-        value: partial
-        detail: "Via Globus"
-      large_files:
-        value: full
-        detail: "No file size limit"
-      high_tier_data:
-        value: none
-        detail: "L1/L2 only"
-      free_allocation:
-        value: full
-        detail: "1 TB free"
-
-    documentation_url: "https://docs.rc.northwinds.edu/storage/research"
-
-    tags:
-      - storage
-      - hpc
-      - active
-
-  - slug: archive-storage
-    name: "Archive Storage"
-    category: storage
-
-    description: "Low-cost cold storage for long-term data retention"
-    long_description: |
-      Tape-backed archive for data you need to keep but rarely access.
-      Ideal for grant retention requirements. Retrieval takes 4-24 hours.
-
-    available_tiers:
-      - L1
-      - L2
-
-    cost_model:
-      type: unit
-      unit: "TB"
-      price: 1.50
-      billing_period: month
-      notes: "Plus $0.50/TB retrieval fee"
-
-    estimation:
-      unit: "TB"
-      prompt: "How much archive storage do you need?"
-      default_value: 10
-
-    comparison_features:
-      hpc_mounted:
-        value: none
-        detail: "Retrieval required"
-      high_throughput:
-        value: none
-        detail: "4-24 hour retrieval"
-      snapshots:
-        value: none
-      collaboration:
-        value: partial
-      external_sharing:
-        value: none
-      large_files:
-        value: full
-      high_tier_data:
-        value: none
-      free_allocation:
-        value: none
-
-    documentation_url: "https://docs.rc.northwinds.edu/storage/archive"
-
-    tags:
-      - storage
-      - archive
-      - cold
-
-  # ============================================================
-  # ENVIRONMENT SERVICES
-  # ============================================================
-
-  - slug: vdi-standard
-    name: "Virtual Desktop (Standard)"
-    category: environment
-
-    description: "Persistent Windows or Linux desktop VM"
-    long_description: |
-      Dedicated virtual machine with full desktop environment.
-      Pre-installed with common research software. Access from
-      anywhere via web browser.
-
-    available_tiers:
-      - L1
-      - L2
-
-    cost_model:
-      type: subscription
-      billing_period: month
-      options:
-        - name: "Standard"
-          specs: "4 vCPU, 16 GB RAM, 100 GB SSD"
-          price: 50
-        - name: "Performance"
-          specs: "8 vCPU, 32 GB RAM, 250 GB SSD"
-          price: 100
-        - name: "High Memory"
-          specs: "8 vCPU, 64 GB RAM, 500 GB SSD"
-          price: 175
-
-    estimation:
-      unit: "VMs"
-      prompt: "How many virtual desktops do you need?"
-      default_value: 1
-
-    comparison_features:
-      dedicated_resources:
-        value: full
-      gui_desktop:
-        value: full
-        detail: "Windows or Linux"
-      web_accessible:
-        value: full
-        detail: "Browser-based access"
-      admin_control:
-        value: partial
-        detail: "Install user software"
-      high_tier_data:
-        value: none
-        detail: "See VDI HIPAA"
-      scalable:
-        value: partial
-        detail: "Resize with downtime"
-      preconfigured_software:
-        value: full
-        detail: "MATLAB, R, Python, etc."
       cost_predictable:
-        value: full
-        detail: "$50-175/month"
-
-    documentation_url: "https://docs.rc.northwinds.edu/vdi/standard"
-
-    tags:
-      - vdi
-      - desktop
-      - gui
-
-  - slug: vdi-hipaa
-    name: "Virtual Desktop (HIPAA)"
-    category: environment
-
-    description: "HIPAA-compliant virtual desktop for regulated data"
-
-    available_tiers:
-      - L3
+        value: partial
+        detail: "Depends on usage"
 
     cost_model:
-      type: subscription
-      billing_period: month
-      options:
-        - name: "Standard"
-          specs: "4 vCPU, 16 GB RAM, 100 GB encrypted SSD"
-          price: 100
-        - name: "Performance"
-          specs: "8 vCPU, 32 GB RAM, 250 GB encrypted SSD"
-          price: 175
+      type: consultation                         # Signals "contact sales" — no estimate UI
+      unit_label: "Consultation"
 
-    comparison_features:
-      dedicated_resources:
-        value: full
-      gui_desktop:
-        value: full
-      web_accessible:
-        value: full
-        detail: "MFA required"
-      admin_control:
-        value: partial
-        detail: "Approved software only"
-      high_tier_data:
-        value: full
-        detail: "HIPAA compliant"
-      scalable:
-        value: partial
-      preconfigured_software:
-        value: full
-      cost_predictable:
-        value: full
-
-    compliance:
-      - hipaa
-      - baa
-
-    documentation_url: "https://docs.rc.northwinds.edu/vdi/hipaa"
-
-    tags:
-      - vdi
-      - hipaa
-      - compliant
-
-  # ============================================================
-  # EXTERNAL/NATIONAL RESOURCES
-  # ============================================================
-
-  - slug: access-explore
-    name: "ACCESS Explore"
-    category: external
-
-    description: "Auto-approved 400K credits for trying ACCESS systems"
-    long_description: |
-      No-cost compute on national supercomputers through NSF's ACCESS
-      program. Explore allocations are auto-approved within 1 business
-      day - perfect for testing workflows before requesting larger
-      allocations.
-
-    available_tiers:
-      - L1
-      - L2
-
-    cost_model:
-      type: free
-      notes: "Funded by NSF - no cost to researchers"
-
-    limits:
-      credits: 400000
-      duration_months: 12
-      renewable: true
-
-    estimation:
-      unit: "ACCESS credits"
-      prompt: "How many ACCESS credits do you need?"
-      default_value: 400000
-      help_text: "1 credit ≈ 1 CPU-hour on standard systems"
-
-    comparison_features:
-      free_nsf:
-        value: full
-        detail: "No cost"
-      merit_based:
-        value: none
-        detail: "Auto-approved"
-      national_scale:
-        value: partial
-        detail: "Smaller systems"
-      gpu_available:
-        value: partial
-        detail: "Limited GPU access"
-      large_scale:
-        value: none
-        detail: "See ACCESS Discover"
-      beginner_friendly:
-        value: full
-        detail: "1-day approval"
-
-    external_url: "https://allocations.access-ci.org/"
-    documentation_url: "https://docs.rc.northwinds.edu/access/explore"
-
-    tags:
-      - access
-      - free
-      - national
-
-  - slug: access-discover
-    name: "ACCESS Discover"
-    category: external
-
-    description: "Up to 1.5M credits with short justification"
-
-    available_tiers:
-      - L1
-      - L2
-
-    cost_model:
-      type: free
-      notes: "Funded by NSF - requires brief application"
-
-    limits:
-      credits: 1500000
-      duration_months: 12
-
-    comparison_features:
-      free_nsf:
-        value: full
-      merit_based:
-        value: partial
-        detail: "1-page justification"
-      national_scale:
-        value: full
-        detail: "Frontera, Delta, etc."
-      gpu_available:
-        value: full
-        detail: "A100, H100 GPUs"
-      large_scale:
-        value: partial
-      beginner_friendly:
-        value: partial
-        detail: "~1 week approval"
-
-    external_url: "https://allocations.access-ci.org/"
-
-    tags:
-      - access
-      - free
-      - national
+    subsidies: []
+    archive_option: null
+    estimation: null                             # No estimator for consultation services
 ```
+
+**Schema reference — which fields the app consumes:**
+
+| Field | Required | Consumed by |
+|-------|----------|-------------|
+| `slug` | ✅ | All components (identifier) |
+| `name` | ✅ | Wizard + explore pages |
+| `category` | ✅ | Groups services in wizard; links to `categories.yaml` |
+| `description` | ✅ | Service cards, DMP |
+| `long_description` | recommended | Service cards, comparison modal |
+| `documentation_url` | recommended | Service cards |
+| `comparison_features` | recommended | `CompareModal` and `ServiceMatrix` (keys must match `categories.yaml`) |
+| `cost_model.type` | ✅ | `"unit"`, `"tiered"`, or `"consultation"` |
+| `cost_model.unit_label` | ✅ | Display label throughout UI |
+| `cost_model.price` | unit only | `ResultsStep`, `slateStore`, `useDMPGenerator` |
+| `cost_model.tiers[].up_to/price/label` | tiered only | Same — tiered cost calculation |
+| `subsidies.auto_apply/free_units` | optional | `slateStore` auto-applies to billable units |
+| `archive_option.service_slug/description` | optional | `EstimateStep` surfaces paired archive prompt |
+| `estimation.prompt/default_value/min_value/max_value/step/presets` | optional | `EstimateStep` UI |
+
+**Fields defined in config but not currently rendered** (recorded for reference, reserved for future work):
+
+- `fa_exempt` — used in real configs to flag internal service centers (F&A-exempt). Not read by the wizard yet.
+- `recommended_with` — planned cross-sell prompt ("pair storage with compute"). Defined but not surfaced.
+- `cost_model.billing_period`, `cost_model.unit_description`, `cost_model.note` — metadata honored by configs but not consumed by the wizard today.
+
+**Removed legacy fields** — if you're migrating an older `services.yaml`, these are no-ops and can be deleted:
+
+- `available_tiers:` — tier availability is now in `mappings.yaml` (see below)
+- `limits:` — never consumed by the wizard
+- `estimation.help_calculator`, `estimation.unit`, `estimation.help_text` — not read on services (calculators are launched separately; `cost_model.unit_label` drives display)
+- `tags:` — only consumed on software entries, not services
+- `external_url:`, `request_url:` — not read
+- `compliance:` (per-service) — compliance metadata lives on `mappings.yaml` entries
+- `cost_model.typical_monthly`, `cost_model.options`, `cost_model.minimum_purchase`, `cost_model.bulk_discounts` — not read (use `tiered` cost model for volume discounts)
 
 ---
 
 ### bundles.yaml
 
-Pre-configured service combinations for common use cases.
+Pre-selected service combinations researchers can apply in one click.  Bundles are shown on the service-selection step and filtered by the researcher's tier — a bundle is "recommended" if its `recommended_tiers` list includes the selected tier, "available" if every service it references is allowed for that tier, and hidden otherwise.
 
 ```yaml
 # config/bundles.yaml
 
 bundles:
-  - slug: hpc-starter
-    name: "HPC Starter"
-    description: "Everything you need to start using HPC"
-    icon: "rocket"
+  - slug: genomics-pipeline
+    name: "Genomics Pipeline"
+    description: |
+      Standard setup for genomics and bioinformatics workflows: HPC compute
+      for alignment/analysis, high-capacity storage for sequence data, and
+      Globus for data transfer from sequencing cores.
 
-    # Who this is for
-    recommended_for:
-      - "New HPC users"
-      - "Testing workflows"
-      - "Small analyses"
-
-    # Which tiers this bundle works with
+    # Tier slugs from tiers.yaml (use lowercase slugs — low, medium, high, restricted)
     recommended_tiers:
-      - L1
-      - L2
+      - low
+      - medium
 
-    # Services included
+    # Each item references a service slug and the starting estimate applied
+    # when the researcher clicks "Apply Bundle"
     services:
-      - service: hpc-free-tier
-        default_estimate: 5000
-        required: true
-      - service: research-storage
-        default_estimate: 1
-        required: true
+      - service: hpc-compute
+        default_estimate: 50000
+      - service: hpc-storage
+        default_estimate: 100
+      - service: globus-transfer
+        default_estimate: 20
 
-    # Estimated total cost
-    estimated_monthly_cost: 0
-
-    # Next steps after selection
-    onboarding_steps:
-      - "Complete HPC orientation (30 min online)"
-      - "Request cluster account"
-      - "Transfer first dataset"
-
-  - slug: ml-research
-    name: "Machine Learning Research"
-    description: "GPU compute and storage for ML projects"
-    icon: "brain"
-
-    recommended_for:
-      - "Deep learning training"
-      - "Computer vision"
-      - "NLP research"
+  - slug: ml-training
+    name: "ML/AI Model Training"
+    description: "GPU compute and fast storage for training machine-learning models."
 
     recommended_tiers:
-      - L1
-      - L2
+      - low
+      - medium
 
     services:
       - service: hpc-gpu
-        default_estimate: 2000
-        required: true
-      - service: research-storage
-        default_estimate: 10
-        required: true
-      - service: archive-storage
-        default_estimate: 20
-        required: false
-
-    estimated_monthly_cost: 750
-
-    onboarding_steps:
-      - "Complete GPU computing workshop"
-      - "Set up Conda environment"
-      - "Configure Weights & Biases integration"
+        default_estimate: 500
+      - service: hpc-storage
+        default_estimate: 50
 
   - slug: clinical-research
     name: "Clinical Research (HIPAA)"
-    description: "Compliant infrastructure for patient data"
-    icon: "heart-pulse"
-
-    recommended_for:
-      - "Clinical trials"
-      - "Patient data analysis"
-      - "Health informatics"
+    description: "HIPAA-compliant compute and storage for identifiable health data."
 
     recommended_tiers:
-      - L3
-
-    requires_consultation: true
+      - high
 
     services:
-      - service: cloud-high-security
-        required: true
+      - service: cloud-high-security          # cost_model.type: consultation — no estimate
       - service: vdi-hipaa
         default_estimate: 2
-        required: true
-
-    estimated_monthly_cost: "Contact for quote"
-
-    compliance_notes:
-      - "HIPAA BAA required"
-      - "Security review within 1 week"
-      - "Annual compliance training required"
-
-    onboarding_steps:
-      - "Schedule compliance consultation"
-      - "Complete HIPAA training"
-      - "Sign data use agreement"
-      - "Receive environment credentials"
-
-  - slug: national-scale
-    name: "National Scale Computing"
-    description: "ACCESS allocations for large-scale research"
-    icon: "globe"
-
-    recommended_for:
-      - "Large simulations"
-      - "Big data analysis"
-      - "Multi-institution collaborations"
-
-    recommended_tiers:
-      - L1
-      - L2
-
-    services:
-      - service: access-explore
-        required: true
-        note: "Start here to test workflows"
-      - service: access-discover
-        required: false
-        note: "Apply after validating on Explore"
-      - service: research-storage
-        default_estimate: 5
-        note: "For staging data"
-
-    estimated_monthly_cost: 25
-
-    onboarding_steps:
-      - "Register for ACCESS account"
-      - "Submit Explore allocation request"
-      - "Set up Globus for data transfer"
 ```
+
+**Schema reference — bundles:**
+
+| Field | Required | Notes |
+|-------|----------|-------|
+| `slug` | ✅ | Identifier |
+| `name` | ✅ | Display |
+| `description` | ✅ | Shown on the bundle card (Markdown supported via `AnnotatedText`) |
+| `recommended_tiers` | ✅ | Array of tier slugs from `tiers.yaml` (lowercase: `low`, `medium`, `high`, `restricted`) |
+| `services[].service` | ✅ | Service slug from `services.yaml` |
+| `services[].default_estimate` | optional | Initial quantity applied to the service; omit for consultation services |
+
+**Not read by the wizard** (if you have these in an older `bundles.yaml`, they're no-ops — safe to remove):
+
+- `icon`, `recommended_for`, `estimated_monthly_cost`, `onboarding_steps`, `compliance_notes`, `requires_consultation`
+- `services[].required`, `services[].note`
 
 ---
 
