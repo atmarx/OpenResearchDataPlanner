@@ -50,9 +50,8 @@ describe('tier questionnaire — priority paths (V1.0 regression guards)', () =>
   })
 
   it('Clean: no sensitive data, no gov funding → null (no tier set)', () => {
-    // The questionnaire never assigns a default "low" — an all-no path returns null
-    // and the Vue component relies on the intro quick-select (or tier-table) for
-    // the explicit "low" choice. Documenting actual behavior here.
+    // The classifier returns null for a no-gates path — no YAML rule ever assigns "low".
+    // TierQuestionnaire.vue defaults null → "low" at complete (the UI layer concern).
     const { tier, flags } = run({
       human_subjects: false,
       biological_samples: false,
@@ -66,12 +65,10 @@ describe('tier questionnaire — priority paths (V1.0 regression guards)', () =>
 })
 
 describe('tier questionnaire — health data paths', () => {
-  it('De-identified health data → tier stays high, flags cleared', () => {
-    // DESIGN QUIRK: health_data="Yes" sets_tier: high before identifiable is asked.
-    // identifiable="deidentified" then sets_tier: medium + clears_flags: [hipaa, phi],
-    // but the upgrade-only rank logic means tier stays 'high'. Flags DO clear.
-    // Net: tier=high but no phi/hipaa flags — the YAML's intent ("medium") can't win
-    // against the parent question's upgrade. Flagging this inconsistency to xram/piper.
+  it('De-identified health data (Safe Harbor) → medium, flags cleared', () => {
+    // health_data="Yes" sets hipaa+phi flags but no tier (removed sets_tier:high per xram).
+    // identifiable="deidentified" then sets_tier: medium + clears_flags: [hipaa, phi].
+    // Net: tier=medium, no flags — honors the YAML's intent for Safe Harbor de-identification.
     const { tier, flags } = run({
       human_subjects: true,
       health_data: true,
@@ -81,7 +78,7 @@ describe('tier questionnaire — health data paths', () => {
       export_control: false,
       proprietary_check: false,
     })
-    expect(tier).toBe('high')
+    expect(tier).toBe('medium')
     expect(flags).not.toContain('phi')
     expect(flags).not.toContain('hipaa')
   })

@@ -248,7 +248,6 @@ questions:
         next: student_data
       - label: "Yes"
         value: true
-        sets_tier: high
         sets_flags:
           - hipaa
           - phi

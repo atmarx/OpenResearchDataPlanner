@@ -174,6 +174,7 @@ function selectAnswer(option) {
 
   // Navigate to next question
   if (option.next === 'complete') {
+    if (!determinedTier.value) determinedTier.value = 'low'
     currentQuestionId.value = 'complete'
   } else if (option.next) {
     currentQuestionId.value = option.next
