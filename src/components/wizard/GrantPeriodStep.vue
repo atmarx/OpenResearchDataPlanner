@@ -20,8 +20,18 @@ const presets = [
 const selectedPreset = ref(null)
 
 // Local state for inputs
-const startDate = ref(sessionStore.session.grant_period.start_date || getTodayString())
+const startDate = ref(sessionStore.session.grant_period.start_date || '')
 const endDate = ref(sessionStore.session.grant_period.end_date || '')
+
+// True when user has explicitly skipped dates (or has never entered any)
+const noDates = computed(() => !startDate.value && !endDate.value && selectedPreset.value === null)
+
+function clearDates() {
+  startDate.value = ''
+  endDate.value = ''
+  selectedPreset.value = null
+  sessionStore.setGrantPeriod(null, null)
+}
 
 // Get today's date as YYYY-MM-DD string
 function getTodayString() {
@@ -160,6 +170,20 @@ function isPresetSelected(preset) {
           {{ preset.label }}
           <span v-if="preset.recommended && !isPresetSelected(preset)" class="ml-1 text-xs">(typical)</span>
         </button>
+
+        <button
+          @click="clearDates"
+          class="px-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+          :class="[
+            noDates
+              ? 'bg-blue-600 text-white'
+              : preferencesStore.darkMode
+                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          ]"
+        >
+          No dates yet
+        </button>
       </div>
     </div>
 
@@ -247,10 +271,23 @@ function isPresetSelected(preset) {
     <!-- Placeholder when no dates selected -->
     <div
       v-else
-      class="rounded-lg p-4 text-center"
-      :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-50 text-gray-500'"
+      class="rounded-lg p-4"
+      :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-50'"
     >
-      Select a duration above or enter custom dates
+      <p
+        v-if="noDates"
+        class="text-sm"
+        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+      >
+        No dates set — estimates will use the default 36-month period. You can come back and update this any time.
+      </p>
+      <p
+        v-else
+        class="text-sm text-center"
+        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+      >
+        Select a duration above or enter custom dates
+      </p>
     </div>
   </div>
 </template>

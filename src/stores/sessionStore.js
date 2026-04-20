@@ -158,13 +158,14 @@ export const useSessionStore = defineStore('session', () => {
     session.value.grant_period.start_date = startDate
     session.value.grant_period.end_date = endDate
 
-    // Calculate months
     if (startDate && endDate) {
       const start = new Date(startDate)
       const end = new Date(endDate)
       const months = (end.getFullYear() - start.getFullYear()) * 12 +
                      (end.getMonth() - start.getMonth())
       session.value.grant_period.months = Math.max(1, months)
+    } else {
+      session.value.grant_period.months = 36
     }
 
     session.value.updated_at = new Date().toISOString()

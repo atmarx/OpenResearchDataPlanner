@@ -143,7 +143,7 @@ export function useWizard() {
         return !!sessionStore.selectedTier
 
       case 'grant-period':
-        return sessionStore.session.grant_period.months > 0
+        return true
 
       case 'retention':
         return sessionStore.session.retention.schedules.length > 0
