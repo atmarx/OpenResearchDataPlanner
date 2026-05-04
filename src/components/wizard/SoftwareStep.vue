@@ -203,6 +203,25 @@ function formatByolPricing(software) {
   return null
 }
 
+// Resolve the institutional default support contact from meta.contact.primary.
+// Falls back to a placeholder so the UI stays usable in unconfigured deployments.
+const defaultSoftwareSupportContact = computed(() => {
+  const primary = configStore.config?.meta?.contact?.primary
+  if (primary?.type === 'email' && primary?.value) return primary.value
+  return 'rc-help@example.edu'
+})
+
+function getSoftwareSupportContact(software) {
+  return software.license_server?.contact || defaultSoftwareSupportContact.value
+}
+
+function getSoftwareSupportMailto(software, requestType) {
+  const subjectPrefix = requestType === 'quote' ? 'License quote request' : 'License pricing request'
+  const askWord = requestType === 'quote' ? 'an updated quote' : 'pricing information'
+  const body = `I'm interested in using ${software.name} for my research project. Could you help me with ${askWord}?`
+  return `mailto:${getSoftwareSupportContact(software)}?subject=${encodeURIComponent(`${subjectPrefix}: ${software.name}`)}&body=${encodeURIComponent(body)}`
+}
+
 // Clear all filters
 function clearFilters() {
   searchQuery.value = ''
@@ -457,7 +476,7 @@ function clearFilters() {
                     <span class="italic">(estimate)</span>
                   </div>
                   <a
-                    :href="`mailto:rc-help@northwinds.edu?subject=License quote request: ${software.name}&body=I'm interested in using ${software.name} for my research project. Could you help me get an updated quote?`"
+                    :href="getSoftwareSupportMailto(software, 'quote')"
                     class="text-blue-500 hover:text-blue-600"
                   >
                     Request quote
@@ -468,7 +487,7 @@ function clearFilters() {
                 </template>
                 <a
                   v-else
-                  :href="`mailto:rc-help@northwinds.edu?subject=License pricing request: ${software.name}&body=I'm interested in using ${software.name} for my research project. Could you help me get pricing information?`"
+                  :href="getSoftwareSupportMailto(software, 'pricing')"
                   class="text-blue-500 hover:text-blue-600"
                 >
                   Request pricing
@@ -555,13 +574,23 @@ function clearFilters() {
                     </p>
                     <p v-if="software.license_server?.we_can_host" class="mt-1 text-blue-500">
                       We can host your license server at no additional cost.
-                      Contact: {{ software.license_server.contact || 'rc-help@northwinds.edu' }}
+                      Contact: {{ getSoftwareSupportContact(software) }}
                     </p>
                   </div>
                 </div>
 
                 <!-- Links -->
-                <div class="flex gap-3">
+                <div class="flex flex-wrap gap-3">
+                  <a
+                    v-if="software.institutional_support_url"
+                    :href="software.institutional_support_url"
+                    target="_blank"
+                    rel="noopener"
+                    class="inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-600"
+                  >
+                    <Info class="w-4 h-4" />
+                    Institutional Support
+                  </a>
                   <a
                     v-if="software.documentation_url"
                     :href="software.documentation_url"

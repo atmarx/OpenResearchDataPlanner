@@ -188,6 +188,30 @@ function formatByolPricing(software) {
   return null
 }
 
+// Resolve the institutional default support contact from meta.contact.primary.
+const defaultSoftwareSupportContact = computed(() => {
+  const primary = configStore.config?.meta?.contact?.primary
+  if (primary?.type === 'email' && primary?.value) return primary.value
+  return 'rc-help@example.edu'
+})
+
+function getSoftwareSupportContact(software) {
+  return software?.license_server?.contact || defaultSoftwareSupportContact.value
+}
+
+function getSoftwareSupportMailto(software, requestType) {
+  const subjectPrefix = requestType === 'quote' ? 'License quote request' : 'License pricing request'
+  const askWord = requestType === 'quote' ? 'an updated quote' : 'pricing information'
+  const body = `I'm interested in using ${software.name} for my research project. Could you help me with ${askWord}?`
+  return `mailto:${getSoftwareSupportContact(software)}?subject=${encodeURIComponent(`${subjectPrefix}: ${software.name}`)}&body=${encodeURIComponent(body)}`
+}
+
+function getPrimaryContactHref() {
+  const primary = configStore.config?.meta?.contact?.primary
+  if (!primary?.value) return `mailto:${defaultSoftwareSupportContact.value}`
+  return primary.type === 'email' ? `mailto:${primary.value}` : primary.value
+}
+
 // Clear all filters
 function clearFilters() {
   searchQuery.value = ''
@@ -551,7 +575,7 @@ function formatTierRestriction(software) {
       </div>
       <p class="mt-2">
         Need software that's not listed?
-        <a href="mailto:rc-help@northwinds.edu" class="text-blue-500 hover:text-blue-600">Contact us</a>
+        <a :href="getPrimaryContactHref()" class="text-blue-500 hover:text-blue-600">Contact us</a>
         to discuss options.
       </p>
     </div>
@@ -780,7 +804,7 @@ function formatTierRestriction(software) {
                 We can host your license server at no additional cost.
               </p>
               <a
-                :href="`mailto:rc-help@northwinds.edu?subject=License quote request: ${selectedSoftware.name}&body=I'm interested in using ${selectedSoftware.name} for my research project. Could you help me get pricing information?`"
+                :href="getSoftwareSupportMailto(selectedSoftware, 'quote')"
                 class="inline-block mt-2 text-blue-500 hover:text-blue-600 font-medium"
               >
                 Request quote from us
@@ -790,9 +814,19 @@ function formatTierRestriction(software) {
 
           <!-- Links -->
           <div
-            v-if="selectedSoftware.documentation_url || selectedSoftware.website"
+            v-if="selectedSoftware.institutional_support_url || selectedSoftware.documentation_url || selectedSoftware.website"
             class="flex flex-wrap gap-4 pt-2"
           >
+            <a
+              v-if="selectedSoftware.institutional_support_url"
+              :href="selectedSoftware.institutional_support_url"
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-1.5 text-sm text-blue-500 hover:text-blue-600"
+            >
+              <Info class="w-4 h-4" />
+              Institutional Support
+            </a>
             <a
               v-if="selectedSoftware.documentation_url"
               :href="selectedSoftware.documentation_url"
