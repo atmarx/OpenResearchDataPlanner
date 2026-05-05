@@ -825,7 +825,7 @@ function formatTierRestriction(software) {
               class="inline-flex items-center gap-1.5 text-sm text-blue-500 hover:text-blue-600"
             >
               <Info class="w-4 h-4" />
-              Institutional Support
+              {{ selectedSoftware.institutional_support_label || 'Institutional Support' }}
             </a>
             <a
               v-if="selectedSoftware.documentation_url"

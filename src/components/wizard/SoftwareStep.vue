@@ -589,7 +589,7 @@ function clearFilters() {
                     class="inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-600"
                   >
                     <Info class="w-4 h-4" />
-                    Institutional Support
+                    {{ software.institutional_support_label || 'Institutional Support' }}
                   </a>
                   <a
                     v-if="software.documentation_url"

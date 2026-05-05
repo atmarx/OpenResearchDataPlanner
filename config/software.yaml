@@ -136,6 +136,8 @@ software:
       industry-standard for pharmaceutical research. Licenses are expensive and modular—contact
       us for help navigating academic pricing options.
     website: "https://www.schrodinger.com"
+    institutional_support_url: "https://help.northwinds.edu/software-licensing"
+    institutional_support_label: "Research IT — BYOL Setup"
 
     availability:
       hpc:

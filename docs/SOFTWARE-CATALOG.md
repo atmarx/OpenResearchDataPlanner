@@ -162,7 +162,8 @@ software:
     documentation_url: "https://docs.northwinds.edu/software/gaussian"
     vendor_url: "https://gaussian.com"
     training_available: true
-    support_contact: "hpc-support@northwinds.edu"
+    institutional_support_url: "https://help.northwinds.edu/software-licensing"
+    institutional_support_label: "Research IT — Licensing"
 
   - slug: orca
     name: "ORCA"
