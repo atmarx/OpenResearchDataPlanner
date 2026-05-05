@@ -73,6 +73,7 @@ software:
       other methods. Our site license covers all users on HPC for research and teaching.
       Note: Gaussian has strict license terms that prohibit cloud deployment.
     website: "https://gaussian.com"
+    institutional_support_url: "https://rcd.northwinds.edu/software/gaussian"
 
     availability:
       hpc:
@@ -106,6 +107,7 @@ software:
       methods, with strong support for open-shell systems and spin-orbit coupling. Free for
       academic use after registration.
     website: "https://orcaforum.kofo.mpg.de"
+    institutional_support_url: "https://rcd.northwinds.edu/software/orca"
 
     availability:
       hpc:
@@ -136,7 +138,7 @@ software:
       industry-standard for pharmaceutical research. Licenses are expensive and modular—contact
       us for help navigating academic pricing options.
     website: "https://www.schrodinger.com"
-    institutional_support_url: "https://help.northwinds.edu/software-licensing"
+    institutional_support_url: "https://rcd.northwinds.edu/software/schrodinger"
     institutional_support_label: "Research IT — BYOL Setup"
 
     availability:
@@ -189,6 +191,7 @@ software:
       includes force fields (ff19SB, GAFF2), free energy methods, and enhanced sampling
       techniques. Our HPC license includes pmemd.cuda for GPU-accelerated simulations.
     website: "https://ambermd.org"
+    institutional_support_url: "https://rcd.northwinds.edu/software/amber"
 
     availability:
       hpc:
@@ -219,6 +222,7 @@ software:
       simulations, protein folding studies, and free energy calculations. Analysis tools like
       MDAnalysis are available on JupyterHub for post-processing trajectories.
     website: "https://www.gromacs.org"
+    institutional_support_url: "https://rcd.northwinds.edu/software/gromacs"
 
     availability:
       hpc:
@@ -253,6 +257,7 @@ software:
       assemblies. Supports CHARMM and AMBER force fields, enhanced sampling methods, and
       integrates with the QwikMD rapid simulation setup tool. Free for academic use.
     website: "https://www.ks.uiuc.edu/Research/namd/"
+    institutional_support_url: "https://rcd.northwinds.edu/software/namd"
 
     availability:
       hpc:
@@ -286,6 +291,7 @@ software:
       plus popular toolboxes for statistics, image processing, signal processing, and deep learning.
       Available on HPC (batch jobs), JupyterHub (interactive notebooks), and VDI (desktop GUI).
     website: "https://mathworks.com/products/matlab.html"
+    institutional_support_url: "https://rcd.northwinds.edu/software/matlab"
 
     availability:
       hpc:
@@ -336,6 +342,7 @@ software:
       creating publication-quality figures. The Wolfram Language makes complex analyses
       expressible in compact code. Our campus license provides unlimited access on HPC and VDI.
     website: "https://www.wolfram.com/mathematica/"
+    institutional_support_url: "https://rcd.northwinds.edu/software/mathematica"
 
     availability:
       hpc:
@@ -370,6 +377,7 @@ software:
       supports parallel processing for large datasets. PyStata integration is available on
       JupyterHub for combining Stata's statistical power with Python's flexibility.
     website: "https://stata.com"
+    institutional_support_url: "https://rcd.northwinds.edu/software/stata"
 
     availability:
       hpc:
@@ -405,6 +413,7 @@ software:
       survey designs, and mixed models. Our campus license includes Base SAS, SAS/STAT, and
       SAS/GRAPH. SAS Viya (cloud version) is available for teams needing modern interfaces.
     website: "https://www.sas.com"
+    institutional_support_url: "https://rcd.northwinds.edu/software/sas"
 
     availability:
       hpc:
@@ -436,6 +445,7 @@ software:
       syntax files for reproducible workflows. Best suited for survey analysis and behavioral
       research. VDI provides the best experience with its full graphical interface.
     website: "https://www.ibm.com/products/spss-statistics"
+    institutional_support_url: "https://rcd.northwinds.edu/software/spss"
 
     availability:
       hpc:
@@ -462,6 +472,7 @@ software:
       immediate use. RStudio Desktop is available on VDI for a full GUI experience. On HPC,
       R is optimized for large-scale statistical computing with parallel processing support.
     website: "https://www.r-project.org"
+    institutional_support_url: "https://rcd.northwinds.edu/software/r"
 
     availability:
       hpc:
@@ -503,6 +514,7 @@ software:
       and optimization. Our license includes teaching and research tokens. The Workbench GUI
       is available on VDI; HPC is best for large parallel jobs.
     website: "https://ansys.com"
+    institutional_support_url: "https://rcd.northwinds.edu/software/ansys"
 
     availability:
       hpc:
@@ -548,6 +560,7 @@ software:
       in biomedical engineering, MEMS design, and materials science. Our campus license includes
       Heat Transfer, Structural Mechanics, AC/DC, and CFD modules.
     website: "https://www.comsol.com"
+    institutional_support_url: "https://rcd.northwinds.edu/software/comsol"
 
     availability:
       hpc:
@@ -584,6 +597,7 @@ software:
       but provides unmatched flexibility. Scales well on HPC clusters. ParaView (also open
       source) is available for visualization of results.
     website: "https://www.openfoam.com"
+    institutional_support_url: "https://rcd.northwinds.edu/software/openfoam"
 
     availability:
       hpc:
@@ -613,6 +627,7 @@ software:
       Abaqus/Standard handles implicit problems; Abaqus/Explicit is optimized for high-speed
       dynamics. License terms prohibit cloud deployment; we can host your license server.
     website: "https://www.3ds.com/products-services/simulia/products/abaqus/"
+    institutional_support_url: "https://rcd.northwinds.edu/software/abaqus"
 
     availability:
       hpc:
@@ -657,6 +672,7 @@ software:
       models. The software supports complex material models, fluid-structure interaction, and
       coupled multi-physics. Academic licenses are available at reduced rates.
     website: "https://www.ansys.com/products/structures/ansys-ls-dyna"
+    institutional_support_url: "https://rcd.northwinds.edu/software/ls-dyna"
 
     availability:
       hpc:
@@ -704,6 +720,7 @@ software:
       downstream analysis with Seurat, Scanpy, or similar tools. Memory-intensive—our HPC
       nodes have sufficient RAM for typical experiments.
     website: "https://www.10xgenomics.com/support/software/cell-ranger"
+    institutional_support_url: "https://rcd.northwinds.edu/software/cellranger"
 
     availability:
       hpc:
@@ -733,6 +750,7 @@ software:
       sequencing. Key tools include HaplotypeCaller, Mutect2, and the BQSR/VQSR quality
       calibration workflows. Fully open source.
     website: "https://gatk.broadinstitute.org"
+    institutional_support_url: "https://rcd.northwinds.edu/software/gatk"
 
     availability:
       hpc:
@@ -766,6 +784,7 @@ software:
       CUDA-optimized builds ready to use. JupyterHub offers GPU notebooks for interactive
       development. Integrates with Hugging Face Transformers for NLP.
     website: "https://pytorch.org"
+    institutional_support_url: "https://rcd.northwinds.edu/software/pytorch"
 
     availability:
       hpc:
@@ -803,6 +822,7 @@ software:
       workflows and model serving. GPU-accelerated builds are available on HPC and JupyterHub.
       Good choice when deployment to Google Cloud or mobile is planned.
     website: "https://www.tensorflow.org"
+    institutional_support_url: "https://rcd.northwinds.edu/software/tensorflow"
 
     availability:
       hpc:
@@ -844,6 +864,7 @@ software:
       reproducible analysis pipelines. GPU computing with PyTorch and TensorFlow is available
       on both platforms.
     website: "https://www.python.org"
+    institutional_support_url: "https://rcd.northwinds.edu/software/python"
 
     availability:
       hpc:
@@ -887,6 +908,7 @@ software:
       to HPC cluster. Growing ecosystem includes Flux.jl (deep learning), DifferentialEquations.jl,
       and JuMP (optimization). Open source and free.
     website: "https://julialang.org"
+    institutional_support_url: "https://rcd.northwinds.edu/software/julia"
 
     availability:
       hpc:
@@ -926,6 +948,7 @@ software:
       and other custom circuits. Access requires ECE department approval or BYOL. Export
       controlled (EAR) with restrictions for foreign nationals.
     website: "https://cadence.com"
+    institutional_support_url: "https://rcd.northwinds.edu/software/cadence"
 
     # Export control - EDA tools are often EAR-controlled
     export_control:
@@ -990,6 +1013,7 @@ software:
       design to tapeout. Access requires ECE department approval or BYOL. Export controlled
       (EAR) with restrictions for foreign nationals.
     website: "https://www.synopsys.com"
+    institutional_support_url: "https://rcd.northwinds.edu/software/synopsys"
 
     # Export control - EDA tools are often EAR-controlled
     export_control:
