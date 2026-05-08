@@ -212,6 +212,56 @@ function getPrimaryContactHref() {
   return primary.type === 'email' ? `mailto:${primary.value}` : primary.value
 }
 
+// Legend modal state
+const legendModal = ref(null)
+
+const legendDefinitions = {
+  full: {
+    title: 'Available',
+    icon: 'full',
+    description: 'Fully licensed and ready to use.',
+    detail: 'No special permissions or purchases required. You can use this software on the listed platforms with your existing university account.'
+  },
+  restricted: {
+    title: 'Restricted',
+    icon: 'restricted',
+    description: 'Available with limitations or approval required.',
+    detail: 'Common restrictions include group-only access, per-PI licensing, core count limits, or a brief approval process. Check the software\'s detail page for specifics before starting a project.'
+  },
+  byol: {
+    title: 'Bring Your Own License (BYOL)',
+    icon: 'byol',
+    description: 'The institution does not hold a site license for this software.',
+    detail: 'You must purchase or register for your own license directly with the vendor before you can use it on institutional platforms. Contact us if you need help identifying the right license type for research use.'
+  },
+  unavailable: {
+    title: 'Not Available',
+    icon: 'unavailable',
+    description: 'This software is not licensed or certified for use on this platform.',
+    detail: 'It may be available on other platforms listed in the catalog. Contact us to discuss alternatives or to request that we evaluate licensing it.'
+  },
+  tier_limit: {
+    title: 'Tier Limit',
+    icon: null,
+    description: 'This software has data security tier restrictions.',
+    detail: 'For example, ≤L2 means it cannot be used with data classified L3 or higher. If your research involves sensitive, regulated, or restricted data, verify that this software is approved for your data tier before use.'
+  },
+  export_control: {
+    title: 'Export Controlled',
+    icon: null,
+    description: 'This software is subject to U.S. export control regulations.',
+    detail: 'EAR (Export Administration Regulations) or ITAR (International Traffic in Arms Regulations) may restrict who can access the software and how it can be shared. Deemed export rules may apply — contact your research compliance office if you work with international collaborators or students.'
+  }
+}
+
+function openLegendModal(key) {
+  legendModal.value = legendDefinitions[key] || null
+}
+
+function closeLegendModal() {
+  legendModal.value = null
+}
+
 // Clear all filters
 function clearFilters() {
   searchQuery.value = ''
@@ -391,40 +441,40 @@ function formatTierRestriction(software) {
         <!-- Legend -->
         <div class="flex flex-wrap items-center gap-4 mt-4 text-sm">
           <span :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'">Status:</span>
-          <div class="flex items-center gap-1">
+          <button @click="openLegendModal('full')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600">
               <CheckCircle class="w-3 h-3" />
             </span>
-            <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Available</span>
-          </div>
-          <div class="flex items-center gap-1">
+            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Available</span>
+          </button>
+          <button @click="openLegendModal('restricted')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-yellow-100 text-yellow-600">
               <AlertCircle class="w-3 h-3" />
             </span>
-            <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Restricted</span>
-          </div>
-          <div class="flex items-center gap-1">
+            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Restricted</span>
+          </button>
+          <button @click="openLegendModal('byol')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-100 text-gray-500">
               <ExternalLink class="w-3 h-3" />
             </span>
-            <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">BYOL</span>
-          </div>
-          <div class="flex items-center gap-1">
+            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">BYOL</span>
+          </button>
+          <button @click="openLegendModal('unavailable')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-100 text-red-500">
               <XCircle class="w-3 h-3" />
             </span>
-            <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">N/A</span>
-          </div>
+            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">N/A</span>
+          </button>
 
           <span class="border-l pl-4 ml-2" :class="preferencesStore.darkMode ? 'border-gray-700 text-gray-400' : 'border-gray-300 text-gray-500'">Compliance:</span>
-          <div class="flex items-center gap-1">
+          <button @click="openLegendModal('tier_limit')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="text-xs px-1.5 py-0.5 rounded bg-purple-100 text-purple-700">≤L2</span>
-            <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Tier limit</span>
-          </div>
-          <div class="flex items-center gap-1">
+            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Tier limit</span>
+          </button>
+          <button @click="openLegendModal('export_control')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="text-xs px-1.5 py-0.5 rounded bg-orange-100 text-orange-700">EAR</span>
-            <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Export control</span>
-          </div>
+            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Export control</span>
+          </button>
         </div>
       </div>
     </div>
@@ -580,6 +630,52 @@ function formatTierRestriction(software) {
       </p>
     </div>
   </div>
+
+  <!-- Legend Definition Modal -->
+  <Teleport to="body">
+    <div
+      v-if="legendModal"
+      class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+      @click.self="closeLegendModal"
+    >
+      <div
+        class="rounded-xl shadow-2xl max-w-sm w-full p-5"
+        :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <h3
+            class="text-base font-semibold"
+            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+          >
+            {{ legendModal.title }}
+          </h3>
+          <button
+            @click="closeLegendModal"
+            class="p-1 rounded"
+            :class="preferencesStore.darkMode
+              ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
+              : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'"
+          >
+            <X class="w-4 h-4" />
+          </button>
+        </div>
+        <p
+          class="text-sm font-medium mb-1"
+          :class="preferencesStore.darkMode ? 'text-gray-200' : 'text-gray-800'"
+        >
+          {{ legendModal.description }}
+        </p>
+        <p
+          class="text-sm"
+          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+        >
+          {{ legendModal.detail }}
+        </p>
+      </div>
+    </div>
+  </Teleport>
 
   <!-- Software Detail Modal -->
   <Teleport to="body">
