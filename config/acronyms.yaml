@@ -310,6 +310,17 @@ acronyms:
     related: ["FISMA", "ITAR", "NIST 800-171"]
     category: "compliance"
 
+  - term: "FISMA"
+    expansion: "Federal Information Security Management Act"
+    short_def: "Federal law requiring agencies to protect information systems"
+    long_def: |
+      FISMA requires federal agencies and their contractors to implement
+      security controls for information systems. Research funded by federal
+      contracts may require FISMA-compliant infrastructure, particularly
+      for projects involving government data or sensitive federal programs.
+    related: ["CUI", "NIST 800-171", "CMMC"]
+    category: "compliance"
+
   - term: "ITAR"
     expansion: "International Traffic in Arms Regulations"
     short_def: "Export control for defense-related data"

@@ -48,22 +48,40 @@ This is the first round of persona-based UX review. Each persona reads the user 
 
 ---
 
-## Key Themes (To Be Updated After Review)
+## Key Themes
 
 ### Common Pain Points
-- *TBD after reviews complete*
+
+- **Estimation friction**: Researchers couldn't translate their actual workloads to TB/SU/GPU-hours. "Help Me Estimate" helps, but users wanted workload-to-resource examples inline (e.g. "1 WGS pipeline ≈ 5,000 SU", "1 TB ≈ 200,000 high-res photos").
+- **Acronym soup**: Low-tech users (Tonsley, Mivven) were blocked by jargon — PHI, HIPAA, FISMA, CUI, SU, HPC, IRB. Most are now annotated via `acronyms.yaml`; check for gaps when adding new content.
+- **Tier selection is abstract**: Without discipline-specific examples, users guessed. "Medieval manuscript photos = Low tier" is the kind of anchor that works. The tier questionnaire helps but isn't always reached first.
+- **Archive ratio slider**: Multiple users (Vex, Selwick-Mira) said "I think in TB, not percentages." Abstract ratio input caused confusion.
+- **Date-forcing**: Vex: "Why force me to pick a start date when it's irrelevant to the cost calculation?" — addressed in v1.0 with "No dates yet" option.
+- **GPU/preemptible opacity**: ML-heavy users (Transom) couldn't map cloud presets to actual GPU-hours. Spot/preemptible pricing not explained.
 
 ### Positive Feedback
-- *TBD after reviews complete*
+
+- **Bundles were a hit**: Users who found them stopped second-guessing service selection. Discovery is the issue — bundles need to be more prominent.
+- **Tier questionnaire worked for undecided users**: Personas who didn't know their tier found the questionnaire useful once they found it.
+- **DMP output was valued**: Compliance-aware researchers (Morvane, Kelbrook) appreciated having draft text to edit, not start from scratch.
 
 ### Missing Services Requested
-- *TBD after reviews complete*
+
+- **Gaussian / computational chemistry** (Plinth, Selwick-Mira) — common in chem departments, often licensed centrally
+- **EDA tools** (Cadence, Synopsys, Mentor) — Zilph (ECE/ITAR); FlexLM license server hosting also flagged
+- **HIPAA-compliant markers** explicit on services (Frindt, Mivven) — not just implied by tier
+- **BAA confirmation per service** (Frindt) — "Does Northwinds have BAAs with Azure?"
 
 ### Accessibility Concerns
-- *TBD after reviews complete*
+
+- Low-tech users (Tonsley, Mivven) need unit explanations inline, not just in tooltips
+- Acronym tooltips must be reachable without hover — mobile/touch users and screen readers
 
 ### Bundle Feedback
-- *TBD after reviews complete*
+
+- Bundles solve the right problem but aren't visible enough early in the flow
+- Names like "Genomics Starter" worked; abstract names confused users
+- Users wanted a "recommend me a bundle based on my project type" path before reaching service selection
 
 ---
 
