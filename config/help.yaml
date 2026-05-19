@@ -15,6 +15,8 @@ global:
     - "service-selection"
     - "high-tier-workflow"
     - "comparison-modal"
+    - "calculators"
+    - "tier-questionnaire-outcome"
 
   # Floating button settings
   floating_button:
@@ -95,6 +97,24 @@ contextual_help:
     message: |
       Each option has trade-offs. If you're not sure which is best for
       your specific use case, let's talk through it.
+    show_schedule_cta: true
+
+  calculators:
+    title: "Not sure which calculator fits?"
+    message: |
+      The calculators are organized by compute type, but your data may not
+      map cleanly to any of them. If you're a social scientist, humanist, or
+      just not sure where to start, we can help you estimate together.
+    show_schedule_cta: true
+
+  tier-questionnaire-outcome:
+    title: "Unsure about your tier result?"
+    message: |
+      Data classification involves judgment calls, and the questionnaire
+      can't catch every edge case. If your result doesn't match what you
+      expected — or if you have regulated data you didn't see a path for
+      (FDA/GxP, CUI, NEH requirements) — reach out before you proceed.
+    show_email_cta: true
     show_schedule_cta: true
 
 # What gets exported when user requests help mid-wizard

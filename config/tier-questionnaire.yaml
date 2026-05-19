@@ -311,17 +311,42 @@ questions:
 
   - id: government_data
     question: "Is this research funded by or for a government agency?"
-    help_text: "DoD, DoE, NASA, or other federal contracts may have specific data handling requirements."
+    help_text: "Federal contracts and grants may carry specific data handling requirements depending on the agency."
     icon: "landmark"
+    learn_more:
+      title: "Which agency funded your work?"
+      content: |
+        **Standard science agencies** (NSF, NIH, USDA, EPA, NASA science programs)
+        generally follow open-data policies with no special data controls.
+
+        **Humanities and arts agencies** (NEH, NEA, IMLS) also follow standard
+        open-data policies. NEH typically requires a data management plan but
+        imposes no special security requirements.
+
+        **Defense and security agencies** (DoD, DHS, certain DOE programs) may
+        impose Controlled Unclassified Information (CUI) requirements or other
+        restrictions. Check your contract.
+
+        **DOE/DOE National Labs** — depends on whether work is funded through
+        the Office of Science (standard) or a classified/national-security
+        program (restricted). Check your award documentation.
+
+        If you're not sure, check your Notice of Award or contract for terms
+        like "CUI," "DFARS," "NIST 800-171," or "sensitive but unclassified."
     options:
       - label: "No"
         value: false
         next: export_control
-      - label: "Yes - standard federal grant (NSF, NIH)"
+      - label: "Yes - NSF, NIH, NEH, NEA, or other standard federal grant"
         value: "standard_federal"
         next: export_control
       - label: "Yes - DoD/defense-related"
         value: "dod"
+        sets_flags:
+          - cui_possible
+        next: cui_check
+      - label: "Yes - DOE, DHS, NASA, or other agency with possible CUI"
+        value: "other_federal_cui"
         sets_flags:
           - cui_possible
         next: cui_check
@@ -378,16 +403,23 @@ questions:
       - label: "No / Not sure"
         value: false
         next: proprietary_check
-      - label: "Yes - ITAR"
+      - label: "Yes - ITAR (defense articles, military technology)"
         value: "itar"
         sets_tier: restricted
         sets_flags:
           - itar
         next: complete
-      - label: "Yes - EAR"
+      - label: "Yes - EAR (dual-use commercial technology)"
         value: "ear"
         sets_tier: restricted
         sets_flags:
+          - ear
+        next: complete
+      - label: "Yes - both ITAR and EAR apply"
+        value: "itar_ear"
+        sets_tier: restricted
+        sets_flags:
+          - itar
           - ear
         next: complete
 
