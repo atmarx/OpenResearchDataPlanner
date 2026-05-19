@@ -12,7 +12,8 @@ import {
   Plus,
   Search,
   Info,
-  Filter
+  Filter,
+  ShieldCheck
 } from 'lucide-vue-next'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 
@@ -146,6 +147,31 @@ function addToSlate() {
 
   showQuickAdd.value = false
   selectedService.value = null
+}
+
+// Collect compliance data from L3/L4 mappings for a service
+function getServiceComplianceInfo(serviceSlug) {
+  const highTiers = ['high', 'restricted']
+  const complianceMappings = highTiers
+    .map(tier => mappingsIndex.value[`${serviceSlug}-${tier}`])
+    .filter(m => m?.compliance)
+
+  if (!complianceMappings.length) return null
+
+  const frameworks = [...new Set(complianceMappings.flatMap(m => m.compliance.frameworks || []))]
+  const training = [...new Set(complianceMappings.flatMap(m => m.compliance.training_required || []))]
+  const baaMapping = complianceMappings.find(m => m.compliance.baa_status === 'in_place')
+  const timelinesRaw = complianceMappings.map(m => m.compliance.timeline).filter(Boolean)
+
+  return {
+    hasBaa: !!baaMapping,
+    baaReference: baaMapping?.compliance.baa_reference || null,
+    frameworks,
+    training,
+    timeline: timelinesRaw[timelinesRaw.length - 1] || null,
+    auditLogging: complianceMappings.some(m => m.compliance.audit_logging),
+    encryption: complianceMappings.find(m => m.compliance.encryption)?.compliance.encryption || null
+  }
 }
 
 // Get tier color class
@@ -303,10 +329,20 @@ function getTierColorClass(tierSlug) {
                   :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
                 >
                   <td class="px-4 py-3">
-                    <div
-                      class="font-medium"
-                      :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                    >{{ service.name }}</div>
+                    <div class="flex items-center gap-2">
+                      <span
+                        class="font-medium"
+                        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                      >{{ service.name }}</span>
+                      <span
+                        v-if="getServiceComplianceInfo(service.slug)?.hasBaa"
+                        class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-700 shrink-0"
+                        :title="getServiceComplianceInfo(service.slug)?.baaReference || 'BAA in place for sensitive data tiers'"
+                      >
+                        <ShieldCheck class="w-3 h-3" />
+                        BAA
+                      </span>
+                    </div>
                     <div
                       class="text-sm truncate max-w-[250px]"
                       :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
@@ -444,6 +480,13 @@ function getTierColorClass(tierSlug) {
           </span>
           <span>Not available</span>
         </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-700">
+            <ShieldCheck class="w-3 h-3" />
+            BAA
+          </span>
+          <span>HIPAA Business Associate Agreement pre-negotiated</span>
+        </div>
       </div>
     </div>
 
@@ -502,6 +545,45 @@ function getTierColorClass(tierSlug) {
               </button>
               to estimate your needs.
             </p>
+          </div>
+
+          <!-- Compliance Status -->
+          <div
+            v-if="selectedService && getServiceComplianceInfo(selectedService.slug)"
+            class="mb-4 rounded-lg p-3 border"
+            :class="preferencesStore.darkMode
+              ? 'bg-teal-900/20 border-teal-800/50'
+              : 'bg-teal-50 border-teal-200'"
+          >
+            <div class="flex items-center gap-1.5 mb-2">
+              <ShieldCheck class="w-4 h-4 text-teal-600" />
+              <span
+                class="text-sm font-semibold"
+                :class="preferencesStore.darkMode ? 'text-teal-300' : 'text-teal-800'"
+              >Compliance Status (L3/L4)</span>
+            </div>
+            <dl class="space-y-1 text-xs" :class="preferencesStore.darkMode ? 'text-teal-200' : 'text-teal-900'">
+              <div v-if="getServiceComplianceInfo(selectedService.slug).hasBaa" class="flex gap-1">
+                <dt class="font-medium shrink-0">BAA:</dt>
+                <dd>In place — {{ getServiceComplianceInfo(selectedService.slug).baaReference || 'contact IT for details' }}</dd>
+              </div>
+              <div v-if="getServiceComplianceInfo(selectedService.slug).frameworks?.length" class="flex gap-1">
+                <dt class="font-medium shrink-0">Frameworks:</dt>
+                <dd>{{ getServiceComplianceInfo(selectedService.slug).frameworks.map(f => f.toUpperCase().replace('_', ' ')).join(', ') }}</dd>
+              </div>
+              <div v-if="getServiceComplianceInfo(selectedService.slug).timeline" class="flex gap-1">
+                <dt class="font-medium shrink-0">Provisioning:</dt>
+                <dd>{{ getServiceComplianceInfo(selectedService.slug).timeline }}</dd>
+              </div>
+              <div v-if="getServiceComplianceInfo(selectedService.slug).training?.length" class="flex gap-1">
+                <dt class="font-medium shrink-0 mt-0.5">Training:</dt>
+                <dd>
+                  <ul class="list-disc list-inside">
+                    <li v-for="t in getServiceComplianceInfo(selectedService.slug).training" :key="t">{{ t }}</li>
+                  </ul>
+                </dd>
+              </div>
+            </dl>
           </div>
 
           <!-- Actions -->
