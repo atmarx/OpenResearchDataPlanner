@@ -42,10 +42,19 @@
 
 ## Cost Summary
 
+{{#if totals.fandaRate}}
+| Period | Direct Costs | F&A ({{totals.fandaRateLabel}} {{totals.fandaRateBasis}}) | Total |
+|--------|-------------|-----------------------------------------------------------|-------|
+| Monthly | {{currency totals.monthly}} | {{currency totals.fandaMonthly}} | {{currency totals.totalMonthlyWithFanda}} |
+| Annual | {{currency totals.annual}} | {{currency totals.fandaAnnual}} | {{currency totals.totalAnnualWithFanda}} |
+
+> F&A (indirect costs) calculated at the federally negotiated rate. Confirm sponsor-specific caps with your grants office.
+{{else}}
 | Period | Cost |
 |--------|------|
 | Monthly | {{currency totals.monthly}} |
 | Annual | {{currency totals.annual}} |
+{{/if}}
 
 {{#if finalNotes}}
 ---

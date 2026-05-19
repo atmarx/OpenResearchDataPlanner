@@ -30,6 +30,25 @@ if (!Handlebars.helpers.formatDate) {
   })
 }
 
+function buildTotals(slateStore, configStore) {
+  const ic = configStore.config?.meta?.indirect_costs
+  const rate = ic?.default_rate ?? 0
+  const direct = { monthly: slateStore.totalMonthlyCost, annual: slateStore.totalAnnualCost }
+  return {
+    monthly: direct.monthly,
+    annual: direct.annual,
+    fandaRate: rate,
+    fandaRateLabel: ic?.rate_label ?? null,
+    fandaRateBasis: ic?.rate_basis ?? null,
+    fandaMonthly: direct.monthly * rate,
+    fandaAnnual: direct.annual * rate,
+    totalMonthlyWithFanda: direct.monthly * (1 + rate),
+    totalAnnualWithFanda: direct.annual * (1 + rate),
+    fandaNote: ic?.note ?? null,
+    fandaPolicyUrl: ic?.policy_url ?? null
+  }
+}
+
 /**
  * Composable for exporting slate data
  */
@@ -71,10 +90,7 @@ export function useExport() {
         serviceName: configStore.servicesBySlug[item.service]?.name || item.service
       })),
       software: slateStore.slate.software,
-      totals: {
-        monthly: slateStore.totalMonthlyCost,
-        annual: slateStore.totalAnnualCost
-      },
+      totals: buildTotals(slateStore, configStore),
       contact: contact || slateStore.slate.contact,
       institution: configStore.config?.meta?.institution
     }
@@ -110,7 +126,7 @@ export function useExport() {
         change_note: 'Initial submission',
         items: slateStore.slate.items.map(item => item.id)
       }],
-      totals: context.totals
+      totals: buildTotals(slateStore, configStore)
     }
 
     const json = JSON.stringify(data, null, 2)
@@ -171,8 +187,13 @@ export function useExport() {
     }
 
     md += `## Cost Summary\n\n`
-    md += `- Monthly: $${context.totals.monthly?.toLocaleString() || 0}\n`
-    md += `- Annual: $${context.totals.annual?.toLocaleString() || 0}\n\n`
+    md += `- Monthly (direct): $${context.totals.monthly?.toLocaleString() || 0}\n`
+    md += `- Annual (direct): $${context.totals.annual?.toLocaleString() || 0}\n`
+    if (context.totals.fandaRate > 0) {
+      md += `- F&A (${context.totals.fandaRateLabel || context.totals.fandaRate * 100 + '%'} ${context.totals.fandaRateBasis || ''}): $${context.totals.fandaAnnual?.toLocaleString() || 0}/yr\n`
+      md += `- **Total with F&A (annual): $${context.totals.totalAnnualWithFanda?.toLocaleString() || 0}**\n`
+    }
+    md += '\n'
 
     if (context.finalNotes) {
       md += `## Additional Notes\n\n${context.finalNotes}\n\n`
