@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, watch, computed } from 'vue'
+import { onMounted, watch, computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
@@ -10,12 +10,20 @@ import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import SlateFooter from '@/components/slate/SlateFooter.vue'
 import WelcomeBanner from '@/components/layout/WelcomeBanner.vue'
+import GetHelpModal from '@/components/layout/GetHelpModal.vue'
+import { MessageCircle } from 'lucide-vue-next'
 
 const route = useRoute()
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
 const slateStore = useSlateStore()
 const preferencesStore = usePreferencesStore()
+
+const showHelpModal = ref(false)
+const helpEnabled = computed(() => {
+  const g = configStore.config?.help?.global
+  return g?.show_help_cta && g?.floating_button?.enabled
+})
 
 // Some routes (like tier-check) hide the slate footer
 const showSlateFooter = computed(() => !route.meta?.hideSlate)
@@ -120,5 +128,21 @@ watch(() => configStore.config?.meta?.branding, injectCustomStyles)
 
     <SlateFooter v-if="showSlateFooter" class="relative z-10" />
     <AppFooter class="relative z-10" />
+
+    <!-- Floating Get Help button -->
+    <button
+      v-if="helpEnabled"
+      @click="showHelpModal = true"
+      class="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg font-medium text-sm transition-all hover:scale-105 active:scale-95"
+      :class="preferencesStore.darkMode
+        ? 'bg-blue-600 hover:bg-blue-500 text-white'
+        : 'bg-blue-600 hover:bg-blue-700 text-white'"
+      aria-label="Get help"
+    >
+      <MessageCircle class="w-4 h-4" />
+      <span>Get Help</span>
+    </button>
+
+    <GetHelpModal v-if="showHelpModal" @close="showHelpModal = false" />
   </div>
 </template>
