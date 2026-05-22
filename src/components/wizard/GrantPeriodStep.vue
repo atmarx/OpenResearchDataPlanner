@@ -7,13 +7,12 @@ import { Calendar, Info } from 'lucide-vue-next'
 const sessionStore = useSessionStore()
 const preferencesStore = usePreferencesStore()
 
-// Quick presets - numeric order with 3-year as recommended
 const presets = [
-  { label: '1 year', months: 12, recommended: false },
-  { label: '2 years', months: 24, recommended: false },
-  { label: '3 years', months: 36, recommended: true },
-  { label: '5 years', months: 60, recommended: false },
-  { label: 'Custom', months: null, recommended: false }
+  { label: '1 year', months: 12 },
+  { label: '2 years', months: 24 },
+  { label: '3 years', months: 36 },
+  { label: '5 years', months: 60 },
+  { label: 'Custom', months: null }
 ]
 
 // Track which preset is selected (null = custom or none)
@@ -151,27 +150,6 @@ function isPresetSelected(preset) {
       >Grant duration:</p>
       <div class="flex flex-wrap gap-2">
         <button
-          v-for="preset in presets"
-          :key="preset.label"
-          @click="applyPreset(preset)"
-          class="px-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-          :class="[
-            isPresetSelected(preset)
-              ? 'bg-blue-600 text-white'
-              : preset.recommended
-                ? preferencesStore.darkMode
-                  ? 'bg-blue-900/50 text-blue-300 border-2 border-blue-700 hover:bg-blue-900'
-                  : 'bg-blue-100 text-blue-700 border-2 border-blue-300 hover:bg-blue-200'
-                : preferencesStore.darkMode
-                  ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          ]"
-        >
-          {{ preset.label }}
-          <span v-if="preset.recommended && !isPresetSelected(preset)" class="ml-1 text-xs">(typical)</span>
-        </button>
-
-        <button
           @click="clearDates"
           class="px-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
           :class="[
@@ -184,11 +162,27 @@ function isPresetSelected(preset) {
         >
           No dates yet
         </button>
+
+        <button
+          v-for="preset in presets"
+          :key="preset.label"
+          @click="applyPreset(preset)"
+          class="px-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+          :class="[
+            isPresetSelected(preset)
+              ? 'bg-blue-600 text-white'
+              : preferencesStore.darkMode
+                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          ]"
+        >
+          {{ preset.label }}
+        </button>
       </div>
     </div>
 
-    <!-- Date inputs -->
-    <div class="grid gap-6 md:grid-cols-2 mb-6">
+    <!-- Date inputs (hidden when "No dates yet" is selected) -->
+    <div v-if="!noDates" class="grid gap-6 md:grid-cols-2 mb-6">
       <div>
         <label
           for="start-date"
@@ -211,18 +205,13 @@ function isPresetSelected(preset) {
         </div>
       </div>
 
-      <div>
+      <div v-if="isCustom">
         <label
           for="end-date"
           class="block text-sm font-medium mb-1"
           :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
         >
           End Date
-          <span
-            v-if="!isCustom"
-            class="font-normal"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
-          >(auto-calculated)</span>
         </label>
         <div class="relative">
           <input
@@ -230,11 +219,10 @@ function isPresetSelected(preset) {
             v-model="endDate"
             type="date"
             :min="startDate"
-            :disabled="!isCustom"
             class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             :class="preferencesStore.darkMode
-              ? 'bg-gray-700 border-gray-600 text-white disabled:bg-gray-800 disabled:text-gray-500'
-              : 'bg-white border-gray-300 text-gray-900 disabled:bg-gray-50 disabled:text-gray-500'"
+              ? 'bg-gray-700 border-gray-600 text-white'
+              : 'bg-white border-gray-300 text-gray-900'"
           />
           <Calendar class="absolute right-3 top-2.5 w-5 h-5 text-gray-400 pointer-events-none" />
         </div>
