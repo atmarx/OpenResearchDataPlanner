@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, nextTick, watch } from 'vue'
+import { ref, computed, nextTick, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
 import { useConfigStore } from '@/stores/configStore'
@@ -31,13 +31,15 @@ import {
   Check,
   BookOpen,
   Fingerprint,
-  RotateCcw
+  RotateCcw,
+  HelpCircle
 } from 'lucide-vue-next'
 import { applyAnswerToState } from '@/lib/classifyTier'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
 import DataIdentificationFlow from '@/components/explore/DataIdentificationFlow.vue'
 import QuestionnairePathViewer from '@/components/explore/QuestionnairePathViewer.vue'
+import QuestionHelpDialog from '@/components/explore/QuestionHelpDialog.vue'
 
 const router = useRouter()
 const configStore = useConfigStore()
@@ -76,6 +78,8 @@ const determinedTier = ref(null)
 const showLearnMore = ref(false)
 const selectedDiscipline = ref(null)
 const showDataIdentificationModal = ref(false)
+const showQuestionHelp = ref(false)
+const deepLinkBanner = ref(null)
 
 // Render markdown content
 function renderMarkdown(content) {
@@ -313,6 +317,54 @@ function handleDataIdentificationComplete(result) {
 
 function handleDataIdentificationBack() {
   showDataIdentificationModal.value = false
+}
+
+// Sync currentQuestionId to URL hash so users can share/refer to a specific node
+function syncHashToQuestion(id) {
+  if (typeof window === 'undefined') return
+  const desired = id && id !== 'complete' ? `#q-${id}` : ''
+  if (window.location.hash === desired) return
+  // Use replaceState to avoid spamming browser history per question
+  const url = window.location.pathname + window.location.search + desired
+  window.history.replaceState(null, '', url)
+}
+
+watch(currentQuestionId, (id) => {
+  if (viewMode.value === 'questionnaire') syncHashToQuestion(id)
+})
+
+watch(viewMode, (mode) => {
+  if (mode !== 'questionnaire') syncHashToQuestion(null)
+  else syncHashToQuestion(currentQuestionId.value)
+})
+
+// On mount: if URL has #q-<id> for a known question, jump there.
+// Path-state isn't replayed (tier/flags depend on prior answers we don't know),
+// so we show a banner clarifying this is the shared question, not a resumed session.
+onMounted(() => {
+  if (typeof window === 'undefined') return
+  const hash = window.location.hash
+  const match = hash.match(/^#q-([a-z0-9_-]+)$/i)
+  if (!match) return
+  const id = match[1]
+  // Wait for questions to load from config
+  const tryJump = () => {
+    const q = questions.value.find(x => x.id === id)
+    if (!q) return false
+    viewMode.value = 'questionnaire'
+    currentQuestionId.value = id
+    deepLinkBanner.value = id
+    return true
+  }
+  if (!tryJump()) {
+    const unwatch = watch(questions, () => {
+      if (tryJump()) unwatch()
+    })
+  }
+})
+
+function dismissDeepLinkBanner() {
+  deepLinkBanner.value = null
 }
 </script>
 
@@ -761,6 +813,29 @@ function handleDataIdentificationBack() {
 
       <!-- Questionnaire: Question Screen -->
       <div v-else-if="viewMode === 'questionnaire' && currentQuestion && !atSummary" class="space-y-6">
+        <!-- Deep-link landing banner -->
+        <div
+          v-if="deepLinkBanner === currentQuestionId"
+          class="rounded-lg border px-4 py-3 text-sm flex items-start gap-3"
+          :class="preferencesStore.darkMode
+            ? 'bg-amber-900/30 border-amber-700 text-amber-200'
+            : 'bg-amber-50 border-amber-200 text-amber-900'"
+        >
+          <Info class="w-4 h-4 flex-shrink-0 mt-0.5" />
+          <div class="flex-1">
+            <span class="font-medium">Shared link:</span>
+            you landed directly on this question via a link.
+            Your tier and earlier answers won't be set — answer this and any later questions to get an accurate result.
+          </div>
+          <button
+            @click="dismissDeepLinkBanner"
+            class="p-1 -m-1 rounded hover:bg-black/10"
+            aria-label="Dismiss"
+          >
+            <X class="w-4 h-4" />
+          </button>
+        </div>
+
         <!-- Question -->
         <div
           class="rounded-lg border p-6"
@@ -786,6 +861,19 @@ function handleDataIdentificationBack() {
                 {{ currentQuestion.help_text }}
               </p>
             </div>
+            <button
+              @click="showQuestionHelp = true"
+              class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border transition-colors"
+              :class="preferencesStore.darkMode
+                ? 'border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500'
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'"
+              aria-label="I don't understand this question — get help"
+              title="I don't understand this — get a copy-pasteable link to share with support"
+            >
+              <HelpCircle class="w-3.5 h-3.5" />
+              <span class="hidden sm:inline">I don't understand this</span>
+              <span class="sm:hidden">Help</span>
+            </button>
           </div>
 
           <!-- Learn More -->
@@ -1077,6 +1165,17 @@ function handleDataIdentificationBack() {
         </div>
       </Transition>
     </Teleport>
+
+    <!-- Per-question help dialog -->
+    <QuestionHelpDialog
+      v-if="showQuestionHelp && currentQuestion"
+      :question-id="currentQuestionId"
+      :question-text="currentQuestion.question"
+      :path-for-display="pathForDisplay"
+      :tier="determinedTier"
+      :flags="flags"
+      @close="showQuestionHelp = false"
+    />
   </div>
 </template>
 
