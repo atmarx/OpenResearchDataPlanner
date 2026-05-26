@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineAsyncComponent } from 'vue'
+import { computed, defineAsyncComponent, nextTick, watch } from 'vue'
 import { useSessionStore } from '@/stores/sessionStore'
 import { usePreferencesStore } from '@/stores/preferencesStore'
 import { useWizard } from '@/composables/useWizard'
@@ -58,6 +58,15 @@ const currentComponent = computed(() => {
 function handleStepNavigate(stepId) {
   wizard.navigateTo(stepId)
 }
+
+watch(
+  () => sessionStore.currentStep,
+  () => {
+    nextTick(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    })
+  }
+)
 </script>
 
 <template>
