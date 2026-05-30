@@ -1,0 +1,36 @@
+# Session brief template — one persona, one goal, one recorded run.
+# Copy to docs/ux/sessions/{session_id}.yaml and fill in.
+# See ../PLAYWRIGHT-PERSONA-SESSIONS.md for the full design.
+
+session_id: ""                 # kebab, e.g. "s01-frindt-fda-dmp"
+persona: ""                    # folder name in docs/ux/personas/, e.g. "07-frindt-sela"
+                               # DO NOT redefine the persona here — reference it.
+
+goal: >
+  Second-person, written AS the brief handed to the persona. State who they are,
+  which grant they're writing, what data they have, and what they need to walk
+  away with. Keep it the way the faculty member would actually describe it —
+  not in our internal tier/service vocabulary.
+
+start_url: "/"               # where the session begins
+
+success_criteria:            # what "they accomplished the goal" means, checkable
+  - ""
+  - ""
+
+narration_protocol: "think-aloud"
+  # think-aloud = narrate intent BEFORE each action, reaction AFTER.
+  # The persona says what they're looking for, what they expect, and whether
+  # the app met that expectation. Confusion is data — narrate it, don't resolve
+  # it silently.
+
+record:
+  - "video"                  # Playwright recordVideo.webm
+  - "trace"                  # Playwright trace.zip
+  - "narration"              # timestamped think-aloud -> narration.md
+
+target: "staging"            # staging | dev | branch — where the run points
+
+notes: >
+  Anything the runner should know: prerequisites, accounts, data to paste,
+  or specific friction points we want this persona to probe. Optional.
