@@ -1,6 +1,9 @@
 # Playwright Persona Sessions — live think-aloud usability testing
 
-> Status: **spec / proposal** (May 2026). Greenlight pending from @xram.
+> Status: **greenlit, building** (May 2026). xram chose track **A** — AI personas
+> driving Playwright as the pre-flight ("yes! B is already sort of happening... I
+> want to get A going. I've clicked through so many times, I need more eyes.").
+> First three session briefs written in `sessions/`; Playwright runner is Marco's.
 > Origin: xram's idea — "hand them a Playwright session, tell them who they are
 > and what grant they want to write, let them loose, and record the whole thing
 > including their narration of what they're thinking."

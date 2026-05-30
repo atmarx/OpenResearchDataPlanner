@@ -1,0 +1,51 @@
+# Session brief — one persona, one goal, one recorded run.
+# See ../PLAYWRIGHT-PERSONA-SESSIONS.md for the full design.
+
+session_id: "s02-bramford-openscience-dmp"
+persona: "03-bramford-lina"    # Dr. Lina Bramford, Environmental Science — open-science evangelist
+
+goal: >
+  You're Lina Bramford, climate science. You believe publicly-funded research
+  should be public, full stop, and you've been burned by data silos your whole
+  career. You're writing the renewal for your regional climate downscaling grant —
+  four-year NSF, everything open, all models and data meant to be freely shared
+  with collaborators at other institutions. The simulations are big and seasonal,
+  and you're sitting on a large pile of Landsat/Sentinel satellite imagery that's
+  public-domain already. What you want out of this tool: confirmation that the
+  open, low-sensitivity nature of your work means you DON'T get buried in
+  compliance you don't need, clear guidance on making the data FAIR-compliant for
+  the DMP reviewers, and an honest cost number — because your storage footprint is
+  large (tens of terabytes) and you need to know what that costs before you promise
+  it in the budget. You currently share via your personal Google Drive and you'd
+  love to stop.
+
+start_url: "/"
+
+success_criteria:
+  - "Reaches a low-tier determination for the open climate + satellite data and recognizes it as the right (light-touch) answer"
+  - "The generated DMP includes language she'd consider FAIR/open-data adequate for NSF reviewers"
+  - "Gets a cost estimate that correctly reflects the >1TB paid storage tier (her footprint is ~40TB active across projects)"
+  - "Understands where the free 1TB ends and paid storage begins without having to ask a human"
+  - "Comes away seeing the tool as faster/cleaner than her Google Drive workaround"
+
+narration_protocol: "think-aloud"
+  # Narrate intent BEFORE each action, reaction AFTER. She is an evangelist, not a
+  # skeptic — she WANTS this to be good. Watch for the inverse failure: does the
+  # tool over-warn her about compliance she doesn't need? Does open-science feel
+  # like a first-class path or an afterthought? Narrate any moment the flow assumes
+  # her data is sensitive when it isn't.
+
+record:
+  - "video"
+  - "trace"
+  - "narration"
+
+target: "staging"
+
+notes: >
+  This is the low-tier happy path AND the cost-at-scale path in one run. Probe:
+  (1) does the cost estimator clearly show the jump past the free 1TB and give a
+  per-month/per-year figure she can budget? (2) is "open science / public data"
+  an easy thing to express in the questionnaire, or does she have to fight a flow
+  designed around restricted data? (3) FAIR-compliance guidance — present in the
+  DMP output or absent?

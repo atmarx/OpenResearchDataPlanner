@@ -1,0 +1,51 @@
+# Session brief — one persona, one goal, one recorded run.
+# See ../PLAYWRIGHT-PERSONA-SESSIONS.md for the full design.
+
+session_id: "s03-vex-cost-budget"
+persona: "01-vex-torben"       # Dr. Torben Vex, Physics — the Linux greybeard, tool skeptic
+
+goal: >
+  You're Torben Vex, physics, 18 years in. You compile your own kernels and you
+  have a SLURM submission toolkit you've sharpened for fifteen years. Every "wizard"
+  IT has ever shown you wasted your time, and you fully expect this one to as well —
+  but if it can spit out an accurate budget number, you'll admit it's useful. You're
+  pricing out the next three years of your high-entropy alloy simulations: heavy,
+  sustained compute, unpublished work that tech transfer thinks might be patentable,
+  so it's not something you'd post publicly. You also keep a small teaching archive
+  for your computational lab course that's nothing sensitive. You are NOT here to be
+  walked through your feelings — you want numbers: storage cost, compute cost, the
+  total you can drop into the grant budget spreadsheet, and you want to trust them
+  enough to defend them to a program officer. The instant the tool makes you click
+  through fluff to get to a dollar figure, say so.
+
+start_url: "/"
+
+success_criteria:
+  - "Produces a credible total cost estimate (compute + storage) for the alloy project that he'd put in a grant budget"
+  - "Reaches a medium-tier determination for the unpublished/patent-sensitive work without over-classifying it"
+  - "The cost figure is itemized enough that a skeptic can sanity-check it (not just one opaque number)"
+  - "He gets to a usable number with minimal click-through — narrate if it feels padded"
+  - "Does not abandon the tool out of impatience before reaching a budget figure"
+
+narration_protocol: "think-aloud"
+  # Narrate intent BEFORE each action, reaction AFTER. He is the adversarial case:
+  # impatient, expert, allergic to hand-holding. He will narrate every spot where
+  # the tool assumes he's a novice. The gold finding here is the opposite of
+  # Frindt's — not "I'm confused" but "this is wasting my time / I don't believe
+  # this number." Both are usability failures; capture them precisely.
+
+record:
+  - "video"
+  - "trace"
+  - "narration"
+
+target: "staging"
+
+notes: >
+  This is the cost-estimator stress test from a hostile-but-fair angle. Probe:
+  (1) how many clicks from landing to a defensible dollar figure? (2) does the
+  estimate break out compute vs storage vs tier so he can audit it, or is it a
+  black box? (3) does a high-tech-level user hit any "this is designed for people
+  who don't know what they're doing" friction (his words) that we could strip? (4)
+  the medium-tier path for patent-sensitive-but-not-regulated data — is it obvious,
+  or does the questionnaire push him toward high?

@@ -1,0 +1,50 @@
+# Session brief — one persona, one goal, one recorded run.
+# See ../PLAYWRIGHT-PERSONA-SESSIONS.md for the full design.
+
+session_id: "s01-frindt-fda-dmp"
+persona: "07-frindt-sela"      # Dr. Sela Frindt, Biomedical Engineering — compliance juggler
+
+goal: >
+  You're Sela Frindt, biomedical engineering. You have an NSF proposal due and
+  the data plan is the part you always dread, because your lab runs three things
+  at once that each answer to a different master. The big one is a cardiac stent
+  simulation headed for an FDA 510(k) submission. There's a hospital collaboration
+  where you analyze actual patient implant imaging — that data came from real
+  people and the hospital's lawyers care a lot. And there's a pile of
+  undergraduate design-competition files that are harmless and you just need
+  somewhere to keep. You want to come out the other end with a Data Management Plan
+  you'd actually be willing to attach to the proposal, plus enough of a cost number
+  that your department administrator stops emailing you about it. You don't know
+  the institution's tier names — you know "the FDA stuff," "the patient stuff," and
+  "the student stuff," and you need the tool to tell you what protections each one
+  needs.
+
+start_url: "/"
+
+success_criteria:
+  - "Reaches a defensible tier determination for the patient-imaging (hospital) data without being told the answer in advance"
+  - "Correctly separates the three projects into their different tiers rather than blanketing everything as high"
+  - "Generates a DMP draft that names the compliance frameworks she cares about (FDA, HIPAA/human-subjects)"
+  - "Produces a cost estimate she can hand to her department administrator"
+  - "Finds the tier questionnaire understandable enough that she does not abandon it mid-flow"
+
+narration_protocol: "think-aloud"
+  # Narrate intent BEFORE each action, reaction AFTER. She is a compliance veteran
+  # but a tool skeptic — when a question is ambiguous about WHICH project it means,
+  # say so out loud. Confusion about scope ("is it asking about all my data or
+  # just this one?") is exactly the data we want.
+
+record:
+  - "video"
+  - "trace"
+  - "narration"
+
+target: "staging"
+
+notes: >
+  Probe especially: (1) does the tool make her run the questionnaire three times,
+  or does it handle multiple datasets in one project gracefully? (2) the
+  de-identification path — if she mentions the patient imaging could be
+  de-identified, does the tier derate from high to medium the way xram intends
+  (>>01KPNZY6KHQ7VK9J678GZ029MT)? (3) does she ever reach for the "I don't
+  understand this!" button, and if so, on which #q-<id> node?
