@@ -29,3 +29,14 @@ npm-debug.log*
 
 # Testing
 coverage/
+
+# Playwright
+/test-results/
+/playwright-report/
+.last-run.json
+
+# Persona-session run artifacts — heavy + regenerable. narration.md / verdict.md
+# findings stay tracked; video, trace, and the regenerated packet do not.
+docs/ux/reviews/playwright/**/*.webm
+docs/ux/reviews/playwright/**/trace.zip
+docs/ux/reviews/playwright/**/session-packet.md

@@ -11,7 +11,9 @@
     "validate:config": "node scripts/build-config.js --validate-only",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "persona-session": "node scripts/persona-session.mjs",
+    "persona-session:list": "node scripts/persona-session.mjs --list"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",
@@ -25,6 +27,7 @@
     "vue-word-highlighter": "^1.2.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.0",
     "@tailwindcss/vite": "^4.0.0",
     "@vitejs/plugin-vue": "^5.2.0",
     "js-yaml": "^4.1.0",
