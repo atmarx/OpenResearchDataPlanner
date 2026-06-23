@@ -166,20 +166,18 @@ function getSectionProgress(section) {
     <!-- Intro -->
     <div
       v-if="intro.text"
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+      class="p-4 rounded-lg border mb-6 bg-surface border-border"
     >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'" v-html="intro.text"></p>
-      <p v-if="intro.source_note" class="text-sm mt-2" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm text-text-secondary" v-html="intro.text"></p>
+      <p v-if="intro.source_note" class="text-sm mt-2 text-text-secondary">
         {{ intro.source_note }}
       </p>
     </div>
 
     <!-- Progress Summary -->
     <div
-      class="p-6 rounded-lg border mb-6"
+      class="p-6 rounded-lg border mb-6 bg-surface border-border"
       :class="[
-        preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200',
         progress.allComplete
           ? (preferencesStore.darkMode ? 'border-green-700' : 'border-green-200')
           : ''
@@ -196,20 +194,21 @@ function getSectionProgress(section) {
               stroke="currentColor"
               stroke-width="8"
               fill="none"
-              :class="preferencesStore.darkMode ? 'text-gray-700' : 'text-gray-200'"
+              class="text-border"
             />
             <circle
               cx="48"
               cy="48"
               r="40"
-              :stroke="progress.allComplete
-                ? (preferencesStore.darkMode ? '#10b981' : '#059669')
-                : (preferencesStore.darkMode ? '#3b82f6' : '#2563eb')"
+              stroke="currentColor"
               stroke-width="8"
               fill="none"
               stroke-linecap="round"
               :stroke-dasharray="`${progress.percent * 2.51} 251`"
               class="transition-all duration-500"
+              :class="progress.allComplete
+                ? (preferencesStore.darkMode ? 'text-green-500' : 'text-green-600')
+                : 'text-primary'"
             />
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
@@ -217,14 +216,11 @@ function getSectionProgress(section) {
               class="text-2xl font-bold"
               :class="progress.allComplete
                 ? (preferencesStore.darkMode ? 'text-green-400' : 'text-green-600')
-                : (preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600')"
+                : 'text-primary'"
             >
               {{ progress.percent }}%
             </div>
-            <div
-              class="text-xs"
-              :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
-            >
+            <div class="text-xs text-text-muted">
               {{ progress.completed }}/{{ progress.total }}
             </div>
           </div>
@@ -232,16 +228,10 @@ function getSectionProgress(section) {
 
         <!-- Status Text -->
         <div class="flex-1">
-          <h3
-            class="text-lg font-semibold mb-1"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-          >
+          <h3 class="text-lg font-semibold mb-1 text-text">
             {{ progress.allComplete ? 'Validation Complete' : 'Validation In Progress' }}
           </h3>
-          <p
-            class="text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-          >
+          <p class="text-sm text-text-secondary">
             {{ progress.allComplete
               ? 'All required items completed. Your AI is ready for clinical review.'
               : `${progress.total - progress.completed} required items remaining.`
@@ -252,10 +242,7 @@ function getSectionProgress(section) {
           <button
             v-if="progress.completed > 0"
             @click="downloadValidationReport"
-            class="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'bg-blue-600 text-white hover:bg-blue-500'
-              : 'bg-blue-600 text-white hover:bg-blue-700'"
+            class="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-on-primary hover:bg-primary-dark"
           >
             <Download class="w-4 h-4" />
             Export Validation Report
@@ -269,32 +256,23 @@ function getSectionProgress(section) {
       <div
         v-for="section in sections"
         :key="section.id"
-        class="rounded-lg border overflow-hidden"
-        :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+        class="rounded-lg border overflow-hidden bg-surface border-border"
       >
         <!-- Section Header -->
         <button
           @click="toggleSection(section.id)"
-          class="w-full px-4 py-3 flex items-center justify-between transition-colors"
-          :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
+          class="w-full px-4 py-3 flex items-center justify-between transition-colors hover:bg-surface-alt"
         >
           <div class="flex items-center gap-3">
             <component
               :is="expandedSections.has(section.id) ? ChevronDown : ChevronUp"
-              class="w-5 h-5"
-              :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+              class="w-5 h-5 text-text-muted"
             />
             <div class="text-left">
-              <h3
-                class="font-semibold"
-                :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-              >
+              <h3 class="font-semibold text-text">
                 {{ section.title }}
               </h3>
-              <p
-                class="text-sm"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-              >
+              <p class="text-sm text-text-muted">
                 {{ section.description }}
               </p>
             </div>
@@ -305,7 +283,7 @@ function getSectionProgress(section) {
             class="text-sm font-medium px-3 py-1 rounded-full"
             :class="getSectionProgress(section).percent === 100
               ? (preferencesStore.darkMode ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-700')
-              : (preferencesStore.darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700')"
+              : 'bg-surface-alt text-text-secondary'"
           >
             {{ getSectionProgress(section).completed }}/{{ getSectionProgress(section).total }}
           </div>
@@ -314,14 +292,12 @@ function getSectionProgress(section) {
         <!-- Section Items -->
         <div
           v-if="expandedSections.has(section.id)"
-          class="px-4 py-3 border-t space-y-3"
-          :class="preferencesStore.darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-gray-50'"
+          class="px-4 py-3 border-t space-y-3 border-border bg-canvas"
         >
           <div
             v-for="item in section.items"
             :key="item.id"
-            class="p-3 rounded-lg"
-            :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-white'"
+            class="p-3 rounded-lg bg-surface"
           >
             <label class="flex items-start gap-3 cursor-pointer group">
               <!-- Checkbox -->
@@ -337,9 +313,7 @@ function getSectionProgress(section) {
                   class="w-5 h-5 transition-colors"
                   :class="checkedItems.has(item.id)
                     ? 'text-green-500'
-                    : (preferencesStore.darkMode
-                        ? 'text-gray-600 group-hover:text-gray-500'
-                        : 'text-gray-400 group-hover:text-gray-500')"
+                    : 'text-text-muted group-hover:text-text-secondary'"
                 />
               </div>
 
@@ -347,11 +321,8 @@ function getSectionProgress(section) {
               <div class="flex-1 min-w-0">
                 <div class="flex items-start justify-between gap-2">
                   <span
-                    class="font-medium"
-                    :class="[
-                      preferencesStore.darkMode ? 'text-white' : 'text-gray-900',
-                      checkedItems.has(item.id) ? 'line-through opacity-75' : ''
-                    ]"
+                    class="font-medium text-text"
+                    :class="checkedItems.has(item.id) ? 'line-through opacity-75' : ''"
                   >
                     {{ item.text }}
                   </span>
@@ -366,10 +337,7 @@ function getSectionProgress(section) {
                   </span>
                   <span
                     v-else
-                    class="flex-shrink-0 text-xs px-2 py-0.5 rounded-full"
-                    :class="preferencesStore.darkMode
-                      ? 'bg-gray-600 text-gray-300'
-                      : 'bg-gray-200 text-gray-600'"
+                    class="flex-shrink-0 text-xs px-2 py-0.5 rounded-full bg-surface-alt text-text-secondary"
                   >
                     Optional
                   </span>
@@ -381,16 +349,12 @@ function getSectionProgress(section) {
                   class="mt-2"
                 >
                   <summary
-                    class="text-xs flex items-center gap-1 cursor-pointer"
-                    :class="preferencesStore.darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'"
+                    class="text-xs flex items-center gap-1 cursor-pointer text-primary hover:opacity-80"
                   >
                     <Info class="w-3 h-3" />
                     Details
                   </summary>
-                  <p
-                    class="mt-2 text-sm whitespace-pre-wrap"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-                  >
+                  <p class="mt-2 text-sm whitespace-pre-wrap text-text-secondary">
                     {{ item.details }}
                   </p>
                 </details>

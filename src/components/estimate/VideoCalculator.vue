@@ -74,12 +74,12 @@ function handleAddToSlate() {
       <div class="space-y-4">
         <!-- Video Type -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Video Type
           </label>
           <select
             v-model="inputs.preset"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           >
             <option :value="null" disabled>Select video type...</option>
             <option
@@ -90,21 +90,21 @@ function handleAddToSlate() {
               {{ preset.label }} ({{ preset.gb_per_hour }} GB/hour)
             </option>
           </select>
-          <p v-if="inputs.preset" class="mt-1 text-xs text-gray-500">
+          <p v-if="inputs.preset" class="mt-1 text-xs text-text-muted">
             {{ config?.presets?.find(p => p.label === inputs.preset)?.description }}
           </p>
         </div>
 
         <!-- Hours -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Hours of Video
           </label>
           <input
             v-model.number="inputs.hours"
             type="number"
             min="1"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
       </div>

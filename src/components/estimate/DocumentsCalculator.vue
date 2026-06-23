@@ -74,12 +74,12 @@ function handleAddToSlate() {
       <div class="space-y-4">
         <!-- Document Type -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Document Type
           </label>
           <select
             v-model="inputs.preset"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           >
             <option :value="null" disabled>Select document type...</option>
             <option
@@ -90,21 +90,21 @@ function handleAddToSlate() {
               {{ preset.label }} ({{ preset.size_mb }} MB avg)
             </option>
           </select>
-          <p v-if="inputs.preset" class="mt-1 text-xs text-gray-500">
+          <p v-if="inputs.preset" class="mt-1 text-xs text-text-muted">
             {{ config?.presets?.find(p => p.label === inputs.preset)?.description }}
           </p>
         </div>
 
         <!-- File Count -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Number of Files
           </label>
           <input
             v-model.number="inputs.file_count"
             type="number"
             min="1"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
       </div>

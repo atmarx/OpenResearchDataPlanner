@@ -96,51 +96,31 @@ function getColorClasses(color, isDark) {
 </script>
 
 <template>
-  <div
-    class="min-h-screen transition-colors"
-    :class="preferencesStore.darkMode ? 'bg-gray-900' : 'bg-gray-50'"
-  >
+  <div class="min-h-screen transition-colors bg-canvas">
     <!-- Header -->
-    <header
-      class="border-b"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
-    >
+    <header class="border-b bg-surface border-border">
       <div class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-6">
         <div class="flex items-center justify-between">
           <div>
             <div class="flex items-center gap-2 mb-1">
               <button
                 @click="backToGeneralGuidance"
-                class="flex items-center gap-1 text-sm transition-colors"
-                :class="preferencesStore.darkMode
-                  ? 'text-gray-400 hover:text-gray-300'
-                  : 'text-gray-500 hover:text-gray-700'"
+                class="flex items-center gap-1 text-sm transition-colors text-text-muted hover:text-text-secondary"
               >
                 <ArrowLeft class="w-4 h-4" />
                 AI Guidance
               </button>
             </div>
-            <h1
-              class="text-2xl font-bold"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-            >
+            <h1 class="text-2xl font-bold text-text">
               Clinical & Healthcare AI
             </h1>
-            <p
-              class="mt-1"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-            >
+            <p class="mt-1 text-text-secondary">
               Specialized guidance for HIPAA, IRB, FDA, and clinical validation
             </p>
           </div>
 
           <!-- Progress -->
-          <div
-            class="text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-          >
+          <div class="text-sm text-text-muted">
             {{ completedCount }} / {{ clinicalApplets.length }} completed
           </div>
         </div>
@@ -180,28 +160,14 @@ function getColorClasses(color, isDark) {
       </div>
 
       <!-- Why a Separate Track? -->
-      <div
-        class="p-6 rounded-lg border"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
-      >
-        <h2
-          class="text-lg font-semibold mb-2"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+      <div class="p-6 rounded-lg border bg-surface border-border">
+        <h2 class="text-lg font-semibold mb-2 text-text">
           Why a Clinical Track?
         </h2>
-        <p
-          class="mb-3"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <p class="mb-3 text-text-secondary">
           Clinical and healthcare AI research has unique requirements that don't apply to general research:
         </p>
-        <ul
-          class="space-y-2 text-sm"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <ul class="space-y-2 text-sm text-text-secondary">
           <li class="flex items-start gap-2">
             <CheckCircle class="w-4 h-4 flex-shrink-0 mt-0.5 text-green-500" />
             <span><strong>HIPAA compliance:</strong> De-identification, BAA requirements, audit logging</span>
@@ -223,10 +189,7 @@ function getColorClasses(color, isDark) {
 
       <!-- Essential Guides -->
       <div>
-        <h2
-          class="text-xl font-bold mb-4"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+        <h2 class="text-xl font-bold mb-4 text-text">
           Essential Clinical AI Guides
         </h2>
 
@@ -244,10 +207,7 @@ function getColorClasses(color, isDark) {
             <!-- Priority badge -->
             <div class="absolute top-2 right-2 flex items-center gap-1">
               <span
-                class="px-2 py-0.5 text-xs rounded-full font-medium"
-                :class="preferencesStore.darkMode
-                  ? 'bg-gray-700 text-gray-300'
-                  : 'bg-gray-200 text-gray-600'"
+                class="px-2 py-0.5 text-xs rounded-full font-medium bg-surface-alt text-text-secondary"
               >
                 {{ applet.priority }}
               </span>
@@ -264,61 +224,37 @@ function getColorClasses(color, isDark) {
             />
 
             <!-- Title -->
-            <h3
-              class="font-semibold mb-1"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-            >
+            <h3 class="font-semibold mb-1 text-text">
               {{ applet.title }}
             </h3>
 
             <!-- Question -->
-            <p
-              class="text-sm mb-2"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-            >
+            <p class="text-sm mb-2 text-text-secondary">
               {{ applet.question }}
             </p>
 
             <!-- Description -->
-            <p
-              class="text-xs"
-              :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
-            >
+            <p class="text-xs text-text-muted">
               {{ applet.description }}
             </p>
 
             <!-- Arrow on hover -->
             <ArrowRight
-              class="absolute bottom-4 right-4 w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="absolute bottom-4 right-4 w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity text-text-muted"
             />
           </button>
         </div>
       </div>
 
       <!-- Suggested Path -->
-      <div
-        class="p-6 rounded-lg border"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
-      >
-        <h2
-          class="text-lg font-semibold mb-3"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+      <div class="p-6 rounded-lg border bg-surface border-border">
+        <h2 class="text-lg font-semibold mb-3 text-text">
           Suggested Path
         </h2>
-        <p
-          class="mb-4"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <p class="mb-4 text-text-secondary">
           For clinical AI research, we recommend completing these in order:
         </p>
-        <ol
-          class="space-y-2 text-sm"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <ol class="space-y-2 text-sm text-text-secondary">
           <li class="flex items-start gap-2">
             <span class="font-medium">1.</span>
             <span><strong>HIPAA De-identification</strong> — Verify your data classification before using any AI tools</span>
@@ -335,8 +271,7 @@ function getColorClasses(color, isDark) {
             <span class="font-medium">4.</span>
             <router-link
               to="/ai"
-              class="hover:underline"
-              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+              class="hover:underline text-primary"
             >
               Return to general AI guidance
             </router-link>
@@ -376,30 +311,18 @@ function getColorClasses(color, isDark) {
       </div>
 
       <!-- External Resources -->
-      <div
-        class="p-6 rounded-lg border"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-gray-100 border-gray-200'"
-      >
-        <h3
-          class="font-semibold mb-3 flex items-center gap-2"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+      <div class="p-6 rounded-lg border bg-surface-alt border-border">
+        <h3 class="font-semibold mb-3 flex items-center gap-2 text-text">
           <BookOpen class="w-5 h-5" />
           Official Resources
         </h3>
-        <ul
-          class="space-y-2 text-sm"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <ul class="space-y-2 text-sm text-text-secondary">
           <li>
             <a
               href="https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html"
               target="_blank"
               rel="noopener noreferrer"
-              class="hover:underline"
-              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+              class="hover:underline text-primary"
             >
               HHS HIPAA De-identification Guidance (Feb 2025)
             </a>
@@ -409,8 +332,7 @@ function getColorClasses(color, isDark) {
               href="https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-and-machine-learning-aiml-enabled-medical-devices"
               target="_blank"
               rel="noopener noreferrer"
-              class="hover:underline"
-              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+              class="hover:underline text-primary"
             >
               FDA AI/ML-Enabled Medical Devices
             </a>
@@ -420,8 +342,7 @@ function getColorClasses(color, isDark) {
               href="https://grants.nih.gov/grants/guide/notice-files/NOT-OD-25-132.html"
               target="_blank"
               rel="noopener noreferrer"
-              class="hover:underline"
-              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+              class="hover:underline text-primary"
             >
               NIH AI Use Policy (NOT-OD-25-132)
             </a>

@@ -169,11 +169,10 @@ ${consent}
     <!-- Intro -->
     <div
       v-if="intro.text"
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+      class="p-4 rounded-lg border mb-6 bg-surface border-border"
     >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'" v-html="intro.text"></p>
-      <p v-if="intro.source_note" class="text-sm mt-2" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm text-text-secondary" v-html="intro.text"></p>
+      <p v-if="intro.source_note" class="text-sm mt-2 text-text-secondary">
         {{ intro.source_note }}
       </p>
     </div>
@@ -185,7 +184,7 @@ ${consent}
           <div class="flex items-start gap-4">
             <component :is="getIcon(result.icon)" class="w-8 h-8 flex-shrink-0" />
             <div class="flex-1">
-              <h3 class="text-xl font-bold mb-2" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <h3 class="text-xl font-bold mb-2 text-text">
                 {{ result.title }}
               </h3>
               <p class="mb-3">{{ result.description }}</p>
@@ -223,17 +222,13 @@ ${consent}
         <div v-if="output.needs_amendment && sampleLanguage" class="space-y-4">
           <div class="flex items-center justify-between mb-4">
             <h3
-              class="text-lg font-semibold"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+              class="text-lg font-semibold text-text"
             >
               Sample Amendment Language
             </h3>
             <button
               @click="downloadAmendmentDraft"
-              class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-              :class="preferencesStore.darkMode
-                ? 'bg-blue-600 text-white hover:bg-blue-500'
-                : 'bg-blue-600 text-white hover:bg-blue-700'"
+              class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-on-primary hover:bg-primary-dark"
             >
               <Download class="w-4 h-4" />
               Download Draft
@@ -242,13 +237,11 @@ ${consent}
 
           <!-- Protocol Amendment -->
           <div
-            class="rounded-lg border overflow-hidden"
-            :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+            class="rounded-lg border overflow-hidden bg-surface border-border"
           >
             <button
               @click="toggleSection('protocol')"
-              class="w-full px-4 py-3 flex items-center justify-between"
-              :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
+              class="w-full px-4 py-3 flex items-center justify-between hover:bg-surface-alt"
             >
               <div class="flex items-center gap-2">
                 <FileText class="w-5 h-5" />
@@ -261,20 +254,18 @@ ${consent}
             </button>
             <div
               v-if="expandedSections.has('protocol')"
-              class="px-4 py-3 border-t"
-              :class="preferencesStore.darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-gray-50'"
+              class="px-4 py-3 border-t border-border bg-canvas"
             >
               <div
                 v-for="section in sampleLanguage.protocol_amendment?.sections"
                 :key="section.section"
                 class="mb-4 last:mb-0"
               >
-                <p class="text-sm font-medium mb-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+                <p class="text-sm font-medium mb-2 text-text-secondary">
                   {{ section.section }}
                 </p>
                 <pre
-                  class="text-sm p-3 rounded bg-black/10 whitespace-pre-wrap font-mono"
-                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                  class="text-sm p-3 rounded bg-black/10 whitespace-pre-wrap font-mono text-text-secondary"
                 >{{ section.content }}</pre>
               </div>
             </div>
@@ -282,13 +273,11 @@ ${consent}
 
           <!-- Consent Form Additions -->
           <div
-            class="rounded-lg border overflow-hidden"
-            :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+            class="rounded-lg border overflow-hidden bg-surface border-border"
           >
             <button
               @click="toggleSection('consent')"
-              class="w-full px-4 py-3 flex items-center justify-between"
-              :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
+              class="w-full px-4 py-3 flex items-center justify-between hover:bg-surface-alt"
             >
               <div class="flex items-center gap-2">
                 <FileText class="w-5 h-5" />
@@ -301,24 +290,21 @@ ${consent}
             </button>
             <div
               v-if="expandedSections.has('consent')"
-              class="px-4 py-3 border-t space-y-4"
-              :class="preferencesStore.darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-gray-50'"
+              class="px-4 py-3 border-t space-y-4 border-border bg-canvas"
             >
               <div
                 v-for="variant in sampleLanguage.consent_form_additions?.variants"
                 :key="variant.name"
-                class="p-3 rounded-lg"
-                :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-white border border-gray-200'"
+                class="p-3 rounded-lg bg-surface border border-border"
               >
-                <p class="text-sm font-medium mb-1" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+                <p class="text-sm font-medium mb-1 text-text">
                   {{ variant.name }}
                 </p>
-                <p class="text-xs mb-2" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'">
+                <p class="text-xs mb-2 text-text-muted">
                   Use when: {{ variant.use_when }}
                 </p>
                 <pre
-                  class="text-sm p-3 rounded bg-black/10 whitespace-pre-wrap font-mono"
-                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                  class="text-sm p-3 rounded bg-black/10 whitespace-pre-wrap font-mono text-text-secondary"
                 >{{ variant.content }}</pre>
               </div>
             </div>
@@ -326,13 +312,11 @@ ${consent}
 
           <!-- Submission Checklist -->
           <div
-            class="rounded-lg border overflow-hidden"
-            :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+            class="rounded-lg border overflow-hidden bg-surface border-border"
           >
             <button
               @click="toggleSection('checklist')"
-              class="w-full px-4 py-3 flex items-center justify-between"
-              :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
+              class="w-full px-4 py-3 flex items-center justify-between hover:bg-surface-alt"
             >
               <div class="flex items-center gap-2">
                 <CheckCircle class="w-5 h-5" />
@@ -345,10 +329,9 @@ ${consent}
             </button>
             <div
               v-if="expandedSections.has('checklist')"
-              class="px-4 py-3 border-t"
-              :class="preferencesStore.darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-gray-50'"
+              class="px-4 py-3 border-t border-border bg-canvas"
             >
-              <ul class="space-y-2 text-sm" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+              <ul class="space-y-2 text-sm text-text-secondary">
                 <li v-for="(item, idx) in sampleLanguage.submission_checklist?.items" :key="idx">
                   {{ item }}
                 </li>
@@ -356,11 +339,10 @@ ${consent}
 
               <div
                 v-if="sampleLanguage.submission_checklist?.expected_timelines"
-                class="mt-4 pt-4 border-t"
-                :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-300'"
+                class="mt-4 pt-4 border-t border-border-strong"
               >
                 <p class="text-sm font-medium mb-2">Expected Timelines:</p>
-                <ul class="text-sm space-y-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+                <ul class="text-sm space-y-1 text-text-secondary">
                   <li v-for="(timeline, idx) in sampleLanguage.submission_checklist.expected_timelines" :key="idx">
                     • {{ timeline }}
                   </li>
@@ -373,23 +355,19 @@ ${consent}
         <!-- Institutional Resources -->
         <div
           v-if="appletConfig.institutional"
-          class="mt-6 p-4 rounded-lg border text-sm"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700'
-            : 'bg-gray-100 border-gray-200'"
+          class="mt-6 p-4 rounded-lg border text-sm bg-surface-alt border-border"
         >
-          <p class="font-medium mb-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+          <p class="font-medium mb-2 text-text-secondary">
             Your IRB Resources:
           </p>
-          <ul class="space-y-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+          <ul class="space-y-1 text-text-secondary">
             <li v-if="appletConfig.institutional.irb_portal_url">
               IRB Portal:
               <a
                 :href="appletConfig.institutional.irb_portal_url"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="hover:underline ml-1"
-                :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+                class="hover:underline ml-1 text-primary"
               >
                 {{ appletConfig.institutional.irb_portal_url }}
               </a>

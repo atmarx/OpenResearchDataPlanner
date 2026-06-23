@@ -40,10 +40,7 @@ const citationText = computed(() => {
     <!-- Back Link -->
     <router-link
       to="/"
-      class="inline-flex items-center gap-1 text-sm mb-6"
-      :class="preferencesStore.darkMode
-        ? 'text-gray-400 hover:text-white'
-        : 'text-gray-500 hover:text-gray-900'"
+      class="inline-flex items-center gap-1 text-sm mb-6 text-text-muted hover:text-text"
     >
       <ArrowLeft class="w-4 h-4" />
       Back to home
@@ -60,17 +57,11 @@ const citationText = computed(() => {
         >
           <Bot class="w-6 h-6" />
         </div>
-        <h1
-          class="text-2xl font-bold"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+        <h1 class="text-2xl font-bold text-text">
           AI in OpenDataPlanner
         </h1>
       </div>
-      <p
-        class="text-lg"
-        :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
-      >
+      <p class="text-lg text-text-secondary">
         {{ pageIntro }}
       </p>
     </div>
@@ -78,45 +69,24 @@ const citationText = computed(() => {
     <!-- Main Content -->
     <div class="space-y-8">
       <!-- Why This Page Exists -->
-      <section
-        class="rounded-xl border p-6"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
-      >
-        <h2
-          class="text-lg font-semibold mb-3"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+      <section class="rounded-xl border p-6 bg-surface border-border">
+        <h2 class="text-lg font-semibold mb-3 text-text">
           Why This Page Exists
         </h2>
-        <p
-          class="mb-4"
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
-        >
+        <p class="mb-4 text-text-secondary">
           OpenDataPlanner includes guidance on responsible AI use for researchers. We believe
           it's essential to practice what we teach. This page documents our own AI usage so
           you can see how we apply the same principles we recommend to faculty.
         </p>
-        <p
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
-        >
+        <p class="text-text-secondary">
           Transparency about AI involvement builds trust and helps others make informed
           decisions about using AI-assisted tools.
         </p>
       </section>
 
       <!-- How AI Was Used -->
-      <section
-        class="rounded-xl border p-6"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
-      >
-        <h2
-          class="text-lg font-semibold mb-4"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+      <section class="rounded-xl border p-6 bg-surface border-border">
+        <h2 class="text-lg font-semibold mb-4 text-text">
           How AI Was Used
         </h2>
 
@@ -132,16 +102,10 @@ const citationText = computed(() => {
               <Code class="w-5 h-5" />
             </div>
             <div>
-              <h3
-                class="font-medium"
-                :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-              >
+              <h3 class="font-medium text-text">
                 Code Generation
               </h3>
-              <p
-                class="text-sm mt-1"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-              >
+              <p class="text-sm mt-1 text-text-muted">
                 Vue components, JavaScript logic, and CSS styling were developed with
                 AI coding assistance (Claude by Anthropic via Claude Code). This accelerated
                 development while maintaining code quality through human review.
@@ -160,16 +124,10 @@ const citationText = computed(() => {
               <FileText class="w-5 h-5" />
             </div>
             <div>
-              <h3
-                class="font-medium"
-                :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-              >
+              <h3 class="font-medium text-text">
                 Documentation Drafts
               </h3>
-              <p
-                class="text-sm mt-1"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-              >
+              <p class="text-sm mt-1 text-text-muted">
                 Initial drafts of help text, guidance content, and technical documentation
                 were AI-assisted. All content was reviewed, edited, and verified by
                 {{ institutionName }} staff for accuracy and institutional fit.
@@ -180,16 +138,8 @@ const citationText = computed(() => {
       </section>
 
       <!-- Human Oversight -->
-      <section
-        class="rounded-xl border p-6"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
-      >
-        <h2
-          class="text-lg font-semibold mb-4"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+      <section class="rounded-xl border p-6 bg-surface border-border">
+        <h2 class="text-lg font-semibold mb-4 text-text">
           Human Oversight
         </h2>
 
@@ -202,18 +152,12 @@ const citationText = computed(() => {
           >
             <Users class="w-5 h-5" />
           </div>
-          <p
-            class="text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
-          >
+          <p class="text-sm text-text-secondary">
             Every piece of AI-generated output was reviewed by human developers. This includes:
           </p>
         </div>
 
-        <ul
-          class="space-y-2 ml-14"
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
-        >
+        <ul class="space-y-2 ml-14 text-text-secondary">
           <li class="flex items-start gap-2 text-sm">
             <CheckCircle
               class="w-4 h-4 mt-0.5 flex-shrink-0"
@@ -253,23 +197,12 @@ const citationText = computed(() => {
       </section>
 
       <!-- What AI Did NOT Do -->
-      <section
-        class="rounded-xl border p-6"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
-      >
-        <h2
-          class="text-lg font-semibold mb-4"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+      <section class="rounded-xl border p-6 bg-surface border-border">
+        <h2 class="text-lg font-semibold mb-4 text-text">
           What AI Did NOT Do
         </h2>
 
-        <ul
-          class="space-y-2"
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
-        >
+        <ul class="space-y-2 text-text-secondary">
           <li class="flex items-start gap-2 text-sm">
             <AlertCircle
               class="w-4 h-4 mt-0.5 flex-shrink-0"
@@ -351,22 +284,11 @@ const citationText = computed(() => {
       </section>
 
       <!-- Report Issues -->
-      <section
-        class="rounded-xl border p-6"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
-      >
-        <h2
-          class="text-lg font-semibold mb-3"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+      <section class="rounded-xl border p-6 bg-surface border-border">
+        <h2 class="text-lg font-semibold mb-3 text-text">
           Found an Issue?
         </h2>
-        <p
-          class="mb-4"
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
-        >
+        <p class="mb-4 text-text-secondary">
           If you notice errors, have concerns, or want to suggest improvements, please let us know.
           Your feedback helps us improve the tool for everyone.
         </p>
@@ -375,10 +297,7 @@ const citationText = computed(() => {
             href="https://github.com/your-org/opendataplanner/issues"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'bg-gray-700 text-white hover:bg-gray-600'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-surface-alt text-text-secondary hover:bg-border-strong"
           >
             Report on GitHub
             <ExternalLink class="w-4 h-4" />
@@ -396,29 +315,15 @@ const citationText = computed(() => {
       </section>
 
       <!-- Citation -->
-      <section
-        class="rounded-xl border p-6"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
-      >
-        <h2
-          class="text-lg font-semibold mb-3"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+      <section class="rounded-xl border p-6 bg-surface border-border">
+        <h2 class="text-lg font-semibold mb-3 text-text">
           Citation
         </h2>
-        <p
-          class="mb-3 text-sm"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-        >
+        <p class="mb-3 text-sm text-text-muted">
           If referencing this tool's development approach:
         </p>
         <div
-          class="p-3 rounded-lg font-mono text-sm whitespace-pre-line"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-900 text-gray-300'
-            : 'bg-gray-100 text-gray-700'"
+          class="p-3 rounded-lg font-mono text-sm whitespace-pre-line bg-canvas text-text-secondary"
         >{{ citationText.trim() }}</div>
       </section>
     </div>

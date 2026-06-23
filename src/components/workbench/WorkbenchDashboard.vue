@@ -126,52 +126,36 @@ function getStatusBadge(status) {
         <div class="relative mb-4">
           <button
             @click="showPlanSwitcher = !showPlanSwitcher"
-            class="w-full flex items-center justify-between px-4 py-3 rounded-lg border text-left"
-            :class="preferencesStore.darkMode
-              ? 'bg-gray-800 border-gray-700 text-white hover:border-gray-600'
-              : 'bg-white border-gray-200 text-gray-900 hover:border-gray-300'"
+            class="w-full flex items-center justify-between px-4 py-3 rounded-lg border text-left bg-surface border-border text-text hover:border-border-strong"
           >
             <div class="flex-1 min-w-0">
               <div class="text-sm font-medium truncate">
                 {{ workbenchStore.activePlan?.projectName || 'Select a plan' }}
               </div>
-              <div
-                class="text-xs"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-              >
+              <div class="text-xs text-text-muted">
                 {{ workbenchStore.planCount }} plan{{ workbenchStore.planCount !== 1 ? 's' : '' }} loaded
               </div>
             </div>
             <ChevronDown
-              class="w-4 h-4 flex-shrink-0 ml-2 transition-transform"
-              :class="[
-                preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500',
-                showPlanSwitcher ? 'rotate-180' : ''
-              ]"
+              class="w-4 h-4 flex-shrink-0 ml-2 transition-transform text-text-muted"
+              :class="showPlanSwitcher ? 'rotate-180' : ''"
             />
           </button>
 
           <!-- Dropdown Menu -->
           <div
             v-if="showPlanSwitcher"
-            class="absolute z-10 w-full mt-1 rounded-lg border shadow-lg max-h-64 overflow-y-auto"
-            :class="preferencesStore.darkMode
-              ? 'bg-gray-800 border-gray-700'
-              : 'bg-white border-gray-200'"
+            class="absolute z-10 w-full mt-1 rounded-lg border shadow-lg max-h-64 overflow-y-auto bg-surface border-border"
           >
             <div
               v-for="plan in workbenchStore.plans"
               :key="plan.id"
               class="px-4 py-2 cursor-pointer"
-              :class="[
+              :class="
                 plan.id === workbenchStore.activePlanId
-                  ? (preferencesStore.darkMode
-                      ? 'bg-indigo-900/50 text-indigo-200'
-                      : 'bg-indigo-50 text-indigo-700')
-                  : (preferencesStore.darkMode
-                      ? 'hover:bg-gray-700 text-gray-300'
-                      : 'hover:bg-gray-50 text-gray-700')
-              ]"
+                  ? 'bg-primary text-on-primary'
+                  : 'hover:bg-surface-alt text-text-secondary'
+              "
               @click="workbenchStore.setActivePlan(plan.id); showPlanSwitcher = false"
             >
               <div class="flex items-center justify-between">
@@ -190,15 +174,11 @@ function getStatusBadge(status) {
         <!-- Compact Import Zone -->
         <div
           class="rounded-lg border-2 border-dashed p-4 text-center transition-colors cursor-pointer"
-          :class="[
+          :class="
             isDragging
-              ? (preferencesStore.darkMode
-                  ? 'border-indigo-500 bg-indigo-900/20'
-                  : 'border-indigo-400 bg-indigo-50')
-              : (preferencesStore.darkMode
-                  ? 'border-gray-700 hover:border-gray-600'
-                  : 'border-gray-300 hover:border-gray-400')
-          ]"
+              ? 'border-primary bg-surface-alt'
+              : 'border-border-strong hover:border-border-strong'
+          "
           @dragover="handleDragOver"
           @dragleave="handleDragLeave"
           @drop="handleDrop"
@@ -213,14 +193,8 @@ function getStatusBadge(status) {
             @change="handleFileSelect"
           />
 
-          <Upload
-            class="w-6 h-6 mx-auto mb-2"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
-          />
-          <p
-            class="text-xs"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-          >
+          <Upload class="w-6 h-6 mx-auto mb-2 text-text-muted" />
+          <p class="text-xs text-text-muted">
             Drop or click to import
           </p>
 
@@ -234,23 +208,16 @@ function getStatusBadge(status) {
           <div
             v-for="plan in workbenchStore.plans"
             :key="plan.id"
-            class="rounded-lg border p-3 cursor-pointer transition-colors"
-            :class="[
+            class="rounded-lg border p-3 cursor-pointer transition-colors bg-surface"
+            :class="
               plan.id === workbenchStore.activePlanId
-                ? (preferencesStore.darkMode
-                    ? 'bg-indigo-900/30 border-indigo-700'
-                    : 'bg-indigo-50 border-indigo-200')
-                : (preferencesStore.darkMode
-                    ? 'bg-gray-800 border-gray-700 hover:border-gray-600'
-                    : 'bg-white border-gray-200 hover:border-gray-300')
-            ]"
+                ? 'border-primary'
+                : 'border-border hover:border-border-strong'
+            "
             @click="workbenchStore.setActivePlan(plan.id)"
           >
             <div class="flex items-center justify-between gap-2">
-              <span
-                class="text-sm font-medium truncate"
-                :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-              >
+              <span class="text-sm font-medium truncate text-text">
                 {{ plan.projectName }}
               </span>
               <span
@@ -260,10 +227,7 @@ function getStatusBadge(status) {
                 {{ getStatusBadge(plan.status).label }}
               </span>
             </div>
-            <div
-              class="mt-1 text-xs flex items-center gap-2"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-            >
+            <div class="mt-1 text-xs flex items-center gap-2 text-text-muted">
               <span v-if="plan.data?.totals?.annual">
                 ${{ plan.data.totals.annual.toLocaleString() }}/yr
               </span>
@@ -285,15 +249,11 @@ function getStatusBadge(status) {
       <!-- Import Zone -->
       <div
         class="rounded-xl border-2 border-dashed p-8 text-center transition-colors cursor-pointer"
-        :class="[
+        :class="
           isDragging
-            ? (preferencesStore.darkMode
-                ? 'border-indigo-500 bg-indigo-900/20'
-                : 'border-indigo-400 bg-indigo-50')
-            : (preferencesStore.darkMode
-                ? 'border-gray-700 hover:border-gray-600'
-                : 'border-gray-300 hover:border-gray-400')
-        ]"
+            ? 'border-primary bg-surface-alt'
+            : 'border-border-strong hover:border-border-strong'
+        "
         @dragover="handleDragOver"
         @dragleave="handleDragLeave"
         @drop="handleDrop"
@@ -308,20 +268,11 @@ function getStatusBadge(status) {
           @change="handleFileSelect"
         />
 
-        <Upload
-          class="w-10 h-10 mx-auto mb-3"
-          :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
-        />
-        <p
-          class="text-sm font-medium"
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-        >
+        <Upload class="w-10 h-10 mx-auto mb-3 text-text-muted" />
+        <p class="text-sm font-medium text-text-secondary">
           Drop plan files here or click to browse
         </p>
-        <p
-          class="mt-1 text-xs"
-          :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
-        >
+        <p class="mt-1 text-xs text-text-muted">
           JSON files exported from OpenDataPlanner
         </p>
 
@@ -331,20 +282,9 @@ function getStatusBadge(status) {
       </div>
 
       <!-- Empty State Message -->
-      <div
-        class="mt-8 rounded-lg border p-8 text-center"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
-      >
-        <FileJson
-          class="w-12 h-12 mx-auto mb-3"
-          :class="preferencesStore.darkMode ? 'text-gray-600' : 'text-gray-300'"
-        />
-        <p
-          class="text-sm"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-        >
+      <div class="mt-8 rounded-lg border p-8 text-center bg-surface border-border">
+        <FileJson class="w-12 h-12 mx-auto mb-3 text-border-strong" />
+        <p class="text-sm text-text-muted">
           No plans loaded yet. Import a JSON file to get started.
         </p>
       </div>

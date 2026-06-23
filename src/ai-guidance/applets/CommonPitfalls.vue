@@ -268,11 +268,8 @@ function getNextApplet() {
     :get-next-applet="getNextApplet"
   >
     <!-- Intro -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <p class="text-sm text-text-secondary">
         Different AI use cases have different failure modes. Generic warnings aren't as useful
         as specific, contextual guidance. Select your task type for a targeted checklist.
       </p>
@@ -280,7 +277,7 @@ function getNextApplet() {
 
     <!-- Task Type Selection -->
     <div class="mb-6">
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         Select Task Type
       </h3>
       <div class="grid gap-2 sm:grid-cols-2">
@@ -288,21 +285,19 @@ function getNextApplet() {
           v-for="task in allTaskTypes"
           :key="task.id"
           @click="selectTask(task.id)"
-          class="p-3 rounded-lg border-2 text-left transition-all"
+          class="p-3 rounded-lg border-2 text-left transition-all bg-surface"
           :class="[
             selectedTask === task.id
-              ? (preferencesStore.darkMode ? 'bg-blue-900/30 border-blue-500' : 'bg-blue-50 border-blue-400')
-              : (preferencesStore.darkMode ? 'border-gray-700 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300'),
-            preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'
+              ? 'border-primary'
+              : 'border-border hover:border-border-strong'
           ]"
         >
           <div class="flex items-center gap-2">
             <component
               :is="task.icon"
-              class="w-4 h-4 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="w-4 h-4 flex-shrink-0 text-text-muted"
             />
-            <span class="font-medium text-sm" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+            <span class="font-medium text-sm text-text">
               {{ task.name }}
             </span>
           </div>
@@ -318,7 +313,7 @@ function getNextApplet() {
           class="w-5 h-5"
           :class="preferencesStore.darkMode ? 'text-orange-400' : 'text-orange-600'"
         />
-        <h3 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+        <h3 class="font-semibold text-text">
           {{ currentChecklist.name }} Checklist
         </h3>
       </div>
@@ -332,18 +327,18 @@ function getNextApplet() {
           :class="[
             isItemChecked(item)
               ? (preferencesStore.darkMode ? 'bg-green-900/20 border-green-700' : 'bg-green-50 border-green-300')
-              : (preferencesStore.darkMode ? 'bg-gray-800 border-gray-700 hover:border-gray-600' : 'bg-white border-gray-200 hover:border-gray-300')
+              : 'bg-surface border-border hover:border-border-strong'
           ]"
         >
           <div
             class="w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center"
             :class="isItemChecked(item)
               ? 'bg-green-500 border-green-500'
-              : (preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-300')"
+              : 'border-border-strong'"
           >
             <CheckCircle v-if="isItemChecked(item)" class="w-3 h-3 text-white" />
           </div>
-          <span class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+          <span class="text-sm text-text-secondary">
             {{ item }}
           </span>
         </div>
@@ -353,8 +348,7 @@ function getNextApplet() {
     <!-- Pipeline/Automation Section -->
     <div
       v-if="selectedTask"
-      class="p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+      class="p-4 rounded-lg border bg-surface border-border"
     >
       <button
         @click="showPipeline = !showPipeline"
@@ -362,19 +356,18 @@ function getNextApplet() {
       >
         <div class="flex items-center gap-2">
           <Workflow class="w-5 h-5" :class="preferencesStore.darkMode ? 'text-purple-400' : 'text-purple-600'" />
-          <h3 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+          <h3 class="font-semibold text-text">
             Using AI in a Pipeline/Automation?
           </h3>
         </div>
         <component
           :is="showPipeline ? ChevronDown : ChevronRight"
-          class="w-5 h-5"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+          class="w-5 h-5 text-text-muted"
         />
       </button>
 
       <div v-if="showPipeline" class="mt-4 space-y-2">
-        <p class="text-sm mb-3" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+        <p class="text-sm mb-3 text-text-secondary">
           Production systems with automated AI calls have different risk profiles than interactive use.
         </p>
         <div
@@ -385,18 +378,18 @@ function getNextApplet() {
           :class="[
             isPipelineItemChecked(item)
               ? (preferencesStore.darkMode ? 'bg-purple-900/20 border-purple-700' : 'bg-purple-50 border-purple-300')
-              : (preferencesStore.darkMode ? 'bg-gray-700 border-gray-600 hover:border-gray-500' : 'bg-gray-50 border-gray-200 hover:border-gray-300')
+              : 'bg-surface-alt border-border hover:border-border-strong'
           ]"
         >
           <div
             class="w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center"
             :class="isPipelineItemChecked(item)
               ? 'bg-purple-500 border-purple-500'
-              : (preferencesStore.darkMode ? 'border-gray-500' : 'border-gray-300')"
+              : 'border-border-strong'"
           >
             <CheckCircle v-if="isPipelineItemChecked(item)" class="w-3 h-3 text-white" />
           </div>
-          <span class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+          <span class="text-sm text-text-secondary">
             {{ item }}
           </span>
         </div>

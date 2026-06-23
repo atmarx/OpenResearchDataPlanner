@@ -42,10 +42,7 @@ const fallbackContact = computed(() => {
         <Shield class="w-8 h-8 text-red-500" />
       </div>
 
-      <h2
-        class="text-2xl font-bold mb-4"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-      >
+      <h2 class="text-2xl font-bold mb-4 text-text">
         Consultation Required
       </h2>
 
@@ -67,10 +64,7 @@ const fallbackContact = computed(() => {
         </p>
       </div>
 
-      <p
-        class="mb-8"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-      >
+      <p class="mb-8 text-text-secondary">
         Projects at this security tier require custom infrastructure and pricing
         that cannot be estimated through this self-service tool. Our security
         team will work with you to:
@@ -84,7 +78,7 @@ const fallbackContact = computed(() => {
           >
             <span class="text-blue-500 text-sm font-medium">1</span>
           </span>
-          <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+          <span class="text-text-secondary">
             Assess your specific security and compliance requirements
           </span>
         </li>
@@ -95,7 +89,7 @@ const fallbackContact = computed(() => {
           >
             <span class="text-blue-500 text-sm font-medium">2</span>
           </span>
-          <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+          <span class="text-text-secondary">
             Design an appropriate secure enclave configuration
           </span>
         </li>
@@ -106,7 +100,7 @@ const fallbackContact = computed(() => {
           >
             <span class="text-blue-500 text-sm font-medium">3</span>
           </span>
-          <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+          <span class="text-text-secondary">
             Provide a detailed cost estimate for your proposal
           </span>
         </li>
@@ -117,7 +111,7 @@ const fallbackContact = computed(() => {
           >
             <span class="text-blue-500 text-sm font-medium">4</span>
           </span>
-          <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+          <span class="text-text-secondary">
             Help draft appropriate DMP language for your grant
           </span>
         </li>
@@ -128,7 +122,7 @@ const fallbackContact = computed(() => {
         <a
           v-if="consultationEmail"
           :href="'mailto:' + consultationEmail + '?subject=Secure%20Enclave%20Consultation%20Request'"
-          class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg hover:bg-primary-dark"
         >
           <Mail class="w-5 h-5" />
           Email {{ consultationEmail }}
@@ -150,7 +144,7 @@ const fallbackContact = computed(() => {
           <a
             v-if="fallbackContact.type === 'email'"
             :href="'mailto:' + fallbackContact.value + '?subject=Secure%20Enclave%20Consultation%20Request'"
-            class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg hover:bg-primary-dark"
           >
             <Mail class="w-5 h-5" />
             Contact {{ fallbackContact.label || fallbackContact.value }}
@@ -160,7 +154,7 @@ const fallbackContact = computed(() => {
             :href="fallbackContact.value"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg hover:bg-primary-dark"
           >
             <ExternalLink class="w-5 h-5" />
             {{ fallbackContact.label || 'Contact Us' }}
@@ -168,20 +162,14 @@ const fallbackContact = computed(() => {
         </div>
       </div>
 
-      <p
-        class="text-sm mb-8"
-        :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
-      >
+      <p class="text-sm mb-8 text-text-muted">
         Please allow 4-8 weeks lead time for secure enclave provisioning.
       </p>
 
       <!-- Back button -->
       <button
         @click="emit('back')"
-        class="inline-flex items-center gap-2"
-        :class="preferencesStore.darkMode
-          ? 'text-gray-400 hover:text-gray-200'
-          : 'text-gray-600 hover:text-gray-900'"
+        class="inline-flex items-center gap-2 text-text-secondary hover:text-text"
       >
         <ArrowLeft class="w-4 h-4" />
         Back to tier selection

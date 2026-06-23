@@ -269,11 +269,8 @@ function getNextApplet() {
     :get-next-applet="getNextApplet"
   >
     <!-- Intro -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <p class="text-sm text-text-secondary">
         Faculty need to make deliberate decisions about AI use in their courses,
         communicate clearly to students, and align with institutional norms.
         This tool helps you develop a coherent policy.
@@ -282,17 +279,16 @@ function getNextApplet() {
 
     <!-- Decision Questions -->
     <div class="mb-6">
-      <h3 class="font-semibold mb-4" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-4 text-text">
         Consider Your Context
       </h3>
       <div class="space-y-4">
         <div
           v-for="question in decisionQuestions"
           :key="question.id"
-          class="p-4 rounded-lg border"
-          :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+          class="p-4 rounded-lg border bg-surface border-border"
         >
-          <h4 class="font-medium mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+          <h4 class="font-medium mb-3 text-text">
             {{ question.question }}
           </h4>
           <div class="grid gap-2 sm:grid-cols-2">
@@ -304,7 +300,7 @@ function getNextApplet() {
               :class="[
                 answers[question.id] === option.suggests
                   ? (preferencesStore.darkMode ? 'bg-blue-900/30 border-blue-500' : 'bg-blue-50 border-blue-400')
-                  : (preferencesStore.darkMode ? 'border-gray-600 hover:border-gray-500' : 'border-gray-200 hover:border-gray-300')
+                  : 'border-border hover:border-border-strong'
               ]"
             >
               {{ option.label }}
@@ -329,7 +325,7 @@ function getNextApplet() {
 
     <!-- Policy Spectrum -->
     <div class="mb-6">
-      <h3 class="font-semibold mb-4" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-4 text-text">
         Select Your Approach
       </h3>
       <div class="space-y-3">
@@ -340,7 +336,7 @@ function getNextApplet() {
           class="w-full p-4 rounded-lg border-2 text-left transition-all"
           :class="[
             getApproachColorClasses(approach, selectedApproach === approach.id),
-            preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'
+            'bg-surface'
           ]"
         >
           <div class="flex items-start gap-3">
@@ -357,7 +353,7 @@ function getNextApplet() {
             />
             <div class="flex-1">
               <div class="flex items-center gap-2">
-                <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+                <h4 class="font-medium text-text">
                   {{ approach.name }}
                 </h4>
                 <span
@@ -368,10 +364,10 @@ function getNextApplet() {
                   Suggested
                 </span>
               </div>
-              <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+              <p class="text-sm mt-1 text-text-secondary">
                 {{ approach.description }}
               </p>
-              <p class="text-xs mt-1" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'">
+              <p class="text-xs mt-1 text-text-muted">
                 Best for: {{ approach.bestFor }}
               </p>
             </div>
@@ -383,10 +379,9 @@ function getNextApplet() {
     <!-- Policy Components Checklist -->
     <div
       v-if="selectedApproach"
-      class="mb-6 p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+      class="mb-6 p-4 rounded-lg border bg-surface border-border"
     >
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         Policy Components to Address
       </h3>
       <div class="space-y-2">
@@ -394,18 +389,17 @@ function getNextApplet() {
           v-for="component in policyComponents"
           :key="component.id"
           @click="toggleComponent(component.id)"
-          class="flex items-center gap-3 p-2 rounded cursor-pointer transition-colors"
-          :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
+          class="flex items-center gap-3 p-2 rounded cursor-pointer transition-colors hover:bg-surface-alt"
         >
           <div
             class="w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center"
             :class="isComponentChecked(component.id)
               ? 'bg-green-500 border-green-500'
-              : (preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-300')"
+              : 'border-border-strong'"
           >
             <CheckCircle v-if="isComponentChecked(component.id)" class="w-3 h-3 text-white" />
           </div>
-          <span class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+          <span class="text-sm text-text-secondary">
             {{ component.label }}
           </span>
         </div>
@@ -415,11 +409,10 @@ function getNextApplet() {
     <!-- Template Syllabus Language -->
     <div
       v-if="selectedApproach"
-      class="p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+      class="p-4 rounded-lg border bg-surface border-border"
     >
       <div class="flex items-center justify-between mb-3">
-        <h3 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+        <h3 class="font-semibold text-text">
           Template Syllabus Language
         </h3>
         <button
@@ -427,17 +420,16 @@ function getNextApplet() {
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
           :class="copiedLanguage
             ? (preferencesStore.darkMode ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-700')
-            : (preferencesStore.darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200')"
+            : 'bg-surface-alt text-text-secondary hover:bg-border'"
         >
           <component :is="copiedLanguage ? CheckCircle : Copy" class="w-4 h-4" />
           {{ copiedLanguage ? 'Copied!' : 'Copy' }}
         </button>
       </div>
       <pre
-        class="text-sm p-3 rounded-lg overflow-x-auto whitespace-pre-wrap"
-        :class="preferencesStore.darkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-50 text-gray-700'"
+        class="text-sm p-3 rounded-lg overflow-x-auto whitespace-pre-wrap bg-canvas text-text-secondary"
       >{{ syllabusLanguage }}</pre>
-      <p class="text-xs mt-2" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'">
+      <p class="text-xs mt-2 text-text-muted">
         Customize this template for your specific course and assignments.
       </p>
     </div>

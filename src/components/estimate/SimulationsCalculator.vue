@@ -98,12 +98,12 @@ const presets = computed(() => {
       <div class="space-y-4">
         <!-- Package -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Simulation Package
           </label>
           <select
             v-model="inputs.package"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           >
             <option :value="null" disabled>Select package...</option>
             <option
@@ -114,7 +114,7 @@ const presets = computed(() => {
               {{ p.label }}
             </option>
           </select>
-          <p v-if="inputs.package" class="mt-1 text-xs text-gray-500">
+          <p v-if="inputs.package" class="mt-1 text-xs text-text-muted">
             {{ config?.packages?.find(p => p.label === inputs.package)?.description }}
           </p>
         </div>
@@ -122,19 +122,19 @@ const presets = computed(() => {
         <!-- MD-specific inputs -->
         <template v-if="inputType === 'md'">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-text-secondary mb-1">
               Simulation Time (nanoseconds)
             </label>
             <input
               v-model.number="inputs.nanoseconds"
               type="number"
               min="1"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-text-secondary mb-1">
               System Size (atoms)
             </label>
             <input
@@ -142,7 +142,7 @@ const presets = computed(() => {
               type="number"
               min="1000"
               step="1000"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             />
           </div>
         </template>
@@ -150,14 +150,14 @@ const presets = computed(() => {
         <!-- CFD-specific inputs -->
         <template v-if="inputType === 'cfd'">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-text-secondary mb-1">
               Simulated Hours
             </label>
             <input
               v-model.number="inputs.sim_hours"
               type="number"
               min="1"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             />
           </div>
         </template>
@@ -165,20 +165,20 @@ const presets = computed(() => {
         <!-- QC-specific inputs -->
         <template v-if="inputType === 'qc'">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-text-secondary mb-1">
               Number of Calculations
             </label>
             <input
               v-model.number="inputs.calculations"
               type="number"
               min="1"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             />
           </div>
         </template>
 
         <!-- Prompt to select package first -->
-        <div v-if="!inputs.package" class="text-sm text-gray-500 italic">
+        <div v-if="!inputs.package" class="text-sm text-text-muted italic">
           Select a simulation package to see specific parameters.
         </div>
       </div>

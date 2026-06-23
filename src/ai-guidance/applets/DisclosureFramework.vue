@@ -381,11 +381,8 @@ function getNextApplet() {
     :get-next-applet="getNextApplet"
   >
     <!-- Intro -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <p class="text-sm text-text-secondary">
         Norms and requirements for AI disclosure vary by context. Some venues require it;
         others prohibit AI use entirely. This wizard helps you determine what applies to your situation.
       </p>
@@ -397,7 +394,7 @@ function getNextApplet() {
           <div class="flex items-start gap-4">
             <component :is="result.icon" class="w-8 h-8 flex-shrink-0" />
             <div class="flex-1">
-              <h3 class="text-xl font-bold mb-2" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <h3 class="text-xl font-bold mb-2 text-text">
                 {{ result.label }}
               </h3>
               <p class="mb-4">{{ result.description }}</p>
@@ -415,8 +412,7 @@ function getNextApplet() {
                 <span
                   v-for="flag in flags"
                   :key="flag"
-                  class="px-2 py-1 text-xs rounded-full font-medium uppercase"
-                  :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700'"
+                  class="px-2 py-1 text-xs rounded-full font-medium uppercase bg-surface-alt text-text-secondary"
                 >
                   {{ flag.replace(/-/g, ' ') }}
                 </span>
@@ -428,11 +424,10 @@ function getNextApplet() {
         <!-- Sample Disclosure Language -->
         <div
           v-if="['required', 'recommended', 'emerging'].includes(result.requirement)"
-          class="mt-6 p-4 rounded-lg border"
-          :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+          class="mt-6 p-4 rounded-lg border bg-surface border-border"
         >
           <div class="flex items-center justify-between mb-3">
-            <h4 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+            <h4 class="font-semibold text-text">
               Sample Disclosure Language
             </h4>
             <button
@@ -440,19 +435,16 @@ function getNextApplet() {
               class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
               :class="copiedLanguage
                 ? (preferencesStore.darkMode ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-700')
-                : (preferencesStore.darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200')"
+                : 'bg-surface-alt text-text-secondary hover:bg-border'"
             >
               <component :is="copiedLanguage ? CheckCircle : Copy" class="w-4 h-4" />
               {{ copiedLanguage ? 'Copied!' : 'Copy' }}
             </button>
           </div>
-          <blockquote
-            class="text-sm italic p-3 rounded-lg"
-            :class="preferencesStore.darkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-50 text-gray-700'"
-          >
+          <blockquote class="text-sm italic p-3 rounded-lg bg-canvas text-text-secondary">
             "{{ sampleDisclosureLanguage }}"
           </blockquote>
-          <p class="text-xs mt-2" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'">
+          <p class="text-xs mt-2 text-text-muted">
             Customize this template with specific details about your AI use.
           </p>
         </div>

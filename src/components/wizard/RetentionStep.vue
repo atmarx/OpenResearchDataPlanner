@@ -78,13 +78,10 @@ if (selectedSchedules.value.length === 0) {
 <template>
   <div class="p-8">
     <div class="mb-8">
-      <h2
-        class="text-2xl font-bold mb-2"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-      >
+      <h2 class="text-2xl font-bold mb-2 text-text">
         Data Retention Requirements
       </h2>
-      <p :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-text-secondary">
         Select all retention requirements that apply to your research.
         The longest requirement determines your archive duration.
       </p>
@@ -96,42 +93,29 @@ if (selectedSchedules.value.length === 0) {
         v-for="schedule in applicableSchedules"
         :key="schedule.slug"
         @click="toggleSchedule(schedule.slug)"
-        class="w-full text-left p-4 rounded-lg border-2 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        class="w-full text-left p-4 rounded-lg border-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         :class="[
           isSelected(schedule.slug)
             ? preferencesStore.darkMode
-              ? 'border-blue-500 bg-blue-900/30'
-              : 'border-blue-500 bg-blue-50'
-            : preferencesStore.darkMode
-              ? 'border-gray-600 bg-gray-700 hover:border-gray-500'
-              : 'border-gray-200 bg-white hover:border-gray-300'
+              ? 'border-primary bg-blue-900/30'
+              : 'border-primary bg-blue-50'
+            : 'border-border bg-surface hover:border-border-strong'
         ]"
       >
         <div class="flex items-start justify-between">
           <div class="flex-1">
             <div class="flex items-center gap-2">
-              <h3
-                class="font-medium"
-                :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-              >
+              <h3 class="font-medium text-text">
                 {{ schedule.name }}
               </h3>
-              <span
-                class="text-sm px-2 py-0.5 rounded"
-                :class="preferencesStore.darkMode
-                  ? 'bg-gray-600 text-gray-300'
-                  : 'bg-gray-100 text-gray-600'"
-              >
+              <span class="text-sm px-2 py-0.5 rounded bg-surface-alt text-text-secondary">
                 {{ schedule.years }} years
               </span>
-              <span v-if="schedule.is_default" class="text-xs text-blue-500">
+              <span v-if="schedule.is_default" class="text-xs text-primary">
                 (Default)
               </span>
             </div>
-            <p
-              class="text-sm mt-1"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-            >
+            <p class="text-sm mt-1 text-text-secondary">
               {{ schedule.description }}
             </p>
             <a
@@ -140,7 +124,7 @@ if (selectedSchedules.value.length === 0) {
               target="_blank"
               rel="noopener noreferrer"
               @click.stop
-              class="inline-flex items-center gap-1 text-sm text-blue-500 hover:underline mt-2"
+              class="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-2"
             >
               {{ schedule.regulation }}
               <ExternalLink class="w-3 h-3" />
@@ -151,11 +135,11 @@ if (selectedSchedules.value.length === 0) {
             class="ml-4 w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0"
             :class="[
               isSelected(schedule.slug)
-                ? 'bg-blue-600 border-blue-600'
-                : preferencesStore.darkMode ? 'border-gray-500' : 'border-gray-300'
+                ? 'bg-primary border-primary'
+                : 'border-border-strong'
             ]"
           >
-            <Check v-if="isSelected(schedule.slug)" class="w-4 h-4 text-white" />
+            <Check v-if="isSelected(schedule.slug)" class="w-4 h-4 text-on-primary" />
           </div>
         </div>
       </button>
@@ -167,7 +151,7 @@ if (selectedSchedules.value.length === 0) {
       :class="preferencesStore.darkMode ? 'bg-blue-900/30' : 'bg-blue-50'"
     >
       <div class="flex items-start gap-3">
-        <Info class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+        <Info class="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
         <div>
           <p
             class="font-medium"
@@ -190,34 +174,22 @@ if (selectedSchedules.value.length === 0) {
     </div>
 
     <!-- Archive ratio setting -->
-    <div
-      class="rounded-lg p-4"
-      :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-50'"
-    >
+    <div class="rounded-lg p-4 bg-surface-alt">
       <div class="flex items-center justify-between mb-2">
-        <label
-          class="font-medium"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+        <label class="font-medium text-text">
           Archive Storage Ratio
         </label>
-        <label
-          class="flex items-center gap-2 text-sm"
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-        >
+        <label class="flex items-center gap-2 text-sm text-text-secondary">
           <input
             v-model="useCustomRatio"
             type="checkbox"
-            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            class="rounded border-border-strong text-primary focus:ring-primary"
           />
           Custom ratio
         </label>
       </div>
 
-      <p
-        class="text-sm mb-3"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-      >
+      <p class="text-sm mb-3 text-text-secondary">
         {{ configStore.config?.retention?.archive_settings?.custom_ratio_prompt }}
       </p>
 
@@ -231,10 +203,7 @@ if (selectedSchedules.value.length === 0) {
           :disabled="!useCustomRatio"
           class="flex-1"
         />
-        <span
-          class="text-lg font-medium w-16 text-right"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+        <span class="text-lg font-medium w-16 text-right text-text">
           {{ Math.round(archiveRatio * 100) }}%
         </span>
       </div>

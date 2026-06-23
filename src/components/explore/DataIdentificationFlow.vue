@@ -255,18 +255,12 @@ function applyResult() {
     <div v-if="step === 'start'" class="space-y-6">
       <div class="text-center">
         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
-          <HelpCircle class="w-8 h-8 text-blue-600" />
+          <HelpCircle class="w-8 h-8 text-primary" />
         </div>
-        <h2
-          class="text-2xl font-bold mb-3"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+        <h2 class="text-2xl font-bold mb-3 text-text">
           Is Your Data De-identified?
         </h2>
-        <p
-          class="max-w-xl mx-auto"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <p class="max-w-xl mx-auto text-text-secondary">
           Many researchers believe they've "de-identified" data when they've only <strong>encoded</strong> it.
           This distinction matters for HIPAA, FERPA, and IRB compliance.
           Let's figure out your data's actual status.
@@ -276,31 +270,17 @@ function applyResult() {
       <!-- Two-column layout: Who this applies to + Common confusion -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Who this applies to -->
-        <div
-          class="p-4 rounded-lg text-left text-sm"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border border-gray-700'
-            : 'bg-blue-50 border border-blue-200'"
-        >
-          <p
-            class="font-medium mb-2"
-            :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-800'"
-          >
+        <div class="p-4 rounded-lg text-left text-sm bg-surface border border-border">
+          <p class="font-medium mb-2 text-primary">
             This applies to research involving:
           </p>
-          <ul
-            class="list-disc list-inside space-y-1"
-            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-blue-900'"
-          >
+          <ul class="list-disc list-inside space-y-1 text-text-secondary">
             <li>Health or medical data (EMR extracts, claims, clinical trials)</li>
             <li>Student records (grades, transcripts, assessments)</li>
             <li>Human subjects research (surveys, interviews, observations)</li>
             <li>Employee or HR data (evaluations, payroll, benefits)</li>
           </ul>
-          <p
-            class="mt-3 text-xs italic"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-blue-600'"
-          >
+          <p class="mt-3 text-xs italic text-text-muted">
             Not applicable: lab instrument data, simulations, climate/environmental
             measurements, or published aggregate datasets.
           </p>
@@ -342,7 +322,7 @@ function applyResult() {
 
       <button
         @click="next"
-        class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+        class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary-dark transition-colors"
       >
         Check My Data Status
         <ArrowRight class="w-5 h-5" />
@@ -352,15 +332,10 @@ function applyResult() {
     <!-- Step 1: Direct Identifiers -->
     <div v-else-if="step === 'direct-ids'" class="space-y-6">
       <div>
-        <h2
-          class="text-xl font-bold mb-2"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+        <h2 class="text-xl font-bold mb-2 text-text">
           Does your data contain any direct identifiers?
         </h2>
-        <p
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <p class="text-text-secondary">
           Direct identifiers can identify someone on their own. Check all that appear in your data.
         </p>
       </div>
@@ -373,16 +348,14 @@ function applyResult() {
           class="p-3 text-left text-sm rounded-lg border transition-colors"
           :class="directIdentifiers.includes(option.id)
             ? 'bg-blue-100 border-blue-300 text-blue-900'
-            : (preferencesStore.darkMode
-              ? 'bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600'
-              : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300')"
+            : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
         >
           <span class="flex items-center gap-2">
             <span
               class="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0"
               :class="directIdentifiers.includes(option.id)
-                ? 'bg-blue-600 border-blue-600 text-white'
-                : (preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-300')"
+                ? 'bg-primary border-primary text-on-primary'
+                : 'border-border-strong'"
             >
               <CheckCircle v-if="directIdentifiers.includes(option.id)" class="w-3 h-3" />
             </span>
@@ -394,17 +367,14 @@ function applyResult() {
       <div class="flex items-center justify-between pt-4">
         <button
           @click="back"
-          class="flex items-center gap-2"
-          :class="preferencesStore.darkMode
-            ? 'text-gray-400 hover:text-gray-300'
-            : 'text-gray-500 hover:text-gray-700'"
+          class="flex items-center gap-2 text-text-muted hover:text-text"
         >
           <ArrowLeft class="w-4 h-4" />
           Back
         </button>
         <button
           @click="next"
-          class="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+          class="flex items-center gap-2 px-6 py-2 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary-dark transition-colors"
         >
           {{ directIdentifiers.length > 0 ? 'Continue' : 'None of these' }}
           <ArrowRight class="w-5 h-5" />
@@ -415,15 +385,10 @@ function applyResult() {
     <!-- Step 2: Uses codes? -->
     <div v-else-if="step === 'uses-codes'" class="space-y-6">
       <div>
-        <h2
-          class="text-xl font-bold mb-2"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+        <h2 class="text-xl font-bold mb-2 text-text">
           Did you replace identifiers with codes or pseudonyms?
         </h2>
-        <p
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <p class="text-text-secondary">
           For example: using "SUBJ-001" instead of "John Doe", or random IDs instead of email addresses.
         </p>
       </div>
@@ -431,61 +396,43 @@ function applyResult() {
       <div class="space-y-3">
         <button
           @click="usesCodes = true; next()"
-          class="w-full p-4 border rounded-lg text-left transition-colors group"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 hover:border-blue-500'
-            : 'bg-white border-gray-200 hover:border-blue-300 hover:bg-blue-50'"
+          class="w-full p-4 border rounded-lg text-left transition-colors group bg-surface border-border hover:border-primary"
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <Key class="w-5 h-5 text-gray-400" />
-              <span
-                class="font-medium"
-                :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-              >
+              <Key class="w-5 h-5 text-text-muted" />
+              <span class="font-medium text-text">
                 Yes, I use codes or study IDs
               </span>
             </div>
-            <ArrowRight class="w-5 h-5 text-gray-400" />
+            <ArrowRight class="w-5 h-5 text-text-muted" />
           </div>
         </button>
 
         <button
           @click="usesCodes = false; next()"
-          class="w-full p-4 border rounded-lg text-left transition-colors group"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 hover:border-blue-500'
-            : 'bg-white border-gray-200 hover:border-blue-300 hover:bg-blue-50'"
+          class="w-full p-4 border rounded-lg text-left transition-colors group bg-surface border-border hover:border-primary"
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <Users class="w-5 h-5 text-gray-400" />
+              <Users class="w-5 h-5 text-text-muted" />
               <div>
-                <span
-                  class="font-medium"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                >
+                <span class="font-medium text-text">
                   No, data was collected without any identifiers
                 </span>
-                <p
-                  class="text-sm"
-                  :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
-                >
+                <p class="text-sm text-text-muted">
                   e.g., anonymous survey with no tracking
                 </p>
               </div>
             </div>
-            <ArrowRight class="w-5 h-5 text-gray-400" />
+            <ArrowRight class="w-5 h-5 text-text-muted" />
           </div>
         </button>
       </div>
 
       <button
         @click="back"
-        class="flex items-center gap-2"
-        :class="preferencesStore.darkMode
-          ? 'text-gray-400 hover:text-gray-300'
-          : 'text-gray-500 hover:text-gray-700'"
+        class="flex items-center gap-2 text-text-muted hover:text-text"
       >
         <ArrowLeft class="w-4 h-4" />
         Back
@@ -495,15 +442,10 @@ function applyResult() {
     <!-- Step 3: Key exists? -->
     <div v-else-if="step === 'key-exists'" class="space-y-6">
       <div>
-        <h2
-          class="text-xl font-bold mb-2"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+        <h2 class="text-xl font-bold mb-2 text-text">
           Does a linking key exist?
         </h2>
-        <p
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <p class="text-text-secondary">
           A linking key is anything that maps codes back to identifiable people
           (Excel file, database table, paper list, etc.)
         </p>
@@ -512,98 +454,77 @@ function applyResult() {
       <div class="space-y-3">
         <button
           @click="keyExists = 'yes'; next()"
-          class="w-full p-4 border rounded-lg text-left transition-colors"
+          class="w-full p-4 border rounded-lg text-left transition-colors bg-surface border-border"
           :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 hover:border-orange-500'
-            : 'bg-white border-gray-200 hover:border-orange-300 hover:bg-orange-50'"
+            ? 'hover:border-orange-500'
+            : 'hover:border-orange-300 hover:bg-orange-50'"
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
               <FileSpreadsheet class="w-5 h-5 text-orange-500" />
               <div>
-                <span
-                  class="font-medium"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                >
+                <span class="font-medium text-text">
                   Yes, a key exists somewhere
                 </span>
-                <p
-                  class="text-sm"
-                  :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
-                >
+                <p class="text-sm text-text-muted">
                   I or someone else could link codes back to names
                 </p>
               </div>
             </div>
-            <ArrowRight class="w-5 h-5 text-gray-400" />
+            <ArrowRight class="w-5 h-5 text-text-muted" />
           </div>
         </button>
 
         <button
           @click="keyExists = 'never'; next()"
-          class="w-full p-4 border rounded-lg text-left transition-colors"
+          class="w-full p-4 border rounded-lg text-left transition-colors bg-surface border-border"
           :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 hover:border-green-500'
-            : 'bg-white border-gray-200 hover:border-green-300 hover:bg-green-50'"
+            ? 'hover:border-green-500'
+            : 'hover:border-green-300 hover:bg-green-50'"
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
               <XCircle class="w-5 h-5 text-green-500" />
               <div>
-                <span
-                  class="font-medium"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                >
+                <span class="font-medium text-text">
                   No, a key was never created
                 </span>
-                <p
-                  class="text-sm"
-                  :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
-                >
+                <p class="text-sm text-text-muted">
                   Codes were assigned randomly with no record
                 </p>
               </div>
             </div>
-            <ArrowRight class="w-5 h-5 text-gray-400" />
+            <ArrowRight class="w-5 h-5 text-text-muted" />
           </div>
         </button>
 
         <button
           @click="keyExists = 'destroyed'; next()"
-          class="w-full p-4 border rounded-lg text-left transition-colors"
+          class="w-full p-4 border rounded-lg text-left transition-colors bg-surface border-border"
           :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 hover:border-green-500'
-            : 'bg-white border-gray-200 hover:border-green-300 hover:bg-green-50'"
+            ? 'hover:border-green-500'
+            : 'hover:border-green-300 hover:bg-green-50'"
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
               <CheckCircle class="w-5 h-5 text-green-500" />
               <div>
-                <span
-                  class="font-medium"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                >
+                <span class="font-medium text-text">
                   A key existed but has been destroyed
                 </span>
-                <p
-                  class="text-sm"
-                  :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
-                >
+                <p class="text-sm text-text-muted">
                   With documented destruction
                 </p>
               </div>
             </div>
-            <ArrowRight class="w-5 h-5 text-gray-400" />
+            <ArrowRight class="w-5 h-5 text-text-muted" />
           </div>
         </button>
       </div>
 
       <button
         @click="back"
-        class="flex items-center gap-2"
-        :class="preferencesStore.darkMode
-          ? 'text-gray-400 hover:text-gray-300'
-          : 'text-gray-500 hover:text-gray-700'"
+        class="flex items-center gap-2 text-text-muted hover:text-text"
       >
         <ArrowLeft class="w-4 h-4" />
         Back
@@ -613,15 +534,10 @@ function applyResult() {
     <!-- Step 4: Key location -->
     <div v-else-if="step === 'key-location'" class="space-y-6">
       <div>
-        <h2
-          class="text-xl font-bold mb-2"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+        <h2 class="text-xl font-bold mb-2 text-text">
           Where is the linking key stored?
         </h2>
-        <p
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <p class="text-text-secondary">
           This helps us give you appropriate security recommendations.
         </p>
       </div>
@@ -634,9 +550,7 @@ function applyResult() {
           class="w-full p-3 border rounded-lg text-left transition-colors"
           :class="keyLocation === option.id
             ? 'bg-blue-100 border-blue-300 text-blue-900'
-            : (preferencesStore.darkMode
-              ? 'bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600'
-              : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300')"
+            : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
         >
           {{ option.label }}
         </button>
@@ -645,10 +559,7 @@ function applyResult() {
       <div class="flex items-center justify-between pt-4">
         <button
           @click="back"
-          class="flex items-center gap-2"
-          :class="preferencesStore.darkMode
-            ? 'text-gray-400 hover:text-gray-300'
-            : 'text-gray-500 hover:text-gray-700'"
+          class="flex items-center gap-2 text-text-muted hover:text-text"
         >
           <ArrowLeft class="w-4 h-4" />
           Back
@@ -656,7 +567,7 @@ function applyResult() {
         <button
           @click="next"
           :disabled="!keyLocation"
-          class="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          class="flex items-center gap-2 px-6 py-2 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Continue
           <ArrowRight class="w-5 h-5" />
@@ -733,52 +644,34 @@ function applyResult() {
       </div>
 
       <!-- Implications -->
-      <div
-        class="rounded-lg border p-5"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
-      >
-        <h3
-          class="font-semibold mb-3"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+      <div class="rounded-lg border p-5 bg-surface border-border">
+        <h3 class="font-semibold mb-3 text-text">
           What this means:
         </h3>
         <ul class="space-y-2">
           <li
             v-for="(item, idx) in result.implications"
             :key="idx"
-            class="flex items-start gap-2 text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+            class="flex items-start gap-2 text-sm text-text-secondary"
           >
-            <span class="text-gray-400">•</span>
+            <span class="text-text-muted">•</span>
             {{ item }}
           </li>
         </ul>
       </div>
 
       <!-- Recommendations -->
-      <div
-        class="rounded-lg border p-5"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
-      >
-        <h3
-          class="font-semibold mb-3"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+      <div class="rounded-lg border p-5 bg-surface border-border">
+        <h3 class="font-semibold mb-3 text-text">
           Recommendations:
         </h3>
         <ul class="space-y-2">
           <li
             v-for="(item, idx) in result.recommendations"
             :key="idx"
-            class="flex items-start gap-2 text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+            class="flex items-start gap-2 text-sm text-text-secondary"
           >
-            <CheckCircle class="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+            <CheckCircle class="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
             {{ item }}
           </li>
         </ul>
@@ -788,27 +681,21 @@ function applyResult() {
       <div class="flex flex-col gap-3">
         <button
           @click="applyResult"
-          class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+          class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary-dark transition-colors"
         >
           Continue to Tier Selection
           <ArrowRight class="w-5 h-5" />
         </button>
         <button
           @click="reset"
-          class="text-sm"
-          :class="preferencesStore.darkMode
-            ? 'text-gray-400 hover:text-gray-300'
-            : 'text-gray-500 hover:text-gray-700'"
+          class="text-sm text-text-muted hover:text-text"
         >
           Start over
         </button>
       </div>
 
       <!-- Disclaimer -->
-      <p
-        class="text-xs text-center"
-        :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
-      >
+      <p class="text-xs text-center text-text-muted">
         This is an assessment tool, not legal or compliance advice.
         Always confirm with your IRB and compliance office.
       </p>

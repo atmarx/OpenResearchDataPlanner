@@ -152,12 +152,12 @@ function formatCurrency(amount) {
       <div class="space-y-4">
         <!-- Model Selection -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             LLM Model
           </label>
           <select
             v-model="inputs.model"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           >
             <option :value="null" disabled>Select a model...</option>
             <optgroup v-for="(models, provider) in modelsByProvider" :key="provider" :label="provider">
@@ -166,9 +166,9 @@ function formatCurrency(amount) {
               </option>
             </optgroup>
           </select>
-          <div v-if="selectedModel" class="mt-2 p-2 bg-gray-50 rounded-lg text-xs">
-            <p class="text-gray-600">{{ selectedModel.description }}</p>
-            <div class="flex gap-4 mt-1 text-gray-500">
+          <div v-if="selectedModel" class="mt-2 p-2 bg-surface-alt rounded-lg text-xs">
+            <p class="text-text-secondary">{{ selectedModel.description }}</p>
+            <div class="flex gap-4 mt-1 text-text-muted">
               <span>Input: ${{ selectedModel.input_per_million }}/M tokens</span>
               <span>Output: ${{ selectedModel.output_per_million }}/M tokens</span>
             </div>
@@ -177,19 +177,19 @@ function formatCurrency(amount) {
 
         <!-- Use Case -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Use Case
           </label>
           <select
             v-model="inputs.use_case"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           >
             <option :value="null" disabled>Select a use case...</option>
             <option v-for="uc in config?.use_cases || []" :key="uc.label" :value="uc.label">
               {{ uc.label }}
             </option>
           </select>
-          <p v-if="selectedUseCase" class="mt-1 text-xs text-gray-500">
+          <p v-if="selectedUseCase" class="mt-1 text-xs text-text-muted">
             {{ selectedUseCase.description }}
           </p>
         </div>
@@ -197,25 +197,25 @@ function formatCurrency(amount) {
         <!-- Token Estimates -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-text-secondary mb-1">
               Input Tokens (per request)
             </label>
             <input
               v-model.number="inputs.input_tokens"
               type="number"
               min="1"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-text-secondary mb-1">
               Output Tokens (per request)
             </label>
             <input
               v-model.number="inputs.output_tokens"
               type="number"
               min="1"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             />
           </div>
         </div>
@@ -223,23 +223,23 @@ function formatCurrency(amount) {
         <!-- Volume -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-text-secondary mb-1">
               Requests per Day
             </label>
             <input
               v-model.number="inputs.requests_per_day"
               type="number"
               min="1"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-text-secondary mb-1">
               Time Period
             </label>
             <select
               v-model="inputs.time_period"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             >
               <option v-for="tp in config?.time_periods || []" :key="tp.label" :value="tp.label">
                 {{ tp.label }}
@@ -250,7 +250,7 @@ function formatCurrency(amount) {
 
         <!-- Custom Grant Period -->
         <div v-if="isCustomPeriod">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Grant Period (days)
           </label>
           <input
@@ -258,9 +258,9 @@ function formatCurrency(amount) {
             type="number"
             min="1"
             placeholder="e.g., 365 for 1 year, 1095 for 3 years"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           />
-          <p class="mt-1 text-xs text-gray-500">
+          <p class="mt-1 text-xs text-text-muted">
             Common: 365 (1 year), 730 (2 years), 1095 (3 years), 1825 (5 years)
           </p>
         </div>
@@ -298,7 +298,7 @@ function formatCurrency(amount) {
         <p class="text-3xl font-bold text-green-600">
           {{ formatCurrency(r) }}
         </p>
-        <p class="text-sm text-gray-500 mt-1">
+        <p class="text-sm text-text-muted mt-1">
           Estimated {{ inputs.time_period?.toLowerCase() || 'total' }} cost
         </p>
       </div>

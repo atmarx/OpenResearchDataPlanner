@@ -129,11 +129,10 @@ function getLevelColorClasses(color) {
     <!-- Intro -->
     <div
       v-if="intro.text"
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+      class="p-4 rounded-lg border mb-6 bg-surface border-border"
     >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'" v-html="intro.text"></p>
-      <p v-if="intro.source_note" class="text-sm mt-2" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm text-text-secondary" v-html="intro.text"></p>
+      <p v-if="intro.source_note" class="text-sm mt-2 text-text-secondary">
         {{ intro.source_note }}
       </p>
     </div>
@@ -144,7 +143,7 @@ function getLevelColorClasses(color) {
           <div class="flex items-start gap-4">
             <component :is="getIcon(result.icon)" class="w-8 h-8 flex-shrink-0" />
             <div class="flex-1">
-              <h3 class="text-xl font-bold mb-2" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <h3 class="text-xl font-bold mb-2 text-text">
                 {{ result.title }}
               </h3>
               <p class="mb-4">{{ result.description }}</p>
@@ -191,8 +190,7 @@ function getLevelColorClasses(color) {
                 <span
                   v-for="flag in flags"
                   :key="flag"
-                  class="px-2 py-1 text-xs rounded-full font-medium uppercase"
-                  :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700'"
+                  class="px-2 py-1 text-xs rounded-full font-medium uppercase bg-surface-alt text-text-secondary"
                 >
                   {{ flag.replace(/-/g, ' ') }}
                 </span>
@@ -204,18 +202,14 @@ function getLevelColorClasses(color) {
         <!-- External resource link -->
         <div
           v-if="appletConfig.meta?.official_guidance_url"
-          class="mt-6 p-4 rounded-lg border text-sm"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 text-gray-400'
-            : 'bg-gray-100 border-gray-200 text-gray-600'"
+          class="mt-6 p-4 rounded-lg border text-sm bg-surface-alt border-border text-text-secondary"
         >
           <p class="font-medium mb-2">Official HHS Resources:</p>
           <a
             :href="appletConfig.meta.official_guidance_url"
             target="_blank"
             rel="noopener noreferrer"
-            class="hover:underline"
-            :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+            class="hover:underline text-primary"
           >
             HIPAA De-identification Guidance (HHS.gov)
           </a>

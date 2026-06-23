@@ -82,12 +82,12 @@ const presets = computed(() => {
       <div class="space-y-4">
         <!-- Model Size -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Model Size
           </label>
           <select
             v-model="inputs.model_size"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           >
             <option :value="null" disabled>Select model size...</option>
             <option
@@ -98,31 +98,31 @@ const presets = computed(() => {
               {{ m.label }}
             </option>
           </select>
-          <p v-if="inputs.model_size" class="mt-1 text-xs text-gray-500">
+          <p v-if="inputs.model_size" class="mt-1 text-xs text-text-muted">
             {{ config?.model_sizes?.find(m => m.label === inputs.model_size)?.description }}
           </p>
         </div>
 
         <!-- Training Runs -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Number of Training Runs
           </label>
           <input
             v-model.number="inputs.training_runs"
             type="number"
             min="1"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           />
-          <p class="mt-1 text-xs text-gray-500">
+          <p class="mt-1 text-xs text-text-muted">
             Include hyperparameter tuning experiments
           </p>
         </div>
 
         <!-- Factors hint -->
-        <div v-if="config?.factors" class="bg-gray-50 rounded-lg p-3 text-sm">
-          <p class="font-medium text-gray-700 mb-1">Factors that affect GPU time:</p>
-          <ul class="text-gray-600 text-xs space-y-0.5">
+        <div v-if="config?.factors" class="bg-canvas rounded-lg p-3 text-sm">
+          <p class="font-medium text-text-secondary mb-1">Factors that affect GPU time:</p>
+          <ul class="text-text-secondary text-xs space-y-0.5">
             <li v-for="factor in config.factors" :key="factor">• {{ factor }}</li>
           </ul>
         </div>

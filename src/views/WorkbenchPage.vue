@@ -17,21 +17,15 @@ function handleLogout() {
 </script>
 
 <template>
-  <div class="min-h-screen" :class="preferencesStore.darkMode ? 'bg-gray-900' : 'bg-gray-50'">
+  <div class="min-h-screen bg-canvas">
     <!-- Header (only when authenticated) -->
     <header
       v-if="isAuthenticated"
-      class="border-b"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="border-b bg-surface border-border"
     >
       <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <h1
-            class="text-lg font-semibold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-          >
+          <h1 class="text-lg font-semibold text-text">
             Support Workbench
           </h1>
           <span
@@ -47,11 +41,8 @@ function handleLogout() {
         <div class="flex items-center gap-4">
           <!-- Staff Name -->
           <div class="flex items-center gap-2 text-sm">
-            <User
-              class="w-4 h-4"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-            />
-            <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">
+            <User class="w-4 h-4 text-text-muted" />
+            <span class="text-text-secondary">
               {{ workbenchStore.staffName }}
             </span>
           </div>
@@ -59,10 +50,7 @@ function handleLogout() {
           <!-- Logout -->
           <button
             @click="handleLogout"
-            class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-400 hover:text-white hover:bg-gray-700'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
           >
             <LogOut class="w-4 h-4" />
             Sign Out

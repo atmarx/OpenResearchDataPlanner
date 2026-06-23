@@ -329,30 +329,16 @@ function formatTierRestriction(software) {
 </script>
 
 <template>
-  <div
-    class="min-h-screen transition-colors"
-    :class="preferencesStore.darkMode ? 'bg-gray-900' : 'bg-gray-50'"
-  >
+  <div class="min-h-screen transition-colors bg-canvas">
     <!-- Header -->
-    <div
-      class="border-b sticky top-0 z-10"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
-    >
+    <div class="border-b sticky top-0 z-10 bg-surface border-border">
       <div class="max-w-6xl mx-auto px-4 py-4">
         <div class="flex items-center justify-between mb-4">
           <div>
-            <h1
-              class="text-2xl font-bold"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-            >
+            <h1 class="text-2xl font-bold text-text">
               Software Catalog
             </h1>
-            <p
-              class="mt-1"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-            >
+            <p class="mt-1 text-text-secondary">
               Browse available research software by platform and availability
             </p>
           </div>
@@ -362,29 +348,23 @@ function formatTierRestriction(software) {
         <div class="flex flex-col sm:flex-row gap-3">
           <!-- Search -->
           <div class="relative flex-1">
-            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
             <input
               v-model="searchQuery"
               type="text"
               placeholder="Search software..."
-              class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
-                : 'bg-white border-gray-300 text-gray-900'"
+              class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface border-border-strong text-text placeholder:text-text-muted"
             />
           </div>
 
           <!-- Filters -->
           <div class="flex flex-wrap items-center gap-2">
-            <Filter class="w-4 h-4 text-gray-400 hidden sm:block" />
+            <Filter class="w-4 h-4 text-text-muted hidden sm:block" />
 
             <!-- Category -->
             <select
               v-model="categoryFilter"
-              class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 border-gray-600 text-white'
-                : 'bg-white border-gray-300 text-gray-900'"
+              class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface border-border-strong text-text"
             >
               <option value="all">All Categories</option>
               <option
@@ -399,10 +379,7 @@ function formatTierRestriction(software) {
             <!-- Platform -->
             <select
               v-model="platformFilter"
-              class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 border-gray-600 text-white'
-                : 'bg-white border-gray-300 text-gray-900'"
+              class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface border-border-strong text-text"
             >
               <option value="all">All Platforms</option>
               <option value="hpc">HPC</option>
@@ -413,10 +390,7 @@ function formatTierRestriction(software) {
             <!-- Status -->
             <select
               v-model="statusFilter"
-              class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 border-gray-600 text-white'
-                : 'bg-white border-gray-300 text-gray-900'"
+              class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface border-border-strong text-text"
             >
               <option value="all">All Status</option>
               <option value="full">Available</option>
@@ -428,10 +402,7 @@ function formatTierRestriction(software) {
             <button
               v-if="hasActiveFilters"
               @click="clearFilters"
-              class="text-sm px-2 py-1"
-              :class="preferencesStore.darkMode
-                ? 'text-gray-400 hover:text-gray-300'
-                : 'text-gray-500 hover:text-gray-700'"
+              class="text-sm px-2 py-1 text-text-muted hover:text-text-secondary"
             >
               Clear
             </button>
@@ -440,40 +411,40 @@ function formatTierRestriction(software) {
 
         <!-- Legend -->
         <div class="flex flex-wrap items-center gap-4 mt-4 text-sm">
-          <span :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'">Status:</span>
+          <span class="text-text-muted">Status:</span>
           <button @click="openLegendModal('full')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600">
               <CheckCircle class="w-3 h-3" />
             </span>
-            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Available</span>
+            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Available</span>
           </button>
           <button @click="openLegendModal('restricted')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-yellow-100 text-yellow-600">
               <AlertCircle class="w-3 h-3" />
             </span>
-            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Restricted</span>
+            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Restricted</span>
           </button>
           <button @click="openLegendModal('byol')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-100 text-gray-500">
               <ExternalLink class="w-3 h-3" />
             </span>
-            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">BYOL</span>
+            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">BYOL</span>
           </button>
           <button @click="openLegendModal('unavailable')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-100 text-red-500">
               <XCircle class="w-3 h-3" />
             </span>
-            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">N/A</span>
+            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">N/A</span>
           </button>
 
-          <span class="border-l pl-4 ml-2" :class="preferencesStore.darkMode ? 'border-gray-700 text-gray-400' : 'border-gray-300 text-gray-500'">Compliance:</span>
+          <span class="border-l pl-4 ml-2 border-border-strong text-text-muted">Compliance:</span>
           <button @click="openLegendModal('tier_limit')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="text-xs px-1.5 py-0.5 rounded bg-purple-100 text-purple-700">≤L2</span>
-            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Tier limit</span>
+            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Tier limit</span>
           </button>
           <button @click="openLegendModal('export_control')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
             <span class="text-xs px-1.5 py-0.5 rounded bg-orange-100 text-orange-700">EAR</span>
-            <span class="underline decoration-dotted underline-offset-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">Export control</span>
+            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Export control</span>
           </button>
         </div>
       </div>
@@ -484,15 +455,9 @@ function formatTierRestriction(software) {
       <!-- Software list by category -->
       <div class="space-y-8">
         <div v-for="group in softwareByCategory" :key="group.category.slug">
-          <h2
-            class="text-lg font-semibold mb-4"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-          >
+          <h2 class="text-lg font-semibold mb-4 text-text">
             {{ group.category.name }}
-            <span
-              class="text-sm font-normal ml-2"
-              :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
-            >
+            <span class="text-sm font-normal ml-2 text-text-muted">
               ({{ group.software.length }})
             </span>
           </h2>
@@ -502,10 +467,7 @@ function formatTierRestriction(software) {
               v-for="software in group.software"
               :key="software.slug"
               @click="openSoftware(software.slug)"
-              class="rounded-lg border transition-all text-left p-3 hover:shadow-md"
-              :class="preferencesStore.darkMode
-                ? 'border-gray-700 bg-gray-800 hover:border-gray-600'
-                : 'border-gray-200 bg-white hover:border-gray-300'"
+              class="rounded-lg border transition-all text-left p-3 hover:shadow-md border-border bg-surface hover:border-border-strong"
             >
               <!-- Header row -->
               <div class="flex items-center gap-2">
@@ -523,10 +485,7 @@ function formatTierRestriction(software) {
                 </div>
 
                 <!-- Name -->
-                <h3
-                  class="font-medium truncate flex-1"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                >
+                <h3 class="font-medium truncate flex-1 text-text">
                   {{ software.name }}
                 </h3>
 
@@ -560,8 +519,7 @@ function formatTierRestriction(software) {
               <!-- Brief description -->
               <p
                 v-if="software.description"
-                class="text-xs mt-1 line-clamp-2"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                class="text-xs mt-1 line-clamp-2 text-text-muted"
               >
                 <AnnotatedText :text="software.description" />
               </p>
@@ -591,8 +549,7 @@ function formatTierRestriction(software) {
       <!-- Empty state -->
       <div
         v-if="filteredSoftware.length === 0"
-        class="text-center py-16"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+        class="text-center py-16 text-text-muted"
       >
         <Search class="w-12 h-12 mx-auto mb-4 opacity-50" />
         <p class="text-lg">No software found</p>
@@ -600,8 +557,7 @@ function formatTierRestriction(software) {
         <button
           v-if="hasActiveFilters"
           @click="clearFilters"
-          class="mt-4 px-4 py-2 rounded-lg text-blue-500 hover:text-blue-600 hover:bg-blue-50"
-          :class="preferencesStore.darkMode && 'hover:bg-blue-900/30'"
+          class="mt-4 px-4 py-2 rounded-lg text-primary hover:bg-surface-alt"
         >
           Clear all filters
         </button>
@@ -609,12 +565,7 @@ function formatTierRestriction(software) {
     </div>
 
     <!-- Summary footer -->
-    <div
-      class="max-w-7xl mx-auto px-4 py-6 text-sm border-t"
-      :class="preferencesStore.darkMode
-        ? 'text-gray-400 border-gray-700'
-        : 'text-gray-500 border-gray-200'"
-    >
+    <div class="max-w-7xl mx-auto px-4 py-6 text-sm border-t text-text-muted border-border">
       <div class="flex flex-wrap gap-6">
         <div>
           <strong>BYOL</strong> = Bring Your Own License (you must purchase separately)
@@ -625,7 +576,7 @@ function formatTierRestriction(software) {
       </div>
       <p class="mt-2">
         Need software that's not listed?
-        <a :href="getPrimaryContactHref()" class="text-blue-500 hover:text-blue-600">Contact us</a>
+        <a :href="getPrimaryContactHref()" class="text-primary">Contact us</a>
         to discuss options.
       </p>
     </div>
@@ -639,38 +590,25 @@ function formatTierRestriction(software) {
       @click.self="closeLegendModal"
     >
       <div
-        class="rounded-xl shadow-2xl max-w-sm w-full p-5"
-        :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+        class="rounded-xl shadow-2xl max-w-sm w-full p-5 bg-surface"
         role="dialog"
         aria-modal="true"
       >
         <div class="flex items-start justify-between gap-3 mb-3">
-          <h3
-            class="text-base font-semibold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-          >
+          <h3 class="text-base font-semibold text-text">
             {{ legendModal.title }}
           </h3>
           <button
             @click="closeLegendModal"
-            class="p-1 rounded"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-              : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'"
+            class="p-1 rounded text-text-muted hover:text-text hover:bg-surface-alt"
           >
             <X class="w-4 h-4" />
           </button>
         </div>
-        <p
-          class="text-sm font-medium mb-1"
-          :class="preferencesStore.darkMode ? 'text-gray-200' : 'text-gray-800'"
-        >
+        <p class="text-sm font-medium mb-1 text-text-secondary">
           {{ legendModal.description }}
         </p>
-        <p
-          class="text-sm"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <p class="text-sm text-text-muted">
           {{ legendModal.detail }}
         </p>
       </div>
@@ -685,17 +623,13 @@ function formatTierRestriction(software) {
       @click.self="closeSoftware"
     >
       <div
-        class="rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
-        :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+        class="rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto bg-surface"
         role="dialog"
         aria-modal="true"
         :aria-labelledby="`software-${selectedSoftware.slug}-title`"
       >
         <!-- Header -->
-        <div
-          class="sticky top-0 p-4 border-b flex items-start gap-3"
-          :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-        >
+        <div class="sticky top-0 p-4 border-b flex items-start gap-3 bg-surface border-border">
           <!-- Status indicator -->
           <div
             class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
@@ -712,15 +646,13 @@ function formatTierRestriction(software) {
           <div class="flex-1 min-w-0">
             <h2
               :id="`software-${selectedSoftware.slug}-title`"
-              class="text-xl font-semibold"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+              class="text-xl font-semibold text-text"
             >
               {{ selectedSoftware.name }}
             </h2>
             <p
               v-if="selectedSoftware.vendor"
-              class="text-sm"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="text-sm text-text-muted"
             >
               {{ selectedSoftware.vendor }}
             </p>
@@ -728,10 +660,7 @@ function formatTierRestriction(software) {
 
           <button
             @click="closeSoftware"
-            class="p-2 rounded-lg"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-              : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'"
+            class="p-2 rounded-lg text-text-muted hover:text-text hover:bg-surface-alt"
           >
             <X class="w-5 h-5" />
           </button>
@@ -740,19 +669,13 @@ function formatTierRestriction(software) {
         <!-- Content -->
         <div class="p-4 space-y-5">
           <!-- Description (prefer long description if available) -->
-          <p
-            class="text-sm whitespace-pre-line"
-            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
-          >
+          <p class="text-sm whitespace-pre-line text-text-secondary">
             <AnnotatedText :text="selectedSoftware.description_long || selectedSoftware.description" />
           </p>
 
           <!-- Platform Availability -->
           <div>
-            <h3
-              class="text-sm font-semibold mb-2"
-              :class="preferencesStore.darkMode ? 'text-gray-200' : 'text-gray-800'"
-            >
+            <h3 class="text-sm font-semibold mb-2 text-text-secondary">
               Platform Availability
             </h3>
             <div class="space-y-2">
@@ -763,14 +686,10 @@ function formatTierRestriction(software) {
               >
                 <component
                   :is="getPlatformIcon(platform)"
-                  class="w-4 h-4 mt-0.5 flex-shrink-0"
-                  :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+                  class="w-4 h-4 mt-0.5 flex-shrink-0 text-text-muted"
                 />
                 <div>
-                  <span
-                    class="font-medium"
-                    :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-                  >
+                  <span class="font-medium text-text-secondary">
                     {{ platform.toUpperCase() }}:
                   </span>
                   <span
@@ -785,15 +704,13 @@ function formatTierRestriction(software) {
                   </span>
                   <span
                     v-if="avail.notes"
-                    class="ml-1"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                    class="ml-1 text-text-muted"
                   >
                     - {{ avail.notes }}
                   </span>
                   <div
                     v-if="avail.versions"
-                    class="text-xs mt-0.5"
-                    :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+                    class="text-xs mt-0.5 text-text-muted"
                   >
                     Versions: {{ avail.versions.join(', ') }}
                   </div>
@@ -804,10 +721,7 @@ function formatTierRestriction(software) {
 
           <!-- Compliance Restrictions -->
           <div v-if="hasExportControl(selectedSoftware) || hasTierRestrictions(selectedSoftware)">
-            <h3
-              class="text-sm font-semibold mb-2"
-              :class="preferencesStore.darkMode ? 'text-gray-200' : 'text-gray-800'"
-            >
+            <h3 class="text-sm font-semibold mb-2 text-text-secondary">
               Compliance
             </h3>
             <div class="space-y-2 text-sm">
@@ -839,8 +753,7 @@ function formatTierRestriction(software) {
                   </span>
                   <p
                     v-if="selectedSoftware.export_control.notes"
-                    class="mt-1"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                    class="mt-1 text-text-secondary"
                   >
                     {{ selectedSoftware.export_control.notes }}
                   </p>
@@ -860,8 +773,7 @@ function formatTierRestriction(software) {
                   </span>
                   <p
                     v-if="selectedSoftware.tier_restrictions.notes"
-                    class="mt-1"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                    class="mt-1 text-text-secondary"
                   >
                     {{ selectedSoftware.tier_restrictions.notes }}
                   </p>
@@ -872,36 +784,29 @@ function formatTierRestriction(software) {
 
           <!-- Licensing (for BYOL) -->
           <div v-if="getBestStatus(selectedSoftware) === 'byol'">
-            <h3
-              class="text-sm font-semibold mb-2"
-              :class="preferencesStore.darkMode ? 'text-gray-200' : 'text-gray-800'"
-            >
+            <h3 class="text-sm font-semibold mb-2 text-text-secondary">
               Licensing
             </h3>
-            <div
-              class="text-sm p-3 rounded-lg"
-              :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-50'"
-            >
+            <div class="text-sm p-3 rounded-lg bg-surface-alt">
               <p
                 v-if="formatByolPricing(selectedSoftware)"
-                :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
+                class="text-text-secondary"
               >
                 Estimated cost: {{ formatByolPricing(selectedSoftware) }}
                 <span class="italic">(requires confirmation)</span>
               </p>
               <p
                 v-if="selectedSoftware.license_info?.cost_notes"
-                class="mt-1"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                class="mt-1 text-text-muted"
               >
                 {{ selectedSoftware.license_info.cost_notes }}
               </p>
-              <p v-if="selectedSoftware.license_server?.we_can_host" class="mt-2 text-blue-500">
+              <p v-if="selectedSoftware.license_server?.we_can_host" class="mt-2 text-primary">
                 We can host your license server at no additional cost.
               </p>
               <a
                 :href="getSoftwareSupportMailto(selectedSoftware, 'quote')"
-                class="inline-block mt-2 text-blue-500 hover:text-blue-600 font-medium"
+                class="inline-block mt-2 text-primary font-medium"
               >
                 Request quote from us
               </a>
@@ -918,7 +823,7 @@ function formatTierRestriction(software) {
               :href="selectedSoftware.institutional_support_url"
               target="_blank"
               rel="noopener"
-              class="inline-flex items-center gap-1.5 text-sm text-blue-500 hover:text-blue-600"
+              class="inline-flex items-center gap-1.5 text-sm text-primary"
             >
               <Info class="w-4 h-4" />
               {{ selectedSoftware.institutional_support_label || 'Institutional Support' }}
@@ -928,7 +833,7 @@ function formatTierRestriction(software) {
               :href="selectedSoftware.documentation_url"
               target="_blank"
               rel="noopener"
-              class="inline-flex items-center gap-1.5 text-sm text-blue-500 hover:text-blue-600"
+              class="inline-flex items-center gap-1.5 text-sm text-primary"
             >
               <Info class="w-4 h-4" />
               Documentation
@@ -938,7 +843,7 @@ function formatTierRestriction(software) {
               :href="selectedSoftware.website"
               target="_blank"
               rel="noopener"
-              class="inline-flex items-center gap-1.5 text-sm text-blue-500 hover:text-blue-600"
+              class="inline-flex items-center gap-1.5 text-sm text-primary"
             >
               <ExternalLink class="w-4 h-4" />
               Vendor Site
@@ -947,18 +852,13 @@ function formatTierRestriction(software) {
         </div>
 
         <!-- Footer with copy link -->
-        <div
-          class="px-4 py-3 border-t flex items-center justify-between"
-          :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-100'"
-        >
+        <div class="px-4 py-3 border-t flex items-center justify-between border-border">
           <button
             @click="copyShareUrl"
             class="inline-flex items-center gap-1.5 text-sm transition-colors"
             :class="copied
               ? 'text-green-500'
-              : (preferencesStore.darkMode
-                ? 'text-gray-400 hover:text-gray-300'
-                : 'text-gray-500 hover:text-gray-700')"
+              : 'text-text-muted hover:text-text-secondary'"
           >
             <component :is="copied ? Check : Link" class="w-4 h-4" />
             {{ copied ? 'Link copied!' : 'Copy link' }}

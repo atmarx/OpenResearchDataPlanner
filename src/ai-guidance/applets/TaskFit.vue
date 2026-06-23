@@ -173,14 +173,11 @@ function getNextApplet() {
     :is-complete="isComplete"
     :get-next-applet="getNextApplet"
   >
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <h3 class="font-semibold mb-2" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <h3 class="font-semibold mb-2 text-text">
         Select Your Task Type
       </h3>
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm text-text-secondary">
         Different tasks have different AI fit levels. Each comes with specific verification requirements.
         Select the category that best matches what you're trying to do.
       </p>
@@ -192,13 +189,12 @@ function getNextApplet() {
         v-for="task in taskCategories"
         :key="task.id"
         @click="selectTask(task)"
-        class="p-4 rounded-lg border-2 text-left transition-all"
-        :class="[
+        class="p-4 rounded-lg border-2 text-left transition-all bg-surface"
+        :class="
           selectedTask?.id === task.id
             ? getSelectedClasses(task.fit)
-            : getFitClasses(task.fit),
-          preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'
-        ]"
+            : getFitClasses(task.fit)
+        "
       >
         <div class="flex items-start gap-3">
           <component
@@ -214,7 +210,7 @@ function getNextApplet() {
           />
           <div class="flex-1">
             <div class="flex items-center justify-between">
-              <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <h4 class="font-medium text-text">
                 {{ task.name }}
               </h4>
               <span
@@ -230,7 +226,7 @@ function getNextApplet() {
                 {{ fitLevels[task.fit].label }}
               </span>
             </div>
-            <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+            <p class="text-sm mt-1 text-text-secondary">
               {{ task.notes }}
             </p>
           </div>
@@ -241,13 +237,12 @@ function getNextApplet() {
     <!-- Selected Task Details -->
     <div
       v-if="selectedTask"
-      class="mt-6 p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+      class="mt-6 p-4 rounded-lg border bg-surface border-border"
     >
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         Verification Required
       </h3>
-      <p :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+      <p class="text-text-secondary">
         {{ selectedTask.verification }}
       </p>
 

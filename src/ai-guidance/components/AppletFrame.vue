@@ -77,37 +77,23 @@ function goToNext() {
 </script>
 
 <template>
-  <div
-    class="min-h-screen transition-colors"
-    :class="preferencesStore.darkMode ? 'bg-gray-900' : 'bg-gray-50'"
-  >
+  <div class="min-h-screen transition-colors bg-canvas">
     <!-- Header -->
-    <header
-      class="border-b sticky top-0 z-10"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
-    >
+    <header class="border-b sticky top-0 z-10 bg-surface border-border">
       <div class="max-w-3xl 2xl:max-w-4xl mx-auto px-4 py-4">
         <div class="flex items-center justify-between">
           <!-- Back / Home -->
           <div class="flex items-center gap-2">
             <button
               @click="goBack"
-              class="p-2 rounded-lg transition-colors"
-              :class="preferencesStore.darkMode
-                ? 'text-gray-400 hover:text-white hover:bg-gray-700'
-                : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'"
+              class="p-2 rounded-lg transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
               title="Go back"
             >
               <ArrowLeft class="w-5 h-5" />
             </button>
             <button
               @click="goHome"
-              class="p-2 rounded-lg transition-colors"
-              :class="preferencesStore.darkMode
-                ? 'text-gray-400 hover:text-white hover:bg-gray-700'
-                : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'"
+              class="p-2 rounded-lg transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
               title="AI Guidance Home"
             >
               <Home class="w-5 h-5" />
@@ -119,13 +105,9 @@ function goToNext() {
             <component
               v-if="icon"
               :is="icon"
-              class="w-6 h-6"
-              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+              class="w-6 h-6 text-primary"
             />
-            <h1
-              class="text-lg font-semibold"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-            >
+            <h1 class="text-lg font-semibold text-text">
               {{ title }}
             </h1>
           </div>
@@ -172,7 +154,7 @@ function goToNext() {
         <div v-if="nextApplet || getNextApplet" class="flex justify-end">
           <button
             @click="goToNext"
-            class="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            class="flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary-dark transition-colors"
           >
             Continue
             <ArrowRight class="w-5 h-5" />

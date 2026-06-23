@@ -216,65 +216,46 @@ function handleWipeSlate() {
     <div
       v-if="isExpanded && !slateStore.isEmpty && !slateStore.isSubmitted"
       id="slate-expanded"
-      class="border-x overflow-y-auto"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="border-x overflow-y-auto bg-surface border-border"
       :style="{ height: 'calc(40vh - 56px)' }"
     >
       <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-4">
         <!-- Services Section -->
         <div v-if="slateStore.itemCount > 0" class="mb-6">
-          <h3
-            class="text-sm font-semibold uppercase tracking-wide mb-3"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-          >
+          <h3 class="text-sm font-semibold uppercase tracking-wide mb-3 text-text-muted">
             Services
           </h3>
           <div class="space-y-3">
             <div
               v-for="item in slateStore.slate.items"
               :key="item.id"
-              class="rounded-lg overflow-hidden"
-              :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-50'"
+              class="rounded-lg overflow-hidden bg-surface-alt"
             >
               <!-- Main row -->
               <div class="flex items-center justify-between px-4 py-3">
                 <div class="flex-1">
-                  <div
-                    class="font-medium"
-                    :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                  >
+                  <div class="font-medium text-text">
                     {{ getServiceName(item.service) }}
                   </div>
-                  <div
-                    class="text-sm"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-                  >
+                  <div class="text-sm text-text-muted">
                     {{ item.quantity.toLocaleString() }} {{ item.unit }}
                   </div>
                 </div>
                 <div class="flex items-center gap-4">
                   <div class="text-right">
-                    <div
-                      class="font-semibold"
-                      :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                    >
+                    <div class="font-semibold text-text">
                       {{ formatCurrency(item.annualEstimate) }}/yr
                     </div>
-                    <div
-                      class="text-xs"
-                      :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-                    >
+                    <div class="text-xs text-text-muted">
                       {{ formatCurrency(item.monthlyEstimate) }}/mo
                     </div>
                   </div>
                   <button
                     @click="handleRemoveItem(item.id)"
-                    class="p-2 rounded-lg transition-colors"
+                    class="p-2 rounded-lg transition-colors text-text-muted"
                     :class="preferencesStore.darkMode
-                      ? 'text-gray-400 hover:text-red-400 hover:bg-red-900/30'
-                      : 'text-gray-400 hover:text-red-600 hover:bg-red-50'"
+                      ? 'hover:text-red-400 hover:bg-red-900/30'
+                      : 'hover:text-red-600 hover:bg-red-50'"
                     title="Remove from slate"
                   >
                     <Trash2 class="w-4 h-4" />
@@ -283,24 +264,15 @@ function handleWipeSlate() {
               </div>
 
               <!-- Notes section -->
-              <div
-                class="px-4 pb-3 border-t"
-                :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
-              >
+              <div class="px-4 pb-3 border-t border-border">
                 <div class="flex items-start gap-2 mt-2">
-                  <MessageSquare
-                    class="w-4 h-4 mt-2 flex-shrink-0"
-                    :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
-                  />
+                  <MessageSquare class="w-4 h-4 mt-2 flex-shrink-0 text-text-muted" />
                   <textarea
                     :value="item.notes || ''"
                     @input="slateStore.updateItemNotes(item.id, $event.target.value)"
                     placeholder="Add notes for IT (optional)..."
                     rows="2"
-                    class="flex-1 text-sm px-2 py-1.5 rounded border resize-none"
-                    :class="preferencesStore.darkMode
-                      ? 'bg-gray-800 border-gray-600 text-gray-200 placeholder-gray-500'
-                      : 'bg-white border-gray-300 text-gray-700 placeholder-gray-400'"
+                    class="flex-1 text-sm px-2 py-1.5 rounded border resize-none bg-surface border-border-strong text-text-secondary placeholder:text-text-muted"
                   />
                 </div>
               </div>
@@ -310,51 +282,34 @@ function handleWipeSlate() {
 
         <!-- Software Section -->
         <div v-if="slateStore.softwareCount > 0" class="mb-6">
-          <h3
-            class="text-sm font-semibold uppercase tracking-wide mb-3"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-          >
+          <h3 class="text-sm font-semibold uppercase tracking-wide mb-3 text-text-muted">
             Software
           </h3>
           <div class="space-y-2">
             <div
               v-for="sw in slateStore.slate.software"
               :key="sw.id"
-              class="flex items-center justify-between rounded-lg px-4 py-3"
-              :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-50'"
+              class="flex items-center justify-between rounded-lg px-4 py-3 bg-surface-alt"
             >
               <div class="flex-1">
-                <div
-                  class="font-medium"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                >{{ sw.id }}</div>
-                <div
-                  class="text-sm"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-                >{{ sw.licenseModel }}</div>
+                <div class="font-medium text-text">{{ sw.id }}</div>
+                <div class="text-sm text-text-muted">{{ sw.licenseModel }}</div>
               </div>
               <div class="flex items-center gap-4">
                 <div v-if="sw.costToUser !== null" class="text-right">
-                  <div
-                    class="font-semibold"
-                    :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                  >
+                  <div class="font-semibold text-text">
                     {{ formatCurrency(sw.costToUser) }}/{{ sw.costPeriod || 'yr' }}
                   </div>
                 </div>
-                <div
-                  v-else
-                  class="text-sm"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-                >
+                <div v-else class="text-sm text-text-muted">
                   Included
                 </div>
                 <button
                   @click="handleRemoveSoftware(sw.id)"
-                  class="p-2 rounded-lg transition-colors"
+                  class="p-2 rounded-lg transition-colors text-text-muted"
                   :class="preferencesStore.darkMode
-                    ? 'text-gray-400 hover:text-red-400 hover:bg-red-900/30'
-                    : 'text-gray-400 hover:text-red-600 hover:bg-red-50'"
+                    ? 'hover:text-red-400 hover:bg-red-900/30'
+                    : 'hover:text-red-600 hover:bg-red-50'"
                   title="Remove from slate"
                 >
                   <Trash2 class="w-4 h-4" />
@@ -365,17 +320,11 @@ function handleWipeSlate() {
         </div>
 
         <!-- Total -->
-        <div
-          class="border-t pt-4 flex items-center justify-between"
-          :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
-        >
-          <div :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'">
+        <div class="border-t pt-4 flex items-center justify-between border-border">
+          <div class="text-text-secondary">
             Estimated annual total
           </div>
-          <div
-            class="text-xl font-bold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-          >
+          <div class="text-xl font-bold text-text">
             {{ formatCurrency(slateStore.totalAnnualCost) }}/yr
           </div>
         </div>
@@ -383,16 +332,13 @@ function handleWipeSlate() {
         <!-- Actions (placeholder for full review modal) -->
         <div class="mt-6 flex justify-end gap-3">
           <button
-            class="px-4 py-2 rounded-lg transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-300 bg-gray-700 hover:bg-gray-600'
-              : 'text-gray-700 bg-gray-100 hover:bg-gray-200'"
+            class="px-4 py-2 rounded-lg transition-colors text-text-secondary bg-surface-alt hover:bg-border"
             @click="isExpanded = false"
           >
             Collapse
           </button>
           <button
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            class="px-4 py-2 bg-primary text-on-primary rounded-lg hover:bg-primary-dark transition-colors"
             @click="showExportModal = true"
           >
             Export for Grant

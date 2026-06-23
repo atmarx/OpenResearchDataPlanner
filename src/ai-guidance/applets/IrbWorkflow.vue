@@ -263,14 +263,11 @@ function getLevelColorClasses(color) {
     :is-complete="isComplete"
     :get-next-applet="getNextApplet"
   >
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <h3 class="font-semibold mb-2" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <h3 class="font-semibold mb-2 text-text">
         Why This Matters
       </h3>
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm text-text-secondary">
         Many researchers discover mid-project that their consent forms say nothing about AI.
         Using cloud AI tools may constitute "data sharing" that requires IRB awareness or approval.
         It's better to clarify now than to face compliance issues later.
@@ -283,7 +280,7 @@ function getLevelColorClasses(color) {
           <div class="flex items-start gap-4">
             <component :is="result.icon" class="w-8 h-8 flex-shrink-0" />
             <div class="flex-1">
-              <h3 class="text-xl font-bold mb-2" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <h3 class="text-xl font-bold mb-2 text-text">
                 {{ result.label }}
               </h3>
               <p class="mb-4">{{ result.description }}</p>
@@ -292,8 +289,7 @@ function getLevelColorClasses(color) {
                 <span
                   v-for="flag in flags"
                   :key="flag"
-                  class="px-2 py-1 text-xs rounded-full font-medium uppercase"
-                  :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700'"
+                  class="px-2 py-1 text-xs rounded-full font-medium uppercase bg-surface-alt text-text-secondary"
                 >
                   {{ flag.replace(/-/g, ' ') }}
                 </span>

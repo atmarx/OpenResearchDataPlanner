@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfigStore } from '@/stores/configStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   X,
   Search,
@@ -21,7 +20,6 @@ import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 
 const router = useRouter()
 const configStore = useConfigStore()
-const preferencesStore = usePreferencesStore()
 
 // Get acronyms from config
 const acronymsConfig = computed(() => configStore.config?.acronyms || {})
@@ -124,15 +122,11 @@ function getCategoryClasses(cat, type = 'bg') {
 
 <template>
   <div
-    class="min-h-screen transition-colors"
-    :class="preferencesStore.darkMode ? 'bg-gray-900' : 'bg-gray-50'"
+    class="min-h-screen transition-colors bg-canvas"
   >
     <!-- Header -->
     <header
-      class="border-b sticky top-0 z-10"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="border-b sticky top-0 z-10 bg-surface border-border"
     >
       <div class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-4">
         <div class="flex items-center gap-3 mb-4">
@@ -140,22 +134,18 @@ function getCategoryClasses(cat, type = 'bg') {
             <BookOpen class="w-5 h-5" />
           </div>
           <h1
-            class="text-xl font-semibold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-xl font-semibold text-text"
           >Glossary</h1>
         </div>
 
         <!-- Search -->
         <div class="relative">
-          <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Search terms..."
-            class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            :class="preferencesStore.darkMode
-              ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
-              : 'bg-white border-gray-200 text-gray-900'"
+            class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface border-border text-text placeholder-text-muted"
           />
         </div>
 
@@ -165,8 +155,8 @@ function getCategoryClasses(cat, type = 'bg') {
             @click="selectedCategory = null"
             class="px-3 py-1.5 text-sm rounded-full border transition-colors"
             :class="!selectedCategory
-              ? (preferencesStore.darkMode ? 'bg-white text-gray-900 border-white' : 'bg-gray-900 text-white border-gray-900')
-              : (preferencesStore.darkMode ? 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gray-500' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300')"
+              ? 'bg-primary text-on-primary border-primary'
+              : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
           >
             All ({{ allTerms.length }})
           </button>
@@ -177,7 +167,7 @@ function getCategoryClasses(cat, type = 'bg') {
             class="px-3 py-1.5 text-sm rounded-full border transition-colors flex items-center gap-1.5"
             :class="selectedCategory === cat
               ? `${getCategoryClasses(cat, 'bg')} ${getCategoryClasses(cat, 'text')} ${getCategoryClasses(cat, 'border')}`
-              : (preferencesStore.darkMode ? 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gray-500' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300')"
+              : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
           >
             <component :is="getCategoryDisplay(cat).icon" class="w-3.5 h-3.5" />
             {{ getCategoryDisplay(cat).label }}
@@ -190,8 +180,7 @@ function getCategoryClasses(cat, type = 'bg') {
       <!-- No results -->
       <div
         v-if="filteredTerms.length === 0"
-        class="text-center py-12"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+        class="text-center py-12 text-text-muted"
       >
         <BookOpen class="w-12 h-12 mx-auto mb-3 opacity-50" />
         <p>No terms found matching "{{ searchQuery }}"</p>
@@ -211,14 +200,12 @@ function getCategoryClasses(cat, type = 'bg') {
               :class="getCategoryClasses(group.category, 'text')"
             />
             <h2
-              class="text-lg font-semibold"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+              class="text-lg font-semibold text-text"
             >
               {{ getCategoryDisplay(group.category).label }}
             </h2>
             <span
-              class="text-sm"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="text-sm text-text-muted"
             >({{ group.terms.length }})</span>
           </div>
 
@@ -227,59 +214,48 @@ function getCategoryClasses(cat, type = 'bg') {
             <div
               v-for="term in group.terms"
               :key="term.term"
-              class="rounded-lg border overflow-hidden"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-800 border-gray-700'
-                : 'bg-white border-gray-200'"
+              class="rounded-lg border overflow-hidden bg-surface border-border"
             >
               <!-- Term header -->
               <button
                 @click="toggleTerm(term.term)"
-                class="w-full px-4 py-3 flex items-start justify-between text-left transition-colors"
-                :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
+                class="w-full px-4 py-3 flex items-start justify-between text-left transition-colors hover:bg-surface-alt"
               >
                 <div class="flex-1">
                   <div class="flex items-center gap-2 flex-wrap">
                     <span
-                      class="font-semibold"
-                      :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                      class="font-semibold text-text"
                     >
                       {{ term.display || term.term }}
                     </span>
                     <span
                       v-if="term.expansion"
-                      class="text-sm"
-                      :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                      class="text-sm text-text-muted"
                     >
                       ({{ term.expansion }})
                     </span>
                   </div>
                   <p
-                    class="text-sm mt-1"
-                    :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
+                    class="text-sm mt-1 text-text-secondary"
                   >
                     <AnnotatedText :text="term.short_def" />
                   </p>
                 </div>
                 <component
                   :is="expandedTerms.has(term.term) ? ChevronUp : ChevronDown"
-                  class="w-5 h-5 text-gray-400 flex-shrink-0 mt-1"
+                  class="w-5 h-5 text-text-muted flex-shrink-0 mt-1"
                 />
               </button>
 
               <!-- Expanded content -->
               <div
                 v-if="expandedTerms.has(term.term)"
-                class="px-4 pb-4 border-t"
-                :class="preferencesStore.darkMode
-                  ? 'border-gray-700 bg-gray-700'
-                  : 'border-gray-100 bg-gray-50'"
+                class="px-4 pb-4 border-t border-border bg-surface-alt"
               >
                 <!-- Long definition -->
                 <div v-if="term.long_def" class="mt-3">
                   <p
-                    class="text-sm whitespace-pre-line"
-                    :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                    class="text-sm whitespace-pre-line text-text-secondary"
                   >
                     <AnnotatedText :text="term.long_def" />
                   </p>
@@ -288,8 +264,7 @@ function getCategoryClasses(cat, type = 'bg') {
                 <!-- Examples -->
                 <div v-if="term.examples?.length" class="mt-4">
                   <h4
-                    class="text-xs font-medium uppercase tracking-wide mb-2"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                    class="text-xs font-medium uppercase tracking-wide mb-2 text-text-muted"
                   >
                     Examples
                   </h4>
@@ -297,10 +272,9 @@ function getCategoryClasses(cat, type = 'bg') {
                     <li
                       v-for="(example, idx) in term.examples"
                       :key="idx"
-                      class="text-sm flex items-start gap-2"
-                      :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
+                      class="text-sm flex items-start gap-2 text-text-secondary"
                     >
-                      <span class="text-gray-400">•</span>
+                      <span class="text-text-muted">•</span>
                       {{ example }}
                     </li>
                   </ul>
@@ -309,8 +283,7 @@ function getCategoryClasses(cat, type = 'bg') {
                 <!-- Related terms -->
                 <div v-if="term.related?.length" class="mt-4">
                   <h4
-                    class="text-xs font-medium uppercase tracking-wide mb-2"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                    class="text-xs font-medium uppercase tracking-wide mb-2 text-text-muted"
                   >
                     Related
                   </h4>
@@ -319,10 +292,7 @@ function getCategoryClasses(cat, type = 'bg') {
                       v-for="related in term.related"
                       :key="related"
                       @click="searchQuery = related; selectedCategory = null"
-                      class="px-2 py-1 text-xs rounded"
-                      :class="preferencesStore.darkMode
-                        ? 'bg-gray-600 text-gray-200 hover:bg-gray-500'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                      class="px-2 py-1 text-xs rounded bg-surface-alt text-text-secondary hover:bg-border"
                     >
                       {{ related }}
                     </button>
@@ -332,8 +302,7 @@ function getCategoryClasses(cat, type = 'bg') {
                 <!-- See also / external links -->
                 <div v-if="term.see_also?.length" class="mt-4">
                   <h4
-                    class="text-xs font-medium uppercase tracking-wide mb-2"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                    class="text-xs font-medium uppercase tracking-wide mb-2 text-text-muted"
                   >
                     Learn More
                   </h4>
@@ -344,10 +313,7 @@ function getCategoryClasses(cat, type = 'bg') {
                       :href="link.url"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded"
-                      :class="preferencesStore.darkMode
-                        ? 'bg-blue-900/50 text-blue-300 hover:bg-blue-900'
-                        : 'bg-blue-50 text-blue-700 hover:bg-blue-100'"
+                      class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded bg-primary text-on-primary hover:opacity-90"
                     >
                       {{ link.label }}
                       <ExternalLink v-if="link.url" class="w-3 h-3" />

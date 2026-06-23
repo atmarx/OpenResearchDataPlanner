@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { X, Copy, Check, Mail, Link as LinkIcon } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -15,7 +14,6 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 const configStore = useConfigStore()
-const preferencesStore = usePreferencesStore()
 
 const copiedLink = ref(false)
 const copiedTicket = ref(false)
@@ -98,29 +96,21 @@ function emailSupport() {
       aria-labelledby="qhelp-title"
     >
       <div
-        class="rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-xl max-h-[90vh] overflow-y-auto"
-        :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+        class="rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-xl max-h-[90vh] overflow-y-auto bg-surface"
       >
         <!-- Header -->
         <div
-          class="sticky top-0 border-b px-5 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700'
-            : 'bg-white border-gray-200'"
+          class="sticky top-0 border-b px-5 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl bg-surface border-border"
         >
           <h2
             id="qhelp-title"
-            class="text-lg font-semibold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-lg font-semibold text-text"
           >
             Get help with this question
           </h2>
           <button
             @click="emit('close')"
-            class="p-1.5 rounded-lg transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'hover:bg-gray-700 text-gray-400'
-              : 'hover:bg-gray-100 text-gray-500'"
+            class="p-1.5 rounded-lg transition-colors hover:bg-surface-alt text-text-muted"
             aria-label="Close"
           >
             <X class="w-5 h-5" />
@@ -130,8 +120,7 @@ function emailSupport() {
         <div class="px-5 py-4 space-y-5">
 
           <p
-            class="text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+            class="text-sm text-text-secondary"
           >
             Most of this is policy you may not have seen before, so questions are normal.
             Copy the support ticket text below into an email or ticket — it includes a link
@@ -140,14 +129,10 @@ function emailSupport() {
 
           <!-- Question echo -->
           <div
-            class="rounded-lg border p-3 text-sm"
-            :class="preferencesStore.darkMode
-              ? 'bg-gray-900 border-gray-700 text-gray-200'
-              : 'bg-gray-50 border-gray-200 text-gray-800'"
+            class="rounded-lg border p-3 text-sm bg-canvas border-border text-text-secondary"
           >
             <div
-              class="text-xs uppercase tracking-wide mb-1"
-              :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
+              class="text-xs uppercase tracking-wide mb-1 text-text-muted"
             >You're on</div>
             <div class="font-medium">{{ questionText }}</div>
           </div>
@@ -156,15 +141,11 @@ function emailSupport() {
           <div>
             <div class="flex items-center justify-between mb-1">
               <label
-                class="text-xs uppercase tracking-wide font-medium"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                class="text-xs uppercase tracking-wide font-medium text-text-muted"
               >Direct link to this question</label>
               <button
                 @click="copyText(shareableUrl, 'link')"
-                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors"
-                :class="preferencesStore.darkMode
-                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-200'
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'"
+                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors bg-surface-alt hover:bg-border-strong text-text-secondary"
               >
                 <Check v-if="copiedLink" class="w-3.5 h-3.5 text-green-500" />
                 <Copy v-else class="w-3.5 h-3.5" />
@@ -172,10 +153,7 @@ function emailSupport() {
               </button>
             </div>
             <div
-              class="font-mono text-xs px-3 py-2 rounded border break-all"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-900 border-gray-700 text-blue-300'
-                : 'bg-blue-50 border-blue-200 text-blue-900'"
+              class="font-mono text-xs px-3 py-2 rounded border break-all bg-canvas border-border text-primary"
             >
               <LinkIcon class="w-3.5 h-3.5 inline -mt-0.5 mr-1" />{{ shareableUrl }}
             </div>
@@ -185,15 +163,11 @@ function emailSupport() {
           <div>
             <div class="flex items-center justify-between mb-1">
               <label
-                class="text-xs uppercase tracking-wide font-medium"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                class="text-xs uppercase tracking-wide font-medium text-text-muted"
               >Support ticket text</label>
               <button
                 @click="copyText(ticketString, 'ticket')"
-                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors"
-                :class="preferencesStore.darkMode
-                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-200'
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'"
+                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors bg-surface-alt hover:bg-border-strong text-text-secondary"
               >
                 <Check v-if="copiedTicket" class="w-3.5 h-3.5 text-green-500" />
                 <Copy v-else class="w-3.5 h-3.5" />
@@ -201,20 +175,14 @@ function emailSupport() {
               </button>
             </div>
             <pre
-              class="font-mono text-xs px-3 py-2 rounded border whitespace-pre-wrap max-h-64 overflow-y-auto"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-900 border-gray-700 text-gray-300'
-                : 'bg-gray-50 border-gray-200 text-gray-800'"
+              class="font-mono text-xs px-3 py-2 rounded border whitespace-pre-wrap max-h-64 overflow-y-auto bg-canvas border-border text-text-secondary"
             >{{ ticketString }}</pre>
           </div>
 
           <!-- Email action -->
           <button
             @click="emailSupport"
-            class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'bg-blue-600 hover:bg-blue-500 text-white'
-              : 'bg-blue-600 hover:bg-blue-700 text-white'"
+            class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors bg-primary hover:bg-primary-dark text-on-primary"
           >
             <Mail class="w-4 h-4" />
             Email this to {{ supportEmail }}

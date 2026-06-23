@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   ChevronLeft,
   ChevronRight,
@@ -40,8 +39,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['go-back-to', 'reset'])
-
-const preferencesStore = usePreferencesStore()
 
 // Mobile panel state
 const isOpen = ref(false)
@@ -97,7 +94,7 @@ const hasHistory = computed(() => props.path.length > 0)
     <button
       v-if="!isOpen && hasHistory"
       @click="togglePanel"
-      class="fixed right-0 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1 px-2 py-4 rounded-l-lg shadow-lg transition-colors bg-blue-600 text-white hover:bg-blue-500"
+      class="fixed right-0 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1 px-2 py-4 rounded-l-lg shadow-lg transition-colors bg-primary text-on-primary hover:bg-primary-dark"
     >
       <ChevronLeft class="w-4 h-4" />
       <span class="text-xs font-medium writing-mode-vertical">Your Path</span>
@@ -107,29 +104,21 @@ const hasHistory = computed(() => props.path.length > 0)
     <Transition name="slide">
       <div
         v-if="isOpen"
-        class="fixed right-0 top-0 bottom-0 w-80 max-w-[85vw] z-40 shadow-2xl overflow-y-auto"
-        :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+        class="fixed right-0 top-0 bottom-0 w-80 max-w-[85vw] z-40 shadow-2xl overflow-y-auto bg-surface"
       >
         <!-- Panel header -->
         <div
-          class="sticky top-0 flex items-center justify-between px-4 py-3 border-b"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700'
-            : 'bg-white border-gray-200'"
+          class="sticky top-0 flex items-center justify-between px-4 py-3 border-b bg-surface border-border"
         >
           <div class="flex items-center gap-2">
-            <MapPin class="w-4 h-4 text-blue-500" />
+            <MapPin class="w-4 h-4 text-primary" />
             <span
-              class="font-semibold"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+              class="font-semibold text-text"
             >Your Path</span>
           </div>
           <button
             @click="togglePanel"
-            class="p-2 rounded-lg transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'hover:bg-gray-700 text-gray-400'
-              : 'hover:bg-gray-100 text-gray-500'"
+            class="p-2 rounded-lg transition-colors hover:bg-surface-alt text-text-muted"
           >
             <ChevronRight class="w-5 h-5" />
           </button>
@@ -140,8 +129,7 @@ const hasHistory = computed(() => props.path.length > 0)
           <!-- Empty state -->
           <div
             v-if="!path.length && !currentQuestionId"
-            class="text-center py-6"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+            class="text-center py-6 text-text-muted"
           >
             <p class="text-sm">Start answering questions to see your path here.</p>
           </div>
@@ -152,22 +140,19 @@ const hasHistory = computed(() => props.path.length > 0)
               @click="handleGoBack(idx - 1)"
               class="w-full text-left group"
             >
-              <div class="flex items-start gap-2 py-2 px-2 rounded-lg transition-colors"
-                :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
+              <div class="flex items-start gap-2 py-2 px-2 rounded-lg transition-colors hover:bg-surface-alt"
               >
                 <CircleCheck class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500" />
                 <div class="flex-1 min-w-0">
                   <div
-                    class="text-xs leading-tight"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                    class="text-xs leading-tight text-text-muted"
                   >
                     {{ entry.questionText }}
                   </div>
                   <div class="flex items-center gap-2 mt-0.5">
-                    <CornerDownRight class="w-3 h-3 flex-shrink-0" :class="preferencesStore.darkMode ? 'text-gray-600' : 'text-gray-300'" />
+                    <CornerDownRight class="w-3 h-3 flex-shrink-0 text-text-muted" />
                     <span
-                      class="text-sm font-medium"
-                      :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                      class="text-sm font-medium text-text"
                     >
                       {{ entry.answerLabel }}
                     </span>
@@ -183,20 +168,18 @@ const hasHistory = computed(() => props.path.length > 0)
             </button>
             <div
               v-if="idx < path.length - 1 || currentQuestionId"
-              class="ml-4 h-2 border-l-2"
-              :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+              class="ml-4 h-2 border-l-2 border-border"
             />
           </template>
 
           <!-- Current question -->
           <div v-if="currentQuestionId && currentQuestionId !== 'complete'" class="py-2 px-2">
             <div class="flex items-start gap-2">
-              <CircleDot class="w-4 h-4 mt-0.5 flex-shrink-0 text-blue-500 animate-pulse" />
+              <CircleDot class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary animate-pulse" />
               <div class="flex-1 min-w-0">
-                <div class="text-xs font-medium uppercase tracking-wide text-blue-500">Current</div>
+                <div class="text-xs font-medium uppercase tracking-wide text-primary">Current</div>
                 <div
-                  class="text-sm"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  class="text-sm text-text"
                 >
                   {{ currentQuestionText }}
                 </div>
@@ -204,8 +187,7 @@ const hasHistory = computed(() => props.path.length > 0)
                   <div
                     v-for="opt in optionsPreview"
                     :key="opt.value"
-                    class="flex items-center gap-2 text-xs"
-                    :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+                    class="flex items-center gap-2 text-xs text-text-muted"
                   >
                     <Circle class="w-2.5 h-2.5" />
                     <span>{{ opt.label }}</span>
@@ -230,8 +212,7 @@ const hasHistory = computed(() => props.path.length > 0)
             <div class="flex items-center gap-2">
               <component :is="getTierIcon(currentTier)" class="w-5 h-5" :class="tierColors[currentTier]" />
               <span
-                class="font-semibold capitalize"
-                :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                class="font-semibold capitalize text-text"
               >
                 {{ currentTier }} Tier
               </span>
@@ -242,10 +223,7 @@ const hasHistory = computed(() => props.path.length > 0)
           <button
             v-if="path.length > 0"
             @click="handleReset"
-            class="flex items-center gap-2 mt-4 text-xs w-full justify-center py-2 rounded-lg transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'"
+            class="flex items-center gap-2 mt-4 text-xs w-full justify-center py-2 rounded-lg transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
           >
             <RotateCcw class="w-3 h-3" />
             Start over
@@ -267,20 +245,15 @@ const hasHistory = computed(() => props.path.length > 0)
   <!-- Desktop: Always visible sidebar -->
   <div class="hidden 2xl:block w-72 flex-shrink-0">
     <div
-      class="sticky top-20 rounded-lg border overflow-hidden"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="sticky top-20 rounded-lg border overflow-hidden bg-surface border-border"
     >
       <!-- Header -->
       <div
-        class="flex items-center gap-2 px-4 py-3 border-b"
-        :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
+        class="flex items-center gap-2 px-4 py-3 border-b border-border"
       >
-        <MapPin class="w-4 h-4 text-blue-500" />
+        <MapPin class="w-4 h-4 text-primary" />
         <span
-          class="font-semibold"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+          class="font-semibold text-text"
         >Your Path</span>
       </div>
 
@@ -289,8 +262,7 @@ const hasHistory = computed(() => props.path.length > 0)
         <!-- Empty state -->
         <div
           v-if="!path.length && !currentQuestionId"
-          class="text-center py-6"
-          :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+          class="text-center py-6 text-text-muted"
         >
           <p class="text-sm">Start answering questions to see your path here.</p>
         </div>
@@ -301,22 +273,19 @@ const hasHistory = computed(() => props.path.length > 0)
             @click="handleGoBack(idx - 1)"
             class="w-full text-left group"
           >
-            <div class="flex items-start gap-2 py-2 px-2 rounded-lg transition-colors"
-              :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
+            <div class="flex items-start gap-2 py-2 px-2 rounded-lg transition-colors hover:bg-surface-alt"
             >
               <CircleCheck class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500" />
               <div class="flex-1 min-w-0">
                 <div
-                  class="text-xs leading-tight"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                  class="text-xs leading-tight text-text-muted"
                 >
                   {{ entry.questionText }}
                 </div>
                 <div class="flex items-center gap-2 mt-0.5">
-                  <CornerDownRight class="w-3 h-3 flex-shrink-0" :class="preferencesStore.darkMode ? 'text-gray-600' : 'text-gray-300'" />
+                  <CornerDownRight class="w-3 h-3 flex-shrink-0 text-text-muted" />
                   <span
-                    class="text-sm font-medium"
-                    :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                    class="text-sm font-medium text-text"
                   >
                     {{ entry.answerLabel }}
                   </span>
@@ -332,20 +301,18 @@ const hasHistory = computed(() => props.path.length > 0)
           </button>
           <div
             v-if="idx < path.length - 1 || currentQuestionId"
-            class="ml-4 h-2 border-l-2"
-            :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+            class="ml-4 h-2 border-l-2 border-border"
           />
         </template>
 
         <!-- Current question -->
         <div v-if="currentQuestionId && currentQuestionId !== 'complete'" class="py-2 px-2">
           <div class="flex items-start gap-2">
-            <CircleDot class="w-4 h-4 mt-0.5 flex-shrink-0 text-blue-500 animate-pulse" />
+            <CircleDot class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary animate-pulse" />
             <div class="flex-1 min-w-0">
-              <div class="text-xs font-medium uppercase tracking-wide text-blue-500">Current</div>
+              <div class="text-xs font-medium uppercase tracking-wide text-primary">Current</div>
               <div
-                class="text-sm"
-                :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                class="text-sm text-text"
               >
                 {{ currentQuestionText }}
               </div>
@@ -353,8 +320,7 @@ const hasHistory = computed(() => props.path.length > 0)
                 <div
                   v-for="opt in optionsPreview"
                   :key="opt.value"
-                  class="flex items-center gap-2 text-xs"
-                  :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+                  class="flex items-center gap-2 text-xs text-text-muted"
                 >
                   <Circle class="w-2.5 h-2.5" />
                   <span>{{ opt.label }}</span>
@@ -379,8 +345,7 @@ const hasHistory = computed(() => props.path.length > 0)
           <div class="flex items-center gap-2">
             <component :is="getTierIcon(currentTier)" class="w-5 h-5" :class="tierColors[currentTier]" />
             <span
-              class="font-semibold capitalize"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+              class="font-semibold capitalize text-text"
             >
               {{ currentTier }} Tier
             </span>
@@ -391,10 +356,7 @@ const hasHistory = computed(() => props.path.length > 0)
         <button
           v-if="path.length > 0"
           @click="handleReset"
-          class="flex items-center gap-2 mt-4 text-xs w-full justify-center py-2 rounded-lg transition-colors"
-          :class="preferencesStore.darkMode
-            ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'"
+          class="flex items-center gap-2 mt-4 text-xs w-full justify-center py-2 rounded-lg transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
         >
           <RotateCcw class="w-3 h-3" />
           Start over

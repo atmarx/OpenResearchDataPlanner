@@ -6,6 +6,8 @@ import { X, Download, FileJson, FileText, ChevronDown, User } from 'lucide-vue-n
 
 const emit = defineEmits(['close'])
 
+// darkMode still drives the LOCKED green wayfinding accent on the Markdown
+// export button (green has no semantic token — it stays mode-dependent).
 const preferencesStore = usePreferencesStore()
 const { generateFilename, exportJSON, exportMarkdown } = useExport()
 
@@ -69,28 +71,20 @@ function handleClose() {
       @click.self="handleClose"
     >
       <div
-        class="rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
-        :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+        class="rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto bg-surface"
       >
         <!-- Header -->
         <div
-          class="sticky top-0 border-b px-5 py-4 flex items-center justify-between"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700'
-            : 'bg-white border-gray-200'"
+          class="sticky top-0 border-b px-5 py-4 flex items-center justify-between bg-surface border-border"
         >
           <h2
-            class="text-lg font-semibold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-lg font-semibold text-text"
           >
             Export Your Request
           </h2>
           <button
             @click="handleClose"
-            class="p-2 rounded-lg"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-              : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'"
+            class="p-2 rounded-lg text-text-muted hover:text-text hover:bg-surface-alt"
           >
             <X class="w-5 h-5" />
           </button>
@@ -101,8 +95,7 @@ function handleClose() {
           <!-- Project Name -->
           <div>
             <label
-              class="block text-sm font-medium mb-1.5"
-              :class="preferencesStore.darkMode ? 'text-gray-200' : 'text-gray-700'"
+              class="block text-sm font-medium mb-1.5 text-text-secondary"
             >
               Project Name <span class="text-red-500">*</span>
             </label>
@@ -110,14 +103,10 @@ function handleClose() {
               v-model="projectName"
               type="text"
               placeholder="e.g., Chen Lab RNA-seq Study"
-              class="w-full px-3 py-2 rounded-lg border text-sm"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
-                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+              class="w-full px-3 py-2 rounded-lg border text-sm bg-surface border-border-strong text-text placeholder-gray-400"
             />
             <p
-              class="mt-1 text-xs"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="mt-1 text-xs text-text-muted"
             >
               Used in the filename and document header
             </p>
@@ -126,8 +115,7 @@ function handleClose() {
           <!-- Final Notes -->
           <div>
             <label
-              class="block text-sm font-medium mb-1.5"
-              :class="preferencesStore.darkMode ? 'text-gray-200' : 'text-gray-700'"
+              class="block text-sm font-medium mb-1.5 text-text-secondary"
             >
               Additional Notes (optional)
             </label>
@@ -135,25 +123,18 @@ function handleClose() {
               v-model="finalNotes"
               rows="3"
               placeholder="Any additional context for IT, grant details, timeline, etc."
-              class="w-full px-3 py-2 rounded-lg border text-sm resize-none"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
-                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+              class="w-full px-3 py-2 rounded-lg border text-sm resize-none bg-surface border-border-strong text-text placeholder-gray-400"
             />
           </div>
 
           <!-- Contact Info (collapsible) -->
           <div
-            class="rounded-lg border"
-            :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
+            class="rounded-lg border border-border"
           >
             <button
               type="button"
               @click="showContactFields = !showContactFields"
-              class="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left"
-              :class="preferencesStore.darkMode
-                ? 'text-gray-300 hover:text-white'
-                : 'text-gray-600 hover:text-gray-900'"
+              class="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left text-text-secondary hover:text-text"
             >
               <User class="w-4 h-4" />
               <span class="flex-1">Contact Information (optional)</span>
@@ -165,12 +146,10 @@ function handleClose() {
 
             <div
               v-if="showContactFields"
-              class="px-3 pb-3 space-y-3 border-t"
-              :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
+              class="px-3 pb-3 space-y-3 border-t border-border"
             >
               <p
-                class="text-xs pt-2"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                class="text-xs pt-2 text-text-muted"
               >
                 Helps support staff follow up if they have questions.
               </p>
@@ -178,8 +157,7 @@ function handleClose() {
               <div class="grid grid-cols-2 gap-3">
                 <div>
                   <label
-                    class="block text-xs font-medium mb-1"
-                    :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
+                    class="block text-xs font-medium mb-1 text-text-secondary"
                   >
                     Name
                   </label>
@@ -187,16 +165,12 @@ function handleClose() {
                     v-model="contactName"
                     type="text"
                     placeholder="Dr. Sarah Chen"
-                    class="w-full px-2.5 py-1.5 rounded border text-sm"
-                    :class="preferencesStore.darkMode
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-500'
-                      : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+                    class="w-full px-2.5 py-1.5 rounded border text-sm bg-surface border-border-strong text-text placeholder-gray-400"
                   />
                 </div>
                 <div>
                   <label
-                    class="block text-xs font-medium mb-1"
-                    :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
+                    class="block text-xs font-medium mb-1 text-text-secondary"
                   >
                     Department
                   </label>
@@ -204,18 +178,14 @@ function handleClose() {
                     v-model="contactDepartment"
                     type="text"
                     placeholder="Biology"
-                    class="w-full px-2.5 py-1.5 rounded border text-sm"
-                    :class="preferencesStore.darkMode
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-500'
-                      : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+                    class="w-full px-2.5 py-1.5 rounded border text-sm bg-surface border-border-strong text-text placeholder-gray-400"
                   />
                 </div>
               </div>
 
               <div>
                 <label
-                  class="block text-xs font-medium mb-1"
-                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
+                  class="block text-xs font-medium mb-1 text-text-secondary"
                 >
                   Email
                 </label>
@@ -223,10 +193,7 @@ function handleClose() {
                   v-model="contactEmail"
                   type="email"
                   placeholder="schen@university.edu"
-                  class="w-full px-2.5 py-1.5 rounded border text-sm"
-                  :class="preferencesStore.darkMode
-                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-500'
-                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+                  class="w-full px-2.5 py-1.5 rounded border text-sm bg-surface border-border-strong text-text placeholder-gray-400"
                 />
               </div>
             </div>
@@ -235,8 +202,7 @@ function handleClose() {
           <!-- Export Buttons -->
           <div class="space-y-3">
             <p
-              class="text-sm font-medium"
-              :class="preferencesStore.darkMode ? 'text-gray-200' : 'text-gray-700'"
+              class="text-sm font-medium text-text-secondary"
             >
               Download as:
             </p>
@@ -246,39 +212,29 @@ function handleClose() {
               @click="handleExportJSON"
               :disabled="!isValid"
               class="w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-colors text-left"
-              :class="[
-                isValid
-                  ? (preferencesStore.darkMode
-                      ? 'bg-gray-700 border-gray-600 hover:border-blue-500 hover:bg-gray-600'
-                      : 'bg-gray-50 border-gray-200 hover:border-blue-300 hover:bg-blue-50')
-                  : (preferencesStore.darkMode
-                      ? 'bg-gray-800 border-gray-700 opacity-50 cursor-not-allowed'
-                      : 'bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed')
-              ]"
+              :class="isValid
+                ? 'bg-canvas border-border hover:border-primary hover:bg-surface-alt'
+                : 'bg-surface-alt border-border opacity-50 cursor-not-allowed'"
             >
               <div
-                class="w-10 h-10 rounded-lg flex items-center justify-center"
-                :class="preferencesStore.darkMode ? 'bg-blue-900/50 text-blue-400' : 'bg-blue-100 text-blue-600'"
+                class="w-10 h-10 rounded-lg flex items-center justify-center bg-primary text-on-primary"
               >
                 <FileJson class="w-5 h-5" />
               </div>
               <div class="flex-1 min-w-0">
                 <div
-                  class="font-medium"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  class="font-medium text-text"
                 >
                   JSON (for Research IT)
                 </div>
                 <div
-                  class="text-xs truncate"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                  class="text-xs truncate text-text-muted"
                 >
                   {{ jsonFilename }}
                 </div>
               </div>
               <Download
-                class="w-5 h-5 flex-shrink-0"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-400'"
+                class="w-5 h-5 flex-shrink-0 text-text-muted"
               />
             </button>
 
@@ -287,16 +243,11 @@ function handleClose() {
               @click="handleExportMarkdown"
               :disabled="!isValid"
               class="w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-colors text-left"
-              :class="[
-                isValid
-                  ? (preferencesStore.darkMode
-                      ? 'bg-gray-700 border-gray-600 hover:border-green-500 hover:bg-gray-600'
-                      : 'bg-gray-50 border-gray-200 hover:border-green-300 hover:bg-green-50')
-                  : (preferencesStore.darkMode
-                      ? 'bg-gray-800 border-gray-700 opacity-50 cursor-not-allowed'
-                      : 'bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed')
-              ]"
+              :class="isValid
+                ? ['bg-canvas border-border hover:bg-surface-alt', preferencesStore.darkMode ? 'hover:border-green-500' : 'hover:border-green-300']
+                : 'bg-surface-alt border-border opacity-50 cursor-not-allowed'"
             >
+              <!-- Green icon chip is LOCKED format-wayfinding (success-family) — not skinned. -->
               <div
                 class="w-10 h-10 rounded-lg flex items-center justify-center"
                 :class="preferencesStore.darkMode ? 'bg-green-900/50 text-green-400' : 'bg-green-100 text-green-600'"
@@ -305,29 +256,25 @@ function handleClose() {
               </div>
               <div class="flex-1 min-w-0">
                 <div
-                  class="font-medium"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  class="font-medium text-text"
                 >
                   Markdown (for your records)
                 </div>
                 <div
-                  class="text-xs truncate"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                  class="text-xs truncate text-text-muted"
                 >
                   {{ mdFilename }}
                 </div>
               </div>
               <Download
-                class="w-5 h-5 flex-shrink-0"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-400'"
+                class="w-5 h-5 flex-shrink-0 text-text-muted"
               />
             </button>
           </div>
 
           <!-- Help Text -->
           <div
-            class="text-xs space-y-1"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+            class="text-xs space-y-1 text-text-muted"
           >
             <p><strong>JSON:</strong> Send this to Research IT for review and approval.</p>
             <p><strong>Markdown:</strong> Human-readable draft for your records. Can be opened in any text editor.</p>

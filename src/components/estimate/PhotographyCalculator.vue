@@ -74,27 +74,27 @@ function handleAddToSlate() {
       <div class="space-y-4">
         <!-- Average file size -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Average File Size (MB)
           </label>
           <input
             v-model.number="inputs.size_mb"
             type="number"
             min="1"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
 
         <!-- File count -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Number of Files
           </label>
           <input
             v-model.number="inputs.file_count"
             type="number"
             min="1"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
       </div>

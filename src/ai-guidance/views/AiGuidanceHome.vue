@@ -343,28 +343,22 @@ function getColorClasses(color, isDark) {
 
 <template>
   <div
-    class="min-h-screen transition-colors"
-    :class="preferencesStore.darkMode ? 'bg-gray-900' : 'bg-gray-50'"
+    class="min-h-screen transition-colors bg-canvas"
   >
     <!-- Header -->
     <header
-      class="border-b"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="border-b bg-surface border-border"
     >
       <div class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-6">
         <div class="flex items-center justify-between">
           <div>
             <h1
-              class="text-2xl font-bold"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+              class="text-2xl font-bold text-text"
             >
               AI Guidance
             </h1>
             <p
-              class="mt-1"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+              class="mt-1 text-text-secondary"
             >
               Responsible use of generative AI in research and teaching
             </p>
@@ -373,18 +367,14 @@ function getColorClasses(color, isDark) {
           <!-- Progress / Reset -->
           <div class="flex items-center gap-4">
             <div
-              class="text-sm"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="text-sm text-text-muted"
             >
               {{ completedCount }} / {{ allApplets.length }} completed
             </div>
             <button
               v-if="completedCount > 0"
               @click="resetProgress"
-              class="p-2 rounded-lg transition-colors"
-              :class="preferencesStore.darkMode
-                ? 'text-gray-400 hover:text-white hover:bg-gray-700'
-                : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'"
+              class="p-2 rounded-lg transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
               title="Reset progress"
             >
               <RotateCcw class="w-5 h-5" />
@@ -398,10 +388,7 @@ function getColorClasses(color, isDark) {
     <main class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-8 space-y-8">
       <!-- Tier Context Card -->
       <div
-        class="p-6 rounded-lg border"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
+        class="p-6 rounded-lg border bg-surface border-border"
       >
         <!-- Has tier context -->
         <div v-if="hasTierContext && tierConfig" class="flex items-center justify-between">
@@ -418,23 +405,20 @@ function getColorClasses(color, isDark) {
               <component :is="getTierIcon(tierConfig.color)" class="w-6 h-6" />
             </div>
             <div>
-              <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'">
+              <p class="text-sm text-text-muted">
                 {{ tierSource === 'planner' ? 'From your Data Planner session:' : 'Selected tier:' }}
               </p>
-              <p class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <p class="font-semibold text-text">
                 {{ tierConfig.short_name }} — {{ tierConfig.name }}
               </p>
-              <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+              <p class="text-sm mt-1 text-text-secondary">
                 AI guidance will be tailored to {{ tierConfig.short_name }} data sensitivity requirements.
               </p>
             </div>
           </div>
           <button
             @click="showTierPicker = true"
-            class="text-sm px-3 py-1.5 rounded-lg transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-400 hover:text-white hover:bg-gray-700'
-              : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'"
+            class="text-sm px-3 py-1.5 rounded-lg transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
           >
             Change
           </button>
@@ -444,16 +428,15 @@ function getColorClasses(color, isDark) {
         <div v-else>
           <div class="flex items-start gap-4">
             <div
-              class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-100'"
+              class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-surface-alt"
             >
-              <HelpCircle class="w-6 h-6" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'" />
+              <HelpCircle class="w-6 h-6 text-text-muted" />
             </div>
             <div class="flex-1">
-              <h3 class="font-semibold mb-1" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <h3 class="font-semibold mb-1 text-text">
                 What's your data security tier?
               </h3>
-              <p class="text-sm mb-4" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+              <p class="text-sm mb-4 text-text-secondary">
                 Knowing your tier helps tailor AI guidance to your data sensitivity.
                 You can also proceed without selecting a tier for generic guidance.
               </p>
@@ -476,17 +459,14 @@ function getColorClasses(color, isDark) {
                 </button>
                 <router-link
                   to="/tier-check"
-                  class="px-3 py-2 rounded-lg border text-sm transition-colors flex items-center gap-1"
-                  :class="preferencesStore.darkMode
-                    ? 'border-gray-600 text-gray-400 hover:text-white hover:border-gray-500'
-                    : 'border-gray-300 text-gray-600 hover:text-gray-900 hover:border-gray-400'"
+                  class="px-3 py-2 rounded-lg border text-sm transition-colors flex items-center gap-1 border-border-strong text-text-secondary hover:text-text hover:border-border-strong"
                 >
                   <HelpCircle class="w-4 h-4" />
                   Help me find my tier
                 </router-link>
               </div>
 
-              <p class="text-xs mt-3" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'">
+              <p class="text-xs mt-3 text-text-muted">
                 Or skip this and proceed with generic guidance below.
               </p>
             </div>
@@ -507,20 +487,16 @@ function getColorClasses(color, isDark) {
 
         <!-- Modal -->
         <div
-          class="relative w-full max-w-md rounded-lg shadow-xl p-6"
-          :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+          class="relative w-full max-w-md rounded-lg shadow-xl p-6 bg-surface"
         >
           <button
             @click="showTierPicker = false"
-            class="absolute top-4 right-4 p-1 rounded-lg transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-400 hover:text-white hover:bg-gray-700'
-              : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'"
+            class="absolute top-4 right-4 p-1 rounded-lg transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
           >
             <X class="w-5 h-5" />
           </button>
 
-          <h3 class="text-lg font-semibold mb-4" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+          <h3 class="text-lg font-semibold mb-4 text-text">
             Select Data Tier
           </h3>
 
@@ -555,24 +531,22 @@ function getColorClasses(color, isDark) {
                     'text-orange-800': tier.color === 'orange',
                     'text-red-800': tier.color === 'red'
                   }">{{ tier.short_name }}</span>
-                  <span class="text-gray-700 ml-2">{{ tier.name }}</span>
+                  <span class="text-text-secondary ml-2">{{ tier.name }}</span>
                 </div>
               </div>
             </button>
           </div>
 
-          <div class="flex items-center justify-between pt-4 border-t" :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'">
+          <div class="flex items-center justify-between pt-4 border-t border-border">
             <button
               @click="clearTier(); showTierPicker = false"
-              class="text-sm"
-              :class="preferencesStore.darkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'"
+              class="text-sm text-text-muted hover:text-text-secondary"
             >
               Use generic guidance
             </button>
             <router-link
               to="/tier-check"
-              class="text-sm flex items-center gap-1"
-              :class="preferencesStore.darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'"
+              class="text-sm flex items-center gap-1 text-primary hover:text-primary"
             >
               <HelpCircle class="w-4 h-4" />
               Help me decide
@@ -583,19 +557,15 @@ function getColorClasses(color, isDark) {
 
       <!-- Intro -->
       <div
-        class="p-6 rounded-lg border"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
+        class="p-6 rounded-lg border bg-surface border-border"
       >
         <h2
-          class="text-lg font-semibold mb-2"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+          class="text-lg font-semibold mb-2 text-text"
         >
           Getting Started
         </h2>
         <p
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+          class="text-text-secondary"
         >
           These applets help you make informed decisions about using AI in your research.
           Start with <strong>Phase 1</strong> for the core decision flow, or jump to any
@@ -657,14 +627,12 @@ function getColorClasses(color, isDark) {
       <div v-for="phase in phases" :key="phase.id" class="space-y-4">
         <div>
           <h2
-            class="text-xl font-bold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-xl font-bold text-text"
           >
             {{ phase.title }}
           </h2>
           <p
-            class="mt-1"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+            class="mt-1 text-text-secondary"
           >
             {{ phase.description }}
           </p>
@@ -698,24 +666,21 @@ function getColorClasses(color, isDark) {
 
             <!-- Title -->
             <h3
-              class="font-semibold mb-1"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+              class="font-semibold mb-1 text-text"
             >
               {{ applet.title }}
             </h3>
 
             <!-- Question -->
             <p
-              class="text-sm"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+              class="text-sm text-text-secondary"
             >
               {{ applet.question }}
             </p>
 
             <!-- Arrow on hover -->
             <ArrowRight
-              class="absolute bottom-4 right-4 w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="absolute bottom-4 right-4 w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity text-text-muted"
             />
           </button>
         </div>
@@ -723,14 +688,10 @@ function getColorClasses(color, isDark) {
 
       <!-- Scope note -->
       <div
-        class="p-4 rounded-lg border"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-gray-100 border-gray-200'"
+        class="p-4 rounded-lg border bg-surface-alt border-border"
       >
         <p
-          class="text-sm"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+          class="text-sm text-text-secondary"
         >
           <strong>Scope:</strong> This guide focuses on generative AI (LLMs, image generators).
           For research ML (training custom models, scientific computing), consult Research Computing directly.

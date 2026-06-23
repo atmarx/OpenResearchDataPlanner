@@ -68,7 +68,7 @@ function handleClick(step, index) {
           class="absolute top-4 left-1/2 right-0 h-0.5 -translate-y-1/2"
           style="width: calc(100% - 1rem); left: calc(50% + 1rem);"
           :class="[
-            completedSteps.includes(step.id) ? 'bg-blue-600' : 'bg-gray-200'
+            completedSteps.includes(step.id) ? 'bg-primary' : 'bg-border'
           ]"
           aria-hidden="true"
         />
@@ -85,21 +85,21 @@ function handleClick(step, index) {
         >
           <!-- Circle -->
           <span
-            class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors bg-white"
+            class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors bg-surface"
             :class="[
               getStepStatus(step, index) === 'completed'
-                ? 'bg-blue-600 border-blue-600'
+                ? 'bg-primary border-primary'
                 : getStepStatus(step, index) === 'current'
-                  ? 'border-blue-600'
-                  : 'border-gray-300',
+                  ? 'border-primary'
+                  : 'border-border-strong',
               canNavigateTo(step, index) && getStepStatus(step, index) !== 'completed'
-                ? 'group-hover:border-blue-400'
+                ? 'group-hover:border-primary'
                 : ''
             ]"
           >
             <Check
               v-if="getStepStatus(step, index) === 'completed'"
-              class="h-4 w-4 text-white"
+              class="h-4 w-4 text-on-primary"
               aria-hidden="true"
             />
             <span
@@ -107,8 +107,8 @@ function handleClick(step, index) {
               class="text-sm font-medium"
               :class="[
                 getStepStatus(step, index) === 'current'
-                  ? 'text-blue-600'
-                  : 'text-gray-500'
+                  ? 'text-primary'
+                  : 'text-text-muted'
               ]"
             >
               {{ index + 1 }}
@@ -120,10 +120,10 @@ function handleClick(step, index) {
             class="mt-2 text-xs font-medium text-center hidden sm:block"
             :class="[
               getStepStatus(step, index) === 'completed'
-                ? 'text-blue-600'
+                ? 'text-primary'
                 : getStepStatus(step, index) === 'current'
-                  ? 'text-blue-600'
-                  : 'text-gray-500'
+                  ? 'text-primary'
+                  : 'text-text-muted'
             ]"
           >
             {{ step.label }}

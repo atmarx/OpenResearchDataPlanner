@@ -97,9 +97,7 @@ function thumbClasses(value) {
       : 'bg-red-100 border-red-300 text-red-700'
   }
 
-  return isDark
-    ? 'border-gray-600 text-gray-400 hover:border-gray-500 hover:text-gray-300'
-    : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-600'
+  return 'border-border-strong text-text-muted hover:border-border-strong hover:text-text-secondary'
 }
 </script>
 
@@ -108,17 +106,11 @@ function thumbClasses(value) {
     <!-- Card variant -->
     <div
       v-if="variant === 'card'"
-      class="p-4 rounded-lg border"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="p-4 rounded-lg border bg-surface border-border"
     >
       <!-- Idle + Voted: show buttons -->
       <template v-if="state === 'idle' || state === 'voted'">
-        <p
-          class="text-sm mb-3"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-        >
+        <p class="text-sm mb-3 text-text-secondary">
           {{ prompt }}
         </p>
         <div class="flex items-center gap-3">
@@ -145,10 +137,7 @@ function thumbClasses(value) {
           <button
             v-if="state === 'voted'"
             @click="expand"
-            class="flex items-center gap-1.5 text-sm ml-2 transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-500 hover:text-gray-300'
-              : 'text-gray-400 hover:text-gray-600'"
+            class="flex items-center gap-1.5 text-sm ml-2 transition-colors text-text-muted hover:text-text-secondary"
           >
             <MessageSquare class="w-3.5 h-3.5" />
             Add a comment
@@ -166,10 +155,7 @@ function thumbClasses(value) {
               ? (preferencesStore.darkMode ? 'text-green-400' : 'text-green-600')
               : (preferencesStore.darkMode ? 'text-red-400' : 'text-red-600')"
           />
-          <p
-            class="text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-          >
+          <p class="text-sm text-text-secondary">
             Thanks! Anything you'd like to add?
           </p>
         </div>
@@ -178,10 +164,7 @@ function thumbClasses(value) {
           v-model="comment"
           rows="3"
           placeholder="What worked well? What could be improved?"
-          class="w-full px-3 py-2 rounded-lg border text-sm resize-none mb-3"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-500'
-            : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+          class="w-full px-3 py-2 rounded-lg border text-sm resize-none mb-3 bg-surface border-border-strong text-text placeholder-text-muted"
         />
 
         <div class="flex gap-3 mb-3">
@@ -189,19 +172,13 @@ function thumbClasses(value) {
             v-model="contactName"
             type="text"
             placeholder="Name (optional)"
-            class="flex-1 px-3 py-2 rounded-lg border text-sm"
-            :class="preferencesStore.darkMode
-              ? 'bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-500'
-              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+            class="flex-1 px-3 py-2 rounded-lg border text-sm bg-surface border-border-strong text-text placeholder-text-muted"
           />
           <input
             v-model="contactEmail"
             type="email"
             placeholder="Email (optional)"
-            class="flex-1 px-3 py-2 rounded-lg border text-sm"
-            :class="preferencesStore.darkMode
-              ? 'bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-500'
-              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+            class="flex-1 px-3 py-2 rounded-lg border text-sm bg-surface border-border-strong text-text placeholder-text-muted"
           />
         </div>
 
@@ -209,10 +186,7 @@ function thumbClasses(value) {
           <button
             @click="submitComment"
             :disabled="submitting"
-            class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'bg-blue-600 text-white hover:bg-blue-500'
-              : 'bg-blue-600 text-white hover:bg-blue-700'"
+            class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-on-primary hover:bg-primary-dark"
           >
             <Send class="w-4 h-4" />
             {{ submitting ? 'Sending...' : 'Submit' }}
@@ -227,10 +201,7 @@ function thumbClasses(value) {
             class="w-5 h-5"
             :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-600'"
           />
-          <p
-            class="text-sm font-medium"
-            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-          >
+          <p class="text-sm font-medium text-text-secondary">
             Thanks for your feedback!
           </p>
         </div>
@@ -240,15 +211,11 @@ function thumbClasses(value) {
     <!-- Inline variant (minimal, no border) -->
     <div
       v-if="variant === 'inline'"
-      class="pt-4 mt-4 border-t"
-      :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
+      class="pt-4 mt-4 border-t border-border"
     >
       <template v-if="state === 'idle' || state === 'voted'">
         <div class="flex items-center gap-3">
-          <p
-            class="text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
-          >
+          <p class="text-sm text-text-muted">
             {{ prompt }}
           </p>
           <button
@@ -272,10 +239,7 @@ function thumbClasses(value) {
           <button
             v-if="state === 'voted'"
             @click="expand"
-            class="flex items-center gap-1.5 text-sm transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-500 hover:text-gray-300'
-              : 'text-gray-400 hover:text-gray-600'"
+            class="flex items-center gap-1.5 text-sm transition-colors text-text-muted hover:text-text-secondary"
           >
             <MessageSquare class="w-3.5 h-3.5" />
             Comment
@@ -289,37 +253,25 @@ function thumbClasses(value) {
             v-model="comment"
             rows="2"
             placeholder="What could be improved?"
-            class="w-full px-3 py-2 rounded-lg border text-sm resize-none"
-            :class="preferencesStore.darkMode
-              ? 'bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-500'
-              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+            class="w-full px-3 py-2 rounded-lg border text-sm resize-none bg-surface border-border-strong text-text placeholder-text-muted"
           />
           <div class="flex gap-3">
             <input
               v-model="contactName"
               type="text"
               placeholder="Name (optional)"
-              class="flex-1 px-3 py-2 rounded-lg border text-sm"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-500'
-                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+              class="flex-1 px-3 py-2 rounded-lg border text-sm bg-surface border-border-strong text-text placeholder-text-muted"
             />
             <input
               v-model="contactEmail"
               type="email"
               placeholder="Email (optional)"
-              class="flex-1 px-3 py-2 rounded-lg border text-sm"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-500'
-                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+              class="flex-1 px-3 py-2 rounded-lg border text-sm bg-surface border-border-strong text-text placeholder-text-muted"
             />
             <button
               @click="submitComment"
               :disabled="submitting"
-              class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-              :class="preferencesStore.darkMode
-                ? 'bg-blue-600 text-white hover:bg-blue-500'
-                : 'bg-blue-600 text-white hover:bg-blue-700'"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-on-primary hover:bg-primary-dark"
             >
               <Send class="w-3.5 h-3.5" />
               {{ submitting ? '...' : 'Send' }}
@@ -334,10 +286,7 @@ function thumbClasses(value) {
             class="w-4 h-4"
             :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-600'"
           />
-          <p
-            class="text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-          >
+          <p class="text-sm text-text-muted">
             Thanks for your feedback!
           </p>
         </div>

@@ -195,16 +195,12 @@ function getStatusClasses(status) {
   <div v-if="plan" class="space-y-6">
     <!-- Plan Header -->
     <div
-      class="rounded-lg border p-5"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="rounded-lg border p-5 bg-surface border-border"
     >
       <div class="flex items-start justify-between gap-4">
         <div>
           <h2
-            class="text-xl font-semibold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-xl font-semibold text-text"
           >
             {{ plan.projectName }}
           </h2>
@@ -225,10 +221,7 @@ function getStatusClasses(status) {
         <div class="flex items-center gap-2">
           <button
             @click="removePlan"
-            class="p-2 rounded-lg transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-400 hover:text-red-400 hover:bg-gray-700'
-              : 'text-gray-400 hover:text-red-500 hover:bg-gray-100'"
+            class="p-2 rounded-lg transition-colors text-text-muted hover:text-red-500 hover:bg-surface-alt"
             title="Remove from workbench"
           >
             <Trash2 class="w-4 h-4" />
@@ -239,10 +232,7 @@ function getStatusClasses(status) {
       <!-- Contact Info -->
       <div
         v-if="contact"
-        class="mt-4 pt-4 border-t flex flex-wrap gap-4 text-sm"
-        :class="preferencesStore.darkMode
-          ? 'border-gray-700 text-gray-300'
-          : 'border-gray-200 text-gray-600'"
+        class="mt-4 pt-4 border-t flex flex-wrap gap-4 text-sm border-border text-text-secondary"
       >
         <div v-if="contact.name" class="flex items-center gap-1.5">
           <User class="w-4 h-4" />
@@ -252,8 +242,7 @@ function getStatusClasses(status) {
           <Mail class="w-4 h-4" />
           <a
             :href="`mailto:${contact.email}`"
-            class="hover:underline"
-            :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+            class="hover:underline text-primary"
           >
             {{ contact.email }}
           </a>
@@ -266,8 +255,7 @@ function getStatusClasses(status) {
 
       <!-- Meta Info -->
       <div
-        class="mt-3 flex flex-wrap gap-4 text-xs"
-        :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
+        class="mt-3 flex flex-wrap gap-4 text-xs text-text-muted"
       >
         <div class="flex items-center gap-1">
           <Calendar class="w-3 h-3" />
@@ -282,19 +270,16 @@ function getStatusClasses(status) {
       <!-- Researcher Notes -->
       <div
         v-if="plan.data?.final_notes"
-        class="mt-4 pt-4 border-t"
-        :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
+        class="mt-4 pt-4 border-t border-border"
       >
         <div
-          class="flex items-center gap-1.5 text-sm font-medium mb-2"
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+          class="flex items-center gap-1.5 text-sm font-medium mb-2 text-text-secondary"
         >
           <FileText class="w-4 h-4" />
           Researcher Notes
         </div>
         <p
-          class="text-sm"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+          class="text-sm text-text-secondary"
         >
           {{ plan.data.final_notes }}
         </p>
@@ -303,28 +288,22 @@ function getStatusClasses(status) {
 
     <!-- Review Progress -->
     <div
-      class="rounded-lg border p-4"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="rounded-lg border p-4 bg-surface border-border"
     >
       <div class="flex items-center justify-between mb-2">
         <span
-          class="text-sm font-medium"
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+          class="text-sm font-medium text-text-secondary"
         >
           Review Progress
         </span>
         <span
-          class="text-sm"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+          class="text-sm text-text-muted"
         >
           {{ reviewProgress.reviewed }} / {{ reviewProgress.total }} items
         </span>
       </div>
       <div
-        class="h-2 rounded-full overflow-hidden"
-        :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-200'"
+        class="h-2 rounded-full overflow-hidden bg-surface-alt"
       >
         <div
           class="h-full rounded-full transition-all"
@@ -339,8 +318,7 @@ function getStatusClasses(status) {
     <!-- Items List -->
     <div class="space-y-3">
       <h3
-        class="text-sm font-medium"
-        :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+        class="text-sm font-medium text-text-secondary"
       >
         Requested Services ({{ slate.items?.length || 0 }})
       </h3>
@@ -348,31 +326,23 @@ function getStatusClasses(status) {
       <div
         v-for="item in slate.items || []"
         :key="item.id"
-        class="rounded-lg border overflow-hidden"
-        :class="preferencesStore.darkMode
-          ? 'bg-gray-800 border-gray-700'
-          : 'bg-white border-gray-200'"
+        class="rounded-lg border overflow-hidden bg-surface border-border"
       >
         <!-- Item Header (clickable) -->
         <div
-          class="px-4 py-3 cursor-pointer"
-          :class="preferencesStore.darkMode
-            ? 'hover:bg-gray-700/50'
-            : 'hover:bg-gray-50'"
+          class="px-4 py-3 cursor-pointer hover:bg-surface-alt"
           @click="toggleItem(item.id)"
         >
           <div class="flex items-center gap-3">
             <component
               :is="expandedItems.has(item.id) ? ChevronUp : ChevronDown"
-              class="w-4 h-4 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+              class="w-4 h-4 flex-shrink-0 text-text-muted"
             />
 
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2">
                 <span
-                  class="font-medium"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  class="font-medium text-text"
                 >
                   {{ getServiceName(item.service) }}
                 </span>
@@ -384,23 +354,20 @@ function getStatusClasses(status) {
                 </span>
               </div>
               <div
-                class="text-sm"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                class="text-sm text-text-muted"
               >
                 {{ item.quantity }} {{ item.unit }}
               </div>
             </div>
 
             <div
-              class="text-right"
-              :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+              class="text-right text-text-secondary"
             >
               <div class="font-medium">
                 {{ formatCurrency(item.annualEstimate) }}/yr
               </div>
               <div
-                class="text-xs"
-                :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+                class="text-xs text-text-muted"
               >
                 {{ formatCurrency(item.monthlyEstimate) }}/mo
               </div>
@@ -411,24 +378,17 @@ function getStatusClasses(status) {
         <!-- Expanded Details -->
         <div
           v-if="expandedItems.has(item.id)"
-          class="px-4 py-4 border-t"
-          :class="preferencesStore.darkMode
-            ? 'border-gray-700 bg-gray-800/50'
-            : 'border-gray-200 bg-gray-50'"
+          class="px-4 py-4 border-t border-border bg-canvas"
         >
           <!-- Researcher's Notes -->
           <div v-if="item.notes" class="mb-4">
             <div
-              class="text-xs font-medium mb-1"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="text-xs font-medium mb-1 text-text-muted"
             >
               Researcher's Notes
             </div>
             <p
-              class="text-sm p-2 rounded"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 text-gray-300'
-                : 'bg-white text-gray-600'"
+              class="text-sm p-2 rounded bg-surface text-text-secondary"
             >
               {{ item.notes }}
             </p>
@@ -437,8 +397,7 @@ function getStatusClasses(status) {
           <!-- Calculator Info -->
           <div v-if="item.fromCalculator" class="mb-4">
             <div
-              class="text-xs font-medium mb-1"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="text-xs font-medium mb-1 text-text-muted"
             >
               Calculated via: {{ item.fromCalculator }}
             </div>
@@ -447,8 +406,7 @@ function getStatusClasses(status) {
           <!-- Status Selector -->
           <div class="mb-4">
             <div
-              class="text-xs font-medium mb-2"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="text-xs font-medium mb-2 text-text-muted"
             >
               Review Status
             </div>
@@ -461,9 +419,7 @@ function getStatusClasses(status) {
                 :class="[
                   getItemStatus(item) === option.value
                     ? getStatusClasses(option.value)
-                    : (preferencesStore.darkMode
-                        ? 'bg-gray-700 text-gray-400 hover:bg-gray-600'
-                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200')
+                    : 'bg-surface-alt text-text-muted hover:bg-border-strong'
                 ]"
               >
                 <component :is="option.icon" class="w-4 h-4" />
@@ -475,8 +431,7 @@ function getStatusClasses(status) {
           <!-- IT Notes -->
           <div>
             <div
-              class="text-xs font-medium mb-2"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="text-xs font-medium mb-2 text-text-muted"
             >
               Support Notes
             </div>
@@ -486,10 +441,7 @@ function getStatusClasses(status) {
                 v-model="editingNotes[item.id]"
                 rows="3"
                 placeholder="Add notes for the researcher..."
-                class="w-full px-3 py-2 rounded-lg border text-sm resize-none"
-                :class="preferencesStore.darkMode
-                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-500'
-                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+                class="w-full px-3 py-2 rounded-lg border text-sm resize-none bg-surface border-border-strong text-text placeholder-text-muted"
               />
               <div class="mt-2 flex gap-2">
                 <button
@@ -503,10 +455,7 @@ function getStatusClasses(status) {
                 </button>
                 <button
                   @click="cancelEditingNotes(item)"
-                  class="px-3 py-1.5 rounded text-sm"
-                  :class="preferencesStore.darkMode
-                    ? 'text-gray-400 hover:text-white'
-                    : 'text-gray-600 hover:text-gray-900'"
+                  class="px-3 py-1.5 rounded text-sm text-text-secondary hover:text-text"
                 >
                   Cancel
                 </button>
@@ -516,10 +465,7 @@ function getStatusClasses(status) {
             <div v-else>
               <div
                 v-if="item.itNotes"
-                class="p-2 rounded text-sm mb-2"
-                :class="preferencesStore.darkMode
-                  ? 'bg-gray-700 text-gray-300'
-                  : 'bg-white border border-gray-200 text-gray-600'"
+                class="p-2 rounded text-sm mb-2 bg-surface border border-border text-text-secondary"
               >
                 {{ item.itNotes }}
               </div>
@@ -537,8 +483,7 @@ function getStatusClasses(status) {
             <!-- Review metadata -->
             <div
               v-if="item.itReviewedBy"
-              class="mt-2 text-xs"
-              :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+              class="mt-2 text-xs text-text-muted"
             >
               Last reviewed by {{ item.itReviewedBy }} on {{ formatDate(item.itReviewedAt) }}
             </div>
@@ -549,42 +494,34 @@ function getStatusClasses(status) {
 
     <!-- Cost Summary -->
     <div
-      class="rounded-lg border p-4"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="rounded-lg border p-4 bg-surface border-border"
     >
       <h3
-        class="text-sm font-medium mb-3"
-        :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+        class="text-sm font-medium mb-3 text-text-secondary"
       >
         Cost Summary
       </h3>
       <div class="grid grid-cols-2 gap-4">
         <div>
           <div
-            class="text-xs"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
+            class="text-xs text-text-muted"
           >
             Monthly
           </div>
           <div
-            class="text-lg font-semibold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-lg font-semibold text-text"
           >
             {{ formatCurrency(plan.data?.totals?.monthly) }}
           </div>
         </div>
         <div>
           <div
-            class="text-xs"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
+            class="text-xs text-text-muted"
           >
             Annual
           </div>
           <div
-            class="text-lg font-semibold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-lg font-semibold text-text"
           >
             {{ formatCurrency(plan.data?.totals?.annual) }}
           </div>
@@ -594,14 +531,10 @@ function getStatusClasses(status) {
 
     <!-- Plan-Level Actions -->
     <div
-      class="rounded-lg border p-4"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="rounded-lg border p-4 bg-surface border-border"
     >
       <h3
-        class="text-sm font-medium mb-3"
-        :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+        class="text-sm font-medium mb-3 text-text-secondary"
       >
         Plan Status
       </h3>
@@ -613,9 +546,7 @@ function getStatusClasses(status) {
             ? (preferencesStore.darkMode
                 ? 'bg-yellow-900/50 text-yellow-300'
                 : 'bg-yellow-100 text-yellow-700')
-            : (preferencesStore.darkMode
-                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200')"
+            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'"
         >
           Pending Review
         </button>
@@ -626,9 +557,7 @@ function getStatusClasses(status) {
             ? (preferencesStore.darkMode
                 ? 'bg-orange-900/50 text-orange-300'
                 : 'bg-orange-100 text-orange-700')
-            : (preferencesStore.darkMode
-                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200')"
+            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'"
         >
           Needs Revision
         </button>
@@ -639,9 +568,7 @@ function getStatusClasses(status) {
             ? (preferencesStore.darkMode
                 ? 'bg-green-900/50 text-green-300'
                 : 'bg-green-100 text-green-700')
-            : (preferencesStore.darkMode
-                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200')"
+            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'"
         >
           Approved
         </button>
@@ -650,8 +577,7 @@ function getStatusClasses(status) {
       <!-- PDF Receipt Button (shows when approved) -->
       <div
         v-if="plan.status === 'approved'"
-        class="mt-4 pt-4 border-t"
-        :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
+        class="mt-4 pt-4 border-t border-border"
       >
         <button
           @click="handleDownloadPdf"
@@ -668,8 +594,7 @@ function getStatusClasses(status) {
           {{ isGeneratingPdf ? 'Generating PDF...' : 'Download Approval Receipt (PDF)' }}
         </button>
         <p
-          class="mt-2 text-xs"
-          :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
+          class="mt-2 text-xs text-text-muted"
         >
           Generate a formal approval receipt for grant documentation.
         </p>
@@ -678,20 +603,15 @@ function getStatusClasses(status) {
 
     <!-- Export for Round-Trip -->
     <div
-      class="rounded-lg border p-4"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="rounded-lg border p-4 bg-surface border-border"
     >
       <h3
-        class="text-sm font-medium mb-3"
-        :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+        class="text-sm font-medium mb-3 text-text-secondary"
       >
         Send Back to Researcher
       </h3>
       <p
-        class="text-sm mb-3"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+        class="text-sm mb-3 text-text-muted"
       >
         Export the reviewed plan with your notes and status updates. The researcher can re-import this file to see your feedback.
       </p>
@@ -715,16 +635,13 @@ function getStatusClasses(status) {
         @click.self="showExportModal = false"
       >
         <div
-          class="rounded-xl shadow-2xl max-w-md w-full"
-          :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+          class="rounded-xl shadow-2xl max-w-md w-full bg-surface"
         >
           <div
-            class="px-5 py-4 border-b"
-            :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
+            class="px-5 py-4 border-b border-border"
           >
             <h2
-              class="text-lg font-semibold"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+              class="text-lg font-semibold text-text"
             >
               Export Reviewed Plan
             </h2>
@@ -733,8 +650,7 @@ function getStatusClasses(status) {
           <div class="p-5 space-y-4">
             <div>
               <label
-                class="block text-sm font-medium mb-1.5"
-                :class="preferencesStore.darkMode ? 'text-gray-200' : 'text-gray-700'"
+                class="block text-sm font-medium mb-1.5 text-text-secondary"
               >
                 Review Summary
               </label>
@@ -742,24 +658,17 @@ function getStatusClasses(status) {
                 v-model="exportNote"
                 rows="3"
                 placeholder="Brief note about this review..."
-                class="w-full px-3 py-2 rounded-lg border text-sm resize-none"
-                :class="preferencesStore.darkMode
-                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-500'
-                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+                class="w-full px-3 py-2 rounded-lg border text-sm resize-none bg-surface border-border-strong text-text placeholder-text-muted"
               />
               <p
-                class="mt-1 text-xs"
-                :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
+                class="mt-1 text-xs text-text-muted"
               >
                 This note will be visible to the researcher in the version history.
               </p>
             </div>
 
             <div
-              class="p-3 rounded-lg text-sm"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 text-gray-300'
-                : 'bg-gray-100 text-gray-600'"
+              class="p-3 rounded-lg text-sm bg-surface-alt text-text-secondary"
             >
               <div class="flex items-center justify-between">
                 <span>Current status:</span>
@@ -779,10 +688,7 @@ function getStatusClasses(status) {
             <div class="flex gap-3 pt-2">
               <button
                 @click="showExportModal = false"
-                class="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="preferencesStore.darkMode
-                  ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                class="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-surface-alt text-text-secondary hover:bg-border-strong"
               >
                 Cancel
               </button>
@@ -809,12 +715,10 @@ function getStatusClasses(status) {
     class="text-center py-12"
   >
     <FileText
-      class="w-12 h-12 mx-auto mb-3"
-      :class="preferencesStore.darkMode ? 'text-gray-600' : 'text-gray-300'"
+      class="w-12 h-12 mx-auto mb-3 text-text-muted"
     />
     <p
-      class="text-sm"
-      :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+      class="text-sm text-text-muted"
     >
       Select a plan to review
     </p>

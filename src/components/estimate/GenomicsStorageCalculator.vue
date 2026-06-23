@@ -83,12 +83,12 @@ const presets = computed(() => {
       <div class="space-y-4">
         <!-- Data Type -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Data Type
           </label>
           <select
             v-model="inputs.data_type"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           >
             <option :value="null" disabled>Select data type...</option>
             <option
@@ -99,21 +99,21 @@ const presets = computed(() => {
               {{ dt.label }} ({{ dt.size_gb }} GB/sample)
             </option>
           </select>
-          <p v-if="inputs.data_type" class="mt-1 text-xs text-gray-500">
+          <p v-if="inputs.data_type" class="mt-1 text-xs text-text-muted">
             {{ config?.data_types?.find(d => d.label === inputs.data_type)?.description }}
           </p>
         </div>
 
         <!-- Sample Count -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Number of Samples
           </label>
           <input
             v-model.number="inputs.sample_count"
             type="number"
             min="1"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
       </div>

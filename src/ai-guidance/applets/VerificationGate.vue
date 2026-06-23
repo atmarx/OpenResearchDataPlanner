@@ -284,17 +284,11 @@ function getLevelColorClasses(color) {
     :is-complete="isComplete"
   >
     <!-- Quote -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <blockquote
-        class="italic text-lg"
-        :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-      >
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <blockquote class="italic text-lg text-text-secondary">
         "If you cannot verify it, you cannot use it."
       </blockquote>
-      <p class="text-sm mt-2" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'">
+      <p class="text-sm mt-2 text-text-muted">
         This is a hard gate, not a soft recommendation. AI tools produce confident output
         regardless of accuracy.
       </p>
@@ -303,13 +297,12 @@ function getLevelColorClasses(color) {
     <!-- Task context if available -->
     <div
       v-if="taskOutput"
-      class="p-3 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-100 border-gray-200'"
+      class="p-3 rounded-lg border mb-6 bg-surface-alt border-border"
     >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm text-text-secondary">
         <span class="font-medium">Your task:</span> {{ taskOutput.taskType?.replace(/-/g, ' ') || 'Not specified' }}
       </p>
-      <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm mt-1 text-text-secondary">
         <span class="font-medium">Required verification:</span> {{ taskOutput.verification || 'Standard review' }}
       </p>
     </div>
@@ -320,7 +313,7 @@ function getLevelColorClasses(color) {
           <div class="flex items-start gap-4">
             <component :is="result.icon" class="w-8 h-8 flex-shrink-0" />
             <div class="flex-1">
-              <h3 class="text-xl font-bold mb-2" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <h3 class="text-xl font-bold mb-2 text-text">
                 {{ result.label }}
               </h3>
               <p class="mb-4">{{ result.description }}</p>
@@ -329,8 +322,7 @@ function getLevelColorClasses(color) {
                 <span
                   v-for="flag in flags"
                   :key="flag"
-                  class="px-2 py-1 text-xs rounded-full font-medium uppercase"
-                  :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700'"
+                  class="px-2 py-1 text-xs rounded-full font-medium uppercase bg-surface-alt text-text-secondary"
                 >
                   {{ flag.replace(/-/g, ' ') }}
                 </span>
@@ -339,8 +331,7 @@ function getLevelColorClasses(color) {
               <!-- Specific guidance based on outcome -->
               <div
                 v-if="result.outcome === 'blocked'"
-                class="p-3 rounded-lg"
-                :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white/50'"
+                class="p-3 rounded-lg bg-surface"
               >
                 <p class="text-sm font-medium mb-2">What now?</p>
                 <ul class="text-sm space-y-1">
@@ -352,8 +343,7 @@ function getLevelColorClasses(color) {
 
               <div
                 v-if="result.outcome === 'conditional'"
-                class="p-3 rounded-lg"
-                :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white/50'"
+                class="p-3 rounded-lg bg-surface"
               >
                 <p class="text-sm font-medium mb-2">Proceed carefully:</p>
                 <ul class="text-sm space-y-1">
@@ -367,14 +357,11 @@ function getLevelColorClasses(color) {
         </div>
 
         <!-- Phase 1 Complete Message -->
-        <div
-          class="mt-6 p-4 rounded-lg border"
-          :class="preferencesStore.darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'"
-        >
-          <p class="font-medium" :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-800'">
+        <div class="mt-6 p-4 rounded-lg border bg-surface-alt border-primary">
+          <p class="font-medium text-primary">
             ✅ Core flow complete
           </p>
-          <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-700'">
+          <p class="text-sm mt-1 text-primary">
             You've completed the Phase 1 core flow. Consider exploring Phase 2 applets for
             additional guidance on documentation, pitfalls, and disclosure.
           </p>

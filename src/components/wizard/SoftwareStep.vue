@@ -234,20 +234,16 @@ function clearFilters() {
 <template>
   <div class="p-8">
     <div class="mb-6">
-      <h2
-        class="text-2xl font-bold mb-2"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-      >
+      <h2 class="text-2xl font-bold mb-2 text-text">
         Software Catalog
       </h2>
-      <p :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-text-secondary">
         Review available software for your selected services.
         Flag any software you'll need for your project, especially items requiring separate licensing.
       </p>
       <p
         v-if="selectedPlatforms.length > 0"
-        class="text-sm mt-2"
-        :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+        class="text-sm mt-2 text-primary"
       >
         Showing software for: {{ selectedPlatforms.map(p => p.toUpperCase()).join(', ') }}
       </p>
@@ -258,23 +254,18 @@ function clearFilters() {
       <!-- Search -->
       <div class="relative">
         <Search
-          class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5"
-          :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted"
         />
         <input
           v-model="searchQuery"
           type="text"
           placeholder="Search software..."
-          class="w-full pl-10 pr-10 py-2 rounded-lg border"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-500'
-            : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'"
+          class="w-full pl-10 pr-10 py-2 rounded-lg border bg-surface border-border-strong text-text placeholder-text-muted"
         />
         <button
           v-if="searchQuery"
           @click="searchQuery = ''"
-          class="absolute right-3 top-1/2 -translate-y-1/2"
-          :class="preferencesStore.darkMode ? 'text-gray-500 hover:text-gray-400' : 'text-gray-400 hover:text-gray-500'"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary"
         >
           <X class="w-5 h-5" />
         </button>
@@ -285,10 +276,7 @@ function clearFilters() {
         <!-- Category filter -->
         <select
           v-model="categoryFilter"
-          class="px-3 py-1.5 rounded-md text-sm border"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 text-gray-300'
-            : 'bg-white border-gray-300 text-gray-700'"
+          class="px-3 py-1.5 rounded-md text-sm border bg-surface border-border-strong text-text-secondary"
         >
           <option value="all">All Categories</option>
           <option v-for="cat in softwareCategories" :key="cat.slug" :value="cat.slug">
@@ -299,10 +287,7 @@ function clearFilters() {
         <!-- Platform filter -->
         <select
           v-model="platformFilter"
-          class="px-3 py-1.5 rounded-md text-sm border"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 text-gray-300'
-            : 'bg-white border-gray-300 text-gray-700'"
+          class="px-3 py-1.5 rounded-md text-sm border bg-surface border-border-strong text-text-secondary"
         >
           <option value="all">All Platforms</option>
           <option value="hpc">HPC</option>
@@ -313,10 +298,7 @@ function clearFilters() {
         <!-- Status filter -->
         <select
           v-model="statusFilter"
-          class="px-3 py-1.5 rounded-md text-sm border"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 text-gray-300'
-            : 'bg-white border-gray-300 text-gray-700'"
+          class="px-3 py-1.5 rounded-md text-sm border bg-surface border-border-strong text-text-secondary"
         >
           <option value="all">All Status</option>
           <option value="full">Available</option>
@@ -328,10 +310,7 @@ function clearFilters() {
         <button
           v-if="searchQuery || categoryFilter !== 'all' || statusFilter !== 'all' || platformFilter !== 'all'"
           @click="clearFilters"
-          class="px-3 py-1.5 rounded-md text-sm"
-          :class="preferencesStore.darkMode
-            ? 'text-gray-400 hover:text-gray-300'
-            : 'text-gray-500 hover:text-gray-700'"
+          class="px-3 py-1.5 rounded-md text-sm text-text-muted hover:text-text-secondary"
         >
           Clear filters
         </button>
@@ -341,10 +320,7 @@ function clearFilters() {
     <!-- Software list -->
     <div class="space-y-6">
       <div v-for="group in softwareByCategory" :key="group.category.slug">
-        <h3
-          class="text-lg font-semibold mb-3"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-        >
+        <h3 class="text-lg font-semibold mb-3 text-text">
           {{ group.category.name }}
         </h3>
 
@@ -355,12 +331,8 @@ function clearFilters() {
             class="rounded-lg border transition-all"
             :class="[
               isSoftwareSelected(software.slug)
-                ? (preferencesStore.darkMode
-                  ? 'border-blue-500 bg-blue-900/30'
-                  : 'border-blue-500 bg-blue-50')
-                : (preferencesStore.darkMode
-                  ? 'border-gray-700 bg-gray-800'
-                  : 'border-gray-200 bg-white'),
+                ? 'border-primary bg-primary/10'
+                : 'border-border bg-surface',
               !isAvailableOnSelectedPlatforms(software) && 'opacity-60'
             ]"
           >
@@ -384,10 +356,7 @@ function clearFilters() {
                 <!-- Software info -->
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
-                    <h4
-                      class="font-medium"
-                      :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                    >
+                    <h4 class="font-medium text-text">
                       {{ software.name }}
                     </h4>
                     <span
@@ -399,8 +368,7 @@ function clearFilters() {
                   </div>
                   <p
                     v-if="software.vendor && software.vendor !== 'Open Source'"
-                    class="text-xs"
-                    :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+                    class="text-xs text-text-muted"
                   >
                     {{ software.vendor }}
                   </p>
@@ -411,10 +379,7 @@ function clearFilters() {
                   <!-- Expand button -->
                   <button
                     @click="toggleExpanded(software.slug)"
-                    class="p-1.5 rounded-md"
-                    :class="preferencesStore.darkMode
-                      ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-700'
-                      : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'"
+                    class="p-1.5 rounded-md text-text-muted hover:text-text-secondary hover:bg-surface-alt"
                   >
                     <component :is="expandedSoftware === software.slug ? ChevronUp : ChevronDown" class="w-4 h-4" />
                   </button>
@@ -425,10 +390,8 @@ function clearFilters() {
                     class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-colors"
                     :class="[
                       isSoftwareSelected(software.slug)
-                        ? 'bg-blue-600 border-blue-600 text-white'
-                        : (preferencesStore.darkMode
-                          ? 'border-gray-600 text-gray-400 hover:border-blue-400 hover:text-blue-400'
-                          : 'border-gray-300 text-gray-400 hover:border-blue-400 hover:text-blue-400')
+                        ? 'bg-primary border-primary text-on-primary'
+                        : 'border-border-strong text-text-muted hover:border-primary hover:text-primary'
                     ]"
                     :aria-label="isSoftwareSelected(software.slug) ? 'Remove' : 'Add'"
                   >
@@ -439,10 +402,7 @@ function clearFilters() {
               </div>
 
               <!-- Description -->
-              <p
-                class="text-sm mt-2 line-clamp-2"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-              >
+              <p class="text-sm mt-2 line-clamp-2 text-text-secondary">
                 {{ software.description }}
               </p>
 
@@ -467,8 +427,7 @@ function clearFilters() {
               <!-- BYOL pricing if applicable -->
               <div
                 v-if="getBestStatus(software) === 'byol'"
-                class="text-xs mt-3 pt-2 border-t"
-                :class="preferencesStore.darkMode ? 'text-gray-400 border-gray-700' : 'text-gray-500 border-gray-100'"
+                class="text-xs mt-3 pt-2 border-t text-text-muted border-border"
               >
                 <template v-if="formatByolPricing(software)">
                   <div>
@@ -477,18 +436,18 @@ function clearFilters() {
                   </div>
                   <a
                     :href="getSoftwareSupportMailto(software, 'quote')"
-                    class="text-blue-500 hover:text-blue-600"
+                    class="text-primary"
                   >
                     Request quote
                   </a>
-                  <span v-if="software.license_server?.we_can_host" class="block text-blue-500 mt-1">
+                  <span v-if="software.license_server?.we_can_host" class="block text-primary mt-1">
                     We can host your license
                   </span>
                 </template>
                 <a
                   v-else
                   :href="getSoftwareSupportMailto(software, 'pricing')"
-                  class="text-blue-500 hover:text-blue-600"
+                  class="text-primary"
                 >
                   Request pricing
                 </a>
@@ -498,16 +457,12 @@ function clearFilters() {
             <!-- Expanded details -->
             <div
               v-if="expandedSoftware === software.slug"
-              class="px-4 pb-4 pt-0 border-t"
-              :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
+              class="px-4 pb-4 pt-0 border-t border-border"
             >
               <div class="mt-4 space-y-4">
                 <!-- Platform details -->
                 <div>
-                  <h5
-                    class="text-sm font-medium mb-2"
-                    :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-                  >
+                  <h5 class="text-sm font-medium mb-2 text-text-secondary">
                     Platform Availability
                   </h5>
                   <div class="space-y-2">
@@ -518,14 +473,10 @@ function clearFilters() {
                     >
                       <component
                         :is="getPlatformIcon(platform)"
-                        class="w-4 h-4 mt-0.5 flex-shrink-0"
-                        :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+                        class="w-4 h-4 mt-0.5 flex-shrink-0 text-text-muted"
                       />
                       <div>
-                        <span
-                          class="font-medium"
-                          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-                        >
+                        <span class="font-medium text-text-secondary">
                           {{ platform.toUpperCase() }}:
                         </span>
                         <span
@@ -540,15 +491,13 @@ function clearFilters() {
                         </span>
                         <span
                           v-if="avail.notes"
-                          class="ml-1"
-                          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                          class="ml-1 text-text-muted"
                         >
                           - {{ avail.notes }}
                         </span>
                         <span
                           v-if="avail.versions"
-                          class="ml-1"
-                          :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+                          class="ml-1 text-text-muted"
                         >
                           ({{ avail.versions.join(', ') }})
                         </span>
@@ -559,20 +508,14 @@ function clearFilters() {
 
                 <!-- BYOL info -->
                 <div v-if="software.license_info">
-                  <h5
-                    class="text-sm font-medium mb-2"
-                    :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-                  >
+                  <h5 class="text-sm font-medium mb-2 text-text-secondary">
                     Licensing
                   </h5>
-                  <div
-                    class="text-sm"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-                  >
+                  <div class="text-sm text-text-secondary">
                     <p v-if="software.license_info.cost_notes">
                       {{ software.license_info.cost_notes }}
                     </p>
-                    <p v-if="software.license_server?.we_can_host" class="mt-1 text-blue-500">
+                    <p v-if="software.license_server?.we_can_host" class="mt-1 text-primary">
                       We can host your license server at no additional cost.
                       Contact: {{ getSoftwareSupportContact(software) }}
                     </p>
@@ -586,7 +529,7 @@ function clearFilters() {
                     :href="software.institutional_support_url"
                     target="_blank"
                     rel="noopener"
-                    class="inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-600"
+                    class="inline-flex items-center gap-1 text-sm text-primary"
                   >
                     <Info class="w-4 h-4" />
                     {{ software.institutional_support_label || 'Institutional Support' }}
@@ -596,7 +539,7 @@ function clearFilters() {
                     :href="software.documentation_url"
                     target="_blank"
                     rel="noopener"
-                    class="inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-600"
+                    class="inline-flex items-center gap-1 text-sm text-primary"
                   >
                     <Info class="w-4 h-4" />
                     Documentation
@@ -606,7 +549,7 @@ function clearFilters() {
                     :href="software.website"
                     target="_blank"
                     rel="noopener"
-                    class="inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-600"
+                    class="inline-flex items-center gap-1 text-sm text-primary"
                   >
                     <ExternalLink class="w-4 h-4" />
                     Vendor Site
@@ -621,13 +564,12 @@ function clearFilters() {
       <!-- Empty state -->
       <div
         v-if="filteredSoftware.length === 0"
-        class="text-center py-12"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+        class="text-center py-12 text-text-muted"
       >
         <p>No software matches your filters.</p>
         <button
           @click="clearFilters"
-          class="mt-2 text-blue-500 hover:text-blue-600"
+          class="mt-2 text-primary"
         >
           Clear filters
         </button>
@@ -635,20 +577,13 @@ function clearFilters() {
     </div>
 
     <!-- Selected software summary -->
-    <div
-      class="mt-8 p-4 rounded-lg"
-      :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-gray-50'"
-    >
-      <h3
-        class="font-medium mb-2"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-      >
+    <div class="mt-8 p-4 rounded-lg bg-surface-alt">
+      <h3 class="font-medium mb-2 text-text">
         Selected Software ({{ sessionStore.session.selected_software.length }})
       </h3>
       <div
         v-if="sessionStore.session.selected_software.length === 0"
-        class="text-sm"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+        class="text-sm text-text-muted"
       >
         No software flagged. This step is optional - continue if you don't need specific software.
       </div>
@@ -659,7 +594,7 @@ function clearFilters() {
           class="flex items-center justify-between text-sm"
         >
           <div>
-            <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+            <span class="text-text-secondary">
               {{ softwareList.find(s => s.slug === selected.software_slug)?.name || selected.software_slug }}
             </span>
             <span

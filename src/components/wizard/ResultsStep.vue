@@ -204,47 +204,35 @@ function startOver() {
     <div class="mb-6 flex items-start justify-between">
       <div>
         <h2
-          class="text-2xl font-bold mb-2 flex items-center gap-2"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+          class="text-2xl font-bold mb-2 flex items-center gap-2 text-text"
         >
           <CheckCircle class="w-7 h-7 text-green-500" />
           Your Estimate is Ready
         </h2>
-        <p :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+        <p class="text-text-secondary">
           Review your cost estimates and data management plan below.
         </p>
       </div>
     </div>
 
     <!-- Tab navigation -->
-    <div
-      class="border-b mb-6"
-      :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
-    >
+    <div class="border-b mb-6 border-border">
       <nav class="flex gap-4" aria-label="Results tabs">
         <button
           @click="activeTab = 'budget'"
           class="py-3 px-1 border-b-2 font-medium text-sm transition-colors"
-          :class="[
-            activeTab === 'budget'
-              ? 'border-blue-500 text-blue-500'
-              : preferencesStore.darkMode
-                ? 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          ]"
+          :class="activeTab === 'budget'
+            ? 'border-primary text-primary'
+            : 'border-transparent text-text-muted hover:text-text hover:border-border-strong'"
         >
           Budget Estimate
         </button>
         <button
           @click="activeTab = 'dmp'"
           class="py-3 px-1 border-b-2 font-medium text-sm transition-colors"
-          :class="[
-            activeTab === 'dmp'
-              ? 'border-blue-500 text-blue-500'
-              : preferencesStore.darkMode
-                ? 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          ]"
+          :class="activeTab === 'dmp'
+            ? 'border-primary text-primary'
+            : 'border-transparent text-text-muted hover:text-text hover:border-border-strong'"
         >
           Data Management Plan
         </button>
@@ -315,35 +303,26 @@ function startOver() {
       <!-- Cost breakdown table -->
       <div class="mb-8">
         <h3
-          class="text-lg font-semibold mb-4"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+          class="text-lg font-semibold mb-4 text-text"
         >Cost Breakdown by Service</h3>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
-              <tr
-                class="border-b"
-                :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
-              >
+              <tr class="border-b border-border">
                 <th
-                  class="text-left py-3 px-4 font-medium"
-                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                  class="text-left py-3 px-4 font-medium text-text-secondary"
                 >Service</th>
                 <th
-                  class="text-right py-3 px-4 font-medium"
-                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                  class="text-right py-3 px-4 font-medium text-text-secondary"
                 >Monthly</th>
                 <th
-                  class="text-right py-3 px-4 font-medium"
-                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                  class="text-right py-3 px-4 font-medium text-text-secondary"
                 >Grant Period</th>
                 <th
-                  class="text-right py-3 px-4 font-medium"
-                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                  class="text-right py-3 px-4 font-medium text-text-secondary"
                 >Archive</th>
                 <th
-                  class="text-right py-3 px-4 font-medium"
-                  :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                  class="text-right py-3 px-4 font-medium text-text-secondary"
                 >Total</th>
               </tr>
             </thead>
@@ -351,62 +330,51 @@ function startOver() {
               <tr
                 v-for="service in costBreakdown.byService"
                 :key="service.service_slug"
-                class="border-b"
-                :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-100'"
+                class="border-b border-border"
               >
                 <td
-                  class="py-3 px-4"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  class="py-3 px-4 text-text"
                 >{{ service.name }}</td>
                 <td
-                  class="py-3 px-4 text-right"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                  class="py-3 px-4 text-right text-text-secondary"
                 >{{ formatCurrency(service.monthly) }}</td>
                 <td
-                  class="py-3 px-4 text-right"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                  class="py-3 px-4 text-right text-text-secondary"
                 >{{ formatCurrency(service.grant) }}</td>
                 <td
-                  class="py-3 px-4 text-right"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                  class="py-3 px-4 text-right text-text-secondary"
                 >
                   {{ service.archive > 0 ? formatCurrency(service.archive) : '—' }}
                 </td>
                 <td
-                  class="py-3 px-4 text-right font-medium"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  class="py-3 px-4 text-right font-medium text-text"
                 >
                   {{ formatCurrency(service.grant + service.archive) }}
                 </td>
               </tr>
             </tbody>
             <tfoot>
-              <tr :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-50'">
+              <tr class="bg-surface-alt">
                 <td
-                  class="py-3 px-4 font-semibold"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  class="py-3 px-4 font-semibold text-text"
                 >Total</td>
                 <td
-                  class="py-3 px-4 text-right font-semibold"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  class="py-3 px-4 text-right font-semibold text-text"
                 >
                   {{ formatCurrency(costBreakdown.monthlyTotal) }}
                 </td>
                 <td
-                  class="py-3 px-4 text-right font-semibold"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  class="py-3 px-4 text-right font-semibold text-text"
                 >
                   {{ formatCurrency(costBreakdown.grantTotal) }}
                 </td>
                 <td
-                  class="py-3 px-4 text-right font-semibold"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  class="py-3 px-4 text-right font-semibold text-text"
                 >
                   {{ formatCurrency(costBreakdown.archiveTotal) }}
                 </td>
                 <td
-                  class="py-3 px-4 text-right font-semibold"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                  class="py-3 px-4 text-right font-semibold text-text"
                 >
                   {{ formatCurrency(costBreakdown.grandTotal) }}
                 </td>
@@ -420,14 +388,14 @@ function startOver() {
       <div class="flex flex-wrap gap-4 mb-8">
         <button
           @click="exportBudget"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-md hover:bg-primary-dark"
         >
           <Download class="w-4 h-4" />
           Export Budget (Markdown)
         </button>
         <button
           @click="exportJSON"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-surface-alt text-text-secondary rounded-md hover:bg-border-strong"
         >
           <FileText class="w-4 h-4" />
           Export Session (JSON)
@@ -452,34 +420,24 @@ function startOver() {
       </div>
 
       <!-- DMP content -->
-      <div
-        class="border rounded-lg mb-6"
-        :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
-      >
+      <div class="border rounded-lg mb-6 border-border">
         <div
-          class="flex items-center justify-between px-4 py-2 border-b"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-700 border-gray-600'
-            : 'bg-gray-50 border-gray-200'"
+          class="flex items-center justify-between px-4 py-2 border-b bg-surface-alt border-border"
         >
           <span
-            class="text-sm font-medium"
-            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+            class="text-sm font-medium text-text-secondary"
           >Preview</span>
           <div class="flex gap-2">
             <button
               @click="copyDMP"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors"
-              :class="preferencesStore.darkMode
-                ? 'text-gray-300 hover:text-white hover:bg-gray-600'
-                : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors text-text-secondary hover:text-text hover:bg-surface-alt"
             >
               <component :is="copied ? Check : Copy" class="w-4 h-4" />
               {{ copied ? 'Copied!' : 'Copy' }}
             </button>
             <button
               @click="exportDMP"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-primary text-on-primary rounded-md hover:bg-primary-dark transition-colors"
             >
               <Download class="w-4 h-4" />
               Download
@@ -522,7 +480,7 @@ function startOver() {
         Actual costs may vary. Please consult with
         <a
           :href="'mailto:' + configStore.config?.meta?.contact?.primary?.value"
-          class="text-blue-500 hover:underline"
+          class="text-primary hover:underline"
         >
           {{ configStore.config?.meta?.contact?.primary?.label || configStore.config?.meta?.contact?.primary?.value }}
         </a>
@@ -539,15 +497,11 @@ function startOver() {
 
     <!-- Actions -->
     <div
-      class="flex items-center justify-between pt-4 border-t"
-      :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+      class="flex items-center justify-between pt-4 border-t border-border"
     >
       <button
         @click="startOver"
-        class="inline-flex items-center gap-2 px-4 py-2"
-        :class="preferencesStore.darkMode
-          ? 'text-gray-400 hover:text-gray-200'
-          : 'text-gray-700 hover:text-gray-900'"
+        class="inline-flex items-center gap-2 px-4 py-2 text-text-muted hover:text-text"
       >
         <RefreshCw class="w-4 h-4" />
         Start Over
@@ -568,18 +522,18 @@ function startOver() {
 </template>
 
 <style scoped>
-@reference "tailwindcss";
+@reference "../../assets/styles/main.css";
 
 /* Prose styling for markdown content */
-.prose h1 { @apply text-2xl font-bold text-gray-900 mb-4 mt-0; }
-.prose h2 { @apply text-xl font-semibold text-gray-900 mb-3 mt-6; }
-.prose h3 { @apply text-lg font-semibold text-gray-900 mb-2 mt-4; }
-.prose h4 { @apply text-base font-semibold text-gray-900 mb-2 mt-3; }
-.prose p { @apply text-gray-700 mb-3; }
-.prose ul { @apply list-disc list-inside mb-3 text-gray-700; }
-.prose ol { @apply list-decimal list-inside mb-3 text-gray-700; }
+.prose h1 { @apply text-2xl font-bold text-text mb-4 mt-0; }
+.prose h2 { @apply text-xl font-semibold text-text mb-3 mt-6; }
+.prose h3 { @apply text-lg font-semibold text-text mb-2 mt-4; }
+.prose h4 { @apply text-base font-semibold text-text mb-2 mt-3; }
+.prose p { @apply text-text-secondary mb-3; }
+.prose ul { @apply list-disc list-inside mb-3 text-text-secondary; }
+.prose ol { @apply list-decimal list-inside mb-3 text-text-secondary; }
 .prose li { @apply mb-1; }
-.prose strong { @apply font-semibold text-gray-900; }
-.prose hr { @apply my-6 border-gray-200; }
-.prose a { @apply text-blue-600 hover:underline; }
+.prose strong { @apply font-semibold text-text; }
+.prose hr { @apply my-6 border-border; }
+.prose a { @apply text-primary hover:underline; }
 </style>

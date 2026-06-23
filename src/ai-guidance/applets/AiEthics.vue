@@ -172,11 +172,8 @@ function getNextApplet() {
     :get-next-applet="getNextApplet"
   >
     <!-- Intro -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <p class="text-sm text-text-muted">
         A reference linking to discipline-specific ethics guidelines for AI development and deployment,
         separate from academic integrity concerns.
       </p>
@@ -184,27 +181,25 @@ function getNextApplet() {
 
     <!-- General Principles -->
     <div class="mb-6">
-      <h3 class="font-semibold mb-4" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-4 text-text">
         General Principles
       </h3>
       <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <div
           v-for="principle in principles"
           :key="principle.id"
-          class="p-4 rounded-lg border"
-          :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+          class="p-4 rounded-lg border bg-surface border-border"
         >
           <div class="flex items-center gap-2 mb-2">
             <component
               :is="principle.icon"
-              class="w-5 h-5"
-              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+              class="w-5 h-5 text-primary"
             />
-            <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+            <h4 class="font-medium text-text">
               {{ principle.name }}
             </h4>
           </div>
-          <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+          <p class="text-sm text-text-muted">
             {{ principle.description }}
           </p>
         </div>
@@ -213,36 +208,33 @@ function getNextApplet() {
 
     <!-- Discipline-Specific Resources -->
     <div class="mb-6">
-      <h3 class="font-semibold mb-4" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-4 text-text">
         Discipline-Specific Resources
       </h3>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
-            <tr :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'">
-              <th class="text-left p-3 border-b" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">Discipline</th>
-              <th class="text-left p-3 border-b" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">Key Guidelines</th>
-              <th class="text-left p-3 border-b" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">Focus Areas</th>
+            <tr class="border-border">
+              <th class="text-left p-3 border-b text-text-secondary">Discipline</th>
+              <th class="text-left p-3 border-b text-text-secondary">Key Guidelines</th>
+              <th class="text-left p-3 border-b text-text-secondary">Focus Areas</th>
             </tr>
           </thead>
           <tbody>
             <tr
               v-for="resource in disciplineResources"
               :key="resource.discipline"
-              class="border-b cursor-pointer transition-colors"
-              :class="[
-                preferencesStore.darkMode ? 'border-gray-700 hover:bg-gray-700' : 'border-gray-200 hover:bg-gray-50',
-                selectedDiscipline === resource.discipline ? (preferencesStore.darkMode ? 'bg-blue-900/20' : 'bg-blue-50') : ''
-              ]"
+              class="border-b border-border cursor-pointer transition-colors hover:bg-surface-alt"
+              :class="selectedDiscipline === resource.discipline ? (preferencesStore.darkMode ? 'bg-blue-900/20' : 'bg-blue-50') : ''"
               @click="selectedDiscipline = resource.discipline"
             >
-              <td class="p-3 font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <td class="p-3 font-medium text-text">
                 {{ resource.discipline }}
               </td>
-              <td class="p-3" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+              <td class="p-3 text-text-muted">
                 {{ resource.guidelines }}
               </td>
-              <td class="p-3" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+              <td class="p-3 text-text-muted">
                 {{ resource.focus }}
               </td>
             </tr>
@@ -253,18 +245,17 @@ function getNextApplet() {
 
     <!-- Research Ethics Beyond Academic Integrity -->
     <div class="mb-6">
-      <h3 class="font-semibold mb-4" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-4 text-text">
         Research Ethics Considerations
       </h3>
-      <p class="text-sm mb-4" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm mb-4 text-text-muted">
         Beyond academic integrity, research ethics for AI include:
       </p>
       <div class="grid gap-3 sm:grid-cols-2">
         <div
           v-for="item in researchEthics"
           :key="item.id"
-          class="p-4 rounded-lg border"
-          :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+          class="p-4 rounded-lg border bg-surface border-border"
         >
           <div class="flex items-center gap-2 mb-2">
             <component
@@ -272,11 +263,11 @@ function getNextApplet() {
               class="w-4 h-4"
               :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-600'"
             />
-            <h4 class="font-medium text-sm" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+            <h4 class="font-medium text-sm text-text">
               {{ item.title }}
             </h4>
           </div>
-          <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+          <p class="text-sm text-text-muted">
             {{ item.description }}
           </p>
         </div>

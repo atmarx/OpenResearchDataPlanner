@@ -2,14 +2,12 @@
 import { computed, ref } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { Check, Plus, Minus, Info, AlertTriangle, Cpu, HardDrive, Cloud, Box, LifeBuoy, Scale } from 'lucide-vue-next'
 import CompareModal from './CompareModal.vue'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
-const preferencesStore = usePreferencesStore()
 
 // View mode: 'services' or 'bundles' - default to bundles
 const viewMode = ref('bundles')
@@ -160,13 +158,10 @@ function handleCompareSelect(service) {
 <template>
   <div class="p-8">
     <div class="mb-6">
-      <h2
-        class="text-2xl font-bold mb-2"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-      >
+      <h2 class="text-2xl font-bold mb-2 text-text">
         Select Services
       </h2>
-      <p :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-text-secondary">
         Choose the services you need for your research project.
         Only services available for your data tier are shown.
       </p>
@@ -177,26 +172,22 @@ function handleCompareSelect(service) {
       <button
         @click="viewMode = 'services'"
         class="px-4 py-2 rounded-md text-sm font-medium transition-colors"
-        :class="[
+        :class="
           viewMode === 'services'
-            ? 'bg-blue-600 text-white'
-            : (preferencesStore.darkMode
-              ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200')
-        ]"
+            ? 'bg-primary text-on-primary'
+            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'
+        "
       >
         Browse Services
       </button>
       <button
         @click="viewMode = 'bundles'"
         class="px-4 py-2 rounded-md text-sm font-medium transition-colors"
-        :class="[
+        :class="
           viewMode === 'bundles'
-            ? 'bg-blue-600 text-white'
-            : (preferencesStore.darkMode
-              ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200')
-        ]"
+            ? 'bg-primary text-on-primary'
+            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'
+        "
       >
         Use Bundles
       </button>
@@ -206,24 +197,17 @@ function handleCompareSelect(service) {
     <div v-if="viewMode === 'services'" class="space-y-8">
       <div v-for="category in servicesByCategory" :key="category.slug">
         <div class="flex items-center justify-between mb-3">
-          <h3
-            class="text-lg font-semibold flex items-center gap-2"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-          >
+          <h3 class="text-lg font-semibold flex items-center gap-2 text-text">
             <component
               :is="getCategoryIcon(category.icon)"
-              class="w-5 h-5"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="w-5 h-5 text-text-muted"
             />
             {{ category.name }}
           </h3>
           <button
             v-if="hasComparisonFeatures(category.slug)"
             @click="openCompare(category.slug)"
-            class="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'text-blue-400 hover:text-blue-300 hover:bg-blue-900/30'
-              : 'text-blue-600 hover:text-blue-700 hover:bg-blue-50'"
+            class="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors text-primary hover:bg-surface-alt"
           >
             <Scale class="w-4 h-4" />
             Compare Options
@@ -235,36 +219,23 @@ function handleCompareSelect(service) {
             v-for="service in category.services"
             :key="service.slug"
             class="relative p-4 rounded-lg border-2 transition-all"
-            :class="[
+            :class="
               isServiceSelected(service.slug)
-                ? (preferencesStore.darkMode
-                  ? 'border-blue-500 bg-blue-900/30'
-                  : 'border-blue-500 bg-blue-50')
-                : (preferencesStore.darkMode
-                  ? 'border-gray-700 bg-gray-800'
-                  : 'border-gray-200 bg-white')
-            ]"
+                ? 'border-primary bg-surface-alt'
+                : 'border-border bg-surface'
+            "
           >
             <div class="flex items-start justify-between">
               <div class="flex-1 pr-4">
-                <h4
-                  class="font-medium"
-                  :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                >
+                <h4 class="font-medium text-text">
                   {{ service.name }}
                 </h4>
-                <p
-                  class="text-sm mt-1"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-                >
+                <p class="text-sm mt-1 text-text-secondary">
                   <AnnotatedText :text="service.description" />
                 </p>
 
                 <!-- Pricing info -->
-                <div
-                  class="text-sm mt-2"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-                >
+                <div class="text-sm mt-2 text-text-muted">
                   <span v-if="service.cost_model.type === 'unit'">
                     ${{ service.cost_model.price }}/{{ service.cost_model.unit }}/mo
                   </span>
@@ -288,8 +259,7 @@ function handleCompareSelect(service) {
                 <!-- Notes preview -->
                 <button
                   v-if="getServiceNotes(service.slug)"
-                  class="flex items-center gap-1 text-xs hover:underline mt-2"
-                  :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+                  class="flex items-center gap-1 text-xs hover:underline mt-2 text-primary"
                   @click.stop="showRequirements(service)"
                 >
                   <Info class="w-3 h-3" />
@@ -301,13 +271,11 @@ function handleCompareSelect(service) {
               <button
                 @click="toggleService(service)"
                 class="w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors"
-                :class="[
+                :class="
                   isServiceSelected(service.slug)
-                    ? 'bg-blue-600 border-blue-600 text-white'
-                    : (preferencesStore.darkMode
-                      ? 'border-gray-600 text-gray-400 hover:border-blue-400 hover:text-blue-400'
-                      : 'border-gray-300 text-gray-400 hover:border-blue-400 hover:text-blue-400')
-                ]"
+                    ? 'bg-primary border-primary text-on-primary'
+                    : 'border-border-strong text-text-muted hover:border-primary hover:text-primary'
+                "
                 :aria-label="isServiceSelected(service.slug) ? 'Remove service' : 'Add service'"
               >
                 <component :is="isServiceSelected(service.slug) ? Check : Plus" class="w-4 h-4" />
@@ -324,24 +292,20 @@ function handleCompareSelect(service) {
         v-for="bundle in bundles"
         :key="bundle.slug"
         class="p-4 rounded-lg border-2 transition-all"
-        :class="[
+        :class="
           getBundleSuitability(bundle) === 'unavailable'
-            ? (preferencesStore.darkMode
-              ? 'border-gray-700 bg-gray-800 opacity-60'
-              : 'border-gray-200 bg-gray-50 opacity-60')
+            ? 'border-border bg-canvas opacity-60'
             : getBundleSuitability(bundle) === 'recommended'
               ? 'border-green-200 bg-green-50'
-              : (preferencesStore.darkMode
-                ? 'border-gray-700 bg-gray-800'
-                : 'border-gray-200 bg-white')
-        ]"
+              : 'border-border bg-surface'
+        "
       >
         <div class="flex items-start justify-between">
           <div class="flex-1">
             <div class="flex items-center gap-2">
               <h4
                 class="font-medium"
-                :class="preferencesStore.darkMode && getBundleSuitability(bundle) !== 'recommended' ? 'text-white' : 'text-gray-900'"
+                :class="getBundleSuitability(bundle) === 'recommended' ? 'text-gray-900' : 'text-text'"
               >
                 {{ bundle.name }}
               </h4>
@@ -353,15 +317,14 @@ function handleCompareSelect(service) {
               </span>
               <span
                 v-else-if="getBundleSuitability(bundle) === 'unavailable'"
-                class="text-xs px-2 py-0.5 rounded-full"
-                :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-200 text-gray-600'"
+                class="text-xs px-2 py-0.5 rounded-full bg-surface-alt text-text-muted"
               >
                 Not available for this tier
               </span>
             </div>
             <p
               class="text-sm mt-1 whitespace-pre-line"
-              :class="preferencesStore.darkMode && getBundleSuitability(bundle) !== 'recommended' ? 'text-gray-400' : 'text-gray-600'"
+              :class="getBundleSuitability(bundle) === 'recommended' ? 'text-gray-600' : 'text-text-secondary'"
             >
               <AnnotatedText :text="bundle.description" />
             </p>
@@ -369,18 +332,18 @@ function handleCompareSelect(service) {
             <div class="mt-3">
               <p
                 class="text-xs font-medium uppercase tracking-wide mb-1"
-                :class="preferencesStore.darkMode && getBundleSuitability(bundle) !== 'recommended' ? 'text-gray-400' : 'text-gray-500'"
+                :class="getBundleSuitability(bundle) === 'recommended' ? 'text-gray-500' : 'text-text-muted'"
               >
                 Includes:
               </p>
               <ul
                 class="text-sm space-y-1"
-                :class="preferencesStore.darkMode && getBundleSuitability(bundle) !== 'recommended' ? 'text-gray-400' : 'text-gray-600'"
+                :class="getBundleSuitability(bundle) === 'recommended' ? 'text-gray-600' : 'text-text-secondary'"
               >
                 <li v-for="item in bundle.services" :key="item.service" class="flex items-center gap-2">
                   <span
                     class="w-4 h-4 rounded-full flex items-center justify-center"
-                    :class="isServiceSelected(item.service) ? 'bg-blue-100 text-blue-600' : (preferencesStore.darkMode ? 'bg-gray-700 text-gray-500' : 'bg-gray-100 text-gray-400')"
+                    :class="isServiceSelected(item.service) ? 'bg-primary text-on-primary' : 'bg-surface-alt text-text-muted'"
                   >
                     <Check v-if="isServiceSelected(item.service)" class="w-3 h-3" />
                   </span>
@@ -393,7 +356,7 @@ function handleCompareSelect(service) {
           <button
             v-if="getBundleSuitability(bundle) !== 'unavailable'"
             @click="applyBundle(bundle)"
-            class="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 flex-shrink-0"
+            class="px-4 py-2 text-sm font-medium bg-primary text-on-primary rounded-md hover:bg-primary-dark flex-shrink-0"
           >
             Apply Bundle
           </button>
@@ -402,20 +365,13 @@ function handleCompareSelect(service) {
     </div>
 
     <!-- Selected services summary -->
-    <div
-      class="mt-8 p-4 rounded-lg"
-      :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-gray-50'"
-    >
-      <h3
-        class="font-medium mb-2"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-      >
+    <div class="mt-8 p-4 rounded-lg bg-surface-alt">
+      <h3 class="font-medium mb-2 text-text">
         Selected Services ({{ sessionStore.session.selected_services.length }})
       </h3>
       <div
         v-if="sessionStore.session.selected_services.length === 0"
-        class="text-sm"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+        class="text-sm text-text-muted"
       >
         No services selected yet. Select at least one service to continue.
       </div>
@@ -425,7 +381,7 @@ function handleCompareSelect(service) {
           :key="selected.service_slug"
           class="flex items-center justify-between text-sm"
         >
-          <span :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+          <span class="text-text-secondary">
             {{ configStore.servicesBySlug[selected.service_slug]?.name }}
           </span>
           <button
@@ -446,30 +402,20 @@ function handleCompareSelect(service) {
         @click.self="showNotesModal = false"
       >
         <div
-          class="rounded-lg shadow-xl max-w-lg w-full p-6"
-          :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+          class="rounded-lg shadow-xl max-w-lg w-full p-6 bg-surface"
           role="dialog"
           aria-modal="true"
         >
-          <h3
-            class="text-lg font-semibold mb-4"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-          >
+          <h3 class="text-lg font-semibold mb-4 text-text">
             {{ activeNotes.title }}
           </h3>
-          <div
-            class="text-sm whitespace-pre-line mb-6 prose prose-sm max-w-none"
-            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-          >
+          <div class="text-sm whitespace-pre-line mb-6 prose prose-sm max-w-none text-text-secondary">
             {{ activeNotes.content }}
           </div>
           <div class="flex justify-end">
             <button
               @click="showNotesModal = false"
-              class="px-4 py-2 rounded-md"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+              class="px-4 py-2 rounded-md bg-surface-alt text-text-secondary hover:bg-border-strong"
             >
               Close
             </button>

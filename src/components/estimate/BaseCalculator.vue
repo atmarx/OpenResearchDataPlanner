@@ -174,34 +174,34 @@ function handleReset() {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+  <div class="bg-surface rounded-lg border border-border overflow-hidden">
     <!-- Header -->
-    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
+    <div class="px-6 py-4 border-b border-border bg-canvas">
       <div class="flex items-center gap-3">
         <div
           v-if="icon"
-          class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"
+          class="w-10 h-10 rounded-lg bg-blue-100 text-primary flex items-center justify-center"
         >
           <component :is="icon" class="w-5 h-5" />
         </div>
         <div class="flex-1">
           <div class="flex items-center gap-2">
-            <h3 class="text-lg font-semibold text-gray-900">{{ title }}</h3>
+            <h3 class="text-lg font-semibold text-text">{{ title }}</h3>
             <span
               v-if="categoryLabel"
-              class="text-xs px-2 py-0.5 rounded-full bg-gray-200 text-gray-600"
+              class="text-xs px-2 py-0.5 rounded-full bg-surface-alt text-text-secondary"
             >
               {{ categoryLabel }}
             </span>
           </div>
-          <p v-if="description" class="text-sm text-gray-500">{{ description }}</p>
+          <p v-if="description" class="text-sm text-text-muted">{{ description }}</p>
         </div>
       </div>
     </div>
 
     <!-- Presets -->
-    <div v-if="presets.length > 0" class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-      <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+    <div v-if="presets.length > 0" class="px-6 py-4 border-b border-border bg-canvas/50">
+      <div class="text-xs font-medium text-text-muted uppercase tracking-wide mb-2">
         Quick Presets
       </div>
       <div class="flex flex-wrap gap-2">
@@ -209,7 +209,7 @@ function handleReset() {
           v-for="preset in presets"
           :key="preset.label"
           @click="handlePresetClick(preset)"
-          class="px-3 py-1.5 text-sm bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+          class="px-3 py-1.5 text-sm bg-surface border border-border rounded-lg hover:border-primary hover:bg-blue-50 transition-colors"
           :title="preset.description"
         >
           {{ preset.label }}
@@ -220,23 +220,23 @@ function handleReset() {
     <!-- Input Section (slot) -->
     <div class="px-6 py-5">
       <slot name="inputs">
-        <p class="text-gray-500 text-sm">Configure your inputs above to estimate requirements.</p>
+        <p class="text-text-muted text-sm">Configure your inputs above to estimate requirements.</p>
       </slot>
     </div>
 
     <!-- Calculate Button -->
-    <div class="px-6 py-3 border-t border-gray-100 bg-gray-50">
+    <div class="px-6 py-3 border-t border-border bg-canvas">
       <div class="flex items-center gap-3">
         <button
           @click="handleCalculate"
-          class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg hover:bg-primary-dark transition-colors"
         >
           <Calculator class="w-4 h-4" />
           Calculate
         </button>
         <button
           @click="handleReset"
-          class="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-lg transition-colors"
+          class="flex items-center gap-2 px-3 py-2 text-text-secondary hover:text-text hover:bg-surface-alt rounded-lg transition-colors"
           title="Reset to defaults"
         >
           <RefreshCw class="w-4 h-4" />
@@ -247,7 +247,7 @@ function handleReset() {
     <!-- Result Section -->
     <div
       v-if="result !== null || error"
-      class="px-6 py-5 border-t border-gray-200"
+      class="px-6 py-5 border-t border-border"
       :class="error ? 'bg-red-50' : 'bg-gradient-to-br from-blue-50 to-indigo-50'"
     >
       <!-- Error Display -->
@@ -259,9 +259,9 @@ function handleReset() {
       <!-- Result Display -->
       <div v-else>
         <div class="text-center mb-4">
-          <div class="text-4xl font-bold text-gray-900">
+          <div class="text-4xl font-bold text-text">
             {{ formattedResult }}
-            <span class="text-xl font-normal text-gray-500">{{ displayUnit }}</span>
+            <span class="text-xl font-normal text-text-muted">{{ displayUnit }}</span>
           </div>
 
           <!-- Relatable comparison (hidden by default) -->
@@ -269,13 +269,13 @@ function handleReset() {
             <button
               v-if="!showComparison"
               @click="showComparison = true"
-              class="text-sm text-blue-600 hover:text-blue-700 hover:underline"
+              class="text-sm text-primary hover:text-primary-dark hover:underline"
             >
               Put this in perspective
             </button>
             <p
               v-else
-              class="text-sm text-gray-600 italic bg-gray-100 rounded-lg px-3 py-2 inline-block"
+              class="text-sm text-text-secondary italic bg-surface-alt rounded-lg px-3 py-2 inline-block"
             >
               {{ comparison }}
             </p>
@@ -286,7 +286,7 @@ function handleReset() {
         <div v-if="breakdown.length > 0" class="mt-4">
           <button
             @click="showBreakdown = !showBreakdown"
-            class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800"
+            class="flex items-center gap-2 text-sm text-text-secondary hover:text-text"
           >
             <component :is="showBreakdown ? ChevronUp : ChevronDown" class="w-4 h-4" />
             {{ showBreakdown ? 'Hide' : 'Show' }} calculation
@@ -294,7 +294,7 @@ function handleReset() {
 
           <div
             v-if="showBreakdown"
-            class="mt-3 bg-white rounded-lg border border-gray-200 divide-y divide-gray-100"
+            class="mt-3 bg-surface rounded-lg border border-border divide-y divide-border"
           >
             <div
               v-for="(item, index) in breakdown"
@@ -302,8 +302,8 @@ function handleReset() {
               class="flex justify-between px-4 py-2 text-sm"
               :class="item.highlight ? 'font-semibold bg-blue-50' : ''"
             >
-              <span class="text-gray-600">{{ item.label }}</span>
-              <span class="text-gray-900">{{ item.value }}</span>
+              <span class="text-text-secondary">{{ item.label }}</span>
+              <span class="text-text">{{ item.value }}</span>
             </div>
           </div>
         </div>

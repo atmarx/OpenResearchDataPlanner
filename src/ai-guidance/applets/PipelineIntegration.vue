@@ -190,25 +190,19 @@ function getNextApplet() {
     :get-next-applet="getNextApplet"
   >
     <!-- Intro -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <p class="text-sm text-text-secondary">
         Production systems with automated AI calls have different risk profiles than interactive use.
         There's no human sitting at a chat interface. Use this checklist to ensure your pipeline is ready.
       </p>
     </div>
 
     <!-- When This Applies -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'"
-    >
-      <h4 class="font-medium mb-2" :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-800'">
+    <div class="p-4 rounded-lg border mb-6 bg-primary/10 border-primary">
+      <h4 class="font-medium mb-2 text-primary">
         When This Applies
       </h4>
-      <ul class="text-sm space-y-1" :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-700'">
+      <ul class="text-sm space-y-1 text-primary">
         <li>• Automated prompt generation</li>
         <li>• Batch processing of inputs through LLMs</li>
         <li>• Downstream systems consuming LLM outputs</li>
@@ -227,7 +221,7 @@ function getNextApplet() {
         <div class="flex items-center gap-3">
           <component :is="readinessInfo[readinessLevel].icon" class="w-6 h-6 flex-shrink-0" />
           <div>
-            <h3 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+            <h3 class="font-semibold text-text">
               {{ readinessInfo[readinessLevel].label }}
             </h3>
             <p class="text-sm">{{ readinessInfo[readinessLevel].description }}</p>
@@ -245,36 +239,27 @@ function getNextApplet() {
       <div
         v-for="category in checklistCategories"
         :key="category.id"
-        class="rounded-lg border overflow-hidden"
-        :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+        class="rounded-lg border overflow-hidden bg-surface border-border"
       >
         <!-- Category Header -->
         <button
           @click="toggleCategory(category.id)"
-          class="w-full p-4 flex items-center justify-between"
-          :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
+          class="w-full p-4 flex items-center justify-between hover:bg-surface-alt"
         >
           <div class="flex items-center gap-3">
             <component
               :is="category.icon"
-              class="w-5 h-5"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="w-5 h-5 text-text-muted"
             />
-            <h3 class="font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+            <h3 class="font-medium text-text">
               {{ category.name }}
             </h3>
           </div>
           <div class="flex items-center gap-2">
-            <span
-              class="text-sm px-2 py-0.5 rounded-full"
-              :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'"
-            >
+            <span class="text-sm px-2 py-0.5 rounded-full bg-surface-alt text-text-secondary">
               {{ getCategoryProgress(category) }}
             </span>
-            <span
-              class="text-sm"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-            >
+            <span class="text-sm text-text-muted">
               {{ isCategoryExpanded(category.id) ? '▼' : '▶' }}
             </span>
           </div>
@@ -283,32 +268,28 @@ function getNextApplet() {
         <!-- Category Items -->
         <div
           v-if="isCategoryExpanded(category.id)"
-          class="border-t"
-          :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
+          class="border-t border-border"
         >
           <div
             v-for="item in category.items"
             :key="item.id"
             @click="toggleItem(item.id)"
-            class="p-4 border-b last:border-b-0 cursor-pointer transition-colors flex items-start gap-3"
-            :class="[
-              preferencesStore.darkMode ? 'border-gray-700 hover:bg-gray-700' : 'border-gray-100 hover:bg-gray-50',
-              isItemChecked(item.id) ? (preferencesStore.darkMode ? 'bg-green-900/10' : 'bg-green-50/50') : ''
-            ]"
+            class="p-4 border-b last:border-b-0 cursor-pointer transition-colors flex items-start gap-3 border-border hover:bg-surface-alt"
+            :class="isItemChecked(item.id) ? (preferencesStore.darkMode ? 'bg-green-900/10' : 'bg-green-50/50') : ''"
           >
             <div
               class="w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 flex items-center justify-center"
               :class="isItemChecked(item.id)
                 ? 'bg-green-500 border-green-500'
-                : (preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-300')"
+                : 'border-border-strong'"
             >
               <CheckCircle v-if="isItemChecked(item.id)" class="w-3 h-3 text-white" />
             </div>
             <div>
-              <p class="font-medium text-sm" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <p class="font-medium text-sm text-text">
                 {{ item.label }}
               </p>
-              <p class="text-xs mt-0.5" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'">
+              <p class="text-xs mt-0.5 text-text-muted">
                 {{ item.helpText }}
               </p>
             </div>
@@ -318,19 +299,15 @@ function getNextApplet() {
     </div>
 
     <!-- Monitoring Recommendations -->
-    <div
-      class="mt-6 p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <h4 class="font-medium mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+    <div class="mt-6 p-4 rounded-lg border bg-surface border-border">
+      <h4 class="font-medium mb-3 text-text">
         Recommended Dashboard Components
       </h4>
       <div class="grid gap-2 sm:grid-cols-2">
         <div
           v-for="component in ['API latency/errors', 'Token usage/costs', 'Output quality metrics', 'Prompt version tracking']"
           :key="component"
-          class="p-2 rounded text-sm"
-          :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'"
+          class="p-2 rounded text-sm bg-surface-alt text-text-secondary"
         >
           {{ component }}
         </div>

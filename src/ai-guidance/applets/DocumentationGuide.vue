@@ -223,17 +223,11 @@ function getNextApplet() {
     :get-next-applet="getNextApplet"
   >
     <!-- Why Documentation Matters -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <blockquote
-        class="italic text-lg mb-2"
-        :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-      >
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <blockquote class="italic text-lg mb-2 text-text-secondary">
         "If you can't reproduce a result, it didn't happen."
       </blockquote>
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm text-text-secondary">
         AI-assisted work requires documentation for reproducibility and accountability.
         LLMs are stochastic — even the same prompt can give different outputs.
       </p>
@@ -241,7 +235,7 @@ function getNextApplet() {
 
     <!-- Context Selection -->
     <div class="mb-6">
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         What's the context for this work?
       </h3>
       <div class="grid gap-2">
@@ -249,26 +243,25 @@ function getNextApplet() {
           v-for="context in contextLevels"
           :key="context.id"
           @click="selectContext(context)"
-          class="p-4 rounded-lg border-2 text-left transition-all"
-          :class="[
+          class="p-4 rounded-lg border-2 text-left transition-all bg-surface"
+          :class="
             selectedContext === context.id
-              ? (preferencesStore.darkMode ? 'bg-blue-900/30 border-blue-500' : 'bg-blue-50 border-blue-400')
-              : (preferencesStore.darkMode ? 'border-gray-700 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300'),
-            preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'
-          ]"
+              ? 'border-primary'
+              : 'border-border hover:border-border-strong'
+          "
         >
           <div class="flex justify-between items-start">
             <div>
-              <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <h4 class="font-medium text-text">
                 {{ context.name }}
               </h4>
-              <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+              <p class="text-sm mt-1 text-text-secondary">
                 <span class="font-medium">Minimum:</span> {{ context.minimum }}
               </p>
             </div>
             <CheckCircle
               v-if="selectedContext === context.id"
-              class="w-5 h-5 text-blue-500 flex-shrink-0"
+              class="w-5 h-5 text-primary flex-shrink-0"
             />
           </div>
         </button>
@@ -277,10 +270,10 @@ function getNextApplet() {
 
     <!-- Documentation Elements Checklist -->
     <div v-if="selectedContext" class="mb-6">
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         Documentation Elements
       </h3>
-      <p class="text-sm mb-4" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm mb-4 text-text-secondary">
         <span class="font-medium">Recommended for {{ selectedContextConfig.name }}:</span>
         {{ selectedContextConfig.recommended }}
       </p>
@@ -294,7 +287,7 @@ function getNextApplet() {
           :class="[
             isElementChecked(element.id)
               ? (preferencesStore.darkMode ? 'bg-green-900/20 border-green-700' : 'bg-green-50 border-green-300')
-              : (preferencesStore.darkMode ? 'bg-gray-800 border-gray-700 hover:border-gray-600' : 'bg-white border-gray-200 hover:border-gray-300')
+              : 'bg-surface border-border hover:border-border-strong'
           ]"
         >
           <div class="flex items-start gap-3">
@@ -302,7 +295,7 @@ function getNextApplet() {
               class="w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 flex items-center justify-center"
               :class="isElementChecked(element.id)
                 ? 'bg-green-500 border-green-500'
-                : (preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-300')"
+                : 'border-border-strong'"
             >
               <CheckCircle v-if="isElementChecked(element.id)" class="w-3 h-3 text-white" />
             </div>
@@ -310,24 +303,22 @@ function getNextApplet() {
               <div class="flex items-center gap-2">
                 <component
                   :is="element.icon"
-                  class="w-4 h-4"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                  class="w-4 h-4 text-text-muted"
                 />
-                <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+                <h4 class="font-medium text-text">
                   {{ element.name }}
                 </h4>
                 <span
                   v-if="isElementRequired(element.id)"
-                  class="px-2 py-0.5 text-xs rounded-full"
-                  :class="preferencesStore.darkMode ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-100 text-blue-700'"
+                  class="px-2 py-0.5 text-xs rounded-full bg-primary text-on-primary"
                 >
                   Required
                 </span>
               </div>
-              <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+              <p class="text-sm mt-1 text-text-secondary">
                 <span class="font-medium">Why:</span> {{ element.why }}
               </p>
-              <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'">
+              <p class="text-sm mt-1 text-text-muted">
                 <span class="font-medium">Example:</span> {{ element.example }}
               </p>
             </div>
@@ -339,11 +330,10 @@ function getNextApplet() {
     <!-- Template Generator -->
     <div
       v-if="selectedContext && checkedElements.size > 0"
-      class="p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'"
+      class="p-4 rounded-lg border bg-canvas border-border"
     >
       <div class="flex items-center justify-between mb-3">
-        <h3 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+        <h3 class="font-semibold text-text">
           Documentation Template
         </h3>
         <button
@@ -351,31 +341,29 @@ function getNextApplet() {
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
           :class="copiedTemplate
             ? (preferencesStore.darkMode ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-700')
-            : (preferencesStore.darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-white text-gray-700 hover:bg-gray-100')"
+            : 'bg-surface text-text-secondary hover:bg-surface-alt'"
         >
           <component :is="copiedTemplate ? CheckCircle : Copy" class="w-4 h-4" />
           {{ copiedTemplate ? 'Copied!' : 'Copy Template' }}
         </button>
       </div>
       <pre
-        class="text-sm p-3 rounded-lg overflow-x-auto"
-        :class="preferencesStore.darkMode ? 'bg-gray-900 text-gray-300' : 'bg-white text-gray-700'"
+        class="text-sm p-3 rounded-lg overflow-x-auto bg-surface text-text-secondary"
       >{{ documentationTemplate }}</pre>
     </div>
 
     <!-- Storage Recommendations -->
     <div
       v-if="selectedContext"
-      class="mt-6 p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'"
+      class="mt-6 p-4 rounded-lg border bg-surface border-primary"
     >
       <div class="flex items-start gap-3">
-        <Info class="w-5 h-5 flex-shrink-0 mt-0.5" :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'" />
+        <Info class="w-5 h-5 flex-shrink-0 mt-0.5 text-primary" />
         <div>
-          <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-800'">
+          <h4 class="font-medium text-primary">
             Storage Recommendations
           </h4>
-          <ul class="text-sm mt-2 space-y-1" :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-700'">
+          <ul class="text-sm mt-2 space-y-1 text-text-secondary">
             <li>• Save conversations as markdown or PDF</li>
             <li>• Include in project documentation folder</li>
             <li>• Use version control for prompts (like code)</li>

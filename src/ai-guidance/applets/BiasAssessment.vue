@@ -175,11 +175,8 @@ function getNextApplet() {
     :get-next-applet="getNextApplet"
   >
     <!-- Intro -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <p class="text-sm text-text-secondary">
         Every AI system has biases baked into its training data. This is not a bug to be fixed later — it is fundamental.
         Different use cases have different bias relevance. Select yours below to see tailored guidance.
       </p>
@@ -187,7 +184,7 @@ function getNextApplet() {
 
     <!-- Applicability Check -->
     <div class="mb-6">
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         Is Bias Assessment Relevant to Your Use Case?
       </h3>
       <div class="space-y-2">
@@ -195,19 +192,15 @@ function getNextApplet() {
           v-for="item in useCaseRelevance"
           :key="item.useCase"
           @click="selectRelevance(item.relevance)"
-          class="w-full p-3 rounded-lg border-2 text-left transition-all flex items-center gap-3"
-          :class="[
-            getRelevanceClasses(item.relevance, selectedRelevance === item.relevance),
-            preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'
-          ]"
+          class="w-full p-3 rounded-lg border-2 text-left transition-all flex items-center gap-3 bg-surface"
+          :class="getRelevanceClasses(item.relevance, selectedRelevance === item.relevance)"
         >
           <component
             :is="item.icon"
-            class="w-5 h-5 flex-shrink-0"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+            class="w-5 h-5 flex-shrink-0 text-text-muted"
           />
           <div class="flex-1">
-            <span class="font-medium text-sm" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+            <span class="font-medium text-sm text-text">
               {{ item.useCase }}
             </span>
           </div>
@@ -233,7 +226,7 @@ function getNextApplet() {
           class="w-6 h-6 flex-shrink-0"
         />
         <div>
-          <h4 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+          <h4 class="font-semibold text-text">
             {{ relevanceInfo[selectedRelevance]?.label }}
           </h4>
           <p class="text-sm">{{ relevanceInfo[selectedRelevance]?.description }}</p>
@@ -252,10 +245,9 @@ function getNextApplet() {
       >
         <component
           :is="showBiasStages ? ChevronDown : ChevronRight"
-          class="w-5 h-5"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+          class="w-5 h-5 text-text-muted"
         />
-        <h3 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+        <h3 class="font-semibold text-text">
           Where Bias Enters
         </h3>
       </button>
@@ -263,21 +255,21 @@ function getNextApplet() {
       <div v-if="showBiasStages" class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
-            <tr :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'">
-              <th class="text-left p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">Stage</th>
-              <th class="text-left p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">Bias Source</th>
-              <th class="text-left p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">Example</th>
+            <tr class="border-border">
+              <th class="text-left p-2 border-b text-text-secondary">Stage</th>
+              <th class="text-left p-2 border-b text-text-secondary">Bias Source</th>
+              <th class="text-left p-2 border-b text-text-secondary">Example</th>
             </tr>
           </thead>
           <tbody>
             <tr
               v-for="item in biasStages"
               :key="item.stage"
-              :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
+              class="border-border"
             >
-              <td class="p-2 border-b font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">{{ item.stage }}</td>
-              <td class="p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">{{ item.source }}</td>
-              <td class="p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">{{ item.example }}</td>
+              <td class="p-2 border-b font-medium text-text">{{ item.stage }}</td>
+              <td class="p-2 border-b text-text-secondary">{{ item.source }}</td>
+              <td class="p-2 border-b text-text-secondary">{{ item.example }}</td>
             </tr>
           </tbody>
         </table>
@@ -289,18 +281,17 @@ function getNextApplet() {
       v-if="selectedRelevance && ['high', 'very-high', 'medium', 'medium-high'].includes(selectedRelevance)"
       class="mb-6"
     >
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         Bias Risk by Use Case
       </h3>
       <div class="space-y-2">
         <div
           v-for="item in biasRisks"
           :key="item.useCase"
-          class="p-3 rounded-lg border"
-          :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+          class="p-3 rounded-lg border bg-surface border-border"
         >
           <div class="flex items-center justify-between mb-1">
-            <span class="font-medium text-sm" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+            <span class="font-medium text-sm text-text">
               {{ item.useCase }}
             </span>
             <span
@@ -310,7 +301,7 @@ function getNextApplet() {
               {{ item.risk }}
             </span>
           </div>
-          <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+          <p class="text-sm text-text-secondary">
             {{ item.concerns }}
           </p>
         </div>
@@ -320,10 +311,9 @@ function getNextApplet() {
     <!-- Mitigation Strategies -->
     <div
       v-if="selectedRelevance"
-      class="p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+      class="p-4 rounded-lg border bg-surface border-border"
     >
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         Bias Mitigation Strategies
       </h3>
       <div class="space-y-2">
@@ -331,18 +321,17 @@ function getNextApplet() {
           v-for="strategy in mitigationStrategies"
           :key="strategy"
           @click="toggleStrategy(strategy)"
-          class="flex items-start gap-3 p-2 rounded cursor-pointer transition-colors"
-          :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
+          class="flex items-start gap-3 p-2 rounded cursor-pointer transition-colors hover:bg-surface-alt"
         >
           <div
             class="w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center"
             :class="isStrategyChecked(strategy)
               ? 'bg-green-500 border-green-500'
-              : (preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-300')"
+              : 'border-border-strong'"
           >
             <CheckCircle v-if="isStrategyChecked(strategy)" class="w-3 h-3 text-white" />
           </div>
-          <span class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+          <span class="text-sm text-text-secondary">
             {{ strategy }}
           </span>
         </div>

@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { BookOpen, Check } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -12,8 +11,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const preferencesStore = usePreferencesStore()
 
 // Track which sections have been scrolled into view
 const sectionsRead = ref(new Set())
@@ -64,18 +61,15 @@ const readingProgress = computed(() => {
   <div class="narrative-guide-container">
     <!-- Sidebar TOC -->
     <aside
-      class="narrative-sidebar"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+      class="narrative-sidebar bg-surface border-border"
     >
       <div class="sticky top-4">
         <div class="flex items-center gap-2 mb-4">
           <BookOpen
-            class="w-5 h-5"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+            class="w-5 h-5 text-text-muted"
           />
           <h3
-            class="font-semibold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="font-semibold text-text"
           >
             Contents
           </h3>
@@ -87,15 +81,11 @@ const readingProgress = computed(() => {
             :key="section.id"
             @click="scrollToSection(section.id)"
             class="w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2"
-            :class="[
+            :class="
               activeSection === section.id
-                ? (preferencesStore.darkMode
-                    ? 'bg-blue-900/30 text-blue-300 font-medium'
-                    : 'bg-blue-50 text-blue-700 font-medium')
-                : (preferencesStore.darkMode
-                    ? 'text-gray-400 hover:bg-gray-700 hover:text-gray-300'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900')
-            ]"
+                ? 'bg-surface-alt text-primary font-medium'
+                : 'text-text-secondary hover:bg-surface-alt hover:text-text'
+            "
           >
             <Check
               v-if="sectionsRead.has(section.id)"
@@ -107,28 +97,23 @@ const readingProgress = computed(() => {
         </nav>
 
         <!-- Reading progress -->
-        <div class="mt-6 pt-4 border-t" :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'">
+        <div class="mt-6 pt-4 border-t border-border">
           <div
-            class="text-xs mb-2"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
+            class="text-xs mb-2 text-text-muted"
           >
             Reading Progress
           </div>
           <div
-            class="h-2 rounded-full overflow-hidden"
-            :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-200'"
+            class="h-2 rounded-full overflow-hidden bg-surface-alt"
           >
             <div
               class="h-full rounded-full transition-all"
-              :class="readingProgress === 100
-                ? (preferencesStore.darkMode ? 'bg-green-500' : 'bg-green-500')
-                : (preferencesStore.darkMode ? 'bg-blue-500' : 'bg-blue-500')"
+              :class="readingProgress === 100 ? 'bg-green-500' : 'bg-primary'"
               :style="{ width: `${readingProgress}%` }"
             />
           </div>
           <div
-            class="text-xs mt-1"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
+            class="text-xs mt-1 text-text-muted"
           >
             {{ sectionsRead.size }} / {{ sections.length }} sections
           </div>

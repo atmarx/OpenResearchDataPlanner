@@ -214,23 +214,20 @@ function getNextApplet() {
     :get-next-applet="getNextApplet"
   >
     <!-- The Problem -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <h3 class="font-semibold mb-2" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <h3 class="font-semibold mb-2 text-text">
         The Reproducibility Problem
       </h3>
-      <p class="text-sm mb-3" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm mb-3 text-text-secondary">
         Unlike traditional software, LLMs:
       </p>
-      <ul class="text-sm space-y-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <ul class="text-sm space-y-1 text-text-secondary">
         <li>• Produce different outputs from the same prompt</li>
         <li>• Are updated by providers without notice</li>
         <li>• May be deprecated or replaced entirely</li>
         <li>• Don't have semantic versioning you can pin</li>
       </ul>
-      <p class="text-sm mt-3 font-medium" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+      <p class="text-sm mt-3 font-medium text-text-secondary">
         If you used Claude 3.5 Sonnet in January and reviewers ask questions in June,
         you may get different outputs from a newer version.
       </p>
@@ -245,7 +242,7 @@ function getNextApplet() {
       <div class="flex items-center gap-3">
         <component :is="currentReadinessInfo.icon" class="w-6 h-6 flex-shrink-0" />
         <div>
-          <h3 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+          <h3 class="font-semibold text-text">
             {{ currentReadinessInfo.label }}
           </h3>
           <p class="text-sm">{{ currentReadinessInfo.description }}</p>
@@ -255,7 +252,7 @@ function getNextApplet() {
 
     <!-- Critical Items -->
     <div class="mb-6">
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         Critical Documentation
       </h3>
       <div class="space-y-3">
@@ -267,7 +264,7 @@ function getNextApplet() {
           :class="[
             isItemChecked(item.id)
               ? (preferencesStore.darkMode ? 'bg-green-900/20 border-green-700' : 'bg-green-50 border-green-300')
-              : (preferencesStore.darkMode ? 'bg-gray-800 border-gray-700 hover:border-gray-600' : 'bg-white border-gray-200 hover:border-gray-300')
+              : 'bg-surface border-border hover:border-border-strong'
           ]"
         >
           <div class="flex items-start gap-3">
@@ -275,7 +272,7 @@ function getNextApplet() {
               class="w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 flex items-center justify-center"
               :class="isItemChecked(item.id)
                 ? 'bg-green-500 border-green-500'
-                : (preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-300')"
+                : 'border-border-strong'"
             >
               <CheckCircle v-if="isItemChecked(item.id)" class="w-3 h-3 text-white" />
             </div>
@@ -283,10 +280,9 @@ function getNextApplet() {
               <div class="flex items-center gap-2">
                 <component
                   :is="item.icon"
-                  class="w-4 h-4"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                  class="w-4 h-4 text-text-muted"
                 />
-                <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+                <h4 class="font-medium text-text">
                   {{ item.question }}
                 </h4>
                 <span
@@ -296,10 +292,10 @@ function getNextApplet() {
                   Required
                 </span>
               </div>
-              <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+              <p class="text-sm mt-1 text-text-secondary">
                 {{ item.helpText }}
               </p>
-              <p class="text-sm mt-1 italic" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'">
+              <p class="text-sm mt-1 italic text-text-muted">
                 {{ item.example }}
               </p>
             </div>
@@ -310,7 +306,7 @@ function getNextApplet() {
 
     <!-- Optional Items -->
     <div class="mb-6">
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         Additional Considerations
       </h3>
       <div class="space-y-3">
@@ -322,7 +318,7 @@ function getNextApplet() {
           :class="[
             isItemChecked(item.id)
               ? (preferencesStore.darkMode ? 'bg-blue-900/20 border-blue-700' : 'bg-blue-50 border-blue-300')
-              : (preferencesStore.darkMode ? 'bg-gray-800 border-gray-700 hover:border-gray-600' : 'bg-white border-gray-200 hover:border-gray-300')
+              : 'bg-surface border-border hover:border-border-strong'
           ]"
         >
           <div class="flex items-start gap-3">
@@ -330,7 +326,7 @@ function getNextApplet() {
               class="w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 flex items-center justify-center"
               :class="isItemChecked(item.id)
                 ? 'bg-blue-500 border-blue-500'
-                : (preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-300')"
+                : 'border-border-strong'"
             >
               <CheckCircle v-if="isItemChecked(item.id)" class="w-3 h-3 text-white" />
             </div>
@@ -338,14 +334,13 @@ function getNextApplet() {
               <div class="flex items-center gap-2">
                 <component
                   :is="item.icon"
-                  class="w-4 h-4"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                  class="w-4 h-4 text-text-muted"
                 />
-                <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+                <h4 class="font-medium text-text">
                   {{ item.question }}
                 </h4>
               </div>
-              <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+              <p class="text-sm mt-1 text-text-secondary">
                 {{ item.helpText }}
               </p>
             </div>
@@ -355,23 +350,20 @@ function getNextApplet() {
     </div>
 
     <!-- Pipeline Section -->
-    <div
-      class="p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
+    <div class="p-4 rounded-lg border bg-surface border-border">
       <label class="flex items-center gap-3 cursor-pointer">
         <input
           type="checkbox"
           v-model="isPipeline"
           class="w-4 h-4 rounded"
         />
-        <span class="font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+        <span class="font-medium text-text">
           Using AI in a production/pipeline system?
         </span>
       </label>
 
       <div v-if="isPipeline" class="mt-4 space-y-3">
-        <p class="text-sm mb-3" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+        <p class="text-sm mb-3 text-text-secondary">
           Additional considerations for automated systems:
         </p>
         <div
@@ -382,22 +374,22 @@ function getNextApplet() {
           :class="[
             isPipelineItemChecked(item.id)
               ? (preferencesStore.darkMode ? 'bg-purple-900/20 border-purple-700' : 'bg-purple-50 border-purple-300')
-              : (preferencesStore.darkMode ? 'bg-gray-700 border-gray-600 hover:border-gray-500' : 'bg-gray-50 border-gray-200 hover:border-gray-300')
+              : 'bg-surface-alt border-border hover:border-border-strong'
           ]"
         >
           <div
             class="w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center"
             :class="isPipelineItemChecked(item.id)
               ? 'bg-purple-500 border-purple-500'
-              : (preferencesStore.darkMode ? 'border-gray-500' : 'border-gray-300')"
+              : 'border-border-strong'"
           >
             <CheckCircle v-if="isPipelineItemChecked(item.id)" class="w-3 h-3 text-white" />
           </div>
           <div>
-            <h4 class="font-medium text-sm" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+            <h4 class="font-medium text-sm text-text">
               {{ item.question }}
             </h4>
-            <p class="text-xs mt-0.5" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+            <p class="text-xs mt-0.5 text-text-secondary">
               {{ item.helpText }}
             </p>
           </div>

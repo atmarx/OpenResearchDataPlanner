@@ -370,21 +370,16 @@ function dismissDeepLinkBanner() {
 
 <template>
   <div
-    class="min-h-screen transition-colors"
-    :class="preferencesStore.darkMode ? 'bg-gray-900' : 'bg-gray-50'"
+    class="min-h-screen transition-colors bg-canvas"
   >
     <!-- Header -->
     <header
-      class="border-b sticky top-0 z-10"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="border-b sticky top-0 z-10 bg-surface border-border"
     >
       <div class="max-w-3xl 2xl:max-w-6xl mx-auto px-4 py-3">
         <div class="flex items-center justify-center gap-6">
           <h1
-            class="text-xl font-semibold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-xl font-semibold text-text"
           >Check Your Data Tier</h1>
 
           <!-- View Toggle Tabs -->
@@ -393,12 +388,8 @@ function dismissDeepLinkBanner() {
             @click="viewMode = 'questionnaire'; currentQuestionId = null"
             class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-t-lg transition-colors"
             :class="viewMode === 'questionnaire'
-              ? (preferencesStore.darkMode
-                ? 'bg-gray-900 text-white'
-                : 'bg-gray-50 text-gray-900')
-              : (preferencesStore.darkMode
-                ? 'text-gray-400 hover:text-gray-200'
-                : 'text-gray-500 hover:text-gray-700')"
+              ? 'bg-canvas text-text'
+              : 'text-text-muted hover:text-text'"
           >
             <MessageCircleQuestion class="w-4 h-4" />
             Guided Questions
@@ -407,12 +398,8 @@ function dismissDeepLinkBanner() {
             @click="viewMode = 'table'"
             class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-t-lg transition-colors"
             :class="viewMode === 'table'
-              ? (preferencesStore.darkMode
-                ? 'bg-gray-900 text-white'
-                : 'bg-gray-50 text-gray-900')
-              : (preferencesStore.darkMode
-                ? 'text-gray-400 hover:text-gray-200'
-                : 'text-gray-500 hover:text-gray-700')"
+              ? 'bg-canvas text-text'
+              : 'text-text-muted hover:text-text'"
           >
             <List class="w-4 h-4" />
             All Tiers
@@ -421,12 +408,8 @@ function dismissDeepLinkBanner() {
             @click="viewMode = 'examples'; selectedDiscipline = null"
             class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-t-lg transition-colors"
             :class="viewMode === 'examples'
-              ? (preferencesStore.darkMode
-                ? 'bg-gray-900 text-white'
-                : 'bg-gray-50 text-gray-900')
-              : (preferencesStore.darkMode
-                ? 'text-gray-400 hover:text-gray-200'
-                : 'text-gray-500 hover:text-gray-700')"
+              ? 'bg-canvas text-text'
+              : 'text-text-muted hover:text-text'"
           >
             <BookOpen class="w-4 h-4" />
             Examples
@@ -435,12 +418,8 @@ function dismissDeepLinkBanner() {
             @click="viewMode = 'identification'"
             class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-t-lg transition-colors"
             :class="viewMode === 'identification'
-              ? (preferencesStore.darkMode
-                ? 'bg-gray-900 text-white'
-                : 'bg-gray-50 text-gray-900')
-              : (preferencesStore.darkMode
-                ? 'text-gray-400 hover:text-gray-200'
-                : 'text-gray-500 hover:text-gray-700')"
+              ? 'bg-canvas text-text'
+              : 'text-text-muted hover:text-text'"
           >
             <Fingerprint class="w-4 h-4" />
             Data Status
@@ -456,8 +435,7 @@ function dismissDeepLinkBanner() {
       <!-- Table View -->
       <div v-if="viewMode === 'table'" class="space-y-6">
         <p
-          class="text-center"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+          class="text-center text-text-secondary"
         >
           Select the tier that matches your data sensitivity. Click any tier to use it.
         </p>
@@ -505,30 +483,30 @@ function dismissDeepLinkBanner() {
                     >
                       {{ tier.short_name }}
                     </span>
-                    <span class="text-gray-900 font-semibold">{{ tier.name }}</span>
+                    <span class="text-text font-semibold">{{ tier.name }}</span>
                   </div>
                   <ArrowRight
-                    class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors"
+                    class="w-5 h-5 text-text-muted group-hover:text-text-secondary transition-colors"
                   />
                 </div>
 
                 <!-- Description -->
-                <p class="text-sm text-gray-700 mb-3 whitespace-pre-line">
+                <p class="text-sm text-text-secondary mb-3 whitespace-pre-line">
                   <AnnotatedText :text="tier.description" />
                 </p>
 
                 <!-- Types of Data -->
                 <div v-if="tier.types_of_data?.length" class="mb-3">
-                  <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                  <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
                     Types of Data:
                   </p>
-                  <ul class="text-sm text-gray-600 space-y-0.5">
+                  <ul class="text-sm text-text-secondary space-y-0.5">
                     <li
                       v-for="dataType in tier.types_of_data"
                       :key="dataType"
                       class="flex items-start gap-2"
                     >
-                      <span class="text-gray-400">•</span>
+                      <span class="text-text-muted">•</span>
                       <span>{{ dataType }}</span>
                     </li>
                   </ul>
@@ -536,16 +514,16 @@ function dismissDeepLinkBanner() {
 
                 <!-- Examples -->
                 <div v-if="tier.examples?.length" class="mb-3">
-                  <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                  <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
                     Examples:
                   </p>
-                  <ul class="text-sm text-gray-600 space-y-0.5">
+                  <ul class="text-sm text-text-secondary space-y-0.5">
                     <li
                       v-for="example in tier.examples"
                       :key="example"
                       class="flex items-start gap-2"
                     >
-                      <span class="text-gray-400">•</span>
+                      <span class="text-text-muted">•</span>
                       <span>{{ example }}</span>
                     </li>
                   </ul>
@@ -553,16 +531,16 @@ function dismissDeepLinkBanner() {
 
                 <!-- Requirements -->
                 <div v-if="tier.requirements?.length" class="mb-3">
-                  <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                  <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
                     Requirements:
                   </p>
-                  <ul class="text-sm text-gray-600 space-y-0.5">
+                  <ul class="text-sm text-text-secondary space-y-0.5">
                     <li
                       v-for="req in tier.requirements"
                       :key="req"
                       class="flex items-start gap-2"
                     >
-                      <span class="text-gray-400">•</span>
+                      <span class="text-text-muted">•</span>
                       <span>{{ req }}</span>
                     </li>
                   </ul>
@@ -599,13 +577,12 @@ function dismissDeepLinkBanner() {
 
         <!-- Help text -->
         <p
-          class="text-center text-sm"
-          :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+          class="text-center text-sm text-text-muted"
         >
           Not sure which tier fits?
           <button
             @click="viewMode = 'questionnaire'"
-            class="text-blue-500 hover:underline"
+            class="text-primary hover:underline"
           >Try the guided questions</button>
         </p>
       </div>
@@ -613,8 +590,7 @@ function dismissDeepLinkBanner() {
       <!-- Examples View -->
       <div v-else-if="viewMode === 'examples'" class="space-y-6">
         <p
-          class="text-center"
-          :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+          class="text-center text-text-secondary"
         >
           See what data types belong in each tier for your discipline.
         </p>
@@ -628,9 +604,7 @@ function dismissDeepLinkBanner() {
             class="px-4 py-2 text-sm rounded-lg border transition-colors"
             :class="selectedDiscipline === key
               ? 'bg-blue-100 border-blue-300 text-blue-800'
-              : (preferencesStore.darkMode
-                ? 'bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600'
-                : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300')"
+              : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
           >
             {{ disc.name }}
           </button>
@@ -662,9 +636,9 @@ function dismissDeepLinkBanner() {
                   'text-orange-800': tier.color === 'orange',
                   'text-red-800': tier.color === 'red'
                 }">{{ tier.short_name }}</span>
-                <span class="text-gray-700">{{ tier.name }}</span>
+                <span class="text-text-secondary">{{ tier.name }}</span>
               </div>
-              <ul class="text-sm text-gray-700 space-y-1 ml-8">
+              <ul class="text-sm text-text-secondary space-y-1 ml-8">
                 <li
                   v-for="(example, idx) in examples[selectedDiscipline].examples?.[tier.slug]"
                   :key="idx"
@@ -681,10 +655,7 @@ function dismissDeepLinkBanner() {
         <!-- Empty state -->
         <div
           v-else
-          class="text-center py-12 rounded-lg border"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 text-gray-400'
-            : 'bg-white border-gray-200 text-gray-500'"
+          class="text-center py-12 rounded-lg border bg-surface border-border text-text-muted"
         >
           <BookOpen class="w-12 h-12 mx-auto mb-3 opacity-40" />
           <p>Select a discipline above to see example data types for each tier.</p>
@@ -694,19 +665,18 @@ function dismissDeepLinkBanner() {
         <div class="text-center pt-4 space-y-3">
           <button
             @click="viewMode = 'questionnaire'; currentQuestionId = null"
-            class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary-dark transition-colors"
           >
             Answer questions to find your tier
             <ArrowRight class="w-5 h-5" />
           </button>
           <p
-            class="text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+            class="text-sm text-text-muted"
           >
             Or
             <button
               @click="viewMode = 'table'"
-              class="text-blue-500 hover:underline"
+              class="text-primary hover:underline"
             >select a tier directly</button>
           </p>
         </div>
@@ -724,17 +694,15 @@ function dismissDeepLinkBanner() {
       <div v-else-if="viewMode === 'questionnaire' && !currentQuestionId" class="space-y-6">
         <div class="text-center">
           <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
-            <Shield class="w-8 h-8 text-blue-600" />
+            <Shield class="w-8 h-8 text-primary" />
           </div>
           <h2
-            class="text-2xl font-bold mb-2"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-2xl font-bold mb-2 text-text"
           >
             {{ intro.title || "What type of data will you be working with?" }}
           </h2>
           <p
-            class="whitespace-pre-line"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+            class="whitespace-pre-line text-text-secondary"
           >
             {{ intro.description }}
           </p>
@@ -765,21 +733,18 @@ function dismissDeepLinkBanner() {
         <!-- Link to Examples Tab -->
         <button
           @click="viewMode = 'examples'"
-          class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-colors"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600'
-            : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'"
+          class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-colors bg-surface border-border text-text-secondary hover:border-border-strong"
         >
-          <BookOpen class="w-5 h-5 text-gray-400" />
+          <BookOpen class="w-5 h-5 text-text-muted" />
           <span class="font-medium">See examples by discipline</span>
-          <ArrowRight class="w-4 h-4 text-gray-400" />
+          <ArrowRight class="w-4 h-4 text-text-muted" />
         </button>
 
         <!-- Action Buttons -->
         <div class="flex flex-col gap-3">
           <button
             @click="startQuestionnaire"
-            class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary-dark transition-colors"
           >
             Start Questionnaire
             <ArrowRight class="w-5 h-5" />
@@ -789,10 +754,7 @@ function dismissDeepLinkBanner() {
           <button
             v-if="intro.quick_select?.enabled"
             @click="quickSelectTier(intro.quick_select.tier)"
-            class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'border-gray-600 text-gray-300 hover:bg-gray-800'
-              : 'border-gray-300 text-gray-700 hover:bg-gray-50'"
+            class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border transition-colors border-border-strong text-text-secondary hover:bg-surface-alt"
           >
             <ShieldCheck class="w-4 h-4 text-green-500" />
             {{ intro.quick_select.label }}
@@ -801,10 +763,7 @@ function dismissDeepLinkBanner() {
           <button
             v-if="intro.skip_option?.enabled"
             @click="skipToTierSelect"
-            class="text-sm"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-400 hover:text-gray-300'
-              : 'text-gray-500 hover:text-gray-700'"
+            class="text-sm text-text-muted hover:text-text-secondary"
           >
             {{ intro.skip_option.label || "I already know my tier" }}
           </button>
@@ -838,35 +797,28 @@ function dismissDeepLinkBanner() {
 
         <!-- Question -->
         <div
-          class="rounded-lg border p-6"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700'
-            : 'bg-white border-gray-200'"
+          class="rounded-lg border p-6 bg-surface border-border"
         >
           <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+            <div class="w-12 h-12 rounded-lg bg-blue-100 text-primary flex items-center justify-center flex-shrink-0">
               <component :is="iconMap[currentQuestion.icon] || Info" class="w-6 h-6" />
             </div>
             <div class="flex-1">
               <h2
-                class="text-xl font-semibold mb-2"
-                :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                class="text-xl font-semibold mb-2 text-text"
               >
                 {{ currentQuestion.question }}
               </h2>
               <p
                 v-if="currentQuestion.help_text"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+                class="text-text-secondary"
               >
                 {{ currentQuestion.help_text }}
               </p>
             </div>
             <button
               @click="showQuestionHelp = true"
-              class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border transition-colors"
-              :class="preferencesStore.darkMode
-                ? 'border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500'
-                : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'"
+              class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border transition-colors border-border-strong text-text-secondary hover:bg-surface-alt hover:border-border-strong"
               aria-label="I don't understand this question — get help"
               title="I don't understand this — get a copy-pasteable link to share with support"
             >
@@ -880,10 +832,7 @@ function dismissDeepLinkBanner() {
           <div v-if="currentQuestion.learn_more" class="mt-4">
             <button
               @click="showLearnMore = !showLearnMore"
-              class="flex items-center gap-2 text-sm"
-              :class="preferencesStore.darkMode
-                ? 'text-blue-400 hover:text-blue-300'
-                : 'text-blue-600 hover:text-blue-700'"
+              class="flex items-center gap-2 text-sm text-primary hover:text-primary-dark"
             >
               <Info class="w-4 h-4" />
               {{ showLearnMore ? 'Hide details' : currentQuestion.learn_more.title }}
@@ -918,25 +867,16 @@ function dismissDeepLinkBanner() {
             v-for="option in currentQuestion.options"
             :key="option.value"
             @click="selectAnswer(option)"
-            class="w-full p-4 border rounded-lg text-left transition-colors group"
-            :class="preferencesStore.darkMode
-              ? 'bg-gray-800 border-gray-700 hover:border-blue-500 hover:bg-gray-700'
-              : 'bg-white border-gray-200 hover:border-blue-300 hover:bg-blue-50'"
+            class="w-full p-4 border rounded-lg text-left transition-colors group bg-surface border-border hover:border-primary"
           >
             <div class="flex items-center justify-between">
               <span
-                class="font-medium"
-                :class="preferencesStore.darkMode
-                  ? 'text-white group-hover:text-blue-400'
-                  : 'text-gray-900 group-hover:text-blue-900'"
+                class="font-medium text-text"
               >
                 {{ option.label }}
               </span>
               <ArrowRight
-                class="w-5 h-5"
-                :class="preferencesStore.darkMode
-                  ? 'text-gray-500 group-hover:text-blue-400'
-                  : 'text-gray-400 group-hover:text-blue-600'"
+                class="w-5 h-5 text-text-muted"
               />
             </div>
           </button>
@@ -947,10 +887,7 @@ function dismissDeepLinkBanner() {
       <!-- Questionnaire: Summary Screen -->
       <div v-else-if="viewMode === 'questionnaire' && atSummary" class="space-y-6">
         <div
-          class="rounded-lg border p-6 text-center"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700'
-            : 'bg-white border-gray-200'"
+          class="rounded-lg border p-6 text-center bg-surface border-border"
         >
           <div
             class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
@@ -964,8 +901,7 @@ function dismissDeepLinkBanner() {
           </div>
 
           <h2
-            class="text-2xl font-bold mb-2"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-2xl font-bold mb-2 text-text"
           >
             {{ summary.title || "Your Recommended Data Tier" }}
           </h2>
@@ -981,8 +917,7 @@ function dismissDeepLinkBanner() {
 
           <p
             v-if="tierConfig?.description"
-            class="mb-4"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+            class="mb-4 text-text-secondary"
           >
             {{ tierConfig.description }}
           </p>
@@ -992,10 +927,7 @@ function dismissDeepLinkBanner() {
             <span
               v-for="flag in flags"
               :key="flag"
-              class="px-2 py-1 text-xs rounded-full uppercase"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 text-gray-300'
-                : 'bg-gray-100 text-gray-700'"
+              class="px-2 py-1 text-xs rounded-full uppercase bg-surface-alt text-text-secondary"
             >
               {{ flag.replace(/_/g, ' ') }}
             </span>
@@ -1005,24 +937,19 @@ function dismissDeepLinkBanner() {
         <!-- CTA -->
         <div
           v-if="tierCta"
-          class="rounded-lg border p-6"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700'
-            : 'bg-white border-gray-200'"
+          class="rounded-lg border p-6 bg-surface border-border"
         >
           <h3
-            class="font-semibold mb-2"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="font-semibold mb-2 text-text"
           >{{ tierCta.title }}</h3>
           <p
-            class="mb-4"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+            class="mb-4 text-text-secondary"
           >{{ tierCta.message }}</p>
 
           <div class="flex flex-col gap-3">
             <button
               @click="applyTier"
-              class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary-dark transition-colors"
             >
               {{ tierCta.action }}
               <ArrowRight class="w-5 h-5" />
@@ -1031,10 +958,7 @@ function dismissDeepLinkBanner() {
             <button
               v-if="tierCta.secondary_action"
               @click="router.push('/')"
-              class="text-sm"
-              :class="preferencesStore.darkMode
-                ? 'text-gray-400 hover:text-gray-300'
-                : 'text-gray-500 hover:text-gray-700'"
+              class="text-sm text-text-muted hover:text-text-secondary"
             >
               {{ tierCta.secondary_action }}
             </button>
@@ -1055,10 +979,7 @@ function dismissDeepLinkBanner() {
         <!-- Back button -->
         <button
           @click="goBack"
-          class="flex items-center gap-2"
-          :class="preferencesStore.darkMode
-            ? 'text-gray-400 hover:text-gray-300'
-            : 'text-gray-500 hover:text-gray-700'"
+          class="flex items-center gap-2 text-text-muted hover:text-text-secondary"
         >
           <ArrowLeft class="w-4 h-4" />
           Go back
@@ -1082,10 +1003,7 @@ function dismissDeepLinkBanner() {
     <!-- Sticky Navigation Bar (during questions only) -->
     <div
       v-if="showStickyNav"
-      class="fixed bottom-0 left-0 right-0 z-30 border-t shadow-lg"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="fixed bottom-0 left-0 right-0 z-30 border-t shadow-lg bg-surface border-border"
     >
       <div class="max-w-3xl 2xl:max-w-6xl mx-auto px-4 py-3">
         <div class="flex items-center justify-between">
@@ -1093,10 +1011,7 @@ function dismissDeepLinkBanner() {
           <div class="flex items-center gap-3">
             <button
               @click="resetQuestionnaire"
-              class="flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors"
-              :class="preferencesStore.darkMode
-                ? 'border-gray-600 text-gray-300 hover:bg-gray-700'
-                : 'border-gray-300 text-gray-700 hover:bg-gray-50'"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors border-border-strong text-text-secondary hover:bg-surface-alt"
             >
               <RotateCcw class="w-4 h-4" />
               Start Over
@@ -1104,10 +1019,7 @@ function dismissDeepLinkBanner() {
             <button
               v-if="history.length > 0"
               @click="goBack"
-              class="flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors"
-              :class="preferencesStore.darkMode
-                ? 'border-gray-600 text-gray-300 hover:bg-gray-700'
-                : 'border-gray-300 text-gray-700 hover:bg-gray-50'"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors border-border-strong text-text-secondary hover:bg-surface-alt"
             >
               <ArrowLeft class="w-4 h-4" />
               Step Back
@@ -1116,8 +1028,7 @@ function dismissDeepLinkBanner() {
 
           <!-- Right: Progress indicator -->
           <div
-            class="text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+            class="text-sm text-text-muted"
           >
             Question {{ history.length + 1 }}
           </div>
@@ -1140,16 +1051,12 @@ function dismissDeepLinkBanner() {
 
           <!-- Modal content -->
           <div
-            class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl"
-            :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+            class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl bg-surface"
           >
             <!-- Close button -->
             <button
               @click="showDataIdentificationModal = false"
-              class="absolute top-4 right-4 p-2 rounded-lg transition-colors z-10"
-              :class="preferencesStore.darkMode
-                ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'"
+              class="absolute top-4 right-4 p-2 rounded-lg transition-colors z-10 text-text-muted hover:text-text hover:bg-surface-alt"
             >
               <X class="w-5 h-5" />
             </button>

@@ -133,11 +133,8 @@ function getNextApplet() {
     :get-next-applet="getNextApplet"
   >
     <!-- Intro -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <p class="text-sm text-text-secondary">
         Students need clear, actionable guidance — not just rules, but understanding of why and how.
         Always defer to your instructor's specific policy.
       </p>
@@ -145,27 +142,25 @@ function getNextApplet() {
 
     <!-- Mental Model -->
     <div class="mb-6" @mouseenter="markViewed('mental-model')">
-      <h3 class="font-semibold mb-4" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-4 text-text">
         The Student Mental Model
       </h3>
       <div class="space-y-4">
         <div
           v-for="(item, index) in mentalModel"
           :key="item.id"
-          class="p-4 rounded-lg border"
-          :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+          class="p-4 rounded-lg border bg-surface border-border"
         >
-          <h4 class="font-medium mb-2" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+          <h4 class="font-medium mb-2 text-text">
             {{ index + 1 }}. {{ item.title }}
           </h4>
           <ul class="space-y-1">
             <li
               v-for="point in item.points"
               :key="point"
-              class="text-sm flex items-start gap-2"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+              class="text-sm flex items-start gap-2 text-text-secondary"
             >
-              <span class="text-gray-400">•</span>
+              <span class="text-text-muted">•</span>
               {{ point }}
             </li>
           </ul>
@@ -175,13 +170,10 @@ function getNextApplet() {
 
     <!-- Decision Framework -->
     <div class="mb-6" @mouseenter="markViewed('decision-framework')">
-      <h3 class="font-semibold mb-4" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-4 text-text">
         Before Using AI, Ask Yourself:
       </h3>
-      <div
-        class="p-4 rounded-lg border"
-        :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-      >
+      <div class="p-4 rounded-lg border bg-surface border-border">
         <div class="space-y-4">
           <div
             v-for="(step, index) in decisionSteps"
@@ -189,13 +181,12 @@ function getNextApplet() {
             class="flex items-start gap-3"
           >
             <div
-              class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-medium"
-              :class="preferencesStore.darkMode ? 'bg-blue-900 text-blue-300' : 'bg-blue-100 text-blue-700'"
+              class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-medium bg-primary text-on-primary"
             >
               {{ index + 1 }}
             </div>
             <div class="flex-1">
-              <p class="font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <p class="font-medium text-text">
                 {{ step.question }}
               </p>
               <p
@@ -214,8 +205,7 @@ function getNextApplet() {
               </p>
               <p
                 v-if="step.note"
-                class="text-xs mt-1"
-                :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'"
+                class="text-xs mt-1 text-text-muted"
               >
                 {{ step.note }}
               </p>
@@ -227,10 +217,10 @@ function getNextApplet() {
 
     <!-- Appropriate vs Inappropriate -->
     <div class="mb-6" @mouseenter="markViewed('use-cases')">
-      <h3 class="font-semibold mb-4" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-4 text-text">
         Appropriate vs. Inappropriate Use
       </h3>
-      <p class="text-sm mb-4" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm mb-4 text-text-secondary">
         General guidance — always defer to your instructor's specific policy
       </p>
 
@@ -309,10 +299,9 @@ function getNextApplet() {
     <!-- Progress indicator -->
     <div
       v-if="!isComplete"
-      class="mt-6 p-3 rounded-lg"
-      :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-gray-100'"
+      class="mt-6 p-3 rounded-lg bg-surface-alt"
     >
-      <p class="text-sm text-center" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm text-center text-text-secondary">
         Review all sections to complete this applet
         ({{ viewedSections.size }}/3 viewed)
       </p>

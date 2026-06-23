@@ -86,13 +86,10 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
 <template>
   <div class="p-8">
     <div class="mb-6">
-      <h2
-        class="text-2xl font-bold mb-2"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-      >
+      <h2 class="text-2xl font-bold mb-2 text-text">
         Usage Estimates
       </h2>
-      <p :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-text-secondary">
         Enter your estimated usage for each service.
         These estimates will be used to calculate your budget.
       </p>
@@ -102,32 +99,24 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
       <div
         v-for="service in selectedServices"
         :key="service.service_slug"
-        class="border rounded-lg overflow-hidden"
-        :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+        class="border rounded-lg overflow-hidden border-border"
       >
         <!-- Service header -->
         <button
           @click="toggleExpand(service.service_slug)"
-          class="w-full px-4 py-3 flex items-center justify-between text-left"
-          :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-50'"
+          class="w-full px-4 py-3 flex items-center justify-between text-left bg-canvas"
         >
           <div>
-            <h3
-              class="font-medium"
-              :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-            >
+            <h3 class="font-medium text-text">
               {{ service.config?.name }}
             </h3>
-            <p
-              class="text-sm"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-            >
+            <p class="text-sm text-text-muted">
               {{ service.config?.description }}
             </p>
           </div>
           <component
             :is="expandedServices.has(service.service_slug) ? ChevronUp : ChevronDown"
-            class="w-5 h-5 text-gray-400"
+            class="w-5 h-5 text-text-muted"
           />
         </button>
 
@@ -135,10 +124,7 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
         <div class="p-4 space-y-4">
           <!-- Main estimate input -->
           <div>
-            <label
-              class="block text-sm font-medium mb-1"
-              :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-            >
+            <label class="block text-sm font-medium mb-1 text-text-secondary">
               {{ service.config?.estimation?.prompt || 'Estimated usage' }}
             </label>
 
@@ -150,12 +136,9 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                 :min="service.config?.estimation?.min_value || 0"
                 :max="service.config?.estimation?.max_value"
                 :step="service.config?.estimation?.step || 1"
-                class="block w-40 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                :class="preferencesStore.darkMode
-                  ? 'bg-gray-700 border-gray-600 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'"
+                class="block w-40 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-surface border-border-strong text-text"
               />
-              <span :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+              <span class="text-text-secondary">
                 {{ service.config?.estimation?.unit_display || service.config?.cost_model?.unit_label || 'units' }}
                 /month
               </span>
@@ -163,10 +146,7 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
 
             <!-- Presets -->
             <div v-if="service.config?.estimation?.presets?.length" class="mt-3">
-              <p
-                class="text-xs mb-2"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-              >Quick estimates:</p>
+              <p class="text-xs mb-2 text-text-muted">Quick estimates:</p>
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="preset in service.config.estimation.presets"
@@ -175,10 +155,8 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                   class="px-3 py-1.5 text-xs rounded-md transition-colors"
                   :class="[
                     service.estimate === preset.value
-                      ? 'bg-blue-600 text-white'
-                      : preferencesStore.darkMode
-                        ? 'bg-gray-600 text-gray-300 hover:bg-gray-500'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-primary text-on-primary'
+                      : 'bg-surface-alt text-text-secondary hover:bg-border-strong'
                   ]"
                   :title="preset.description"
                 >
@@ -190,10 +168,7 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
 
           <!-- Subsidies -->
           <div v-if="service.config?.subsidies?.filter(s => !s.auto_apply)?.length">
-            <p
-              class="text-sm font-medium mb-2"
-              :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-            >Available subsidies:</p>
+            <p class="text-sm font-medium mb-2 text-text-secondary">Available subsidies:</p>
             <div class="space-y-2">
               <label
                 v-for="subsidy in service.config.subsidies.filter(s => !s.auto_apply)"
@@ -204,26 +179,18 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                     ? preferencesStore.darkMode
                       ? 'border-green-500 bg-green-900/30'
                       : 'border-green-500 bg-green-50'
-                    : preferencesStore.darkMode
-                      ? 'border-gray-600 hover:border-gray-500'
-                      : 'border-gray-200 hover:border-gray-300'
+                    : 'border-border hover:border-border-strong'
                 ]"
               >
                 <input
                   type="checkbox"
                   :checked="service.use_subsidy === subsidy.slug"
                   @change="toggleSubsidy(service.service_slug, subsidy.slug)"
-                  class="mt-0.5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  class="mt-0.5 rounded border-border-strong text-green-600 focus:ring-green-500"
                 />
                 <div>
-                  <p
-                    class="font-medium text-sm"
-                    :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                  >{{ subsidy.name }}</p>
-                  <p
-                    class="text-xs"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-                  >{{ subsidy.description }}</p>
+                  <p class="font-medium text-sm text-text">{{ subsidy.name }}</p>
+                  <p class="text-xs text-text-secondary">{{ subsidy.description }}</p>
                   <p
                     v-if="subsidy.condition"
                     class="text-xs mt-1"
@@ -239,8 +206,7 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
           <!-- Service limitations acknowledgment -->
           <div
             v-if="service.config?.acknowledgment?.required"
-            class="border-t pt-4 mt-4"
-            :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+            class="border-t pt-4 mt-4 border-border"
           >
             <div
               class="p-4 rounded-lg border"
@@ -260,24 +226,17 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                   :class="service.acknowledged ? 'text-green-600' : 'text-amber-500'"
                 />
                 <div class="flex-1">
-                  <h4
-                    class="font-medium text-sm"
-                    :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-                  >
+                  <h4 class="font-medium text-sm text-text">
                     {{ service.config.acknowledgment.title }}
                   </h4>
-                  <p
-                    class="text-sm mt-1"
-                    :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-                  >
+                  <p class="text-sm mt-1 text-text-secondary">
                     {{ service.config.acknowledgment.message }}
                   </p>
                   <ul class="mt-2 space-y-1">
                     <li
                       v-for="(item, idx) in service.config.acknowledgment.items"
                       :key="idx"
-                      class="text-sm flex items-start gap-2"
-                      :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+                      class="text-sm flex items-start gap-2 text-text-secondary"
                     >
                       <span class="text-amber-500 mt-0.5">•</span>
                       {{ item }}
@@ -288,12 +247,9 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                       type="checkbox"
                       :checked="service.acknowledged"
                       @change="toggleAcknowledgment(service.service_slug, $event.target.checked)"
-                      class="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      class="rounded border-border-strong text-green-600 focus:ring-green-500"
                     />
-                    <span
-                      class="text-sm font-medium"
-                      :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-                    >
+                    <span class="text-sm font-medium text-text-secondary">
                       I understand these limitations
                     </span>
                   </label>
@@ -304,29 +260,17 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
 
           <!-- Archive storage (for storage services) -->
           <div v-if="getArchiveService(service) && sessionStore.session.retention.longest_years > 0">
-            <div
-              class="border-t pt-4 mt-4"
-              :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
-            >
-              <p
-                class="text-sm font-medium mb-2 flex items-center gap-1"
-                :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-              >
-                <Info class="w-4 h-4 text-gray-400" />
+            <div class="border-t pt-4 mt-4 border-border">
+              <p class="text-sm font-medium mb-2 flex items-center gap-1 text-text-secondary">
+                <Info class="w-4 h-4 text-text-muted" />
                 Long-term archive storage
               </p>
-              <p
-                class="text-xs mb-1"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-              >
+              <p class="text-xs mb-1 text-text-muted">
                 Archive storage is a lower-cost option for data you need to keep after your grant ends
                 but won't access day-to-day.  The amount below is based on your archive ratio
                 ({{ Math.round(sessionStore.session.retention.archive_ratio * 100) }}% of active storage).
               </p>
-              <p
-                class="text-xs mb-3"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
-              >
+              <p class="text-xs mb-3 text-text-muted">
                 {{ service.config.archive_option.description }}
               </p>
 
@@ -337,20 +281,14 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                   @input="updateArchiveEstimate(service.service_slug, $event.target.value)"
                   min="0"
                   step="1"
-                  class="block w-32 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  :class="preferencesStore.darkMode
-                    ? 'bg-gray-700 border-gray-600 text-white'
-                    : 'bg-white border-gray-300 text-gray-900'"
+                  class="block w-32 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-surface border-border-strong text-text"
                 />
-                <span
-                  class="text-sm"
-                  :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-                >
+                <span class="text-sm text-text-secondary">
                   {{ getArchiveService(service)?.cost_model?.unit_label }} for archive
                 </span>
                 <button
                   @click="updateArchiveEstimate(service.service_slug, getDefaultArchiveEstimate(service))"
-                  class="text-xs text-blue-500 hover:underline"
+                  class="text-xs text-primary hover:underline"
                 >
                   Reset to {{ Math.round(sessionStore.session.retention.archive_ratio * 100) }}%
                 </button>
@@ -361,17 +299,10 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
           <!-- Expanded details -->
           <div
             v-if="expandedServices.has(service.service_slug)"
-            class="border-t pt-4 mt-4"
-            :class="preferencesStore.darkMode ? 'border-gray-600' : 'border-gray-200'"
+            class="border-t pt-4 mt-4 border-border"
           >
-            <h4
-              class="text-sm font-medium mb-2"
-              :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-            >Pricing Details</h4>
-            <div
-              class="text-sm space-y-1"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-            >
+            <h4 class="text-sm font-medium mb-2 text-text-secondary">Pricing Details</h4>
+            <div class="text-sm space-y-1 text-text-secondary">
               <p v-if="service.config?.cost_model?.type === 'unit'">
                 Unit price: ${{ service.config.cost_model.price }}/{{ service.config.cost_model.unit }}/month
               </p>
@@ -390,10 +321,7 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
 
             <!-- Auto-applied subsidies -->
             <div v-if="service.config?.subsidies?.filter(s => s.auto_apply)?.length" class="mt-3">
-              <p
-                class="text-sm font-medium mb-1"
-                :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-              >Auto-applied subsidies:</p>
+              <p class="text-sm font-medium mb-1 text-text-secondary">Auto-applied subsidies:</p>
               <ul
                 class="text-sm space-y-1"
                 :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-700'"

@@ -1,11 +1,9 @@
 <script setup>
 import { useConfigStore } from '@/stores/configStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { computed } from 'vue'
 import { Bot } from 'lucide-vue-next'
 
 const configStore = useConfigStore()
-const preferencesStore = usePreferencesStore()
 
 const institutionName = computed(() =>
   configStore.config?.meta?.institution?.name || 'Research Institution'
@@ -49,10 +47,7 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
 
 <template>
   <footer
-    class="border-t px-6 py-6 pb-20 transition-colors duration-200"
-    :class="preferencesStore.darkMode
-      ? 'bg-gray-900 border-gray-700'
-      : 'bg-white border-gray-200'"
+    class="border-t px-6 py-6 pb-20 transition-colors duration-200 bg-surface border-border"
   >
     <div class="max-w-5xl mx-auto">
       <div class="flex items-center justify-between gap-8">
@@ -60,8 +55,7 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
         <div class="flex flex-col gap-2">
           <!-- Contact info -->
           <div
-            class="flex items-center gap-4 text-sm"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+            class="flex items-center gap-4 text-sm text-text-muted"
           >
             <span v-if="primaryContact">
               Questions?
@@ -69,22 +63,20 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
                 :href="primaryContact.type === 'email' ? 'mailto:' + primaryContact.value : primaryContact.value"
                 :target="primaryContact.type === 'url' ? '_blank' : undefined"
                 :rel="primaryContact.type === 'url' ? 'noopener noreferrer' : undefined"
-                class="hover:underline"
-                :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+                class="hover:underline text-primary"
               >
                 {{ primaryContact.label }}
               </a>
             </span>
 
-            <span v-if="primaryContact && consultationUrl" class="text-gray-300">|</span>
+            <span v-if="primaryContact && consultationUrl" class="text-text-muted">|</span>
 
             <a
               v-if="consultationUrl"
               :href="consultationUrl"
               target="_blank"
               rel="noopener noreferrer"
-              class="hover:underline"
-              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+              class="hover:underline text-primary"
             >
               Schedule consultation
             </a>
@@ -92,15 +84,14 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
 
           <!-- Policy links -->
           <div
-            class="flex items-center gap-4 text-xs"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+            class="flex items-center gap-4 text-xs text-text-muted"
           >
             <a
               v-if="links.privacy"
               :href="links.privacy"
               target="_blank"
               rel="noopener noreferrer"
-              :class="preferencesStore.darkMode ? 'hover:text-gray-300' : 'hover:text-gray-600'"
+              class="hover:text-text-secondary"
             >
               Privacy
             </a>
@@ -109,7 +100,7 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
               :href="links.accessibility"
               target="_blank"
               rel="noopener noreferrer"
-              :class="preferencesStore.darkMode ? 'hover:text-gray-300' : 'hover:text-gray-600'"
+              class="hover:text-text-secondary"
             >
               Accessibility
             </a>
@@ -118,7 +109,7 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
               :href="links.terms"
               target="_blank"
               rel="noopener noreferrer"
-              :class="preferencesStore.darkMode ? 'hover:text-gray-300' : 'hover:text-gray-600'"
+              class="hover:text-text-secondary"
             >
               Terms
             </a>
@@ -127,14 +118,13 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
           <!-- AI Acknowledgment -->
           <div
             v-if="showAiFooter"
-            class="flex items-center gap-1.5 text-xs"
-            :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'"
+            class="flex items-center gap-1.5 text-xs text-text-muted"
           >
             <Bot class="w-3 h-3" />
             <span>{{ aiFooterText }}</span>
             <router-link
               to="/about-ai"
-              :class="preferencesStore.darkMode ? 'hover:text-gray-300' : 'hover:text-gray-600'"
+              class="hover:text-text-secondary"
             >
               {{ aiFooterLearnMore }}
             </router-link>
@@ -142,8 +132,7 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
 
           <!-- Version -->
           <div
-            class="text-xs"
-            :class="preferencesStore.darkMode ? 'text-gray-600' : 'text-gray-300'"
+            class="text-xs text-text-muted"
           >
             Template v{{ templateVersion }}
           </div>
@@ -159,8 +148,7 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
           />
           <span
             v-else
-            class="text-sm font-medium"
-            :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+            class="text-sm font-medium text-text-secondary"
           >
             {{ institutionName }}
           </span>

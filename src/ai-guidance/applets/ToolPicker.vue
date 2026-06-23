@@ -148,16 +148,13 @@ function getNextApplet() {
     :get-next-applet="getNextApplet"
   >
     <!-- Context from previous applets -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
-    >
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'">
+          <p class="text-sm text-text-muted">
             Based on your Data Check:
           </p>
-          <p class="font-semibold capitalize" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+          <p class="font-semibold capitalize text-text">
             {{ dataSensitivity }} sensitivity
           </p>
         </div>
@@ -165,8 +162,7 @@ function getNextApplet() {
           <span
             v-for="flag in allFlags.slice(0, 3)"
             :key="flag"
-            class="px-2 py-0.5 text-xs rounded-full"
-            :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'"
+            class="px-2 py-0.5 text-xs rounded-full bg-surface-alt text-text-secondary"
           >
             {{ flag.replace(/-/g, ' ') }}
           </span>
@@ -184,17 +180,14 @@ function getNextApplet() {
       >
         <div class="flex items-start gap-4">
           <!-- Icon -->
-          <div
-            class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
-            :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-white'"
-          >
-            <component :is="tool.icon" class="w-6 h-6" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'" />
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-surface">
+            <component :is="tool.icon" class="w-6 h-6 text-text-secondary" />
           </div>
 
           <div class="flex-1">
             <!-- Header -->
             <div class="flex items-center gap-2 mb-1">
-              <h3 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <h3 class="font-semibold text-text">
                 {{ tool.name }}
               </h3>
               <component
@@ -209,12 +202,12 @@ function getNextApplet() {
             </div>
 
             <!-- Examples -->
-            <p class="text-sm mb-2" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'">
+            <p class="text-sm mb-2 text-text-muted">
               {{ tool.examples }}
             </p>
 
             <!-- Description -->
-            <p class="text-sm mb-2" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">
+            <p class="text-sm mb-2 text-text-secondary">
               {{ tool.description }}
             </p>
 

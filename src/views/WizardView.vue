@@ -1,7 +1,6 @@
 <script setup>
 import { computed, defineAsyncComponent, nextTick, watch } from 'vue'
 import { useSessionStore } from '@/stores/sessionStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { useWizard } from '@/composables/useWizard'
 import WizardProgress from '@/components/layout/WizardProgress.vue'
 
@@ -35,7 +34,6 @@ const ConsultationStep = defineAsyncComponent(() =>
 )
 
 const sessionStore = useSessionStore()
-const preferencesStore = usePreferencesStore()
 const wizard = useWizard()
 
 // Map step IDs to components
@@ -82,10 +80,7 @@ watch(
 
     <!-- Step content -->
     <div
-      class="rounded-lg shadow-sm border"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800/95 border-gray-700'
-        : 'bg-white/95 border-gray-200'"
+      class="rounded-lg shadow-sm border bg-surface/95 border-border"
     >
       <component
         :is="currentComponent"
@@ -102,10 +97,7 @@ watch(
       <button
         v-if="wizard.hasPreviousStep.value"
         @click="wizard.previousStep"
-        class="px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        :class="preferencesStore.darkMode
-          ? 'text-gray-200 bg-gray-700 border border-gray-600 hover:bg-gray-600'
-          : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'"
+        class="px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-text-secondary bg-surface border border-border-strong hover:bg-surface-alt"
       >
         Back
       </button>
@@ -115,7 +107,7 @@ watch(
         v-if="wizard.hasNextStep.value"
         @click="wizard.nextStep"
         :disabled="!wizard.canProceed.value"
-        class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="px-6 py-2 bg-primary text-on-primary rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Continue
       </button>
@@ -130,22 +122,19 @@ watch(
       @click.self="wizard.cancelNavigation"
     >
       <div
-        class="rounded-lg shadow-xl max-w-md w-full p-6"
-        :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+        class="rounded-lg shadow-xl max-w-md w-full p-6 bg-surface"
         role="dialog"
         aria-modal="true"
         aria-labelledby="warning-title"
       >
         <h2
           id="warning-title"
-          class="text-lg font-semibold mb-2"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+          class="text-lg font-semibold mb-2 text-text"
         >
           Clear existing selections?
         </h2>
         <p
-          class="mb-6"
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
+          class="mb-6 text-text-secondary"
         >
           Going back to this step will clear your selections from later steps.
           This cannot be undone.
@@ -153,10 +142,7 @@ watch(
         <div class="flex justify-end gap-3">
           <button
             @click="wizard.cancelNavigation"
-            class="px-4 py-2 rounded-md"
-            :class="preferencesStore.darkMode
-              ? 'text-gray-200 bg-gray-700 border border-gray-600 hover:bg-gray-600'
-              : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'"
+            class="px-4 py-2 rounded-md text-text-secondary bg-surface border border-border-strong hover:bg-surface-alt"
           >
             Cancel
           </button>

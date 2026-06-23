@@ -132,20 +132,13 @@ function getLevelColorClasses(color) {
     <!-- Why First explanation -->
     <div
       v-if="intro.why_first_content"
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="p-4 rounded-lg border mb-6 bg-surface border-border"
     >
-      <h3
-        class="font-semibold mb-2"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-      >
+      <h3 class="font-semibold mb-2 text-text">
         {{ intro.why_first_title || 'Why This Comes First' }}
       </h3>
       <p
-        class="text-sm"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+        class="text-sm text-text-secondary"
         v-html="intro.why_first_content"
       ></p>
     </div>
@@ -167,10 +160,7 @@ function getLevelColorClasses(color) {
               class="w-8 h-8 flex-shrink-0"
             />
             <div>
-              <h3
-                class="text-xl font-bold mb-2"
-                :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-              >
+              <h3 class="text-xl font-bold mb-2 text-text">
                 {{ result.label }}
               </h3>
               <p class="mb-4">{{ result.description }}</p>
@@ -180,22 +170,14 @@ function getLevelColorClasses(color) {
                 <span
                   v-for="flag in flags"
                   :key="flag"
-                  class="px-2 py-1 text-xs rounded-full font-medium"
-                  :class="preferencesStore.darkMode
-                    ? 'bg-gray-700 text-gray-300'
-                    : 'bg-gray-200 text-gray-700'"
+                  class="px-2 py-1 text-xs rounded-full font-medium bg-surface-alt text-text-secondary"
                 >
                   {{ flag.replace(/-/g, ' ') }}
                 </span>
               </div>
 
               <!-- Recommendation -->
-              <div
-                class="p-3 rounded-lg"
-                :class="preferencesStore.darkMode
-                  ? 'bg-gray-800'
-                  : 'bg-white/50'"
-              >
+              <div class="p-3 rounded-lg bg-surface">
                 <p class="text-sm font-medium">
                   <strong>Recommendation:</strong> {{ result.recommendation }}
                 </p>

@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   ArrowRight,
   ArrowLeft,
@@ -45,8 +44,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['complete', 'update:answers'])
-
-const preferencesStore = usePreferencesStore()
 
 // State
 const currentQuestionId = ref(props.startQuestion || props.questions[0]?.id)
@@ -138,15 +135,11 @@ watch(answers, (val) => {
     <!-- Question Card -->
     <div
       v-if="currentQuestion && !isComplete"
-      class="rounded-lg border p-6"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="rounded-lg border p-6 bg-surface border-border"
     >
       <!-- Question -->
       <h3
-        class="text-xl font-semibold mb-2"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+        class="text-xl font-semibold mb-2 text-text"
       >
         {{ currentQuestion.question }}
       </h3>
@@ -154,8 +147,7 @@ watch(answers, (val) => {
       <!-- Help text -->
       <p
         v-if="currentQuestion.helpText"
-        class="mb-4"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+        class="mb-4 text-text-secondary"
       >
         {{ currentQuestion.helpText }}
       </p>
@@ -164,10 +156,7 @@ watch(answers, (val) => {
       <div v-if="currentQuestion.learnMore" class="mb-4">
         <button
           @click="showLearnMore = !showLearnMore"
-          class="flex items-center gap-2 text-sm font-medium"
-          :class="preferencesStore.darkMode
-            ? 'text-blue-400 hover:text-blue-300'
-            : 'text-blue-600 hover:text-blue-700'"
+          class="flex items-center gap-2 text-sm font-medium text-primary hover:opacity-80"
         >
           <Info class="w-4 h-4" />
           {{ currentQuestion.learnMore.title || 'Learn more' }}
@@ -178,10 +167,7 @@ watch(answers, (val) => {
         </button>
         <div
           v-if="showLearnMore"
-          class="mt-3 p-4 rounded-lg text-sm whitespace-pre-line"
-          :class="preferencesStore.darkMode
-            ? 'bg-blue-900/30 text-blue-200'
-            : 'bg-blue-50 text-blue-900'"
+          class="mt-3 p-4 rounded-lg text-sm whitespace-pre-line bg-primary text-on-primary"
         >
           {{ currentQuestion.learnMore.content }}
         </div>
@@ -193,34 +179,24 @@ watch(answers, (val) => {
           v-for="option in currentQuestion.options"
           :key="option.value"
           @click="selectOption(option)"
-          class="w-full p-4 rounded-lg border text-left transition-colors group"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-700 border-gray-600 hover:border-blue-500 hover:bg-gray-600'
-            : 'bg-gray-50 border-gray-200 hover:border-blue-300 hover:bg-blue-50'"
+          class="w-full p-4 rounded-lg border text-left transition-colors group bg-canvas border-border hover:border-primary hover:bg-surface-alt"
         >
           <div class="flex items-center justify-between">
             <div class="flex-1">
               <span
-                class="font-medium"
-                :class="preferencesStore.darkMode
-                  ? 'text-white group-hover:text-blue-400'
-                  : 'text-gray-900 group-hover:text-blue-700'"
+                class="font-medium text-text group-hover:text-primary"
               >
                 {{ option.label }}
               </span>
               <p
                 v-if="option.description"
-                class="mt-1 text-sm"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                class="mt-1 text-sm text-text-muted"
               >
                 {{ option.description }}
               </p>
             </div>
             <ArrowRight
-              class="w-5 h-5 flex-shrink-0 ml-3"
-              :class="preferencesStore.darkMode
-                ? 'text-gray-500 group-hover:text-blue-400'
-                : 'text-gray-400 group-hover:text-blue-600'"
+              class="w-5 h-5 flex-shrink-0 ml-3 text-text-muted group-hover:text-primary"
             />
           </div>
         </button>
@@ -231,10 +207,7 @@ watch(answers, (val) => {
     <div v-if="history.length > 0 && !isComplete" class="flex">
       <button
         @click="goBack"
-        class="flex items-center gap-2 text-sm"
-        :class="preferencesStore.darkMode
-          ? 'text-gray-400 hover:text-gray-300'
-          : 'text-gray-500 hover:text-gray-700'"
+        class="flex items-center gap-2 text-sm text-text-muted hover:text-text"
       >
         <ArrowLeft class="w-4 h-4" />
         Go back

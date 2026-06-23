@@ -91,12 +91,12 @@ function handleAddToSlate() {
       <div class="space-y-4">
         <!-- Resolution -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Resolution
           </label>
           <select
             v-model="inputs.resolution"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           >
             <option
               v-for="res in config?.resolutions || []"
@@ -110,12 +110,12 @@ function handleAddToSlate() {
 
         <!-- Bit Depth -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-text-secondary mb-1">
             Bit Depth
           </label>
           <select
             v-model="inputs.bit_depth"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           >
             <option
               v-for="bd in config?.bit_depths || []"
@@ -130,7 +130,7 @@ function handleAddToSlate() {
         <div class="grid grid-cols-3 gap-4">
           <!-- Channels -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-text-secondary mb-1">
               Channels
             </label>
             <input
@@ -138,33 +138,33 @@ function handleAddToSlate() {
               type="number"
               min="1"
               max="8"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             />
           </div>
 
           <!-- Z-Slices -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-text-secondary mb-1">
               Z-Slices
             </label>
             <input
               v-model.number="inputs.z_slices"
               type="number"
               min="1"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             />
           </div>
 
           <!-- Image Count -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-text-secondary mb-1">
               Images
             </label>
             <input
               v-model.number="inputs.image_count"
               type="number"
               min="1"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             />
           </div>
         </div>

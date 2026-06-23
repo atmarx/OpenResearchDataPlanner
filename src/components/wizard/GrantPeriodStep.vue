@@ -130,13 +130,10 @@ function isPresetSelected(preset) {
 <template>
   <div class="p-8">
     <div class="mb-8">
-      <h2
-        class="text-2xl font-bold mb-2"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-      >
+      <h2 class="text-2xl font-bold mb-2 text-text">
         Grant Period
       </h2>
-      <p :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-text-secondary">
         Select your grant duration and start date.
         This is used to calculate total costs over the project duration.
       </p>
@@ -144,20 +141,15 @@ function isPresetSelected(preset) {
 
     <!-- Duration presets -->
     <div class="mb-6">
-      <p
-        class="text-sm font-medium mb-2"
-        :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
-      >Grant duration:</p>
+      <p class="text-sm font-medium mb-2 text-text-secondary">Grant duration:</p>
       <div class="flex flex-wrap gap-2">
         <button
           @click="clearDates"
-          class="px-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+          class="px-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
           :class="[
             noDates
-              ? 'bg-blue-600 text-white'
-              : preferencesStore.darkMode
-                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-primary text-on-primary'
+              : 'bg-surface-alt text-text-secondary hover:bg-border-strong'
           ]"
         >
           No dates yet
@@ -167,13 +159,11 @@ function isPresetSelected(preset) {
           v-for="preset in presets"
           :key="preset.label"
           @click="applyPreset(preset)"
-          class="px-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+          class="px-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
           :class="[
             isPresetSelected(preset)
-              ? 'bg-blue-600 text-white'
-              : preferencesStore.darkMode
-                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-primary text-on-primary'
+              : 'bg-surface-alt text-text-secondary hover:bg-border-strong'
           ]"
         >
           {{ preset.label }}
@@ -186,8 +176,7 @@ function isPresetSelected(preset) {
       <div>
         <label
           for="start-date"
-          class="block text-sm font-medium mb-1"
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+          class="block text-sm font-medium mb-1 text-text-secondary"
         >
           Start Date
         </label>
@@ -196,20 +185,16 @@ function isPresetSelected(preset) {
             id="start-date"
             v-model="startDate"
             type="date"
-            class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            :class="preferencesStore.darkMode
-              ? 'bg-gray-700 border-gray-600 text-white'
-              : 'bg-white border-gray-300 text-gray-900'"
+            class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-surface border-border-strong text-text"
           />
-          <Calendar class="absolute right-3 top-2.5 w-5 h-5 text-gray-400 pointer-events-none" />
+          <Calendar class="absolute right-3 top-2.5 w-5 h-5 text-text-muted pointer-events-none" />
         </div>
       </div>
 
       <div v-if="isCustom">
         <label
           for="end-date"
-          class="block text-sm font-medium mb-1"
-          :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+          class="block text-sm font-medium mb-1 text-text-secondary"
         >
           End Date
         </label>
@@ -219,12 +204,9 @@ function isPresetSelected(preset) {
             v-model="endDate"
             type="date"
             :min="startDate"
-            class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            :class="preferencesStore.darkMode
-              ? 'bg-gray-700 border-gray-600 text-white'
-              : 'bg-white border-gray-300 text-gray-900'"
+            class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-surface border-border-strong text-text"
           />
-          <Calendar class="absolute right-3 top-2.5 w-5 h-5 text-gray-400 pointer-events-none" />
+          <Calendar class="absolute right-3 top-2.5 w-5 h-5 text-text-muted pointer-events-none" />
         </div>
       </div>
     </div>
@@ -259,20 +241,17 @@ function isPresetSelected(preset) {
     <!-- Placeholder when no dates selected -->
     <div
       v-else
-      class="rounded-lg p-4"
-      :class="preferencesStore.darkMode ? 'bg-gray-700' : 'bg-gray-50'"
+      class="rounded-lg p-4 bg-surface-alt"
     >
       <p
         v-if="noDates"
-        class="text-sm"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+        class="text-sm text-text-muted"
       >
         No dates set — estimates will use the default 36-month period. You can come back and update this any time.
       </p>
       <p
         v-else
-        class="text-sm text-center"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+        class="text-sm text-center text-text-muted"
       >
         Select a duration above or enter custom dates
       </p>

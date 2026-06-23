@@ -189,25 +189,19 @@ function getTierColorClass(tierSlug) {
 
 <template>
   <div
-    class="min-h-screen transition-colors"
-    :class="preferencesStore.darkMode ? 'bg-gray-900' : 'bg-gray-50'"
+    class="min-h-screen transition-colors bg-canvas"
   >
     <!-- Header -->
     <div
-      class="border-b sticky top-0 z-10"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
+      class="border-b sticky top-0 z-10 bg-surface border-border"
     >
       <div class="max-w-7xl mx-auto px-4 py-4">
         <div class="mb-4">
           <h1
-            class="text-2xl font-bold"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-2xl font-bold text-text"
           >Browse Services</h1>
           <p
-            class="mt-1"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+            class="mt-1 text-text-secondary"
           >
             Explore available services by security tier
           </p>
@@ -217,27 +211,21 @@ function getTierColorClass(tierSlug) {
         <div class="flex flex-col sm:flex-row gap-3">
           <!-- Search -->
           <div class="relative flex-1">
-            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
             <input
               v-model="searchQuery"
               type="text"
               placeholder="Search services..."
-              class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
-                : 'bg-white border-gray-300 text-gray-900'"
+              class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-alt border-border-strong text-text placeholder:text-text-muted"
             />
           </div>
 
           <!-- Category filter -->
           <div class="flex items-center gap-2">
-            <Filter class="w-4 h-4 text-gray-400" />
+            <Filter class="w-4 h-4 text-text-muted" />
             <select
               v-model="selectedCategory"
-              class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 border-gray-600 text-white'
-                : 'bg-white border-gray-300 text-gray-900'"
+              class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-alt border-border-strong text-text"
             >
               <option value="all">All Categories</option>
               <option
@@ -253,7 +241,7 @@ function getTierColorClass(tierSlug) {
 
         <!-- Tier legend -->
         <div class="flex items-center gap-4 mt-4 text-sm">
-          <span :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'">Tiers:</span>
+          <span class="text-text-muted">Tiers:</span>
           <span
             v-for="tier in tiers"
             :key="tier.slug"
@@ -275,31 +263,23 @@ function getTierColorClass(tierSlug) {
       >
         <!-- Category header -->
         <h2
-          class="text-lg font-semibold mb-3"
-          :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+          class="text-lg font-semibold mb-3 text-text"
         >
           {{ getCategoryInfo(categorySlug).name }}
         </h2>
 
         <!-- Service table -->
         <div
-          class="rounded-lg border overflow-hidden"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-700'
-            : 'bg-white border-gray-200'"
+          class="rounded-lg border overflow-hidden bg-surface border-border"
         >
           <div class="overflow-x-auto">
             <table class="w-full">
               <thead
-                class="border-b"
-                :class="preferencesStore.darkMode
-                  ? 'bg-gray-700 border-gray-600'
-                  : 'bg-gray-50 border-gray-200'"
+                class="border-b bg-surface-alt border-border"
               >
                 <tr>
                   <th
-                    class="px-4 py-3 text-left text-sm font-medium min-w-[200px]"
-                    :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
+                    class="px-4 py-3 text-left text-sm font-medium min-w-[200px] text-text-secondary"
                   >
                     Service
                   </th>
@@ -312,27 +292,24 @@ function getTierColorClass(tierSlug) {
                     {{ tier.short_name }}
                   </th>
                   <th
-                    class="px-4 py-3 text-center text-sm font-medium w-[100px]"
-                    :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-600'"
+                    class="px-4 py-3 text-center text-sm font-medium w-[100px] text-text-secondary"
                   >
                     Add
                   </th>
                 </tr>
               </thead>
               <tbody
-                class="divide-y"
-                :class="preferencesStore.darkMode ? 'divide-gray-700' : 'divide-gray-100'"
+                class="divide-y divide-border"
               >
                 <tr
                   v-for="service in services"
                   :key="service.slug"
-                  :class="preferencesStore.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'"
+                  class="hover:bg-surface-alt"
                 >
                   <td class="px-4 py-3">
                     <div class="flex items-center gap-2">
                       <span
-                        class="font-medium"
-                        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+                        class="font-medium text-text"
                       >{{ service.name }}</span>
                       <span
                         v-if="getServiceComplianceInfo(service.slug)?.hasBaa"
@@ -344,8 +321,7 @@ function getTierColorClass(tierSlug) {
                       </span>
                     </div>
                     <div
-                      class="text-sm truncate max-w-[250px]"
-                      :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+                      class="text-sm truncate max-w-[250px] text-text-muted"
                     >
                       <AnnotatedText :text="service.short_description" />
                     </div>
@@ -391,10 +367,7 @@ function getTierColorClass(tierSlug) {
                   <td class="px-4 py-3 text-center">
                     <button
                       @click="openQuickAdd(service)"
-                      class="inline-flex items-center gap-1 px-3 py-1.5 text-sm rounded-lg"
-                      :class="preferencesStore.darkMode
-                        ? 'bg-blue-900/50 text-blue-300 hover:bg-blue-900'
-                        : 'bg-blue-50 text-blue-700 hover:bg-blue-100'"
+                      class="inline-flex items-center gap-1 px-3 py-1.5 text-sm rounded-lg bg-primary text-on-primary hover:bg-primary-dark"
                     >
                       <Plus class="w-4 h-4" />
                       Add
@@ -410,8 +383,7 @@ function getTierColorClass(tierSlug) {
       <!-- Empty state -->
       <div
         v-if="Object.keys(filteredServices).length === 0"
-        class="text-center py-12"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+        class="text-center py-12 text-text-muted"
       >
         <Search class="w-12 h-12 mx-auto mb-4 opacity-50" />
         <p>No services found matching your search.</p>
@@ -423,26 +395,21 @@ function getTierColorClass(tierSlug) {
         class="fixed bottom-20 left-0 right-0 px-4"
       >
         <div
-          class="max-w-7xl mx-auto rounded-lg p-4 flex items-center justify-between shadow-lg border"
-          :class="preferencesStore.darkMode
-            ? 'bg-blue-900/50 border-blue-800'
-            : 'bg-blue-50 border-blue-200'"
+          class="max-w-7xl mx-auto rounded-lg p-4 flex items-center justify-between shadow-lg border bg-surface border-border"
         >
           <div>
             <span
-              class="font-medium"
-              :class="preferencesStore.darkMode ? 'text-blue-200' : 'text-blue-900'"
+              class="font-medium text-primary"
             >Your Slate</span>
             <span
-              class="ml-2"
-              :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-700'"
+              class="ml-2 text-text-secondary"
             >
               {{ slateStore.itemCount }} service{{ slateStore.itemCount !== 1 ? 's' : '' }}
             </span>
           </div>
           <button
             @click="router.push('/')"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
+            class="px-4 py-2 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary-dark"
           >
             Review Slate
           </button>
@@ -452,8 +419,7 @@ function getTierColorClass(tierSlug) {
 
     <!-- Legend -->
     <div
-      class="max-w-7xl mx-auto px-4 py-4 mb-20 text-sm"
-      :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+      class="max-w-7xl mx-auto px-4 py-4 mb-20 text-sm text-text-muted"
     >
       <div class="flex flex-wrap gap-4">
         <div class="flex items-center gap-2">
@@ -498,18 +464,15 @@ function getTierColorClass(tierSlug) {
         @click.self="showQuickAdd = false"
       >
         <div
-          class="rounded-xl shadow-2xl max-w-md w-full p-6"
-          :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'"
+          class="rounded-xl shadow-2xl max-w-md w-full p-6 bg-surface"
         >
           <h3
-            class="text-lg font-semibold mb-2"
-            :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+            class="text-lg font-semibold mb-2 text-text"
           >
             Add {{ selectedService.name }}
           </h3>
           <p
-            class="text-sm mb-4"
-            :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
+            class="text-sm mb-4 text-text-secondary"
           >
             <AnnotatedText :text="selectedService.short_description" />
           </p>
@@ -517,8 +480,7 @@ function getTierColorClass(tierSlug) {
           <!-- Quantity input -->
           <div class="mb-6">
             <label
-              class="block text-sm font-medium mb-1"
-              :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'"
+              class="block text-sm font-medium mb-1 text-text-secondary"
             >
               Quantity ({{ selectedService.cost_model?.unit_label || 'units' }})
             </label>
@@ -526,19 +488,14 @@ function getTierColorClass(tierSlug) {
               v-model.number="quickAddQuantity"
               type="number"
               min="1"
-              class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              :class="preferencesStore.darkMode
-                ? 'bg-gray-700 border-gray-600 text-white'
-                : 'bg-white border-gray-300 text-gray-900'"
+              class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-alt border-border-strong text-text"
             />
             <p
-              class="mt-1 text-xs"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="mt-1 text-xs text-text-muted"
             >
               Not sure?
               <button
-                class="hover:underline"
-                :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+                class="hover:underline text-primary"
                 @click="router.push('/calculators')"
               >
                 Use a calculator
@@ -590,16 +547,13 @@ function getTierColorClass(tierSlug) {
           <div class="flex gap-3">
             <button
               @click="showQuickAdd = false"
-              class="flex-1 px-4 py-2 rounded-lg"
-              :class="preferencesStore.darkMode
-                ? 'text-gray-300 bg-gray-700 hover:bg-gray-600'
-                : 'text-gray-700 bg-gray-100 hover:bg-gray-200'"
+              class="flex-1 px-4 py-2 rounded-lg bg-surface-alt text-text-secondary hover:bg-border-strong"
             >
               Cancel
             </button>
             <button
               @click="addToSlate"
-              class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
+              class="flex-1 px-4 py-2 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary-dark"
             >
               Add to Slate
             </button>

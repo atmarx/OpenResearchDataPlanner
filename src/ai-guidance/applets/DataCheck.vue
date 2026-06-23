@@ -349,22 +349,11 @@ function getLevelColorClasses(color) {
     :get-next-applet="getNextApplet"
   >
     <!-- Explanation -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'"
-    >
-      <h3
-        class="font-semibold mb-2"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-      >
+    <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
+      <h3 class="font-semibold mb-2 text-text">
         Why This Matters
       </h3>
-      <p
-        class="text-sm"
-        :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'"
-      >
+      <p class="text-sm text-text-secondary">
         Data sensitivity determines which AI tools you can use. Some data legally cannot
         be sent to cloud AI services. Understanding what you're working with is essential
         before choosing any tool.
@@ -388,10 +377,7 @@ function getLevelColorClasses(color) {
               class="w-8 h-8 flex-shrink-0"
             />
             <div class="flex-1">
-              <h3
-                class="text-xl font-bold mb-2"
-                :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
-              >
+              <h3 class="text-xl font-bold mb-2 text-text">
                 Sensitivity: {{ result.label }}
               </h3>
               <p class="mb-4">{{ result.description }}</p>
@@ -401,10 +387,7 @@ function getLevelColorClasses(color) {
                 <span
                   v-for="flag in flags"
                   :key="flag"
-                  class="px-2 py-1 text-xs rounded-full font-medium uppercase"
-                  :class="preferencesStore.darkMode
-                    ? 'bg-gray-700 text-gray-300'
-                    : 'bg-gray-200 text-gray-700'"
+                  class="px-2 py-1 text-xs rounded-full font-medium uppercase bg-surface-alt text-text-secondary"
                 >
                   {{ flag.replace(/-/g, ' ') }}
                 </span>

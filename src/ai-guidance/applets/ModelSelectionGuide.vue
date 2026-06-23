@@ -243,21 +243,20 @@ function getNextApplet() {
   >
     <!-- When This Applies -->
     <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+      class="p-4 rounded-lg border mb-6 bg-surface border-border"
     >
-      <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm text-text-secondary">
         You've decided to run models locally. Different architectures have different strengths,
         licensing implications, and resource requirements. This guide helps you choose.
       </p>
-      <p class="text-xs mt-2 italic" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'">
+      <p class="text-xs mt-2 italic text-text-muted">
         Note: This landscape changes rapidly. Check current benchmarks and releases.
       </p>
     </div>
 
     <!-- Task Selection -->
     <div class="mb-6">
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         What's your primary task?
       </h3>
       <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -265,21 +264,19 @@ function getNextApplet() {
           v-for="(config, taskId) in taskRecommendations"
           :key="taskId"
           @click="selectTask(taskId)"
-          class="p-3 rounded-lg border-2 text-left transition-all"
-          :class="[
+          class="p-3 rounded-lg border-2 text-left transition-all bg-surface"
+          :class="
             selectedTask === taskId
-              ? (preferencesStore.darkMode ? 'bg-blue-900/30 border-blue-500' : 'bg-blue-50 border-blue-400')
-              : (preferencesStore.darkMode ? 'border-gray-700 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300'),
-            preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'
-          ]"
+              ? 'bg-primary/10 border-primary'
+              : 'border-border hover:border-border-strong'
+          "
         >
           <div class="flex items-center gap-2">
             <component
               :is="config.icon"
-              class="w-4 h-4 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'"
+              class="w-4 h-4 flex-shrink-0 text-text-muted"
             />
-            <span class="font-medium text-sm" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+            <span class="font-medium text-sm text-text">
               {{ config.label }}
             </span>
           </div>
@@ -289,10 +286,10 @@ function getNextApplet() {
 
     <!-- Recommended Models -->
     <div v-if="selectedTask && recommendedModels.length > 0" class="mb-6">
-      <h3 class="font-semibold mb-2" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-2 text-text">
         Recommended for {{ taskRecommendations[selectedTask].label }}
       </h3>
-      <p class="text-sm mb-4" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+      <p class="text-sm mb-4 text-text-secondary">
         {{ taskRecommendations[selectedTask].notes }}
       </p>
 
@@ -301,32 +298,30 @@ function getNextApplet() {
           v-for="model in recommendedModels"
           :key="model.id"
           @click="selectModel(model.id)"
-          class="p-4 rounded-lg border-2 cursor-pointer transition-all"
-          :class="[
+          class="p-4 rounded-lg border-2 cursor-pointer transition-all bg-surface"
+          :class="
             selectedModel === model.id
               ? (preferencesStore.darkMode ? 'bg-green-900/30 border-green-500' : 'bg-green-50 border-green-400')
-              : (preferencesStore.darkMode ? 'border-gray-700 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300'),
-            preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white'
-          ]"
+              : 'border-border hover:border-border-strong'
+          "
         >
           <div class="flex items-start justify-between">
             <div class="flex-1">
               <div class="flex items-center gap-2">
-                <h4 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+                <h4 class="font-semibold text-text">
                   {{ model.name }}
                 </h4>
                 <span
-                  class="px-2 py-0.5 text-xs rounded-full"
-                  :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'"
+                  class="px-2 py-0.5 text-xs rounded-full bg-surface-alt text-text-secondary"
                 >
                   {{ model.provider }}
                 </span>
               </div>
-              <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+              <p class="text-sm mt-1 text-text-secondary">
                 {{ model.strengths }}
               </p>
               <div class="flex flex-wrap gap-2 mt-2">
-                <span class="text-xs" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-500'">
+                <span class="text-xs text-text-muted">
                   Sizes: {{ model.sizes.join(', ') }}
                 </span>
               </div>
@@ -346,31 +341,29 @@ function getNextApplet() {
 
     <!-- All Model Families -->
     <div v-if="!selectedTask" class="mb-6">
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         Common Model Families (February 2026)
       </h3>
       <div class="space-y-3">
         <div
           v-for="model in modelFamilies"
           :key="model.id"
-          class="p-4 rounded-lg border"
-          :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+          class="p-4 rounded-lg border bg-surface border-border"
         >
           <div class="flex items-center gap-2 mb-2">
-            <h4 class="font-semibold" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+            <h4 class="font-semibold text-text">
               {{ model.name }}
             </h4>
             <span
-              class="px-2 py-0.5 text-xs rounded-full"
-              :class="preferencesStore.darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'"
+              class="px-2 py-0.5 text-xs rounded-full bg-surface-alt text-text-secondary"
             >
               {{ model.provider }}
             </span>
           </div>
-          <p class="text-sm" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+          <p class="text-sm text-text-secondary">
             <strong>Strengths:</strong> {{ model.strengths }}
           </p>
-          <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+          <p class="text-sm mt-1 text-text-secondary">
             <strong>Sizes:</strong> {{ model.sizes.join(', ') }}
           </p>
           <p class="text-xs mt-2" :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-700'">
@@ -384,12 +377,11 @@ function getNextApplet() {
     <div class="mb-6">
       <button
         @click="showResources = !showResources"
-        class="flex items-center gap-2 font-semibold mb-3"
-        :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'"
+        class="flex items-center gap-2 font-semibold mb-3 text-text"
       >
         <HardDrive class="w-5 h-5" />
         Resource Requirements
-        <span class="text-sm font-normal" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-500'">
+        <span class="text-sm font-normal text-text-muted">
           {{ showResources ? '(hide)' : '(show)' }}
         </span>
       </button>
@@ -397,23 +389,23 @@ function getNextApplet() {
       <div v-if="showResources" class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
-            <tr :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'">
-              <th class="text-left p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">Model Size</th>
-              <th class="text-left p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">VRAM (FP16)</th>
-              <th class="text-left p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">VRAM (Quantized)</th>
-              <th class="text-left p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-gray-700'">Hardware</th>
+            <tr class="border-border">
+              <th class="text-left p-2 border-b text-text-secondary">Model Size</th>
+              <th class="text-left p-2 border-b text-text-secondary">VRAM (FP16)</th>
+              <th class="text-left p-2 border-b text-text-secondary">VRAM (Quantized)</th>
+              <th class="text-left p-2 border-b text-text-secondary">Hardware</th>
             </tr>
           </thead>
           <tbody>
             <tr
               v-for="req in resourceRequirements"
               :key="req.size"
-              :class="preferencesStore.darkMode ? 'border-gray-700' : 'border-gray-200'"
+              class="border-border"
             >
-              <td class="p-2 border-b font-medium" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">{{ req.size }}</td>
-              <td class="p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">{{ req.vramFp16 }}</td>
-              <td class="p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">{{ req.vramQuantized }}</td>
-              <td class="p-2 border-b" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">{{ req.hardware }}</td>
+              <td class="p-2 border-b font-medium text-text">{{ req.size }}</td>
+              <td class="p-2 border-b text-text-secondary">{{ req.vramFp16 }}</td>
+              <td class="p-2 border-b text-text-secondary">{{ req.vramQuantized }}</td>
+              <td class="p-2 border-b text-text-secondary">{{ req.hardware }}</td>
             </tr>
           </tbody>
         </table>
@@ -422,10 +414,9 @@ function getNextApplet() {
 
     <!-- Local Inference Tools -->
     <div
-      class="p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
+      class="p-4 rounded-lg border bg-surface border-border"
     >
-      <h3 class="font-semibold mb-3" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+      <h3 class="font-semibold mb-3 text-text">
         Running Locally
       </h3>
       <div class="grid gap-3 sm:grid-cols-2">
@@ -435,20 +426,19 @@ function getNextApplet() {
           :href="tool.url"
           target="_blank"
           rel="noopener noreferrer"
-          class="p-3 rounded-lg border transition-colors flex items-start gap-3"
-          :class="preferencesStore.darkMode ? 'border-gray-600 hover:border-gray-500 bg-gray-700' : 'border-gray-200 hover:border-gray-300 bg-gray-50'"
+          class="p-3 rounded-lg border transition-colors flex items-start gap-3 bg-surface-alt border-border hover:border-border-strong"
         >
           <div class="flex-1">
             <div class="flex items-center gap-2">
-              <h4 class="font-medium text-sm" :class="preferencesStore.darkMode ? 'text-white' : 'text-gray-900'">
+              <h4 class="font-medium text-sm text-text">
                 {{ tool.name }}
               </h4>
-              <ExternalLink class="w-3 h-3" :class="preferencesStore.darkMode ? 'text-gray-500' : 'text-gray-400'" />
+              <ExternalLink class="w-3 h-3 text-text-muted" />
             </div>
-            <p class="text-xs mt-1" :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-gray-600'">
+            <p class="text-xs mt-1 text-text-secondary">
               {{ tool.description }}
             </p>
-            <p class="text-xs mt-1" :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'">
+            <p class="text-xs mt-1 text-primary">
               Best for: {{ tool.bestFor }}
             </p>
           </div>
