@@ -1,14 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useExport } from '@/composables/useExport'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { X, Download, FileJson, FileText, ChevronDown, User } from 'lucide-vue-next'
 
 const emit = defineEmits(['close'])
 
-// darkMode still drives the LOCKED green wayfinding accent on the Markdown
-// export button (green has no semantic token — it stays mode-dependent).
-const preferencesStore = usePreferencesStore()
 const { generateFilename, exportJSON, exportMarkdown } = useExport()
 
 const projectName = ref('')
@@ -244,13 +240,12 @@ function handleClose() {
               :disabled="!isValid"
               class="w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-colors text-left"
               :class="isValid
-                ? ['bg-canvas border-border hover:bg-surface-alt', preferencesStore.darkMode ? 'hover:border-green-500' : 'hover:border-green-300']
+                ? 'bg-canvas border-border hover:bg-surface-alt hover:border-green-300 dark:hover:border-green-500'
                 : 'bg-surface-alt border-border opacity-50 cursor-not-allowed'"
             >
-              <!-- Green icon chip is LOCKED format-wayfinding (success-family) — not skinned. -->
+              <!-- Green icon chip is format-wayfinding (success-family). -->
               <div
-                class="w-10 h-10 rounded-lg flex items-center justify-center"
-                :class="preferencesStore.darkMode ? 'bg-green-900/50 text-green-400' : 'bg-green-100 text-green-600'"
+                class="w-10 h-10 rounded-lg flex items-center justify-center bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400"
               >
                 <FileText class="w-5 h-5" />
               </div>

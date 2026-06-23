@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import {
   Workflow,
@@ -16,7 +15,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'pipeline-integration'
 
@@ -166,11 +164,10 @@ function getCategoryProgress(category) {
 }
 
 function getReadinessClasses(color) {
-  const isDark = preferencesStore.darkMode
   const colors = {
-    green: isDark ? 'bg-green-900/30 border-green-700 text-green-400' : 'bg-green-50 border-green-200 text-green-700',
-    yellow: isDark ? 'bg-yellow-900/30 border-yellow-700 text-yellow-400' : 'bg-yellow-50 border-yellow-200 text-yellow-700',
-    red: isDark ? 'bg-red-900/30 border-red-700 text-red-400' : 'bg-red-50 border-red-200 text-red-700'
+    green: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-700 dark:text-green-400',
+    yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700 dark:bg-yellow-900/30 dark:border-yellow-700 dark:text-yellow-400',
+    red: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-700 dark:text-red-400'
   }
   return colors[color] || colors.yellow
 }
@@ -275,7 +272,7 @@ function getNextApplet() {
             :key="item.id"
             @click="toggleItem(item.id)"
             class="p-4 border-b last:border-b-0 cursor-pointer transition-colors flex items-start gap-3 border-border hover:bg-surface-alt"
-            :class="isItemChecked(item.id) ? (preferencesStore.darkMode ? 'bg-green-900/10' : 'bg-green-50/50') : ''"
+            :class="isItemChecked(item.id) ? 'bg-green-50/50 dark:bg-green-900/10' : ''"
           >
             <div
               class="w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 flex items-center justify-center"

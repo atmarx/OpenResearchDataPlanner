@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../../stores/aiGuidanceStore'
 import { useConfigStore } from '@/stores/configStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../../components/AppletFrame.vue'
 import DecisionFlow from '../../components/DecisionFlow.vue'
 import NarrativeGuide from '../../components/clinical/NarrativeGuide.vue'
@@ -19,7 +18,6 @@ import {
 
 const aiStore = useAiGuidanceStore()
 const configStore = useConfigStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'clinical-irb-amendment'
 
@@ -106,11 +104,10 @@ function getIcon(iconName) {
 }
 
 function getLevelColorClasses(color) {
-  const isDark = preferencesStore.darkMode
   const colors = {
-    green: isDark ? 'bg-green-900/30 border-green-700 text-green-400' : 'bg-green-50 border-green-200 text-green-700',
-    yellow: isDark ? 'bg-yellow-900/30 border-yellow-700 text-yellow-400' : 'bg-yellow-50 border-yellow-200 text-yellow-700',
-    orange: isDark ? 'bg-orange-900/30 border-orange-700 text-orange-400' : 'bg-orange-50 border-orange-200 text-orange-700'
+    green: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-700 dark:text-green-400',
+    yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700 dark:bg-yellow-900/30 dark:border-yellow-700 dark:text-yellow-400',
+    orange: 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/30 dark:border-orange-700 dark:text-orange-400'
   }
   return colors[color] || colors.yellow
 }

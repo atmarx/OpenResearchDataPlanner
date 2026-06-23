@@ -17,6 +17,13 @@ branding:
   # Overlay darkness (0 = none, 1 = fully dark). Keeps text readable.
   hero_overlay: 0.4
 
+  # Institution skin — the built-in design.md token block booted as the
+  # default welcome theme. Users can switch in-app or drag in their own.
+  # 'northwinds' = the demo-sandbox look (this deployment); a real fork
+  # sets its own (e.g. 'drexel'). Wayfinding: the chrome says which world
+  # you're standing in. Options: northwinds | drexel | highcontrast | (omit for ODP default)
+  default_skin: northwinds
+
   # Custom CSS overrides (inline)
   # Use CSS custom properties to override theme colors, or add any custom styles
   # Example:

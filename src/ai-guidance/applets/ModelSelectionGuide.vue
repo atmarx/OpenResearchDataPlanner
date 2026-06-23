@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import {
   Cpu,
@@ -18,7 +17,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'model-selection-guide'
 
@@ -301,7 +299,7 @@ function getNextApplet() {
           class="p-4 rounded-lg border-2 cursor-pointer transition-all bg-surface"
           :class="
             selectedModel === model.id
-              ? (preferencesStore.darkMode ? 'bg-green-900/30 border-green-500' : 'bg-green-50 border-green-400')
+              ? 'bg-green-50 border-green-400 dark:bg-green-900/30 dark:border-green-500'
               : 'border-border hover:border-border-strong'
           "
         >
@@ -325,7 +323,7 @@ function getNextApplet() {
                   Sizes: {{ model.sizes.join(', ') }}
                 </span>
               </div>
-              <p class="text-xs mt-2" :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-700'">
+              <p class="text-xs mt-2 text-yellow-700 dark:text-yellow-400">
                 <Scale class="w-3 h-3 inline mr-1" />
                 {{ model.license }}
               </p>
@@ -366,7 +364,7 @@ function getNextApplet() {
           <p class="text-sm mt-1 text-text-secondary">
             <strong>Sizes:</strong> {{ model.sizes.join(', ') }}
           </p>
-          <p class="text-xs mt-2" :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-700'">
+          <p class="text-xs mt-2 text-yellow-700 dark:text-yellow-400">
             {{ model.license }}
           </p>
         </div>
@@ -448,16 +446,15 @@ function getNextApplet() {
 
     <!-- License Warning -->
     <div
-      class="mt-6 p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-yellow-900/20 border-yellow-800' : 'bg-yellow-50 border-yellow-200'"
+      class="mt-6 p-4 rounded-lg border bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800"
     >
       <div class="flex items-start gap-3">
-        <AlertTriangle class="w-5 h-5 flex-shrink-0 mt-0.5" :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-600'" />
+        <AlertTriangle class="w-5 h-5 flex-shrink-0 mt-0.5 text-yellow-600 dark:text-yellow-400" />
         <div>
-          <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-yellow-300' : 'text-yellow-800'">
+          <h4 class="font-medium text-yellow-800 dark:text-yellow-300">
             Check Licenses Before Deploying
           </h4>
-          <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-700'">
+          <p class="text-sm mt-1 text-yellow-700 dark:text-yellow-400">
             Open-weight models have various licenses. Some restrict commercial use, derivative models,
             or have specific attribution requirements. Always verify the license matches your use case.
           </p>

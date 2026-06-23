@@ -2,7 +2,6 @@
 import { ref, computed, watch } from 'vue'
 import { useAiGuidanceStore } from '../../stores/aiGuidanceStore'
 import { useConfigStore } from '@/stores/configStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../../components/AppletFrame.vue'
 import {
   FileCheck,
@@ -16,7 +15,6 @@ import {
 
 const aiStore = useAiGuidanceStore()
 const configStore = useConfigStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'clinical-validation'
 
@@ -179,7 +177,7 @@ function getSectionProgress(section) {
       class="p-6 rounded-lg border mb-6 bg-surface border-border"
       :class="[
         progress.allComplete
-          ? (preferencesStore.darkMode ? 'border-green-700' : 'border-green-200')
+          ? 'border-green-200 dark:border-green-700'
           : ''
       ]"
     >
@@ -207,7 +205,7 @@ function getSectionProgress(section) {
               :stroke-dasharray="`${progress.percent * 2.51} 251`"
               class="transition-all duration-500"
               :class="progress.allComplete
-                ? (preferencesStore.darkMode ? 'text-green-500' : 'text-green-600')
+                ? 'text-green-600 dark:text-green-500'
                 : 'text-primary'"
             />
           </svg>
@@ -215,7 +213,7 @@ function getSectionProgress(section) {
             <div
               class="text-2xl font-bold"
               :class="progress.allComplete
-                ? (preferencesStore.darkMode ? 'text-green-400' : 'text-green-600')
+                ? 'text-green-600 dark:text-green-400'
                 : 'text-primary'"
             >
               {{ progress.percent }}%
@@ -282,7 +280,7 @@ function getSectionProgress(section) {
           <div
             class="text-sm font-medium px-3 py-1 rounded-full"
             :class="getSectionProgress(section).percent === 100
-              ? (preferencesStore.darkMode ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-700')
+              ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
               : 'bg-surface-alt text-text-secondary'"
           >
             {{ getSectionProgress(section).completed }}/{{ getSectionProgress(section).total }}
@@ -328,10 +326,7 @@ function getSectionProgress(section) {
                   </span>
                   <span
                     v-if="item.required"
-                    class="flex-shrink-0 text-xs px-2 py-0.5 rounded-full font-medium"
-                    :class="preferencesStore.darkMode
-                      ? 'bg-red-900/50 text-red-300'
-                      : 'bg-red-100 text-red-700'"
+                    class="flex-shrink-0 text-xs px-2 py-0.5 rounded-full font-medium bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300"
                   >
                     Required
                   </span>
@@ -368,32 +363,25 @@ function getSectionProgress(section) {
     <!-- Completion Message -->
     <div
       v-if="progress.allComplete"
-      class="mt-6 p-6 rounded-lg border-2"
-      :class="preferencesStore.darkMode
-        ? 'bg-green-900/30 border-green-700'
-        : 'bg-green-50 border-green-200'"
+      class="mt-6 p-6 rounded-lg border-2 bg-green-50 border-green-200 dark:bg-green-900/30 dark:border-green-700"
     >
       <div class="flex items-start gap-4">
         <CheckCircle
-          class="w-8 h-8 flex-shrink-0"
-          :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-600'"
+          class="w-8 h-8 flex-shrink-0 text-green-600 dark:text-green-400"
         />
         <div>
           <h3
-            class="text-xl font-bold mb-2"
-            :class="preferencesStore.darkMode ? 'text-green-300' : 'text-green-800'"
+            class="text-xl font-bold mb-2 text-green-800 dark:text-green-300"
           >
             Validation Complete
           </h3>
           <p
-            class="mb-3"
-            :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-700'"
+            class="mb-3 text-green-700 dark:text-green-400"
           >
             You've completed all required validation items. Your AI system is ready for:
           </p>
           <ul
-            class="text-sm space-y-1"
-            :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-700'"
+            class="text-sm space-y-1 text-green-700 dark:text-green-400"
           >
             <li>• Clinical deployment review by your institution</li>
             <li>• Publication in peer-reviewed medical journals</li>
@@ -402,10 +390,7 @@ function getSectionProgress(section) {
 
           <button
             @click="downloadValidationReport"
-            class="mt-4 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'bg-green-600 text-white hover:bg-green-500'
-              : 'bg-green-600 text-white hover:bg-green-700'"
+            class="mt-4 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-green-600 text-white hover:bg-green-700 dark:hover:bg-green-500"
           >
             <Download class="w-4 h-4" />
             Download Validation Report
@@ -416,10 +401,7 @@ function getSectionProgress(section) {
 
     <!-- Disclaimer -->
     <div
-      class="mt-6 p-4 rounded-lg border text-sm"
-      :class="preferencesStore.darkMode
-        ? 'bg-orange-900/20 border-orange-800 text-orange-400'
-        : 'bg-orange-50 border-orange-200 text-orange-700'"
+      class="mt-6 p-4 rounded-lg border text-sm bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-400"
     >
       <p class="font-medium mb-1">Important Note:</p>
       <p>

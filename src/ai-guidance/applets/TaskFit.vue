@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import {
   Target,
@@ -12,7 +11,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'task-fit'
 
@@ -136,25 +134,23 @@ function selectTask(task) {
 }
 
 function getFitClasses(fit) {
-  const isDark = preferencesStore.darkMode
   const colors = {
-    good: isDark ? 'border-green-700 hover:bg-green-900/30' : 'border-green-200 hover:bg-green-50',
-    moderate: isDark ? 'border-yellow-700 hover:bg-yellow-900/30' : 'border-yellow-200 hover:bg-yellow-50',
-    caution: isDark ? 'border-orange-700 hover:bg-orange-900/30' : 'border-orange-200 hover:bg-orange-50',
-    poor: isDark ? 'border-red-700 hover:bg-red-900/30' : 'border-red-200 hover:bg-red-50',
-    regulated: isDark ? 'border-purple-700 hover:bg-purple-900/30' : 'border-purple-200 hover:bg-purple-50'
+    good: 'border-green-200 hover:bg-green-50 dark:border-green-700 dark:hover:bg-green-900/30',
+    moderate: 'border-yellow-200 hover:bg-yellow-50 dark:border-yellow-700 dark:hover:bg-yellow-900/30',
+    caution: 'border-orange-200 hover:bg-orange-50 dark:border-orange-700 dark:hover:bg-orange-900/30',
+    poor: 'border-red-200 hover:bg-red-50 dark:border-red-700 dark:hover:bg-red-900/30',
+    regulated: 'border-purple-200 hover:bg-purple-50 dark:border-purple-700 dark:hover:bg-purple-900/30'
   }
   return colors[fit] || colors.moderate
 }
 
 function getSelectedClasses(fit) {
-  const isDark = preferencesStore.darkMode
   const colors = {
-    good: isDark ? 'bg-green-900/30 border-green-500' : 'bg-green-50 border-green-400',
-    moderate: isDark ? 'bg-yellow-900/30 border-yellow-500' : 'bg-yellow-50 border-yellow-400',
-    caution: isDark ? 'bg-orange-900/30 border-orange-500' : 'bg-orange-50 border-orange-400',
-    poor: isDark ? 'bg-red-900/30 border-red-500' : 'bg-red-50 border-red-400',
-    regulated: isDark ? 'bg-purple-900/30 border-purple-500' : 'bg-purple-50 border-purple-400'
+    good: 'bg-green-50 border-green-400 dark:bg-green-900/30 dark:border-green-500',
+    moderate: 'bg-yellow-50 border-yellow-400 dark:bg-yellow-900/30 dark:border-yellow-500',
+    caution: 'bg-orange-50 border-orange-400 dark:bg-orange-900/30 dark:border-orange-500',
+    poor: 'bg-red-50 border-red-400 dark:bg-red-900/30 dark:border-red-500',
+    regulated: 'bg-purple-50 border-purple-400 dark:bg-purple-900/30 dark:border-purple-500'
   }
   return colors[fit] || colors.moderate
 }
@@ -248,13 +244,12 @@ function getNextApplet() {
 
       <div
         v-if="selectedTask.fit === 'poor' || selectedTask.fit === 'caution'"
-        class="mt-4 p-3 rounded-lg"
-        :class="preferencesStore.darkMode ? 'bg-orange-900/20' : 'bg-orange-50'"
+        class="mt-4 p-3 rounded-lg bg-orange-50 dark:bg-orange-900/20"
       >
-        <p class="text-sm font-medium" :class="preferencesStore.darkMode ? 'text-orange-300' : 'text-orange-800'">
+        <p class="text-sm font-medium text-orange-800 dark:text-orange-300">
           ⚠️ Consider alternatives
         </p>
-        <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-orange-400' : 'text-orange-700'">
+        <p class="text-sm mt-1 text-orange-700 dark:text-orange-400">
           For this task type, the time spent on verification may approach or exceed the time saved by using AI.
           Consider whether traditional approaches might be more efficient.
         </p>

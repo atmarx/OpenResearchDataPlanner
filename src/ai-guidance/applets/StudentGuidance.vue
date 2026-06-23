@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import {
   UserCircle,
@@ -15,7 +14,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'student-guidance'
 
@@ -191,15 +189,13 @@ function getNextApplet() {
               </p>
               <p
                 v-if="step.ifNo"
-                class="text-sm mt-1"
-                :class="preferencesStore.darkMode ? 'text-red-400' : 'text-red-600'"
+                class="text-sm mt-1 text-red-600 dark:text-red-400"
               >
                 → If no or unclear: <strong>{{ step.ifNo }}</strong>
               </p>
               <p
                 v-if="step.ifRequired"
-                class="text-sm mt-1"
-                :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-600'"
+                class="text-sm mt-1 text-yellow-600 dark:text-yellow-400"
               >
                 → If required: <strong>{{ step.ifRequired }}</strong>
               </p>
@@ -227,12 +223,11 @@ function getNextApplet() {
       <div class="grid gap-4 md:grid-cols-2">
         <!-- Appropriate -->
         <div
-          class="p-4 rounded-lg border-2"
-          :class="preferencesStore.darkMode ? 'bg-green-900/20 border-green-800' : 'bg-green-50 border-green-200'"
+          class="p-4 rounded-lg border-2 bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800"
         >
           <div class="flex items-center gap-2 mb-3">
-            <ThumbsUp class="w-5 h-5" :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-600'" />
-            <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-green-300' : 'text-green-800'">
+            <ThumbsUp class="w-5 h-5 text-green-600 dark:text-green-400" />
+            <h4 class="font-medium text-green-800 dark:text-green-300">
               Generally Appropriate
             </h4>
           </div>
@@ -240,8 +235,7 @@ function getNextApplet() {
             <li
               v-for="item in useCases.appropriate"
               :key="item.use"
-              class="text-sm"
-              :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-700'"
+              class="text-sm text-green-700 dark:text-green-400"
             >
               <strong>{{ item.use }}</strong>
               <span class="block text-xs opacity-75">{{ item.why }}</span>
@@ -251,12 +245,11 @@ function getNextApplet() {
 
         <!-- Inappropriate -->
         <div
-          class="p-4 rounded-lg border-2"
-          :class="preferencesStore.darkMode ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-200'"
+          class="p-4 rounded-lg border-2 bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800"
         >
           <div class="flex items-center gap-2 mb-3">
-            <ThumbsDown class="w-5 h-5" :class="preferencesStore.darkMode ? 'text-red-400' : 'text-red-600'" />
-            <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-red-300' : 'text-red-800'">
+            <ThumbsDown class="w-5 h-5 text-red-600 dark:text-red-400" />
+            <h4 class="font-medium text-red-800 dark:text-red-300">
               Generally Inappropriate
             </h4>
           </div>
@@ -264,8 +257,7 @@ function getNextApplet() {
             <li
               v-for="item in useCases.inappropriate"
               :key="item.use"
-              class="text-sm"
-              :class="preferencesStore.darkMode ? 'text-red-400' : 'text-red-700'"
+              class="text-sm text-red-700 dark:text-red-400"
             >
               <strong>{{ item.use }}</strong>
               <span class="block text-xs opacity-75">{{ item.why }}</span>
@@ -277,16 +269,15 @@ function getNextApplet() {
 
     <!-- Key Reminder -->
     <div
-      class="p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-yellow-900/20 border-yellow-800' : 'bg-yellow-50 border-yellow-200'"
+      class="p-4 rounded-lg border bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800"
     >
       <div class="flex items-start gap-3">
-        <AlertTriangle class="w-5 h-5 flex-shrink-0 mt-0.5" :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-600'" />
+        <AlertTriangle class="w-5 h-5 flex-shrink-0 mt-0.5 text-yellow-600 dark:text-yellow-400" />
         <div>
-          <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-yellow-300' : 'text-yellow-800'">
+          <h4 class="font-medium text-yellow-800 dark:text-yellow-300">
             Remember
           </h4>
-          <ul class="text-sm mt-2 space-y-1" :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-700'">
+          <ul class="text-sm mt-2 space-y-1 text-yellow-700 dark:text-yellow-400">
             <li>• AI can be confidently wrong — always verify</li>
             <li>• AI doesn't know your course content or assignment requirements</li>
             <li>• If you're unsure about AI use, ask your instructor</li>

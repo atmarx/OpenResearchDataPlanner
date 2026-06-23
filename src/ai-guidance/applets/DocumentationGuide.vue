@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import {
   FileText,
@@ -17,7 +16,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'documentation-guide'
 
@@ -286,7 +284,7 @@ function getNextApplet() {
           class="p-4 rounded-lg border cursor-pointer transition-all"
           :class="[
             isElementChecked(element.id)
-              ? (preferencesStore.darkMode ? 'bg-green-900/20 border-green-700' : 'bg-green-50 border-green-300')
+              ? 'bg-green-50 border-green-300 dark:bg-green-900/20 dark:border-green-700'
               : 'bg-surface border-border hover:border-border-strong'
           ]"
         >
@@ -340,7 +338,7 @@ function getNextApplet() {
           @click="copyTemplate"
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
           :class="copiedTemplate
-            ? (preferencesStore.darkMode ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-700')
+            ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
             : 'bg-surface text-text-secondary hover:bg-surface-alt'"
         >
           <component :is="copiedTemplate ? CheckCircle : Copy" class="w-4 h-4" />
