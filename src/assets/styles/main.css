@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Tailwind's dark: variant follows the .dark class that preferencesStore
+   toggles on <html> — NOT prefers-color-scheme. (Most surfaces don't need
+   dark: at all once they drink from the semantic tokens below, which flip
+   themselves under :root.dark.) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ===================================================================
    OpenResearchDataPlanner — theme token contract.
 
@@ -16,13 +22,15 @@
 
    The skin engine (src/composables/useSkin.js) overrides the SKINNABLE
    tokens at runtime from a design.md block. It must never emit the
-   tier colours.
+   tier colours. Dark values live in :root.dark; skins layer over both
+   via :root[data-skin="…"] and :root[data-skin="…"].dark.
    =================================================================== */
 @theme {
   /* ---- Brand / interaction accent (SKINNABLE) ---- */
   --color-primary: #2563eb;
   --color-primary-dark: #1d4ed8;
   --color-primary-light: #3b82f6;
+  --color-on-primary: #ffffff;     /* text/icon on a primary fill */
 
   /* ---- Data-security tiers (PLATFORM-LOCKED — never skinned) ---- */
   --color-tier-low: #22c55e;
@@ -30,12 +38,19 @@
   --color-tier-high: #f97316;
   --color-tier-restricted: #ef4444;
 
-  /* ---- Neutral palette / canvas (SKINNABLE) ---- */
-  --color-surface: #ffffff;
-  --color-surface-alt: #f9fafb;
-  --color-border: #e5e7eb;
-  --color-text: #111827;
-  --color-text-muted: #6b7280;
+  /* ---- Canvas + surfaces (SKINNABLE) — elevation layers ---- */
+  --color-canvas: #f9fafb;         /* page background        (was gray-50)  */
+  --color-surface: #ffffff;        /* cards / panels / header (was white)    */
+  --color-surface-alt: #f3f4f6;    /* insets / hover rows     (was gray-100) */
+
+  /* ---- Text (SKINNABLE) ---- */
+  --color-text: #111827;           /* headings   (was gray-900) */
+  --color-text-secondary: #374151; /* body       (was gray-700) */
+  --color-text-muted: #6b7280;     /* captions   (was gray-500) */
+
+  /* ---- Borders (SKINNABLE) ---- */
+  --color-border: #e5e7eb;         /* default    (was gray-200) */
+  --color-border-strong: #d1d5db;  /* emphasized (was gray-300) */
 
   /* ---- Corner-radius scale (SKINNABLE) — the "bubble" dial.
      Tailwind's defaults (lg .5rem / xl .75rem) read as consumer-app
@@ -55,11 +70,32 @@
   --spacing-128: 32rem;
 }
 
+/* ===================================================================
+   Dark theme. preferencesStore toggles .dark on <html>; these flip the
+   canvas with ZERO per-component ternaries. Tier colours are deliberately
+   absent — they stay identical in light and dark (the lock).
+   =================================================================== */
+:root.dark {
+  --color-primary: #60a5fa;          /* lighter accent for text/links on dark */
+  --color-on-primary: #0b1220;
+
+  --color-canvas: #0b1220;           /* page background */
+  --color-surface: #1f2937;          /* cards / panels  (gray-800) */
+  --color-surface-alt: #374151;      /* insets / hover  (gray-700) */
+
+  --color-text: #f9fafb;
+  --color-text-secondary: #d1d5db;   /* gray-300 */
+  --color-text-muted: #9ca3af;       /* gray-400 */
+
+  --color-border: #374151;           /* gray-700 */
+  --color-border-strong: #4b5563;    /* gray-600 */
+}
+
 /* Base styles */
 body {
   font-family: var(--font-sans);
   color: var(--color-text);
-  background-color: var(--color-surface-alt);
+  background-color: var(--color-canvas);
 }
 
 /* Focus visible styles for accessibility */
