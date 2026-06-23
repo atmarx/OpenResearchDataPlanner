@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import {
   Scale,
@@ -16,7 +15,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'ai-ethics'
 
@@ -225,7 +223,7 @@ function getNextApplet() {
               v-for="resource in disciplineResources"
               :key="resource.discipline"
               class="border-b border-border cursor-pointer transition-colors hover:bg-surface-alt"
-              :class="selectedDiscipline === resource.discipline ? (preferencesStore.darkMode ? 'bg-blue-900/20' : 'bg-blue-50') : ''"
+              :class="selectedDiscipline === resource.discipline ? 'bg-surface-alt' : ''"
               @click="selectedDiscipline = resource.discipline"
             >
               <td class="p-3 font-medium text-text">
@@ -260,8 +258,7 @@ function getNextApplet() {
           <div class="flex items-center gap-2 mb-2">
             <component
               :is="item.icon"
-              class="w-4 h-4"
-              :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-600'"
+              class="w-4 h-4 text-yellow-600 dark:text-yellow-400"
             />
             <h4 class="font-medium text-sm text-text">
               {{ item.title }}
@@ -276,16 +273,15 @@ function getNextApplet() {
 
     <!-- Red Flags Checklist -->
     <div
-      class="p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-200'"
+      class="p-4 rounded-lg border bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800"
     >
       <div class="flex items-center gap-2 mb-4">
-        <AlertTriangle class="w-5 h-5" :class="preferencesStore.darkMode ? 'text-red-400' : 'text-red-600'" />
-        <h3 class="font-semibold" :class="preferencesStore.darkMode ? 'text-red-300' : 'text-red-800'">
+        <AlertTriangle class="w-5 h-5 text-red-600 dark:text-red-400" />
+        <h3 class="font-semibold text-red-800 dark:text-red-300">
           Red Flags for Ethical Concern
         </h3>
       </div>
-      <p class="text-sm mb-4" :class="preferencesStore.darkMode ? 'text-red-400' : 'text-red-700'">
+      <p class="text-sm mb-4 text-red-700 dark:text-red-400">
         Check any that apply to your AI use:
       </p>
       <div class="space-y-2">
@@ -293,18 +289,17 @@ function getNextApplet() {
           v-for="flag in redFlags"
           :key="flag"
           @click="toggleFlag(flag)"
-          class="flex items-start gap-3 p-2 rounded cursor-pointer transition-colors"
-          :class="preferencesStore.darkMode ? 'hover:bg-red-900/30' : 'hover:bg-red-100'"
+          class="flex items-start gap-3 p-2 rounded cursor-pointer transition-colors hover:bg-red-100 dark:hover:bg-red-900/30"
         >
           <div
             class="w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center"
             :class="isFlagChecked(flag)
               ? 'bg-red-500 border-red-500'
-              : (preferencesStore.darkMode ? 'border-red-700' : 'border-red-300')"
+              : 'border-red-300 dark:border-red-700'"
           >
             <CheckCircle v-if="isFlagChecked(flag)" class="w-3 h-3 text-white" />
           </div>
-          <span class="text-sm" :class="preferencesStore.darkMode ? 'text-red-300' : 'text-red-700'">
+          <span class="text-sm text-red-700 dark:text-red-300">
             {{ flag }}
           </span>
         </div>
@@ -312,10 +307,9 @@ function getNextApplet() {
 
       <div
         v-if="checkedFlags.size > 0"
-        class="mt-4 p-3 rounded-lg"
-        :class="preferencesStore.darkMode ? 'bg-red-900/40' : 'bg-red-100'"
+        class="mt-4 p-3 rounded-lg bg-red-100 dark:bg-red-900/40"
       >
-        <p class="text-sm font-medium" :class="preferencesStore.darkMode ? 'text-red-200' : 'text-red-800'">
+        <p class="text-sm font-medium text-red-800 dark:text-red-200">
           {{ checkedFlags.size }} flag(s) checked.
           Consider consulting with colleagues or your IRB about these concerns.
         </p>
@@ -324,13 +318,12 @@ function getNextApplet() {
 
     <!-- Links to More -->
     <div
-      class="mt-6 p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'"
+      class="mt-6 p-4 rounded-lg border bg-surface-alt border-primary"
     >
-      <h4 class="font-medium mb-2" :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-800'">
+      <h4 class="font-medium mb-2 text-primary">
         Further Reading
       </h4>
-      <ul class="text-sm space-y-1" :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-700'">
+      <ul class="text-sm space-y-1 text-primary">
         <li class="flex items-center gap-1">
           <ExternalLink class="w-3 h-3" />
           <span>Search for your professional organization's AI guidelines</span>

@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import {
   Scale,
@@ -18,7 +17,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'bias-assessment'
 
@@ -129,33 +127,31 @@ function isStrategyChecked(strategy) {
 }
 
 function getRelevanceClasses(relevance, selected) {
-  const isDark = preferencesStore.darkMode
   const info = relevanceInfo[relevance] || relevanceInfo['medium']
   const colors = {
     red: selected
-      ? (isDark ? 'bg-red-900/30 border-red-500' : 'bg-red-50 border-red-400')
-      : (isDark ? 'border-red-800 hover:border-red-700' : 'border-red-200 hover:border-red-300'),
+      ? 'bg-red-50 border-red-400 dark:bg-red-900/30 dark:border-red-500'
+      : 'border-red-200 hover:border-red-300 dark:border-red-800 dark:hover:border-red-700',
     yellow: selected
-      ? (isDark ? 'bg-yellow-900/30 border-yellow-500' : 'bg-yellow-50 border-yellow-400')
-      : (isDark ? 'border-yellow-800 hover:border-yellow-700' : 'border-yellow-200 hover:border-yellow-300'),
+      ? 'bg-yellow-50 border-yellow-400 dark:bg-yellow-900/30 dark:border-yellow-500'
+      : 'border-yellow-200 hover:border-yellow-300 dark:border-yellow-800 dark:hover:border-yellow-700',
     blue: selected
-      ? (isDark ? 'bg-blue-900/30 border-blue-500' : 'bg-blue-50 border-blue-400')
-      : (isDark ? 'border-blue-800 hover:border-blue-700' : 'border-blue-200 hover:border-blue-300'),
+      ? 'bg-surface-alt border-primary'
+      : 'border-border hover:border-primary',
     green: selected
-      ? (isDark ? 'bg-green-900/30 border-green-500' : 'bg-green-50 border-green-400')
-      : (isDark ? 'border-green-800 hover:border-green-700' : 'border-green-200 hover:border-green-300')
+      ? 'bg-green-50 border-green-400 dark:bg-green-900/30 dark:border-green-500'
+      : 'border-green-200 hover:border-green-300 dark:border-green-800 dark:hover:border-green-700'
   }
   return colors[info.color] || colors.yellow
 }
 
 function getRiskBadgeClass(risk) {
-  const isDark = preferencesStore.darkMode
   const classes = {
-    'very-high': isDark ? 'bg-red-900/50 text-red-300' : 'bg-red-100 text-red-700',
-    'high': isDark ? 'bg-orange-900/50 text-orange-300' : 'bg-orange-100 text-orange-700',
-    'medium-high': isDark ? 'bg-yellow-900/50 text-yellow-300' : 'bg-yellow-100 text-yellow-700',
-    'medium': isDark ? 'bg-yellow-900/50 text-yellow-300' : 'bg-yellow-100 text-yellow-700',
-    'context-dependent': isDark ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-100 text-blue-700'
+    'very-high': 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300',
+    'high': 'bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300',
+    'medium-high': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300',
+    'medium': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300',
+    'context-dependent': 'bg-surface-alt text-primary'
   }
   return classes[risk] || classes.medium
 }
@@ -341,16 +337,15 @@ function getNextApplet() {
     <!-- Physical Sciences Note -->
     <div
       v-if="selectedRelevance === 'lower'"
-      class="mt-6 p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'"
+      class="mt-6 p-4 rounded-lg border bg-surface-alt border-border"
     >
       <div class="flex items-start gap-3">
-        <Info class="w-5 h-5 flex-shrink-0 mt-0.5" :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'" />
+        <Info class="w-5 h-5 flex-shrink-0 mt-0.5 text-primary" />
         <div>
-          <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-800'">
+          <h4 class="font-medium text-primary">
             For Non-Human Element Tasks
           </h4>
-          <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-700'">
+          <p class="text-sm mt-1 text-primary">
             If your use case has no human element (e.g., analyzing crystal structures, physics simulations),
             the demographic bias framing may not apply. However, consider: Is your training/prompt data
             representative of the phenomena you're studying?
@@ -362,13 +357,12 @@ function getNextApplet() {
     <!-- Completion Message -->
     <div
       v-if="isComplete"
-      class="mt-6 p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-green-900/20 border-green-800' : 'bg-green-50 border-green-200'"
+      class="mt-6 p-4 rounded-lg border bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800"
     >
-      <p class="font-medium" :class="preferencesStore.darkMode ? 'text-green-300' : 'text-green-800'">
+      <p class="font-medium text-green-800 dark:text-green-300">
         ✅ AI Guidance Complete
       </p>
-      <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-700'">
+      <p class="text-sm mt-1 text-green-700 dark:text-green-400">
         You've completed all available applets. Return to the AI Guidance home to review your results
         or explore other sections.
       </p>

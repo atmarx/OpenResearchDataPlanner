@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   Check,
   CheckCircle,
@@ -22,7 +21,6 @@ import {
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
-const preferencesStore = usePreferencesStore()
 
 // Search and filter state
 const searchQuery = ref('')
@@ -344,10 +342,10 @@ function clearFilters() {
                 <div
                   class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
                   :class="{
-                    'bg-green-100 text-green-600': getBestStatus(software) === 'full',
-                    'bg-yellow-100 text-yellow-600': getBestStatus(software) === 'restricted',
-                    'bg-gray-100 text-gray-500': getBestStatus(software) === 'byol',
-                    'bg-red-100 text-red-500': getBestStatus(software) === 'unavailable'
+                    'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400': getBestStatus(software) === 'full',
+                    'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400': getBestStatus(software) === 'restricted',
+                    'bg-surface-alt text-text-muted': getBestStatus(software) === 'byol',
+                    'bg-red-100 text-red-500 dark:bg-red-900/30 dark:text-red-400': getBestStatus(software) === 'unavailable'
                   }"
                 >
                   <component :is="getStatusInfo(getBestStatus(software)).icon" class="w-4 h-4" />
@@ -361,7 +359,7 @@ function clearFilters() {
                     </h4>
                     <span
                       v-if="software.vendor === 'Open Source'"
-                      class="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-700"
+                      class="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
                     >
                       OSS
                     </span>
@@ -413,10 +411,10 @@ function clearFilters() {
                   :key="platform"
                   class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
                   :class="{
-                    'bg-green-100 text-green-700': avail.status === 'full',
-                    'bg-yellow-100 text-yellow-700': avail.status === 'restricted',
-                    'bg-gray-100 text-gray-600': avail.status === 'byol',
-                    'bg-red-50 text-red-400': avail.status === 'unavailable'
+                    'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300': avail.status === 'full',
+                    'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300': avail.status === 'restricted',
+                    'bg-surface-alt text-text-muted': avail.status === 'byol',
+                    'bg-red-50 text-red-400 dark:bg-red-900/20 dark:text-red-400': avail.status === 'unavailable'
                   }"
                 >
                   <component :is="getPlatformIcon(platform)" class="w-3 h-3" />
@@ -481,10 +479,10 @@ function clearFilters() {
                         </span>
                         <span
                           :class="{
-                            'text-green-600': avail.status === 'full',
-                            'text-yellow-600': avail.status === 'restricted',
-                            'text-gray-500': avail.status === 'byol',
-                            'text-red-500': avail.status === 'unavailable'
+                            'text-green-600 dark:text-green-400': avail.status === 'full',
+                            'text-yellow-600 dark:text-yellow-400': avail.status === 'restricted',
+                            'text-text-muted': avail.status === 'byol',
+                            'text-red-500 dark:text-red-400': avail.status === 'unavailable'
                           }"
                         >
                           {{ getStatusInfo(avail.status).label }}
@@ -599,14 +597,14 @@ function clearFilters() {
             </span>
             <span
               v-if="softwareList.find(s => s.slug === selected.software_slug)?.license_model === 'byol'"
-              class="ml-2 text-xs px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700"
+              class="ml-2 text-xs px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300"
             >
               BYOL
             </span>
           </div>
           <button
             @click="sessionStore.removeSoftware(selected.software_slug)"
-            class="text-red-600 hover:text-red-700 p-1"
+            class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-1"
           >
             <X class="w-4 h-4" />
           </button>
@@ -616,16 +614,12 @@ function clearFilters() {
       <!-- BYOL reminder -->
       <div
         v-if="sessionStore.session.selected_software.some(s => softwareList.find(sw => sw.slug === s.software_slug)?.license_model === 'byol')"
-        class="mt-4 p-3 rounded border"
-        :class="preferencesStore.darkMode
-          ? 'bg-yellow-900/30 border-yellow-700'
-          : 'bg-yellow-50 border-yellow-200'"
+        class="mt-4 p-3 rounded border bg-yellow-50 border-yellow-200 dark:bg-yellow-900/30 dark:border-yellow-700"
       >
         <div class="flex gap-2">
           <AlertCircle class="w-5 h-5 text-yellow-500 flex-shrink-0" />
           <p
-            class="text-sm"
-            :class="preferencesStore.darkMode ? 'text-yellow-300' : 'text-yellow-700'"
+            class="text-sm text-yellow-700 dark:text-yellow-300"
           >
             Some selected software requires separate licensing (BYOL).
             These costs will be noted in your budget but must be purchased directly from vendors.

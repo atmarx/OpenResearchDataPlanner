@@ -1,12 +1,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { useConfigStore } from '@/stores/configStore'
 import { Bot, X, ExternalLink } from 'lucide-vue-next'
 
 const STORAGE_KEY = 'odp-welcome-dismissed'
 
-const preferencesStore = usePreferencesStore()
 const configStore = useConfigStore()
 
 const isVisible = ref(false)
@@ -50,19 +48,13 @@ function dismiss() {
   >
     <div
       v-if="isVisible"
-      class="border-b"
-      :class="preferencesStore.darkMode
-        ? 'bg-indigo-950/50 border-indigo-900'
-        : 'bg-indigo-50 border-indigo-100'"
+      class="border-b bg-indigo-50 border-indigo-100 dark:bg-indigo-950/50 dark:border-indigo-900"
     >
       <div class="max-w-5xl mx-auto px-4 py-3">
         <div class="flex items-start gap-3">
           <!-- Icon -->
           <div
-            class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5"
-            :class="preferencesStore.darkMode
-              ? 'bg-indigo-900 text-indigo-300'
-              : 'bg-indigo-100 text-indigo-600'"
+            class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5 bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300"
           >
             <Bot class="w-4 h-4" />
           </div>
@@ -70,24 +62,19 @@ function dismiss() {
           <!-- Content -->
           <div class="flex-1 min-w-0">
             <h2
-              class="text-sm font-semibold"
-              :class="preferencesStore.darkMode ? 'text-indigo-200' : 'text-indigo-900'"
+              class="text-sm font-semibold text-indigo-900 dark:text-indigo-200"
             >
               {{ title }}
             </h2>
             <p
-              class="mt-1 text-sm whitespace-pre-line"
-              :class="preferencesStore.darkMode ? 'text-indigo-300' : 'text-indigo-700'"
+              class="mt-1 text-sm whitespace-pre-line text-indigo-700 dark:text-indigo-300"
             >
               {{ message.trim() }}
             </p>
             <div class="mt-2 flex items-center gap-4">
               <router-link
                 to="/about-ai"
-                class="inline-flex items-center gap-1 text-sm font-medium"
-                :class="preferencesStore.darkMode
-                  ? 'text-indigo-400 hover:text-indigo-300'
-                  : 'text-indigo-600 hover:text-indigo-700'"
+                class="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
               >
                 {{ learnMoreLabel }}
                 <ExternalLink class="w-3 h-3" />
@@ -97,10 +84,7 @@ function dismiss() {
                 :href="reportIssueUrl"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-sm"
-                :class="preferencesStore.darkMode
-                  ? 'text-indigo-400/70 hover:text-indigo-300'
-                  : 'text-indigo-500 hover:text-indigo-600'"
+                class="text-sm text-indigo-500 hover:text-indigo-600 dark:text-indigo-400/70 dark:hover:text-indigo-300"
               >
                 {{ reportIssueLabel }}
               </a>
@@ -110,10 +94,7 @@ function dismiss() {
           <!-- Dismiss button -->
           <button
             @click="dismiss"
-            class="flex-shrink-0 p-1.5 rounded-lg transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'text-indigo-400 hover:bg-indigo-900 hover:text-indigo-200'
-              : 'text-indigo-400 hover:bg-indigo-100 hover:text-indigo-600'"
+            class="flex-shrink-0 p-1.5 rounded-lg transition-colors text-indigo-400 hover:bg-indigo-100 hover:text-indigo-600 dark:hover:bg-indigo-900 dark:hover:text-indigo-200"
             aria-label="Dismiss"
           >
             <X class="w-4 h-4" />

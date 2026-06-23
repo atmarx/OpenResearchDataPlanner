@@ -266,12 +266,12 @@ function formatCurrency(amount) {
         </div>
 
         <!-- Tips -->
-        <div v-if="config?.tips" class="bg-blue-50 rounded-lg p-3 text-sm">
+        <div v-if="config?.tips" class="bg-surface-alt rounded-lg p-3 text-sm">
           <div class="flex items-start gap-2">
-            <Info class="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+            <Info class="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
             <div>
-              <p class="font-medium text-blue-800 mb-1">Estimation Tips</p>
-              <ul class="text-blue-700 text-xs space-y-0.5">
+              <p class="font-medium text-primary mb-1">Estimation Tips</p>
+              <ul class="text-primary text-xs space-y-0.5">
                 <li v-for="tip in config.tips.slice(0, 3)" :key="tip">{{ tip }}</li>
               </ul>
             </div>
@@ -279,10 +279,10 @@ function formatCurrency(amount) {
         </div>
 
         <!-- Pricing Warning -->
-        <div class="bg-yellow-50 rounded-lg p-3 text-sm">
+        <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3 text-sm">
           <div class="flex items-start gap-2">
-            <AlertTriangle class="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" />
-            <p class="text-yellow-700 text-xs">
+            <AlertTriangle class="w-4 h-4 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+            <p class="text-yellow-700 dark:text-yellow-300 text-xs">
               <strong>Note:</strong> API pricing changes frequently. Verify current prices
               with providers before finalizing grant budgets. Prices shown are estimates
               as of February 2026.
@@ -295,7 +295,7 @@ function formatCurrency(amount) {
     <!-- Custom result display for currency -->
     <template #result-display="{ result: r }">
       <div class="text-center">
-        <p class="text-3xl font-bold text-green-600">
+        <p class="text-3xl font-bold text-green-600 dark:text-green-400">
           {{ formatCurrency(r) }}
         </p>
         <p class="text-sm text-text-muted mt-1">

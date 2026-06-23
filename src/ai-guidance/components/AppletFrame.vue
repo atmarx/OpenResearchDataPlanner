@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   ArrowLeft,
   ArrowRight,
@@ -49,7 +48,6 @@ const emit = defineEmits(['complete'])
 
 const router = useRouter()
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 function handleFeedbackEvent(event) {
   aiStore.setFeedback(props.appletId, event.sentiment)
@@ -127,10 +125,7 @@ function goToNext() {
     <main class="max-w-3xl 2xl:max-w-4xl mx-auto px-4 py-8">
       <!-- Core Question -->
       <div
-        class="mb-8 p-4 rounded-lg border-l-4"
-        :class="preferencesStore.darkMode
-          ? 'bg-blue-900/20 border-blue-500 text-blue-200'
-          : 'bg-blue-50 border-blue-500 text-blue-900'"
+        class="mb-8 p-4 rounded-lg border-l-4 bg-surface-alt border-primary text-primary"
       >
         <p class="text-lg font-medium italic">"{{ coreQuestion }}"</p>
       </div>

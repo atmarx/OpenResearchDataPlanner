@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 import { marked } from 'marked'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { useQuestionnaireHistory } from '@/composables/useQuestionnaireHistory'
 import {
   X,
@@ -44,7 +43,6 @@ import QuestionHelpDialog from '@/components/explore/QuestionHelpDialog.vue'
 const router = useRouter()
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
-const preferencesStore = usePreferencesStore()
 
 // Get questionnaire config
 const questionnaireConfig = computed(() => configStore.config?.tier_questionnaire || {})
@@ -276,10 +274,10 @@ function getTierColor(tierSlug) {
 
   // Fall back based on tier's severity level (higher = more restrictive)
   const level = tier?.level || 0
-  if (level >= 4) return 'bg-red-100 text-red-800 border-red-300'
-  if (level >= 3) return 'bg-amber-100 text-amber-800 border-amber-300'
-  if (level >= 2) return 'bg-blue-100 text-blue-800 border-blue-300'
-  return 'bg-green-100 text-green-800 border-green-300'
+  if (level >= 4) return 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700'
+  if (level >= 3) return 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700'
+  if (level >= 2) return 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700'
+  return 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700'
 }
 
 // Get icon component for a question
@@ -448,10 +446,10 @@ function dismissDeepLinkBanner() {
             @click="selectTierFromTable(tier.slug)"
             class="w-full text-left p-5 rounded-lg border-2 transition-all hover:shadow-md group"
             :class="{
-              'bg-green-50 border-green-200 hover:border-green-400': tier.color === 'green',
-              'bg-yellow-50 border-yellow-200 hover:border-yellow-400': tier.color === 'yellow',
-              'bg-orange-50 border-orange-200 hover:border-orange-400': tier.color === 'orange',
-              'bg-red-50 border-red-200 hover:border-red-400': tier.color === 'red'
+              'bg-green-50 border-green-200 hover:border-green-400 dark:bg-green-900/20 dark:border-green-800 dark:hover:border-green-600': tier.color === 'green',
+              'bg-yellow-50 border-yellow-200 hover:border-yellow-400 dark:bg-yellow-900/20 dark:border-yellow-800 dark:hover:border-yellow-600': tier.color === 'yellow',
+              'bg-orange-50 border-orange-200 hover:border-orange-400 dark:bg-orange-900/20 dark:border-orange-800 dark:hover:border-orange-600': tier.color === 'orange',
+              'bg-red-50 border-red-200 hover:border-red-400 dark:bg-red-900/20 dark:border-red-800 dark:hover:border-red-600': tier.color === 'red'
             }"
           >
             <div class="flex items-start gap-4">
@@ -459,10 +457,10 @@ function dismissDeepLinkBanner() {
               <div
                 class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
                 :class="{
-                  'bg-green-100 text-green-600': tier.color === 'green',
-                  'bg-yellow-100 text-yellow-600': tier.color === 'yellow',
-                  'bg-orange-100 text-orange-600': tier.color === 'orange',
-                  'bg-red-100 text-red-600': tier.color === 'red'
+                  'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400': tier.color === 'green',
+                  'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400': tier.color === 'yellow',
+                  'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400': tier.color === 'orange',
+                  'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400': tier.color === 'red'
                 }"
               >
                 <component :is="getTierIcon(tier.color)" class="w-6 h-6" />
@@ -475,10 +473,10 @@ function dismissDeepLinkBanner() {
                     <span
                       class="text-lg font-bold"
                       :class="{
-                        'text-green-800': tier.color === 'green',
-                        'text-yellow-800': tier.color === 'yellow',
-                        'text-orange-800': tier.color === 'orange',
-                        'text-red-800': tier.color === 'red'
+                        'text-green-800 dark:text-green-300': tier.color === 'green',
+                        'text-yellow-800 dark:text-yellow-300': tier.color === 'yellow',
+                        'text-orange-800 dark:text-orange-300': tier.color === 'orange',
+                        'text-red-800 dark:text-red-300': tier.color === 'red'
                       }"
                     >
                       {{ tier.short_name }}
@@ -550,21 +548,21 @@ function dismissDeepLinkBanner() {
                 <div class="flex flex-wrap gap-2">
                   <span
                     v-if="tier.consultation_required"
-                    class="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-amber-100 text-amber-800"
+                    class="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
                   >
                     <AlertTriangle class="w-3 h-3" />
                     Consultation required
                   </span>
                   <span
                     v-if="tier.retention_questions_required"
-                    class="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-800"
+                    class="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-surface-alt text-primary"
                   >
                     <Info class="w-3 h-3" />
                     Retention planning required
                   </span>
                   <span
                     v-if="!tier.consultation_required && !tier.retention_questions_required"
-                    class="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-green-100 text-green-800"
+                    class="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
                   >
                     <Check class="w-3 h-3" />
                     Self-service
@@ -603,7 +601,7 @@ function dismissDeepLinkBanner() {
             @click="selectedDiscipline = selectedDiscipline === key ? null : key"
             class="px-4 py-2 text-sm rounded-lg border transition-colors"
             :class="selectedDiscipline === key
-              ? 'bg-blue-100 border-blue-300 text-blue-800'
+              ? 'bg-surface-alt border-primary text-primary'
               : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
           >
             {{ disc.name }}
@@ -617,24 +615,24 @@ function dismissDeepLinkBanner() {
               v-if="examples[selectedDiscipline].examples?.[tier.slug]"
               class="p-4 rounded-lg border-2"
               :class="{
-                'bg-green-50 border-green-200': tier.color === 'green',
-                'bg-yellow-50 border-yellow-200': tier.color === 'yellow',
-                'bg-orange-50 border-orange-200': tier.color === 'orange',
-                'bg-red-50 border-red-200': tier.color === 'red'
+                'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800': tier.color === 'green',
+                'bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800': tier.color === 'yellow',
+                'bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800': tier.color === 'orange',
+                'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800': tier.color === 'red'
               }"
             >
               <div class="flex items-center gap-3 mb-2">
                 <component :is="getTierIcon(tier.color)" class="w-5 h-5" :class="{
-                  'text-green-600': tier.color === 'green',
-                  'text-yellow-600': tier.color === 'yellow',
-                  'text-orange-600': tier.color === 'orange',
-                  'text-red-600': tier.color === 'red'
+                  'text-green-600 dark:text-green-400': tier.color === 'green',
+                  'text-yellow-600 dark:text-yellow-400': tier.color === 'yellow',
+                  'text-orange-600 dark:text-orange-400': tier.color === 'orange',
+                  'text-red-600 dark:text-red-400': tier.color === 'red'
                 }" />
                 <span class="font-semibold" :class="{
-                  'text-green-800': tier.color === 'green',
-                  'text-yellow-800': tier.color === 'yellow',
-                  'text-orange-800': tier.color === 'orange',
-                  'text-red-800': tier.color === 'red'
+                  'text-green-800 dark:text-green-300': tier.color === 'green',
+                  'text-yellow-800 dark:text-yellow-300': tier.color === 'yellow',
+                  'text-orange-800 dark:text-orange-300': tier.color === 'orange',
+                  'text-red-800 dark:text-red-300': tier.color === 'red'
                 }">{{ tier.short_name }}</span>
                 <span class="text-text-secondary">{{ tier.name }}</span>
               </div>
@@ -693,7 +691,7 @@ function dismissDeepLinkBanner() {
       <!-- Questionnaire: Intro Screen -->
       <div v-else-if="viewMode === 'questionnaire' && !currentQuestionId" class="space-y-6">
         <div class="text-center">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-surface-alt flex items-center justify-center">
             <Shield class="w-8 h-8 text-primary" />
           </div>
           <h2
@@ -711,21 +709,16 @@ function dismissDeepLinkBanner() {
         <!-- Audience Note - Who needs this questionnaire? -->
         <div
           v-if="intro.audience_note"
-          class="rounded-lg border p-5 text-left"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800/50 border-gray-700'
-            : 'bg-amber-50 border-amber-200'"
+          class="rounded-lg border p-5 text-left bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800"
         >
           <h3
-            class="font-semibold mb-3 flex items-center gap-2"
-            :class="preferencesStore.darkMode ? 'text-amber-400' : 'text-amber-800'"
+            class="font-semibold mb-3 flex items-center gap-2 text-amber-800 dark:text-amber-400"
           >
             <MessageCircleQuestion class="w-5 h-5" />
             {{ intro.audience_note.title }}
           </h3>
           <AnnotatedHtml
-            class="prose prose-sm max-w-none"
-            :class="preferencesStore.darkMode ? 'prose-invert' : 'prose-amber'"
+            class="prose prose-sm max-w-none prose-amber dark:prose-invert"
             :html="renderMarkdown(intro.audience_note.description)"
           />
         </div>
@@ -756,7 +749,7 @@ function dismissDeepLinkBanner() {
             @click="quickSelectTier(intro.quick_select.tier)"
             class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border transition-colors border-border-strong text-text-secondary hover:bg-surface-alt"
           >
-            <ShieldCheck class="w-4 h-4 text-green-500" />
+            <ShieldCheck class="w-4 h-4 text-green-500 dark:text-green-400" />
             {{ intro.quick_select.label }}
           </button>
 
@@ -775,10 +768,7 @@ function dismissDeepLinkBanner() {
         <!-- Deep-link landing banner -->
         <div
           v-if="deepLinkBanner === currentQuestionId"
-          class="rounded-lg border px-4 py-3 text-sm flex items-start gap-3"
-          :class="preferencesStore.darkMode
-            ? 'bg-amber-900/30 border-amber-700 text-amber-200'
-            : 'bg-amber-50 border-amber-200 text-amber-900'"
+          class="rounded-lg border px-4 py-3 text-sm flex items-start gap-3 bg-amber-50 border-amber-200 text-amber-900 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-200"
         >
           <Info class="w-4 h-4 flex-shrink-0 mt-0.5" />
           <div class="flex-1">
@@ -800,7 +790,7 @@ function dismissDeepLinkBanner() {
           class="rounded-lg border p-6 bg-surface border-border"
         >
           <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-lg bg-blue-100 text-primary flex items-center justify-center flex-shrink-0">
+            <div class="w-12 h-12 rounded-lg bg-surface-alt text-primary flex items-center justify-center flex-shrink-0">
               <component :is="iconMap[currentQuestion.icon] || Info" class="w-6 h-6" />
             </div>
             <div class="flex-1">
@@ -839,20 +829,14 @@ function dismissDeepLinkBanner() {
             </button>
             <div
               v-if="showLearnMore"
-              class="mt-3 p-4 rounded-lg text-sm"
-              :class="preferencesStore.darkMode
-                ? 'bg-blue-900/30 text-blue-200'
-                : 'bg-blue-50 text-blue-900'"
+              class="mt-3 p-4 rounded-lg text-sm bg-surface-alt text-primary"
             >
-              <AnnotatedHtml class="prose prose-sm max-w-none" :class="preferencesStore.darkMode ? 'prose-invert' : ''" :html="renderMarkdown(currentQuestion.learn_more.content)" />
+              <AnnotatedHtml class="prose prose-sm max-w-none dark:prose-invert" :html="renderMarkdown(currentQuestion.learn_more.content)" />
               <!-- Link to calculator if specified -->
               <button
                 v-if="currentQuestion.learn_more.link?.action === 'open_calculator'"
                 @click="handleLearnMoreLink(currentQuestion.learn_more.link)"
-                class="mt-3 inline-flex items-center gap-2 font-medium"
-                :class="preferencesStore.darkMode
-                  ? 'text-blue-300 hover:text-blue-200'
-                  : 'text-blue-700 hover:text-blue-800'"
+                class="mt-3 inline-flex items-center gap-2 font-medium text-primary hover:text-primary-dark"
               >
                 <Fingerprint class="w-4 h-4" />
                 {{ currentQuestion.learn_more.link.label }}
@@ -896,7 +880,7 @@ function dismissDeepLinkBanner() {
             <component
               :is="tierConfig?.consultation_required ? AlertTriangle : CheckCircle"
               class="w-8 h-8"
-              :class="tierConfig?.consultation_required ? 'text-amber-600' : 'text-green-600'"
+              :class="tierConfig?.consultation_required ? 'text-amber-600 dark:text-amber-400' : 'text-green-600 dark:text-green-400'"
             />
           </div>
 
@@ -967,10 +951,7 @@ function dismissDeepLinkBanner() {
 
         <!-- Classification disclaimer -->
         <div
-          class="rounded-lg border p-4 text-sm"
-          :class="preferencesStore.darkMode
-            ? 'bg-amber-900/20 border-amber-700 text-amber-300'
-            : 'bg-amber-50 border-amber-200 text-amber-800'"
+          class="rounded-lg border p-4 text-sm bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-900/20 dark:border-amber-700 dark:text-amber-300"
         >
           <p class="font-medium mb-1">Classification guidance, not a final determination</p>
           <p>This result is a starting point based on common data sensitivity patterns. Validate your classification with your institution's IT security or research compliance office before making data management or storage decisions.</p>

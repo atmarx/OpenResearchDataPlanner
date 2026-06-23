@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import DecisionFlow from '../components/DecisionFlow.vue'
 import {
@@ -13,7 +12,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'irb-workflow'
 
@@ -242,13 +240,12 @@ function getNextApplet(output) {
 }
 
 function getLevelColorClasses(color) {
-  const isDark = preferencesStore.darkMode
   const colors = {
-    green: isDark ? 'bg-green-900/30 border-green-700 text-green-400' : 'bg-green-50 border-green-200 text-green-700',
-    yellow: isDark ? 'bg-yellow-900/30 border-yellow-700 text-yellow-400' : 'bg-yellow-50 border-yellow-200 text-yellow-700',
-    orange: isDark ? 'bg-orange-900/30 border-orange-700 text-orange-400' : 'bg-orange-50 border-orange-200 text-orange-700',
-    blue: isDark ? 'bg-blue-900/30 border-blue-700 text-blue-400' : 'bg-blue-50 border-blue-200 text-blue-700',
-    red: isDark ? 'bg-red-900/30 border-red-700 text-red-400' : 'bg-red-50 border-red-200 text-red-700'
+    green: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-700 dark:text-green-400',
+    yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700 dark:bg-yellow-900/30 dark:border-yellow-700 dark:text-yellow-400',
+    orange: 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/30 dark:border-orange-700 dark:text-orange-400',
+    blue: 'bg-surface-alt border-primary text-primary',
+    red: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-700 dark:text-red-400'
   }
   return colors[color] || colors.yellow
 }
@@ -295,7 +292,7 @@ function getLevelColorClasses(color) {
                 </span>
               </div>
 
-              <div v-if="result.status === 'consult_irb'" class="p-3 rounded-lg" :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white/50'">
+              <div v-if="result.status === 'consult_irb'" class="p-3 rounded-lg bg-surface">
                 <p class="text-sm font-medium">
                   <strong>Next step:</strong> Contact your IRB office for a determination on AI tool use.
                   Bring your protocol number and describe the specific AI tools you want to use.

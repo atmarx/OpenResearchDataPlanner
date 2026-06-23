@@ -3,7 +3,6 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfigStore } from '@/stores/configStore'
 import { useSlateStore } from '@/stores/slateStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   X,
   Check,
@@ -21,7 +20,6 @@ const router = useRouter()
 
 const configStore = useConfigStore()
 const slateStore = useSlateStore()
-const preferencesStore = usePreferencesStore()
 
 // Search and filter state
 const searchQuery = ref('')
@@ -174,15 +172,17 @@ function getServiceComplianceInfo(serviceSlug) {
   }
 }
 
-// Get tier color class
+// Get tier color class — tier hues are PLATFORM-LOCKED status colours
+// (never skinned), so keep literals and add dark: variants. The neutral
+// fallback is chrome → semantic tokens.
 function getTierColorClass(tierSlug) {
   const tier = tiers.value.find(t => t.slug === tierSlug)
   switch (tier?.color) {
-    case 'green': return 'bg-green-100 text-green-800'
-    case 'yellow': return 'bg-yellow-100 text-yellow-800'
-    case 'orange': return 'bg-orange-100 text-orange-800'
-    case 'red': return 'bg-red-100 text-red-800'
-    default: return 'bg-gray-100 text-gray-800'
+    case 'green': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+    case 'yellow': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+    case 'orange': return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
+    case 'red': return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+    default: return 'bg-surface-alt text-text'
   }
 }
 </script>
@@ -313,7 +313,7 @@ function getTierColorClass(tierSlug) {
                       >{{ service.name }}</span>
                       <span
                         v-if="getServiceComplianceInfo(service.slug)?.hasBaa"
-                        class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-700 shrink-0"
+                        class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300 shrink-0"
                         :title="getServiceComplianceInfo(service.slug)?.baaReference || 'BAA in place for sensitive data tiers'"
                       >
                         <ShieldCheck class="w-3 h-3" />
@@ -335,28 +335,28 @@ function getTierColorClass(tierSlug) {
                   >
                     <span
                       v-if="getAvailability(service.slug, tier.slug).status === 'available'"
-                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600"
+                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400"
                       :title="getAvailability(service.slug, tier.slug).label"
                     >
                       <Check class="w-4 h-4" />
                     </span>
                     <span
                       v-else-if="getAvailability(service.slug, tier.slug).status === 'review'"
-                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 text-yellow-600"
+                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400"
                       :title="getAvailability(service.slug, tier.slug).label"
                     >
                       <AlertTriangle class="w-4 h-4" />
                     </span>
                     <span
                       v-else-if="getAvailability(service.slug, tier.slug).status === 'consultation'"
-                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 text-orange-600"
+                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400"
                       :title="getAvailability(service.slug, tier.slug).label"
                     >
                       <Info class="w-4 h-4" />
                     </span>
                     <span
                       v-else
-                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-400"
+                      class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-alt text-text-muted"
                       :title="getAvailability(service.slug, tier.slug).label"
                     >
                       <XCircle class="w-4 h-4" />
@@ -423,31 +423,31 @@ function getTierColorClass(tierSlug) {
     >
       <div class="flex flex-wrap gap-4">
         <div class="flex items-center gap-2">
-          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
             <Check class="w-3 h-3" />
           </span>
           <span>Available</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-yellow-100 text-yellow-600">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400">
             <AlertTriangle class="w-3 h-3" />
           </span>
           <span>Requires review</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-100 text-orange-600">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
             <Info class="w-3 h-3" />
           </span>
           <span>Consultation needed</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-100 text-gray-400">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-surface-alt text-text-muted">
             <XCircle class="w-3 h-3" />
           </span>
           <span>Not available</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-700">
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300">
             <ShieldCheck class="w-3 h-3" />
             BAA
           </span>
@@ -507,19 +507,15 @@ function getTierColorClass(tierSlug) {
           <!-- Compliance Status -->
           <div
             v-if="selectedService && getServiceComplianceInfo(selectedService.slug)"
-            class="mb-4 rounded-lg p-3 border"
-            :class="preferencesStore.darkMode
-              ? 'bg-teal-900/20 border-teal-800/50'
-              : 'bg-teal-50 border-teal-200'"
+            class="mb-4 rounded-lg p-3 border bg-teal-50 border-teal-200 dark:bg-teal-900/20 dark:border-teal-800/50"
           >
             <div class="flex items-center gap-1.5 mb-2">
               <ShieldCheck class="w-4 h-4 text-teal-600" />
               <span
-                class="text-sm font-semibold"
-                :class="preferencesStore.darkMode ? 'text-teal-300' : 'text-teal-800'"
+                class="text-sm font-semibold text-teal-800 dark:text-teal-300"
               >Compliance Status (L3/L4)</span>
             </div>
-            <dl class="space-y-1 text-xs" :class="preferencesStore.darkMode ? 'text-teal-200' : 'text-teal-900'">
+            <dl class="space-y-1 text-xs text-teal-900 dark:text-teal-200">
               <div v-if="getServiceComplianceInfo(selectedService.slug).hasBaa" class="flex gap-1">
                 <dt class="font-medium shrink-0">BAA:</dt>
                 <dd>In place — {{ getServiceComplianceInfo(selectedService.slug).baaReference || 'contact IT for details' }}</dd>

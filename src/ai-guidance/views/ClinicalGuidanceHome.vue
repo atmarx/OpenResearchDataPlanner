@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { useConfigStore } from '@/stores/configStore'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
@@ -19,7 +18,6 @@ import {
 } from 'lucide-vue-next'
 
 const router = useRouter()
-const preferencesStore = usePreferencesStore()
 const sessionStore = useSessionStore()
 const configStore = useConfigStore()
 const aiStore = useAiGuidanceStore()
@@ -79,17 +77,11 @@ function backToGeneralGuidance() {
   router.push('/ai')
 }
 
-function getColorClasses(color, isDark) {
+function getColorClasses(color) {
   const colors = {
-    blue: isDark
-      ? 'bg-blue-900/30 border-blue-700 text-blue-400'
-      : 'bg-blue-50 border-blue-200 text-blue-600',
-    purple: isDark
-      ? 'bg-purple-900/30 border-purple-700 text-purple-400'
-      : 'bg-purple-50 border-purple-200 text-purple-600',
-    green: isDark
-      ? 'bg-green-900/30 border-green-700 text-green-400'
-      : 'bg-green-50 border-green-200 text-green-600'
+    blue: 'bg-surface-alt border-border text-primary',
+    purple: 'bg-purple-50 border-purple-200 text-purple-600 dark:bg-purple-900/30 dark:border-purple-700 dark:text-purple-400',
+    green: 'bg-green-50 border-green-200 text-green-600 dark:bg-green-900/30 dark:border-green-700 dark:text-green-400'
   }
   return colors[color] || colors.blue
 }
@@ -132,27 +124,17 @@ function getColorClasses(color, isDark) {
       <!-- Tier Context (if applicable) -->
       <div
         v-if="hasClinicalContext && tierConfig"
-        class="p-4 rounded-lg border"
-        :class="preferencesStore.darkMode
-          ? 'bg-blue-900/20 border-blue-800'
-          : 'bg-blue-50 border-blue-200'"
+        class="p-4 rounded-lg border bg-surface-alt border-border"
       >
         <div class="flex items-start gap-3">
           <ShieldAlert
-            class="w-5 h-5 flex-shrink-0"
-            :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+            class="w-5 h-5 flex-shrink-0 text-primary"
           />
           <div>
-            <p
-              class="font-medium"
-              :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-800'"
-            >
+            <p class="font-medium text-primary">
               You're working with {{ tierConfig.name }} data
             </p>
-            <p
-              class="text-sm mt-1"
-              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-700'"
-            >
+            <p class="text-sm mt-1 text-text-secondary">
               This guidance is tailored to healthcare compliance requirements.
             </p>
           </div>
@@ -200,7 +182,7 @@ function getColorClasses(color, isDark) {
             @click="goToApplet(applet.id)"
             class="relative p-4 rounded-lg border text-left transition-all hover:shadow-md group"
             :class="[
-              getColorClasses(applet.color, preferencesStore.darkMode),
+              getColorClasses(applet.color),
               'hover:scale-[1.02]'
             ]"
           >
@@ -282,26 +264,17 @@ function getColorClasses(color, isDark) {
 
       <!-- Disclaimer -->
       <div
-        class="p-4 rounded-lg border"
-        :class="preferencesStore.darkMode
-          ? 'bg-orange-900/20 border-orange-800'
-          : 'bg-orange-50 border-orange-200'"
+        class="p-4 rounded-lg border bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800"
       >
         <div class="flex items-start gap-3">
           <AlertTriangle
-            class="w-5 h-5 flex-shrink-0"
-            :class="preferencesStore.darkMode ? 'text-orange-400' : 'text-orange-600'"
+            class="w-5 h-5 flex-shrink-0 text-orange-600 dark:text-orange-400"
           />
           <div class="text-sm">
-            <p
-              class="font-medium mb-1"
-              :class="preferencesStore.darkMode ? 'text-orange-300' : 'text-orange-800'"
-            >
+            <p class="font-medium mb-1 text-orange-800 dark:text-orange-300">
               Important Disclaimer
             </p>
-            <p
-              :class="preferencesStore.darkMode ? 'text-orange-400' : 'text-orange-700'"
-            >
+            <p class="text-orange-700 dark:text-orange-400">
               This guidance is for educational purposes and does not constitute legal or compliance advice.
               Always consult your institutional IRB office, privacy/compliance office, or regulatory affairs
               before making final decisions about HIPAA, IRB protocols, or FDA requirements.

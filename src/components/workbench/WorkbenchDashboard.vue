@@ -1,12 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useWorkbenchStore } from '@/stores/workbenchStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { Upload, FileJson, FolderOpen, Clock, ChevronDown } from 'lucide-vue-next'
 import PlanReview from './PlanReview.vue'
 
 const workbenchStore = useWorkbenchStore()
-const preferencesStore = usePreferencesStore()
 
 const isDragging = ref(false)
 const fileInput = ref(null)
@@ -89,27 +87,19 @@ function getStatusBadge(status) {
   const badges = {
     pending_review: {
       label: 'Pending Review',
-      class: preferencesStore.darkMode
-        ? 'bg-yellow-900/50 text-yellow-300'
-        : 'bg-yellow-100 text-yellow-700'
+      class: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300'
     },
     in_review: {
       label: 'In Review',
-      class: preferencesStore.darkMode
-        ? 'bg-blue-900/50 text-blue-300'
-        : 'bg-blue-100 text-blue-700'
+      class: 'bg-surface-alt text-primary'
     },
     needs_revision: {
       label: 'Needs Revision',
-      class: preferencesStore.darkMode
-        ? 'bg-orange-900/50 text-orange-300'
-        : 'bg-orange-100 text-orange-700'
+      class: 'bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300'
     },
     approved: {
       label: 'Approved',
-      class: preferencesStore.darkMode
-        ? 'bg-green-900/50 text-green-300'
-        : 'bg-green-100 text-green-700'
+      class: 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
     }
   }
   return badges[status] || badges.pending_review

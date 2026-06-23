@@ -3,7 +3,6 @@ import { computed, ref } from 'vue'
 import { marked } from 'marked'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { useWizard } from '@/composables/useWizard'
 import { useDMPGenerator } from '@/composables/useDMPGenerator'
 import { Download, FileText, RefreshCw, ExternalLink, CheckCircle, FileCode, Copy, Check } from 'lucide-vue-next'
@@ -11,7 +10,6 @@ import PageFeedback from '@/components/feedback/PageFeedback.vue'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
-const preferencesStore = usePreferencesStore()
 const wizard = useWizard()
 const dmpGenerator = useDMPGenerator()
 
@@ -243,56 +241,38 @@ function startOver() {
     <div v-show="activeTab === 'budget'">
       <!-- Summary cards -->
       <div class="grid gap-4 md:grid-cols-3 mb-8">
-        <div
-          class="rounded-lg p-4"
-          :class="preferencesStore.darkMode ? 'bg-blue-900/30' : 'bg-blue-50'"
-        >
-          <p class="text-sm text-blue-500 font-medium">Monthly Cost</p>
-          <p
-            class="text-2xl font-bold"
-            :class="preferencesStore.darkMode ? 'text-blue-200' : 'text-blue-900'"
-          >
+        <div class="rounded-lg p-4 bg-surface-alt">
+          <p class="text-sm text-primary font-medium">Monthly Cost</p>
+          <p class="text-2xl font-bold text-text">
             {{ formatCurrency(costBreakdown.monthlyTotal) }}
           </p>
         </div>
-        <div
-          class="rounded-lg p-4"
-          :class="preferencesStore.darkMode ? 'bg-green-900/30' : 'bg-green-50'"
-        >
+        <div class="rounded-lg p-4 bg-green-50 dark:bg-green-900/30">
           <p class="text-sm text-green-500 font-medium">Grant Period ({{ costBreakdown.grantMonths }} mo)</p>
-          <p
-            class="text-2xl font-bold"
-            :class="preferencesStore.darkMode ? 'text-green-200' : 'text-green-900'"
-          >
+          <p class="text-2xl font-bold text-green-900 dark:text-green-200">
             {{ formatCurrency(costBreakdown.grantTotal) }}
           </p>
         </div>
-        <div
-          class="rounded-lg p-4"
-          :class="preferencesStore.darkMode ? 'bg-purple-900/30' : 'bg-purple-50'"
-        >
+        <div class="rounded-lg p-4 bg-purple-50 dark:bg-purple-900/30">
           <p class="text-sm text-purple-500 font-medium">
             Archive ({{ costBreakdown.archiveYears.toFixed(1) }} yr)
           </p>
-          <p
-            class="text-2xl font-bold"
-            :class="preferencesStore.darkMode ? 'text-purple-200' : 'text-purple-900'"
-          >
+          <p class="text-2xl font-bold text-purple-900 dark:text-purple-200">
             {{ formatCurrency(costBreakdown.archiveTotal) }}
           </p>
         </div>
       </div>
 
       <!-- Grand total -->
-      <div class="bg-gray-900 text-white rounded-lg p-6 mb-8">
+      <div class="bg-canvas text-text rounded-lg p-6 mb-8">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-gray-400">Grand Total (Grant + Archive)</p>
+            <p class="text-text-muted">Grand Total (Grant + Archive)</p>
             <p class="text-3xl font-bold">
               {{ formatCurrency(costBreakdown.grandTotal) }}
             </p>
           </div>
-          <div class="text-right text-sm text-gray-400">
+          <div class="text-right text-sm text-text-muted">
             <p>{{ configStore.tiersBySlug[sessionStore.selectedTier]?.name }}</p>
             <p>{{ sessionStore.grantMonths }} month grant</p>
             <p>{{ sessionStore.session.retention.longest_years }} year retention</p>
@@ -406,14 +386,8 @@ function startOver() {
     <!-- DMP Tab -->
     <div v-show="activeTab === 'dmp'">
       <!-- DMP info -->
-      <div
-        class="rounded-lg p-4 mb-6"
-        :class="preferencesStore.darkMode ? 'bg-blue-900/30' : 'bg-blue-50'"
-      >
-        <p
-          class="text-sm"
-          :class="preferencesStore.darkMode ? 'text-blue-200' : 'text-blue-800'"
-        >
+      <div class="rounded-lg p-4 mb-6 bg-surface-alt">
+        <p class="text-sm text-text-secondary">
           <strong>Data Management Plan</strong> - This document describes how your research data will be stored,
           protected, and retained. Copy or download this content to include in your grant proposal.
         </p>
@@ -445,8 +419,7 @@ function startOver() {
           </div>
         </div>
         <div
-          class="p-6 prose prose-sm max-w-none overflow-auto max-h-[60vh]"
-          :class="preferencesStore.darkMode ? 'prose-invert' : ''"
+          class="p-6 prose prose-sm max-w-none overflow-auto max-h-[60vh] dark:prose-invert"
           v-html="dmpHtml"
         />
       </div>
@@ -454,13 +427,9 @@ function startOver() {
       <!-- Services without templates warning -->
       <div
         v-if="dmpGenerator.servicesWithoutTemplates.value.length > 0"
-        class="rounded-lg p-4 mb-6"
-        :class="preferencesStore.darkMode ? 'bg-yellow-900/30' : 'bg-yellow-50'"
+        class="rounded-lg p-4 mb-6 bg-yellow-50 dark:bg-yellow-900/30"
       >
-        <p
-          class="text-sm"
-          :class="preferencesStore.darkMode ? 'text-yellow-200' : 'text-yellow-800'"
-        >
+        <p class="text-sm text-yellow-800 dark:text-yellow-200">
           <strong>Note:</strong> Some services do not have DMP templates and are not included above:
           {{ dmpGenerator.servicesWithoutTemplates.value.map(s => configStore.servicesBySlug[s.service_slug]?.name).join(', ') }}
         </p>
@@ -468,14 +437,8 @@ function startOver() {
     </div>
 
     <!-- Disclaimer and contact (shown on both tabs) -->
-    <div
-      class="rounded-lg p-4 mb-6"
-      :class="preferencesStore.darkMode ? 'bg-yellow-900/30' : 'bg-yellow-50'"
-    >
-      <p
-        class="text-sm"
-        :class="preferencesStore.darkMode ? 'text-yellow-200' : 'text-yellow-800'"
-      >
+    <div class="rounded-lg p-4 mb-6 bg-yellow-50 dark:bg-yellow-900/30">
+      <p class="text-sm text-yellow-800 dark:text-yellow-200">
         <strong>Note:</strong> This is an estimate based on current pricing and your inputs.
         Actual costs may vary. Please consult with
         <a

@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import {
   RefreshCw,
@@ -16,7 +15,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'reproducibility-checkpoint'
 
@@ -190,11 +188,10 @@ function isPipelineItemChecked(itemId) {
 }
 
 function getReadinessClasses(color) {
-  const isDark = preferencesStore.darkMode
   const colors = {
-    green: isDark ? 'bg-green-900/30 border-green-700 text-green-400' : 'bg-green-50 border-green-200 text-green-700',
-    yellow: isDark ? 'bg-yellow-900/30 border-yellow-700 text-yellow-400' : 'bg-yellow-50 border-yellow-200 text-yellow-700',
-    red: isDark ? 'bg-red-900/30 border-red-700 text-red-400' : 'bg-red-50 border-red-200 text-red-700'
+    green: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-700 dark:text-green-400',
+    yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700 dark:bg-yellow-900/30 dark:border-yellow-700 dark:text-yellow-400',
+    red: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-700 dark:text-red-400'
   }
   return colors[color] || colors.yellow
 }
@@ -263,7 +260,7 @@ function getNextApplet() {
           class="p-4 rounded-lg border cursor-pointer transition-all"
           :class="[
             isItemChecked(item.id)
-              ? (preferencesStore.darkMode ? 'bg-green-900/20 border-green-700' : 'bg-green-50 border-green-300')
+              ? 'bg-green-50 border-green-300 dark:bg-green-900/20 dark:border-green-700'
               : 'bg-surface border-border hover:border-border-strong'
           ]"
         >
@@ -286,8 +283,7 @@ function getNextApplet() {
                   {{ item.question }}
                 </h4>
                 <span
-                  class="px-2 py-0.5 text-xs rounded-full"
-                  :class="preferencesStore.darkMode ? 'bg-red-900/50 text-red-300' : 'bg-red-100 text-red-700'"
+                  class="px-2 py-0.5 text-xs rounded-full bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300"
                 >
                   Required
                 </span>
@@ -317,7 +313,7 @@ function getNextApplet() {
           class="p-4 rounded-lg border cursor-pointer transition-all"
           :class="[
             isItemChecked(item.id)
-              ? (preferencesStore.darkMode ? 'bg-blue-900/20 border-blue-700' : 'bg-blue-50 border-blue-300')
+              ? 'bg-surface-alt border-primary'
               : 'bg-surface border-border hover:border-border-strong'
           ]"
         >
@@ -325,7 +321,7 @@ function getNextApplet() {
             <div
               class="w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 flex items-center justify-center"
               :class="isItemChecked(item.id)
-                ? 'bg-blue-500 border-blue-500'
+                ? 'bg-primary border-primary'
                 : 'border-border-strong'"
             >
               <CheckCircle v-if="isItemChecked(item.id)" class="w-3 h-3 text-white" />
@@ -373,7 +369,7 @@ function getNextApplet() {
           class="p-3 rounded-lg border cursor-pointer transition-all flex items-start gap-3"
           :class="[
             isPipelineItemChecked(item.id)
-              ? (preferencesStore.darkMode ? 'bg-purple-900/20 border-purple-700' : 'bg-purple-50 border-purple-300')
+              ? 'bg-purple-50 border-purple-300 dark:bg-purple-900/20 dark:border-purple-700'
               : 'bg-surface-alt border-border hover:border-border-strong'
           ]"
         >

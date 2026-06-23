@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   X,
   Mail,
@@ -22,7 +21,6 @@ const emit = defineEmits(['close'])
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
-const preferencesStore = usePreferencesStore()
 
 const helpConfig = computed(() => configStore.config?.help || {})
 const contactOptions = computed(() => helpConfig.value?.contact_options || [])
@@ -125,10 +123,7 @@ function handleClose() {
           <!-- Contextual message for current step -->
           <div
             v-if="contextualHelp"
-            class="rounded-lg p-4 text-sm"
-            :class="preferencesStore.darkMode
-              ? 'bg-blue-900/30 border border-blue-700 text-blue-200'
-              : 'bg-blue-50 border border-blue-200 text-blue-800'"
+            class="rounded-lg p-4 text-sm bg-surface-alt border border-primary text-primary"
           >
             <p class="font-medium mb-1">{{ contextualHelp.title }}</p>
             <p>{{ contextualHelp.message }}</p>
@@ -243,10 +238,7 @@ function handleClose() {
           <!-- Urgent contact -->
           <div
             v-if="urgentContact?.enabled"
-            class="rounded-lg p-3 flex items-start gap-3 text-sm"
-            :class="preferencesStore.darkMode
-              ? 'bg-red-900/20 border border-red-800 text-red-300'
-              : 'bg-red-50 border border-red-200 text-red-700'"
+            class="rounded-lg p-3 flex items-start gap-3 text-sm bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300"
           >
             <AlertTriangle class="w-4 h-4 flex-shrink-0 mt-0.5" />
             <div>

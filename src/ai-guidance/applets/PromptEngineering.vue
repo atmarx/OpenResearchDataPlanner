@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import {
   Lightbulb,
@@ -15,7 +14,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'prompt-engineering'
 
@@ -287,7 +285,7 @@ function getNextApplet() {
               @click="copyContent(promptTemplate, 'template')"
               class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
               :class="copiedContent === 'template'
-                ? (preferencesStore.darkMode ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-700')
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
                 : 'bg-surface-alt text-text-secondary hover:bg-border'"
             >
               <component :is="copiedContent === 'template' ? CheckCircle : Copy" class="w-4 h-4" />
@@ -382,7 +380,7 @@ function getNextApplet() {
               @click="copyContent(taskTemplates.find(t => t.id === selectedTemplate)?.template, selectedTemplate)"
               class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
               :class="copiedContent === selectedTemplate
-                ? (preferencesStore.darkMode ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-700')
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
                 : 'bg-surface-alt text-text-secondary hover:bg-border'"
             >
               <component :is="copiedContent === selectedTemplate ? CheckCircle : Copy" class="w-4 h-4" />
@@ -395,14 +393,11 @@ function getNextApplet() {
     </div>
 
     <!-- Reproducibility Tips -->
-    <div
-      class="p-4 rounded-lg border mb-6"
-      :class="preferencesStore.darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'"
-    >
-      <h4 class="font-medium mb-2" :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-800'">
+    <div class="p-4 rounded-lg border mb-6 bg-surface-alt border-border">
+      <h4 class="font-medium mb-2 text-primary">
         Reproducibility Tips
       </h4>
-      <ul class="text-sm space-y-1" :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-700'">
+      <ul class="text-sm space-y-1 text-text-secondary">
         <li>• Save your prompts exactly as used</li>
         <li>• Document temperature and other parameters</li>
         <li>• Use system prompts for consistent behavior</li>
@@ -412,20 +407,17 @@ function getNextApplet() {
     </div>
 
     <!-- Prompt Injection Warning -->
-    <div
-      class="p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-yellow-900/20 border-yellow-800' : 'bg-yellow-50 border-yellow-200'"
-    >
+    <div class="p-4 rounded-lg border bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800">
       <div class="flex items-start gap-3">
-        <AlertTriangle class="w-5 h-5 flex-shrink-0 mt-0.5" :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-600'" />
+        <AlertTriangle class="w-5 h-5 flex-shrink-0 mt-0.5 text-yellow-600 dark:text-yellow-400" />
         <div>
-          <h4 class="font-medium" :class="preferencesStore.darkMode ? 'text-yellow-300' : 'text-yellow-800'">
+          <h4 class="font-medium text-yellow-800 dark:text-yellow-300">
             Prompt Injection Awareness
           </h4>
-          <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-700'">
+          <p class="text-sm mt-1 text-yellow-700 dark:text-yellow-400">
             If building applications that include user input in prompts:
           </p>
-          <ul class="text-sm mt-2 space-y-1" :class="preferencesStore.darkMode ? 'text-yellow-400' : 'text-yellow-700'">
+          <ul class="text-sm mt-2 space-y-1 text-yellow-700 dark:text-yellow-400">
             <li>• User input can override your instructions</li>
             <li>• Never trust AI output for security decisions</li>
             <li>• Sanitize/validate user inputs</li>

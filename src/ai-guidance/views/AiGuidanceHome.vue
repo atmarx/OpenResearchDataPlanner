@@ -2,7 +2,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { useConfigStore } from '@/stores/configStore'
 import {
@@ -36,7 +35,6 @@ import {
 
 const router = useRouter()
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 const sessionStore = useSessionStore()
 const configStore = useConfigStore()
 
@@ -282,60 +280,28 @@ function resetProgress() {
   }
 }
 
-// Color classes for applet cards
-function getColorClasses(color, isDark) {
+// Color classes for applet cards — categorical/status hues stay literal
+// (fixed meaning, must NOT follow the skin); dark: variants replace the
+// old JS darkMode branching. 'blue' here is a categorical card accent.
+function getColorClasses(color) {
   const colors = {
-    amber: isDark
-      ? 'bg-amber-900/30 border-amber-700 text-amber-400'
-      : 'bg-amber-50 border-amber-200 text-amber-600',
-    blue: isDark
-      ? 'bg-blue-900/30 border-blue-700 text-blue-400'
-      : 'bg-blue-50 border-blue-200 text-blue-600',
-    purple: isDark
-      ? 'bg-purple-900/30 border-purple-700 text-purple-400'
-      : 'bg-purple-50 border-purple-200 text-purple-600',
-    green: isDark
-      ? 'bg-green-900/30 border-green-700 text-green-400'
-      : 'bg-green-50 border-green-200 text-green-600',
-    indigo: isDark
-      ? 'bg-indigo-900/30 border-indigo-700 text-indigo-400'
-      : 'bg-indigo-50 border-indigo-200 text-indigo-600',
-    red: isDark
-      ? 'bg-red-900/30 border-red-700 text-red-400'
-      : 'bg-red-50 border-red-200 text-red-600',
-    orange: isDark
-      ? 'bg-orange-900/30 border-orange-700 text-orange-400'
-      : 'bg-orange-50 border-orange-200 text-orange-600',
-    slate: isDark
-      ? 'bg-slate-800 border-slate-600 text-slate-400'
-      : 'bg-slate-50 border-slate-200 text-slate-600',
-    cyan: isDark
-      ? 'bg-cyan-900/30 border-cyan-700 text-cyan-400'
-      : 'bg-cyan-50 border-cyan-200 text-cyan-600',
-    violet: isDark
-      ? 'bg-violet-900/30 border-violet-700 text-violet-400'
-      : 'bg-violet-50 border-violet-200 text-violet-600',
-    teal: isDark
-      ? 'bg-teal-900/30 border-teal-700 text-teal-400'
-      : 'bg-teal-50 border-teal-200 text-teal-600',
-    rose: isDark
-      ? 'bg-rose-900/30 border-rose-700 text-rose-400'
-      : 'bg-rose-50 border-rose-200 text-rose-600',
-    yellow: isDark
-      ? 'bg-yellow-900/30 border-yellow-700 text-yellow-400'
-      : 'bg-yellow-50 border-yellow-200 text-yellow-600',
-    emerald: isDark
-      ? 'bg-emerald-900/30 border-emerald-700 text-emerald-400'
-      : 'bg-emerald-50 border-emerald-200 text-emerald-600',
-    sky: isDark
-      ? 'bg-sky-900/30 border-sky-700 text-sky-400'
-      : 'bg-sky-50 border-sky-200 text-sky-600',
-    lime: isDark
-      ? 'bg-lime-900/30 border-lime-700 text-lime-400'
-      : 'bg-lime-50 border-lime-200 text-lime-600',
-    fuchsia: isDark
-      ? 'bg-fuchsia-900/30 border-fuchsia-700 text-fuchsia-400'
-      : 'bg-fuchsia-50 border-fuchsia-200 text-fuchsia-600'
+    amber: 'bg-amber-50 border-amber-200 text-amber-600 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-400',
+    blue: 'bg-blue-50 border-blue-200 text-blue-600 dark:bg-blue-900/30 dark:border-blue-700 dark:text-blue-400',
+    purple: 'bg-purple-50 border-purple-200 text-purple-600 dark:bg-purple-900/30 dark:border-purple-700 dark:text-purple-400',
+    green: 'bg-green-50 border-green-200 text-green-600 dark:bg-green-900/30 dark:border-green-700 dark:text-green-400',
+    indigo: 'bg-indigo-50 border-indigo-200 text-indigo-600 dark:bg-indigo-900/30 dark:border-indigo-700 dark:text-indigo-400',
+    red: 'bg-red-50 border-red-200 text-red-600 dark:bg-red-900/30 dark:border-red-700 dark:text-red-400',
+    orange: 'bg-orange-50 border-orange-200 text-orange-600 dark:bg-orange-900/30 dark:border-orange-700 dark:text-orange-400',
+    slate: 'bg-slate-50 border-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-400',
+    cyan: 'bg-cyan-50 border-cyan-200 text-cyan-600 dark:bg-cyan-900/30 dark:border-cyan-700 dark:text-cyan-400',
+    violet: 'bg-violet-50 border-violet-200 text-violet-600 dark:bg-violet-900/30 dark:border-violet-700 dark:text-violet-400',
+    teal: 'bg-teal-50 border-teal-200 text-teal-600 dark:bg-teal-900/30 dark:border-teal-700 dark:text-teal-400',
+    rose: 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-900/30 dark:border-rose-700 dark:text-rose-400',
+    yellow: 'bg-yellow-50 border-yellow-200 text-yellow-600 dark:bg-yellow-900/30 dark:border-yellow-700 dark:text-yellow-400',
+    emerald: 'bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-900/30 dark:border-emerald-700 dark:text-emerald-400',
+    sky: 'bg-sky-50 border-sky-200 text-sky-600 dark:bg-sky-900/30 dark:border-sky-700 dark:text-sky-400',
+    lime: 'bg-lime-50 border-lime-200 text-lime-600 dark:bg-lime-900/30 dark:border-lime-700 dark:text-lime-400',
+    fuchsia: 'bg-fuchsia-50 border-fuchsia-200 text-fuchsia-600 dark:bg-fuchsia-900/30 dark:border-fuchsia-700 dark:text-fuchsia-400'
   }
   return colors[color] || colors.blue
 }
@@ -574,35 +540,27 @@ function getColorClasses(color, isDark) {
         </p>
       </div>
 
-      <!-- Clinical & Healthcare AI Track -->
+      <!-- Clinical & Healthcare AI Track — blue is the app accent/info panel
+           here, so it maps to semantic tokens (follows skin + dark). -->
       <div
-        class="p-6 rounded-lg border"
-        :class="preferencesStore.darkMode
-          ? 'bg-blue-900/20 border-blue-800'
-          : 'bg-blue-50 border-blue-200'"
+        class="p-6 rounded-lg border bg-surface-alt border-border"
       >
         <div class="flex items-start gap-4">
           <div
-            class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
-            :class="preferencesStore.darkMode
-              ? 'bg-blue-900/50'
-              : 'bg-blue-100'"
+            class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-surface"
           >
             <ShieldAlert
-              class="w-6 h-6"
-              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+              class="w-6 h-6 text-primary"
             />
           </div>
           <div class="flex-1">
             <h2
-              class="text-lg font-semibold mb-1"
-              :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-800'"
+              class="text-lg font-semibold mb-1 text-primary"
             >
               Clinical & Healthcare AI Track
             </h2>
             <p
-              class="mb-3"
-              :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-700'"
+              class="mb-3 text-primary"
             >
               {{ hasClinicalContext
                 ? "You're working with healthcare data. We have specialized guidance for HIPAA, IRB, FDA, and clinical validation requirements."
@@ -611,10 +569,7 @@ function getColorClasses(color, isDark) {
             </p>
             <router-link
               to="/ai/clinical"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all hover:scale-105"
-              :class="preferencesStore.darkMode
-                ? 'bg-blue-600 text-white hover:bg-blue-500'
-                : 'bg-blue-600 text-white hover:bg-blue-700'"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all hover:scale-105 bg-primary text-on-primary hover:bg-primary-dark"
             >
               <span>Enter Clinical Track</span>
               <ArrowRight class="w-4 h-4" />
@@ -646,7 +601,7 @@ function getColorClasses(color, isDark) {
             @click="goToApplet(applet.id)"
             class="relative p-4 rounded-lg border text-left transition-all hover:shadow-md group"
             :class="[
-              getColorClasses(applet.color, preferencesStore.darkMode),
+              getColorClasses(applet.color),
               'hover:scale-[1.02]'
             ]"
           >

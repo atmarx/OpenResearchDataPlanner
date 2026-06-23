@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { useWorkbenchStore } from '@/stores/workbenchStore'
 import { useConfigStore } from '@/stores/configStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { usePdfExport } from '@/composables/usePdfExport'
 import {
   User,
@@ -24,7 +23,6 @@ import {
 
 const workbenchStore = useWorkbenchStore()
 const configStore = useConfigStore()
-const preferencesStore = usePreferencesStore()
 const { downloadApprovalPdf } = usePdfExport()
 
 const plan = computed(() => workbenchStore.activePlan)
@@ -174,18 +172,10 @@ function getStatusOption(status) {
 function getStatusClasses(status) {
   const option = getStatusOption(status)
   const colors = {
-    gray: preferencesStore.darkMode
-      ? 'bg-gray-700 text-gray-300'
-      : 'bg-gray-100 text-gray-600',
-    green: preferencesStore.darkMode
-      ? 'bg-green-900/50 text-green-300'
-      : 'bg-green-100 text-green-700',
-    yellow: preferencesStore.darkMode
-      ? 'bg-yellow-900/50 text-yellow-300'
-      : 'bg-yellow-100 text-yellow-700',
-    red: preferencesStore.darkMode
-      ? 'bg-red-900/50 text-red-300'
-      : 'bg-red-100 text-red-700'
+    gray: 'bg-surface-alt text-text-secondary',
+    green: 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300',
+    yellow: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300',
+    red: 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300'
   }
   return colors[option.color]
 }
@@ -208,10 +198,7 @@ function getStatusClasses(status) {
           <!-- Tier Badge -->
           <div
             v-if="plan.data?.tier_name"
-            class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm"
-            :class="preferencesStore.darkMode
-              ? 'bg-indigo-900/50 text-indigo-300'
-              : 'bg-indigo-100 text-indigo-700'"
+            class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300"
           >
             {{ plan.data.tier_name }}
           </div>
@@ -307,9 +294,7 @@ function getStatusClasses(status) {
       >
         <div
           class="h-full rounded-full transition-all"
-          :class="reviewProgress.percent === 100
-            ? (preferencesStore.darkMode ? 'bg-green-500' : 'bg-green-500')
-            : (preferencesStore.darkMode ? 'bg-indigo-500' : 'bg-indigo-500')"
+          :class="reviewProgress.percent === 100 ? 'bg-green-500' : 'bg-indigo-500'"
           :style="{ width: `${reviewProgress.percent}%` }"
         />
       </div>
@@ -446,10 +431,7 @@ function getStatusClasses(status) {
               <div class="mt-2 flex gap-2">
                 <button
                   @click="saveItemNotes(item)"
-                  class="px-3 py-1.5 rounded text-sm font-medium"
-                  :class="preferencesStore.darkMode
-                    ? 'bg-indigo-600 text-white hover:bg-indigo-500'
-                    : 'bg-indigo-600 text-white hover:bg-indigo-700'"
+                  class="px-3 py-1.5 rounded text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 dark:hover:bg-indigo-500"
                 >
                   Save
                 </button>
@@ -471,10 +453,7 @@ function getStatusClasses(status) {
               </div>
               <button
                 @click="startEditingNotes(item)"
-                class="text-sm"
-                :class="preferencesStore.darkMode
-                  ? 'text-indigo-400 hover:text-indigo-300'
-                  : 'text-indigo-600 hover:text-indigo-700'"
+                class="text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
               >
                 {{ item.itNotes ? 'Edit notes' : 'Add notes' }}
               </button>
@@ -543,9 +522,7 @@ function getStatusClasses(status) {
           @click="updatePlanStatus('pending_review')"
           class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           :class="plan.status === 'pending_review'
-            ? (preferencesStore.darkMode
-                ? 'bg-yellow-900/50 text-yellow-300'
-                : 'bg-yellow-100 text-yellow-700')
+            ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300'
             : 'bg-surface-alt text-text-secondary hover:bg-border-strong'"
         >
           Pending Review
@@ -554,9 +531,7 @@ function getStatusClasses(status) {
           @click="updatePlanStatus('needs_revision')"
           class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           :class="plan.status === 'needs_revision'
-            ? (preferencesStore.darkMode
-                ? 'bg-orange-900/50 text-orange-300'
-                : 'bg-orange-100 text-orange-700')
+            ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300'
             : 'bg-surface-alt text-text-secondary hover:bg-border-strong'"
         >
           Needs Revision
@@ -565,9 +540,7 @@ function getStatusClasses(status) {
           @click="updatePlanStatus('approved')"
           class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           :class="plan.status === 'approved'
-            ? (preferencesStore.darkMode
-                ? 'bg-green-900/50 text-green-300'
-                : 'bg-green-100 text-green-700')
+            ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
             : 'bg-surface-alt text-text-secondary hover:bg-border-strong'"
         >
           Approved
@@ -582,13 +555,8 @@ function getStatusClasses(status) {
         <button
           @click="handleDownloadPdf"
           :disabled="isGeneratingPdf"
-          class="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors"
-          :class="[
-            isGeneratingPdf ? 'opacity-50 cursor-wait' : '',
-            preferencesStore.darkMode
-              ? 'bg-green-600 text-white hover:bg-green-500'
-              : 'bg-green-600 text-white hover:bg-green-700'
-          ]"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors bg-green-600 text-white hover:bg-green-700 dark:hover:bg-green-500"
+          :class="isGeneratingPdf ? 'opacity-50 cursor-wait' : ''"
         >
           <FileCheck class="w-4 h-4" />
           {{ isGeneratingPdf ? 'Generating PDF...' : 'Download Approval Receipt (PDF)' }}
@@ -617,10 +585,7 @@ function getStatusClasses(status) {
       </p>
       <button
         @click="openExportModal"
-        class="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors"
-        :class="preferencesStore.darkMode
-          ? 'bg-indigo-600 text-white hover:bg-indigo-500'
-          : 'bg-indigo-600 text-white hover:bg-indigo-700'"
+        class="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors bg-indigo-600 text-white hover:bg-indigo-700 dark:hover:bg-indigo-500"
       >
         <Send class="w-4 h-4" />
         Export Reviewed Plan
@@ -694,10 +659,7 @@ function getStatusClasses(status) {
               </button>
               <button
                 @click="handleExport"
-                class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="preferencesStore.darkMode
-                  ? 'bg-indigo-600 text-white hover:bg-indigo-500'
-                  : 'bg-indigo-600 text-white hover:bg-indigo-700'"
+                class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-600 text-white hover:bg-indigo-700 dark:hover:bg-indigo-500"
               >
                 <Download class="w-4 h-4" />
                 Download JSON

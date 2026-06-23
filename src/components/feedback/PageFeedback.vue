@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { useFeedback } from '@/composables/useFeedback'
 import {
   ThumbsUp,
@@ -34,7 +33,6 @@ const props = defineProps({
 const emit = defineEmits(['feedback'])
 
 const route = useRoute()
-const preferencesStore = usePreferencesStore()
 const { feedbackConfig, submitFeedback } = useFeedback()
 
 // State machine: idle → voted → expanded → submitted
@@ -83,18 +81,13 @@ async function submitComment() {
 }
 
 function thumbClasses(value) {
-  const isDark = preferencesStore.darkMode
   const isSelected = sentiment.value === value
 
   if (isSelected && value === 'up') {
-    return isDark
-      ? 'bg-green-900/50 border-green-700 text-green-400'
-      : 'bg-green-100 border-green-300 text-green-700'
+    return 'bg-green-100 border-green-300 text-green-700 dark:bg-green-900/50 dark:border-green-700 dark:text-green-400'
   }
   if (isSelected && value === 'down') {
-    return isDark
-      ? 'bg-red-900/50 border-red-700 text-red-400'
-      : 'bg-red-100 border-red-300 text-red-700'
+    return 'bg-red-100 border-red-300 text-red-700 dark:bg-red-900/50 dark:border-red-700 dark:text-red-400'
   }
 
   return 'border-border-strong text-text-muted hover:border-border-strong hover:text-text-secondary'
@@ -152,8 +145,8 @@ function thumbClasses(value) {
             :is="sentiment === 'up' ? ThumbsUp : ThumbsDown"
             class="w-4 h-4"
             :class="sentiment === 'up'
-              ? (preferencesStore.darkMode ? 'text-green-400' : 'text-green-600')
-              : (preferencesStore.darkMode ? 'text-red-400' : 'text-red-600')"
+              ? 'text-green-600 dark:text-green-400'
+              : 'text-red-600 dark:text-red-400'"
           />
           <p class="text-sm text-text-secondary">
             Thanks! Anything you'd like to add?
@@ -198,8 +191,7 @@ function thumbClasses(value) {
       <template v-if="state === 'submitted'">
         <div class="flex items-center gap-2">
           <CheckCircle
-            class="w-5 h-5"
-            :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-600'"
+            class="w-5 h-5 text-green-600 dark:text-green-400"
           />
           <p class="text-sm font-medium text-text-secondary">
             Thanks for your feedback!
@@ -283,8 +275,7 @@ function thumbClasses(value) {
       <template v-if="state === 'submitted'">
         <div class="flex items-center gap-2">
           <CheckCircle
-            class="w-4 h-4"
-            :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-600'"
+            class="w-4 h-4 text-green-600 dark:text-green-400"
           />
           <p class="text-sm text-text-muted">
             Thanks for your feedback!

@@ -296,7 +296,7 @@ function handleCompareSelect(service) {
           getBundleSuitability(bundle) === 'unavailable'
             ? 'border-border bg-canvas opacity-60'
             : getBundleSuitability(bundle) === 'recommended'
-              ? 'border-green-200 bg-green-50'
+              ? 'border-green-200 bg-green-50 dark:border-green-700 dark:bg-green-900/30'
               : 'border-border bg-surface'
         "
       >
@@ -305,13 +305,13 @@ function handleCompareSelect(service) {
             <div class="flex items-center gap-2">
               <h4
                 class="font-medium"
-                :class="getBundleSuitability(bundle) === 'recommended' ? 'text-gray-900' : 'text-text'"
+                :class="getBundleSuitability(bundle) === 'recommended' ? 'text-green-900 dark:text-green-200' : 'text-text'"
               >
                 {{ bundle.name }}
               </h4>
               <span
                 v-if="getBundleSuitability(bundle) === 'recommended'"
-                class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700"
+                class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300"
               >
                 Recommended
               </span>
@@ -324,7 +324,7 @@ function handleCompareSelect(service) {
             </div>
             <p
               class="text-sm mt-1 whitespace-pre-line"
-              :class="getBundleSuitability(bundle) === 'recommended' ? 'text-gray-600' : 'text-text-secondary'"
+              :class="getBundleSuitability(bundle) === 'recommended' ? 'text-green-800 dark:text-green-300' : 'text-text-secondary'"
             >
               <AnnotatedText :text="bundle.description" />
             </p>
@@ -332,13 +332,13 @@ function handleCompareSelect(service) {
             <div class="mt-3">
               <p
                 class="text-xs font-medium uppercase tracking-wide mb-1"
-                :class="getBundleSuitability(bundle) === 'recommended' ? 'text-gray-500' : 'text-text-muted'"
+                :class="getBundleSuitability(bundle) === 'recommended' ? 'text-green-700 dark:text-green-400' : 'text-text-muted'"
               >
                 Includes:
               </p>
               <ul
                 class="text-sm space-y-1"
-                :class="getBundleSuitability(bundle) === 'recommended' ? 'text-gray-600' : 'text-text-secondary'"
+                :class="getBundleSuitability(bundle) === 'recommended' ? 'text-green-800 dark:text-green-300' : 'text-text-secondary'"
               >
                 <li v-for="item in bundle.services" :key="item.service" class="flex items-center gap-2">
                   <span

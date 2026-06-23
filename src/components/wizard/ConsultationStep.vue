@@ -2,14 +2,12 @@
 import { computed } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { Shield, Mail, ExternalLink, ArrowLeft } from 'lucide-vue-next'
 
 const emit = defineEmits(['back'])
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
-const preferencesStore = usePreferencesStore()
 
 const tier = computed(() =>
   configStore.tiersBySlug[sessionStore.selectedTier]
@@ -36,8 +34,7 @@ const fallbackContact = computed(() => {
   <div class="p-8">
     <div class="max-w-2xl mx-auto text-center">
       <div
-        class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
-        :class="preferencesStore.darkMode ? 'bg-red-900/50' : 'bg-red-100'"
+        class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-red-100 dark:bg-red-900/50"
       >
         <Shield class="w-8 h-8 text-red-500" />
       </div>
@@ -47,18 +44,15 @@ const fallbackContact = computed(() => {
       </h2>
 
       <div
-        class="rounded-lg p-6 mb-8 text-left"
-        :class="preferencesStore.darkMode ? 'bg-red-900/30' : 'bg-red-50'"
+        class="rounded-lg p-6 mb-8 text-left bg-red-50 dark:bg-red-900/30"
       >
         <h3
-          class="font-semibold mb-2"
-          :class="preferencesStore.darkMode ? 'text-red-300' : 'text-red-900'"
+          class="font-semibold mb-2 text-red-900 dark:text-red-300"
         >
           {{ tier?.name }} Data Classification
         </h3>
         <p
-          class="whitespace-pre-line"
-          :class="preferencesStore.darkMode ? 'text-red-200' : 'text-red-800'"
+          class="whitespace-pre-line text-red-800 dark:text-red-200"
         >
           {{ tier?.consultation_message }}
         </p>
@@ -73,10 +67,9 @@ const fallbackContact = computed(() => {
       <ul class="text-left space-y-3 mb-8 max-w-md mx-auto">
         <li class="flex items-start gap-3">
           <span
-            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-            :class="preferencesStore.darkMode ? 'bg-blue-900/50' : 'bg-blue-100'"
+            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-surface-alt"
           >
-            <span class="text-blue-500 text-sm font-medium">1</span>
+            <span class="text-primary text-sm font-medium">1</span>
           </span>
           <span class="text-text-secondary">
             Assess your specific security and compliance requirements
@@ -84,10 +77,9 @@ const fallbackContact = computed(() => {
         </li>
         <li class="flex items-start gap-3">
           <span
-            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-            :class="preferencesStore.darkMode ? 'bg-blue-900/50' : 'bg-blue-100'"
+            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-surface-alt"
           >
-            <span class="text-blue-500 text-sm font-medium">2</span>
+            <span class="text-primary text-sm font-medium">2</span>
           </span>
           <span class="text-text-secondary">
             Design an appropriate secure enclave configuration
@@ -95,10 +87,9 @@ const fallbackContact = computed(() => {
         </li>
         <li class="flex items-start gap-3">
           <span
-            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-            :class="preferencesStore.darkMode ? 'bg-blue-900/50' : 'bg-blue-100'"
+            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-surface-alt"
           >
-            <span class="text-blue-500 text-sm font-medium">3</span>
+            <span class="text-primary text-sm font-medium">3</span>
           </span>
           <span class="text-text-secondary">
             Provide a detailed cost estimate for your proposal
@@ -106,10 +97,9 @@ const fallbackContact = computed(() => {
         </li>
         <li class="flex items-start gap-3">
           <span
-            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-            :class="preferencesStore.darkMode ? 'bg-blue-900/50' : 'bg-blue-100'"
+            class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-surface-alt"
           >
-            <span class="text-blue-500 text-sm font-medium">4</span>
+            <span class="text-primary text-sm font-medium">4</span>
           </span>
           <span class="text-text-secondary">
             Help draft appropriate DMP language for your grant

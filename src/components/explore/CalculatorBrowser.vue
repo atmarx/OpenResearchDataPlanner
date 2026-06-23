@@ -3,7 +3,6 @@ import { ref, computed, defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfigStore } from '@/stores/configStore'
 import { useSlateStore } from '@/stores/slateStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   X,
   HardDrive,
@@ -30,7 +29,6 @@ const router = useRouter()
 
 const configStore = useConfigStore()
 const slateStore = useSlateStore()
-const preferencesStore = usePreferencesStore()
 
 // Calculator components
 const calculatorComponents = {
@@ -171,10 +169,10 @@ function handleAdded() {
           <div
             class="w-10 h-10 rounded-lg flex items-center justify-center"
             :class="{
-              'bg-blue-100 text-blue-600': category.key === 'storage',
-              'bg-green-100 text-green-600': category.key === 'cpu',
-              'bg-purple-100 text-purple-600': category.key === 'gpu',
-              'bg-amber-100 text-amber-600': category.key === 'api'
+              'bg-primary/10 text-primary': category.key === 'storage',
+              'bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400': category.key === 'cpu',
+              'bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400': category.key === 'gpu',
+              'bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400': category.key === 'api'
             }"
           >
             <component :is="category.icon" class="w-5 h-5" />
@@ -197,14 +195,10 @@ function handleAdded() {
               <div
                 class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors bg-surface-alt text-text-secondary"
                 :class="{
-                  'group-hover:bg-blue-100 group-hover:text-blue-600': category.key === 'storage' && !preferencesStore.darkMode,
-                  'group-hover:bg-blue-900/50 group-hover:text-blue-400': category.key === 'storage' && preferencesStore.darkMode,
-                  'group-hover:bg-green-100 group-hover:text-green-600': category.key === 'cpu' && !preferencesStore.darkMode,
-                  'group-hover:bg-green-900/50 group-hover:text-green-400': category.key === 'cpu' && preferencesStore.darkMode,
-                  'group-hover:bg-purple-100 group-hover:text-purple-600': category.key === 'gpu' && !preferencesStore.darkMode,
-                  'group-hover:bg-purple-900/50 group-hover:text-purple-400': category.key === 'gpu' && preferencesStore.darkMode,
-                  'group-hover:bg-amber-100 group-hover:text-amber-600': category.key === 'api' && !preferencesStore.darkMode,
-                  'group-hover:bg-amber-900/50 group-hover:text-amber-400': category.key === 'api' && preferencesStore.darkMode
+                  'group-hover:bg-primary/10 group-hover:text-primary': category.key === 'storage',
+                  'group-hover:bg-green-100 group-hover:text-green-600 dark:group-hover:bg-green-900/50 dark:group-hover:text-green-400': category.key === 'cpu',
+                  'group-hover:bg-purple-100 group-hover:text-purple-600 dark:group-hover:bg-purple-900/50 dark:group-hover:text-purple-400': category.key === 'gpu',
+                  'group-hover:bg-amber-100 group-hover:text-amber-600 dark:group-hover:bg-amber-900/50 dark:group-hover:text-amber-400': category.key === 'api'
                 }"
               >
                 <component :is="calc.icon" class="w-5 h-5" />
@@ -225,20 +219,11 @@ function handleAdded() {
       <!-- Slate Status -->
       <div
         v-if="slateStore.hasItems"
-        class="rounded-lg p-4 flex items-center justify-between border"
-        :class="preferencesStore.darkMode
-          ? 'bg-blue-900/30 border-blue-800'
-          : 'bg-blue-50 border-blue-200'"
+        class="rounded-lg p-4 flex items-center justify-between border bg-surface-alt border-border"
       >
         <div>
-          <span
-            class="font-medium"
-            :class="preferencesStore.darkMode ? 'text-blue-200' : 'text-blue-900'"
-          >Your Slate</span>
-          <span
-            class="ml-2"
-            :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-700'"
-          >
+          <span class="font-medium text-primary">Your Slate</span>
+          <span class="ml-2 text-text-secondary">
             {{ slateStore.itemCount }} service{{ slateStore.itemCount !== 1 ? 's' : '' }}
           </span>
         </div>

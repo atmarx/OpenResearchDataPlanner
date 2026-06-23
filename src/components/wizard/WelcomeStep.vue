@@ -2,13 +2,11 @@
 import { ref, onMounted } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSlateStore } from '@/stores/slateStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { ArrowRight, Calculator, Grid, HelpCircle, Book, ChevronDown, ChevronRight, Package } from 'lucide-vue-next'
 
 const emit = defineEmits(['next'])
 const configStore = useConfigStore()
 const slateStore = useSlateStore()
-const preferencesStore = usePreferencesStore()
 
 // Collapsible intro section - persisted to localStorage
 const STORAGE_KEY = 'odp-welcome-collapsed'
@@ -67,34 +65,25 @@ function toggleInfo() {
         <!-- Content row - two colored sections side by side -->
         <div v-if="!infoCollapsed" class="grid grid-cols-2">
           <!-- What this tool does -->
-          <div
-            class="p-3"
-            :class="preferencesStore.darkMode ? 'bg-blue-900/30' : 'bg-blue-50'"
-          >
-            <h3
-              class="text-sm font-medium mb-2"
-              :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-900'"
-            >
+          <div class="p-3 bg-surface-alt">
+            <h3 class="text-sm font-medium mb-2 text-primary">
               What this tool does
             </h3>
-            <ul
-              class="space-y-1.5 text-sm"
-              :class="preferencesStore.darkMode ? 'text-blue-200' : 'text-blue-800'"
-            >
+            <ul class="space-y-1.5 text-sm text-text-secondary">
               <li class="flex items-start gap-2">
-                <span class="text-blue-500">1.</span>
+                <span class="text-primary">1.</span>
                 <span>Choose the right data security tier</span>
               </li>
               <li class="flex items-start gap-2">
-                <span class="text-blue-500">2.</span>
+                <span class="text-primary">2.</span>
                 <span>See available services and costs</span>
               </li>
               <li class="flex items-start gap-2">
-                <span class="text-blue-500">3.</span>
+                <span class="text-primary">3.</span>
                 <span>Calculate budget with retention costs</span>
               </li>
               <li class="flex items-start gap-2">
-                <span class="text-blue-500">4.</span>
+                <span class="text-primary">4.</span>
                 <span>Generate DMP text for your grant</span>
               </li>
             </ul>
@@ -144,12 +133,9 @@ function toggleInfo() {
           <!-- Estimate Needs -->
           <router-link
             to="/calculators"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left group border bg-surface border-border"
-            :class="preferencesStore.darkMode
-              ? 'hover:border-blue-500 hover:bg-gray-700'
-              : 'hover:border-blue-300 hover:bg-blue-50'"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left group border bg-surface border-border hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-500 dark:hover:bg-surface-alt"
           >
-            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-200">
+            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:group-hover:bg-blue-900/50">
               <Calculator class="w-5 h-5" />
             </div>
             <div>
@@ -161,12 +147,9 @@ function toggleInfo() {
           <!-- Browse Services -->
           <router-link
             to="/services"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left group border bg-surface border-border"
-            :class="preferencesStore.darkMode
-              ? 'hover:border-green-500 hover:bg-gray-700'
-              : 'hover:border-green-300 hover:bg-green-50'"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left group border bg-surface border-border hover:border-green-300 hover:bg-green-50 dark:hover:border-green-500 dark:hover:bg-surface-alt"
           >
-            <div class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0 group-hover:bg-green-200">
+            <div class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 dark:group-hover:bg-green-900/50">
               <Grid class="w-5 h-5" />
             </div>
             <div>
@@ -178,12 +161,9 @@ function toggleInfo() {
           <!-- Browse Software -->
           <router-link
             to="/software"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left group border bg-surface border-border"
-            :class="preferencesStore.darkMode
-              ? 'hover:border-teal-500 hover:bg-gray-700'
-              : 'hover:border-teal-300 hover:bg-teal-50'"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left group border bg-surface border-border hover:border-teal-300 hover:bg-teal-50 dark:hover:border-teal-500 dark:hover:bg-surface-alt"
           >
-            <div class="w-10 h-10 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center flex-shrink-0 group-hover:bg-teal-200">
+            <div class="w-10 h-10 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center flex-shrink-0 group-hover:bg-teal-200 dark:bg-teal-900/30 dark:text-teal-300 dark:group-hover:bg-teal-900/50">
               <Package class="w-5 h-5" />
             </div>
             <div>
@@ -198,12 +178,9 @@ function toggleInfo() {
           <!-- Check Your Tier -->
           <router-link
             to="/tier-check"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left group border bg-surface border-border"
-            :class="preferencesStore.darkMode
-              ? 'hover:border-amber-500 hover:bg-gray-700'
-              : 'hover:border-amber-300 hover:bg-amber-50'"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left group border bg-surface border-border hover:border-amber-300 hover:bg-amber-50 dark:hover:border-amber-500 dark:hover:bg-surface-alt"
           >
-            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-200">
+            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:group-hover:bg-amber-900/50">
               <HelpCircle class="w-5 h-5" />
             </div>
             <div>
@@ -215,12 +192,9 @@ function toggleInfo() {
           <!-- Learn the Terms -->
           <router-link
             to="/glossary"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left group border bg-surface border-border"
-            :class="preferencesStore.darkMode
-              ? 'hover:border-purple-500 hover:bg-gray-700'
-              : 'hover:border-purple-300 hover:bg-purple-50'"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left group border bg-surface border-border hover:border-purple-300 hover:bg-purple-50 dark:hover:border-purple-500 dark:hover:bg-surface-alt"
           >
-            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200">
+            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:group-hover:bg-purple-900/50">
               <Book class="w-5 h-5" />
             </div>
             <div>
@@ -233,15 +207,9 @@ function toggleInfo() {
         <!-- Slate indicator -->
         <div
           v-if="slateStore.hasItems"
-          class="mt-6 p-3 rounded-lg"
-          :class="preferencesStore.darkMode
-            ? 'bg-blue-900/30 border border-blue-800'
-            : 'bg-blue-50 border border-blue-200'"
+          class="mt-6 p-3 rounded-lg bg-surface-alt border border-border"
         >
-          <p
-            class="text-sm"
-            :class="preferencesStore.darkMode ? 'text-blue-200' : 'text-blue-800'"
-          >
+          <p class="text-sm text-text-secondary">
             <strong>{{ slateStore.itemCount }} item{{ slateStore.itemCount !== 1 ? 's' : '' }}</strong>
             in your slate.
             <button

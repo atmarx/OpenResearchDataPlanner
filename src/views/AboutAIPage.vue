@@ -1,5 +1,4 @@
 <script setup>
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { useConfigStore } from '@/stores/configStore'
 import { computed } from 'vue'
 import {
@@ -13,7 +12,6 @@ import {
   ArrowLeft
 } from 'lucide-vue-next'
 
-const preferencesStore = usePreferencesStore()
 const configStore = useConfigStore()
 
 const institutionName = computed(() =>
@@ -50,10 +48,7 @@ const citationText = computed(() => {
     <div class="mb-8">
       <div class="flex items-center gap-3 mb-4">
         <div
-          class="w-12 h-12 rounded-xl flex items-center justify-center"
-          :class="preferencesStore.darkMode
-            ? 'bg-indigo-900/50 text-indigo-400'
-            : 'bg-indigo-100 text-indigo-600'"
+          class="w-12 h-12 rounded-xl flex items-center justify-center bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400"
         >
           <Bot class="w-6 h-6" />
         </div>
@@ -94,10 +89,7 @@ const citationText = computed(() => {
           <!-- Code Generation -->
           <div class="flex gap-4">
             <div
-              class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
-              :class="preferencesStore.darkMode
-                ? 'bg-blue-900/50 text-blue-400'
-                : 'bg-blue-100 text-blue-600'"
+              class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-surface-alt text-primary"
             >
               <Code class="w-5 h-5" />
             </div>
@@ -116,10 +108,7 @@ const citationText = computed(() => {
           <!-- Documentation -->
           <div class="flex gap-4">
             <div
-              class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
-              :class="preferencesStore.darkMode
-                ? 'bg-green-900/50 text-green-400'
-                : 'bg-green-100 text-green-600'"
+              class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400"
             >
               <FileText class="w-5 h-5" />
             </div>
@@ -145,10 +134,7 @@ const citationText = computed(() => {
 
         <div class="flex gap-4 mb-4">
           <div
-            class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
-            :class="preferencesStore.darkMode
-              ? 'bg-purple-900/50 text-purple-400'
-              : 'bg-purple-100 text-purple-600'"
+            class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400"
           >
             <Users class="w-5 h-5" />
           </div>
@@ -160,36 +146,31 @@ const citationText = computed(() => {
         <ul class="space-y-2 ml-14 text-text-secondary">
           <li class="flex items-start gap-2 text-sm">
             <CheckCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-500'"
+              class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
             />
             <span><strong>Architecture decisions</strong> made by humans based on project requirements</span>
           </li>
           <li class="flex items-start gap-2 text-sm">
             <CheckCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-500'"
+              class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
             />
             <span><strong>Code review</strong> for security, correctness, and maintainability</span>
           </li>
           <li class="flex items-start gap-2 text-sm">
             <CheckCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-500'"
+              class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
             />
             <span><strong>Content verification</strong> against institutional policies and best practices</span>
           </li>
           <li class="flex items-start gap-2 text-sm">
             <CheckCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-500'"
+              class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
             />
             <span><strong>Testing</strong> to ensure functionality works as intended</span>
           </li>
           <li class="flex items-start gap-2 text-sm">
             <CheckCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-green-400' : 'text-green-500'"
+              class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
             />
             <span><strong>Domain expertise</strong> from Research IT and compliance specialists</span>
           </li>
@@ -205,29 +186,25 @@ const citationText = computed(() => {
         <ul class="space-y-2 text-text-secondary">
           <li class="flex items-start gap-2 text-sm">
             <AlertCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-amber-400' : 'text-amber-500'"
+              class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
             />
             <span>AI did not determine institutional policies or compliance requirements</span>
           </li>
           <li class="flex items-start gap-2 text-sm">
             <AlertCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-amber-400' : 'text-amber-500'"
+              class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
             />
             <span>AI did not set pricing, tier classifications, or service availability</span>
           </li>
           <li class="flex items-start gap-2 text-sm">
             <AlertCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-amber-400' : 'text-amber-500'"
+              class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
             />
             <span>AI did not have access to sensitive institutional data or user information</span>
           </li>
           <li class="flex items-start gap-2 text-sm">
             <AlertCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0"
-              :class="preferencesStore.darkMode ? 'text-amber-400' : 'text-amber-500'"
+              class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
             />
             <span>AI did not make final decisions about content accuracy or appropriateness</span>
           </li>
@@ -236,33 +213,26 @@ const citationText = computed(() => {
 
       <!-- Our Principles -->
       <section
-        class="rounded-xl border p-6"
-        :class="preferencesStore.darkMode
-          ? 'bg-indigo-900/30 border-indigo-800'
-          : 'bg-indigo-50 border-indigo-200'"
+        class="rounded-xl border p-6 bg-indigo-50 border-indigo-200 dark:bg-indigo-900/30 dark:border-indigo-800"
       >
         <h2
-          class="text-lg font-semibold mb-4"
-          :class="preferencesStore.darkMode ? 'text-indigo-200' : 'text-indigo-900'"
+          class="text-lg font-semibold mb-4 text-indigo-900 dark:text-indigo-200"
         >
           The Same Principles We Recommend
         </h2>
 
         <p
-          class="mb-4 text-sm"
-          :class="preferencesStore.darkMode ? 'text-indigo-300' : 'text-indigo-700'"
+          class="mb-4 text-sm text-indigo-700 dark:text-indigo-300"
         >
           We followed the guidance we provide in our
           <router-link
             to="/ai"
-            class="underline font-medium"
-            :class="preferencesStore.darkMode ? 'text-indigo-200' : 'text-indigo-800'"
+            class="underline font-medium text-indigo-800 dark:text-indigo-200"
           >AI Guidance section</router-link>:
         </p>
 
         <div
-          class="grid gap-3 text-sm"
-          :class="preferencesStore.darkMode ? 'text-indigo-300' : 'text-indigo-700'"
+          class="grid gap-3 text-sm text-indigo-700 dark:text-indigo-300"
         >
           <div class="flex items-center gap-2">
             <span class="font-semibold">1. Transparent Disclosure</span>
@@ -304,10 +274,7 @@ const citationText = computed(() => {
           </a>
           <router-link
             to="/"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            :class="preferencesStore.darkMode
-              ? 'bg-indigo-600 text-white hover:bg-indigo-500'
-              : 'bg-indigo-600 text-white hover:bg-indigo-700'"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-600 text-white hover:bg-indigo-700 dark:hover:bg-indigo-500"
           >
             Contact Research IT
           </router-link>

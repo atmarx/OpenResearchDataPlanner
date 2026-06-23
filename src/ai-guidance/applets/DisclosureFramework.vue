@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import DecisionFlow from '../components/DecisionFlow.vue'
 import {
@@ -14,7 +13,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'disclosure-framework'
 
@@ -355,13 +353,12 @@ async function copyLanguage() {
 }
 
 function getLevelColorClasses(color) {
-  const isDark = preferencesStore.darkMode
   const colors = {
-    green: isDark ? 'bg-green-900/30 border-green-700 text-green-400' : 'bg-green-50 border-green-200 text-green-700',
-    yellow: isDark ? 'bg-yellow-900/30 border-yellow-700 text-yellow-400' : 'bg-yellow-50 border-yellow-200 text-yellow-700',
-    orange: isDark ? 'bg-orange-900/30 border-orange-700 text-orange-400' : 'bg-orange-50 border-orange-200 text-orange-700',
-    blue: isDark ? 'bg-blue-900/30 border-blue-700 text-blue-400' : 'bg-blue-50 border-blue-200 text-blue-700',
-    red: isDark ? 'bg-red-900/30 border-red-700 text-red-400' : 'bg-red-50 border-red-200 text-red-700'
+    green: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-700 dark:text-green-400',
+    yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700 dark:bg-yellow-900/30 dark:border-yellow-700 dark:text-yellow-400',
+    orange: 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/30 dark:border-orange-700 dark:text-orange-400',
+    blue: 'bg-surface-alt border-border text-primary',
+    red: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-700 dark:text-red-400'
   }
   return colors[color] || colors.blue
 }
@@ -399,10 +396,7 @@ function getNextApplet() {
               </h3>
               <p class="mb-4">{{ result.description }}</p>
 
-              <div
-                class="p-3 rounded-lg mb-4"
-                :class="preferencesStore.darkMode ? 'bg-gray-800' : 'bg-white/50'"
-              >
+              <div class="p-3 rounded-lg mb-4 bg-surface">
                 <p class="text-sm font-medium">
                   <strong>Action:</strong> {{ result.action }}
                 </p>
@@ -434,7 +428,7 @@ function getNextApplet() {
               @click="copyLanguage"
               class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
               :class="copiedLanguage
-                ? (preferencesStore.darkMode ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-700')
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
                 : 'bg-surface-alt text-text-secondary hover:bg-border'"
             >
               <component :is="copiedLanguage ? CheckCircle : Copy" class="w-4 h-4" />
@@ -452,13 +446,12 @@ function getNextApplet() {
         <!-- Where to Include Disclosure -->
         <div
           v-if="result.requirement !== 'prohibited'"
-          class="mt-6 p-4 rounded-lg border"
-          :class="preferencesStore.darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'"
+          class="mt-6 p-4 rounded-lg border bg-surface-alt border-border"
         >
-          <h4 class="font-medium mb-2" :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-800'">
+          <h4 class="font-medium mb-2 text-primary">
             Where to Include Disclosure
           </h4>
-          <ul class="text-sm space-y-1" :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-700'">
+          <ul class="text-sm space-y-1 text-primary">
             <li v-if="output.context === 'publication'">• Methods section (for research methodology)</li>
             <li v-if="output.context === 'publication'">• Acknowledgments (for writing assistance)</li>
             <li v-if="output.context === 'thesis'">• Acknowledgments or methodology chapter</li>

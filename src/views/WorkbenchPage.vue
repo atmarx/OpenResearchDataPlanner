@@ -1,13 +1,11 @@
 <script setup>
 import { computed } from 'vue'
 import { useWorkbenchStore } from '@/stores/workbenchStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import WorkbenchLogin from '@/components/workbench/WorkbenchLogin.vue'
 import WorkbenchDashboard from '@/components/workbench/WorkbenchDashboard.vue'
 import { LogOut, User } from 'lucide-vue-next'
 
 const workbenchStore = useWorkbenchStore()
-const preferencesStore = usePreferencesStore()
 
 const isAuthenticated = computed(() => workbenchStore.isAuthenticated)
 
@@ -29,10 +27,7 @@ function handleLogout() {
             Support Workbench
           </h1>
           <span
-            class="px-2 py-0.5 text-xs rounded-full"
-            :class="preferencesStore.darkMode
-              ? 'bg-indigo-900/50 text-indigo-300'
-              : 'bg-indigo-100 text-indigo-700'"
+            class="px-2 py-0.5 text-xs rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300"
           >
             Staff Access
           </span>

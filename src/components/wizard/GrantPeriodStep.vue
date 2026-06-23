@@ -1,11 +1,9 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useSessionStore } from '@/stores/sessionStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { Calendar, Info } from 'lucide-vue-next'
 
 const sessionStore = useSessionStore()
-const preferencesStore = usePreferencesStore()
 
 const presets = [
   { label: '1 year', months: 12 },
@@ -212,28 +210,21 @@ function isPresetSelected(preset) {
     </div>
 
     <!-- Error message -->
-    <p v-if="errorMessage" class="text-sm text-red-600 mb-4">
+    <p v-if="errorMessage" class="text-sm text-red-600 dark:text-red-400 mb-4">
       {{ errorMessage }}
     </p>
 
     <!-- Duration summary -->
     <div
       v-if="calculatedMonths"
-      class="rounded-lg p-4"
-      :class="preferencesStore.darkMode ? 'bg-blue-900/30' : 'bg-blue-50'"
+      class="rounded-lg p-4 bg-surface-alt"
     >
-      <div
-        class="flex items-center gap-2"
-        :class="preferencesStore.darkMode ? 'text-blue-200' : 'text-blue-900'"
-      >
-        <Info class="w-5 h-5 text-blue-500" />
+      <div class="flex items-center gap-2 text-primary">
+        <Info class="w-5 h-5 text-primary" />
         <span class="font-medium">Grant Duration:</span>
         <span>{{ calculatedMonths }} months ({{ years }} years)</span>
       </div>
-      <p
-        class="text-sm mt-2"
-        :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-700'"
-      >
+      <p class="text-sm mt-2 text-primary">
         Cost estimates will be calculated for this {{ calculatedMonths }}-month period.
       </p>
     </div>

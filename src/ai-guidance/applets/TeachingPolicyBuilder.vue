@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import {
   GraduationCap,
@@ -14,7 +13,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'teaching-policy-builder'
 
@@ -165,23 +163,22 @@ function isComponentChecked(componentId) {
 }
 
 function getApproachColorClasses(approach, selected) {
-  const isDark = preferencesStore.darkMode
   const colors = {
     red: selected
-      ? (isDark ? 'bg-red-900/30 border-red-500' : 'bg-red-50 border-red-400')
-      : (isDark ? 'border-red-800 hover:border-red-700' : 'border-red-200 hover:border-red-300'),
+      ? 'bg-red-50 border-red-400 dark:bg-red-900/30 dark:border-red-500'
+      : 'border-red-200 hover:border-red-300 dark:border-red-800 dark:hover:border-red-700',
     yellow: selected
-      ? (isDark ? 'bg-yellow-900/30 border-yellow-500' : 'bg-yellow-50 border-yellow-400')
-      : (isDark ? 'border-yellow-800 hover:border-yellow-700' : 'border-yellow-200 hover:border-yellow-300'),
+      ? 'bg-yellow-50 border-yellow-400 dark:bg-yellow-900/30 dark:border-yellow-500'
+      : 'border-yellow-200 hover:border-yellow-300 dark:border-yellow-800 dark:hover:border-yellow-700',
     blue: selected
-      ? (isDark ? 'bg-blue-900/30 border-blue-500' : 'bg-blue-50 border-blue-400')
-      : (isDark ? 'border-blue-800 hover:border-blue-700' : 'border-blue-200 hover:border-blue-300'),
+      ? 'bg-surface-alt border-primary'
+      : 'border-border hover:border-border-strong',
     green: selected
-      ? (isDark ? 'bg-green-900/30 border-green-500' : 'bg-green-50 border-green-400')
-      : (isDark ? 'border-green-800 hover:border-green-700' : 'border-green-200 hover:border-green-300'),
+      ? 'bg-green-50 border-green-400 dark:bg-green-900/30 dark:border-green-500'
+      : 'border-green-200 hover:border-green-300 dark:border-green-800 dark:hover:border-green-700',
     purple: selected
-      ? (isDark ? 'bg-purple-900/30 border-purple-500' : 'bg-purple-50 border-purple-400')
-      : (isDark ? 'border-purple-800 hover:border-purple-700' : 'border-purple-200 hover:border-purple-300')
+      ? 'bg-purple-50 border-purple-400 dark:bg-purple-900/30 dark:border-purple-500'
+      : 'border-purple-200 hover:border-purple-300 dark:border-purple-800 dark:hover:border-purple-700'
   }
   return colors[approach.color] || colors.blue
 }
@@ -299,7 +296,7 @@ function getNextApplet() {
               class="p-2 rounded-lg border text-left text-sm transition-all"
               :class="[
                 answers[question.id] === option.suggests
-                  ? (preferencesStore.darkMode ? 'bg-blue-900/30 border-blue-500' : 'bg-blue-50 border-blue-400')
+                  ? 'bg-surface-alt border-primary'
                   : 'border-border hover:border-border-strong'
               ]"
             >
@@ -312,10 +309,9 @@ function getNextApplet() {
       <!-- Suggestion -->
       <div
         v-if="suggestedApproach"
-        class="mt-4 p-3 rounded-lg"
-        :class="preferencesStore.darkMode ? 'bg-blue-900/20' : 'bg-blue-50'"
+        class="mt-4 p-3 rounded-lg bg-surface-alt"
       >
-        <p class="text-sm" :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-700'">
+        <p class="text-sm text-primary">
           <Info class="w-4 h-4 inline mr-1" />
           Based on your answers, consider the
           <strong>{{ policyApproaches.find(a => a.id === suggestedApproach)?.name }}</strong> approach.
@@ -346,7 +342,7 @@ function getNextApplet() {
               :class="{
                 'text-red-500': approach.color === 'red',
                 'text-yellow-500': approach.color === 'yellow',
-                'text-blue-500': approach.color === 'blue',
+                'text-primary': approach.color === 'blue',
                 'text-green-500': approach.color === 'green',
                 'text-purple-500': approach.color === 'purple'
               }"
@@ -358,8 +354,7 @@ function getNextApplet() {
                 </h4>
                 <span
                   v-if="suggestedApproach === approach.id"
-                  class="px-2 py-0.5 text-xs rounded-full"
-                  :class="preferencesStore.darkMode ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-100 text-blue-700'"
+                  class="px-2 py-0.5 text-xs rounded-full bg-surface-alt text-primary"
                 >
                   Suggested
                 </span>
@@ -419,7 +414,7 @@ function getNextApplet() {
           @click="copySyllabusLanguage"
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
           :class="copiedLanguage
-            ? (preferencesStore.darkMode ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-700')
+            ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
             : 'bg-surface-alt text-text-secondary hover:bg-border'"
         >
           <component :is="copiedLanguage ? CheckCircle : Copy" class="w-4 h-4" />

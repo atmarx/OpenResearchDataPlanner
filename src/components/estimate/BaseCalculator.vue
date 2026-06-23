@@ -180,7 +180,7 @@ function handleReset() {
       <div class="flex items-center gap-3">
         <div
           v-if="icon"
-          class="w-10 h-10 rounded-lg bg-blue-100 text-primary flex items-center justify-center"
+          class="w-10 h-10 rounded-lg bg-surface-alt text-primary flex items-center justify-center"
         >
           <component :is="icon" class="w-5 h-5" />
         </div>
@@ -209,7 +209,7 @@ function handleReset() {
           v-for="preset in presets"
           :key="preset.label"
           @click="handlePresetClick(preset)"
-          class="px-3 py-1.5 text-sm bg-surface border border-border rounded-lg hover:border-primary hover:bg-blue-50 transition-colors"
+          class="px-3 py-1.5 text-sm bg-surface border border-border rounded-lg hover:border-primary hover:bg-surface-alt transition-colors"
           :title="preset.description"
         >
           {{ preset.label }}
@@ -248,10 +248,10 @@ function handleReset() {
     <div
       v-if="result !== null || error"
       class="px-6 py-5 border-t border-border"
-      :class="error ? 'bg-red-50' : 'bg-gradient-to-br from-blue-50 to-indigo-50'"
+      :class="error ? 'bg-red-50 dark:bg-red-900/20' : 'bg-surface-alt'"
     >
       <!-- Error Display -->
-      <div v-if="error" class="flex items-start gap-3 text-red-700">
+      <div v-if="error" class="flex items-start gap-3 text-red-700 dark:text-red-300">
         <AlertCircle class="w-5 h-5 mt-0.5 flex-shrink-0" />
         <p>{{ error }}</p>
       </div>
@@ -300,7 +300,7 @@ function handleReset() {
               v-for="(item, index) in breakdown"
               :key="index"
               class="flex justify-between px-4 py-2 text-sm"
-              :class="item.highlight ? 'font-semibold bg-blue-50' : ''"
+              :class="item.highlight ? 'font-semibold bg-surface-alt' : ''"
             >
               <span class="text-text-secondary">{{ item.label }}</span>
               <span class="text-text">{{ item.value }}</span>
@@ -313,14 +313,14 @@ function handleReset() {
           <button
             v-if="!justAdded"
             @click="handleAddToSlate"
-            class="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-sm"
+            class="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 transition-colors shadow-sm"
           >
             <Plus class="w-5 h-5" />
             Add to Slate
           </button>
           <div
             v-else
-            class="flex items-center gap-2 px-6 py-3 bg-green-100 text-green-700 rounded-lg font-medium"
+            class="flex items-center gap-2 px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300 rounded-lg font-medium"
           >
             <Check class="w-5 h-5" />
             Added to Slate!

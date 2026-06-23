@@ -62,8 +62,8 @@ function getValueIcon(value) {
 // Get CSS classes for feature value
 function getValueClasses(value) {
   switch (value) {
-    case 'full': return 'text-green-600 bg-green-50'
-    case 'partial': return 'text-yellow-600 bg-yellow-50'
+    case 'full': return 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-900/30'
+    case 'partial': return 'text-yellow-600 bg-yellow-50 dark:text-yellow-400 dark:bg-yellow-900/30'
     default: return 'text-text-muted bg-canvas'
   }
 }
@@ -125,7 +125,7 @@ function selectService(service) {
                     <span class="text-xs leading-tight">{{ service.name }}</span>
                     <span
                       v-if="isSelected(service.slug)"
-                      class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700"
+                      class="text-xs px-2 py-0.5 rounded-full bg-surface-alt text-primary"
                     >
                       Selected
                     </span>
@@ -193,13 +193,13 @@ function selectService(service) {
         <div class="flex items-center gap-6 text-sm">
           <span class="text-text-muted">Legend:</span>
           <span class="flex items-center gap-1.5">
-            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-50 text-green-600">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400">
               <Check class="w-3 h-3" />
             </span>
             <span class="text-text-secondary">Full support</span>
           </span>
           <span class="flex items-center gap-1.5">
-            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-yellow-50 text-yellow-600">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400">
               <Minus class="w-3 h-3" />
             </span>
             <span class="text-text-secondary">Partial/limited</span>

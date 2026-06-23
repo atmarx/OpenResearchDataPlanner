@@ -2,12 +2,10 @@
 import { ref, computed, watch } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import { Check, ExternalLink, Info, AlertCircle } from 'lucide-vue-next'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
-const preferencesStore = usePreferencesStore()
 
 // Get retention schedules applicable to the selected tier
 const applicableSchedules = computed(() => {
@@ -96,9 +94,7 @@ if (selectedSchedules.value.length === 0) {
         class="w-full text-left p-4 rounded-lg border-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         :class="[
           isSelected(schedule.slug)
-            ? preferencesStore.darkMode
-              ? 'border-primary bg-blue-900/30'
-              : 'border-primary bg-blue-50'
+            ? 'border-primary bg-surface-alt'
             : 'border-border bg-surface hover:border-border-strong'
         ]"
       >
@@ -146,23 +142,14 @@ if (selectedSchedules.value.length === 0) {
     </div>
 
     <!-- Archive summary -->
-    <div
-      class="rounded-lg p-4 mb-6"
-      :class="preferencesStore.darkMode ? 'bg-blue-900/30' : 'bg-blue-50'"
-    >
+    <div class="rounded-lg p-4 mb-6 bg-surface-alt">
       <div class="flex items-start gap-3">
         <Info class="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
         <div>
-          <p
-            class="font-medium"
-            :class="preferencesStore.darkMode ? 'text-blue-200' : 'text-blue-900'"
-          >
+          <p class="font-medium text-primary">
             Retention Period: {{ longestYears }} years total
           </p>
-          <p
-            class="text-sm mt-1"
-            :class="preferencesStore.darkMode ? 'text-blue-300' : 'text-blue-700'"
-          >
+          <p class="text-sm mt-1 text-primary">
             Based on your selections, data must be retained for {{ longestYears }} years.
             <span v-if="archiveYears > 0">
               After your {{ (sessionStore.session.grant_period.months / 12).toFixed(1) }}-year grant ends,
@@ -212,14 +199,10 @@ if (selectedSchedules.value.length === 0) {
     <!-- Warning if no schedules selected -->
     <div
       v-if="selectedSchedules.length === 0"
-      class="mt-4 p-4 rounded-lg flex items-start gap-3"
-      :class="preferencesStore.darkMode ? 'bg-yellow-900/30' : 'bg-yellow-50'"
+      class="mt-4 p-4 rounded-lg flex items-start gap-3 bg-yellow-50 dark:bg-yellow-900/30"
     >
       <AlertCircle class="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
-      <p
-        class="text-sm"
-        :class="preferencesStore.darkMode ? 'text-yellow-200' : 'text-yellow-800'"
-      >
+      <p class="text-sm text-yellow-800 dark:text-yellow-200">
         Please select at least one retention requirement to continue.
       </p>
     </div>

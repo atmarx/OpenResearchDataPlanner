@@ -2,7 +2,6 @@
 import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useConfigStore } from '@/stores/configStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   CheckCircle,
   AlertCircle,
@@ -26,7 +25,6 @@ import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 const router = useRouter()
 const route = useRoute()
 const configStore = useConfigStore()
-const preferencesStore = usePreferencesStore()
 
 // Search and filter state
 const searchQuery = ref('')
@@ -425,7 +423,7 @@ function formatTierRestriction(software) {
             <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Restricted</span>
           </button>
           <button @click="openLegendModal('byol')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
-            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-100 text-gray-500">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-surface-alt text-text-muted">
               <ExternalLink class="w-3 h-3" />
             </span>
             <span class="underline decoration-dotted underline-offset-2 text-text-secondary">BYOL</span>
@@ -477,7 +475,7 @@ function formatTierRestriction(software) {
                   :class="{
                     'bg-green-100 text-green-600': getBestStatus(software) === 'full',
                     'bg-yellow-100 text-yellow-600': getBestStatus(software) === 'restricted',
-                    'bg-gray-100 text-gray-500': getBestStatus(software) === 'byol',
+                    'bg-surface-alt text-text-muted': getBestStatus(software) === 'byol',
                     'bg-red-100 text-red-500': getBestStatus(software) === 'unavailable'
                   }"
                 >
@@ -533,7 +531,7 @@ function formatTierRestriction(software) {
                   :class="{
                     'bg-green-100 text-green-700': avail.status === 'full',
                     'bg-yellow-100 text-yellow-700': avail.status === 'restricted',
-                    'bg-gray-100 text-gray-500': avail.status === 'byol',
+                    'bg-surface-alt text-text-muted': avail.status === 'byol',
                     'bg-red-50 text-red-400': avail.status === 'unavailable'
                   }"
                 >
@@ -636,7 +634,7 @@ function formatTierRestriction(software) {
             :class="{
               'bg-green-100 text-green-600': getBestStatus(selectedSoftware) === 'full',
               'bg-yellow-100 text-yellow-600': getBestStatus(selectedSoftware) === 'restricted',
-              'bg-gray-100 text-gray-500': getBestStatus(selectedSoftware) === 'byol',
+              'bg-surface-alt text-text-muted': getBestStatus(selectedSoftware) === 'byol',
               'bg-red-100 text-red-500': getBestStatus(selectedSoftware) === 'unavailable'
             }"
           >
@@ -696,7 +694,7 @@ function formatTierRestriction(software) {
                     :class="{
                       'text-green-600': avail.status === 'full',
                       'text-yellow-600': avail.status === 'restricted',
-                      'text-gray-500': avail.status === 'byol',
+                      'text-text-muted': avail.status === 'byol',
                       'text-red-500': avail.status === 'unavailable'
                     }"
                   >
@@ -728,8 +726,7 @@ function formatTierRestriction(software) {
               <!-- Export control -->
               <div
                 v-if="hasExportControl(selectedSoftware)"
-                class="flex items-start gap-2 p-2 rounded-lg"
-                :class="preferencesStore.darkMode ? 'bg-orange-900/30' : 'bg-orange-50'"
+                class="flex items-start gap-2 p-2 rounded-lg bg-orange-50 dark:bg-orange-900/30"
               >
                 <ShieldAlert class="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
                 <div>
@@ -763,8 +760,7 @@ function formatTierRestriction(software) {
               <!-- Tier restrictions -->
               <div
                 v-if="hasTierRestrictions(selectedSoftware)"
-                class="flex items-start gap-2 p-2 rounded-lg"
-                :class="preferencesStore.darkMode ? 'bg-purple-900/30' : 'bg-purple-50'"
+                class="flex items-start gap-2 p-2 rounded-lg bg-purple-50 dark:bg-purple-900/30"
               >
                 <Shield class="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" />
                 <div>

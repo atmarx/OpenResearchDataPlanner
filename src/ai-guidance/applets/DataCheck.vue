@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import DecisionFlow from '../components/DecisionFlow.vue'
 import {
@@ -14,7 +13,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'data-check'
 
@@ -314,26 +312,13 @@ function getNextApplet(output) {
 
 // Color classes
 function getLevelColorClasses(color) {
-  const isDark = preferencesStore.darkMode
   const colors = {
-    green: isDark
-      ? 'bg-green-900/30 border-green-700 text-green-400'
-      : 'bg-green-50 border-green-200 text-green-700',
-    blue: isDark
-      ? 'bg-blue-900/30 border-blue-700 text-blue-400'
-      : 'bg-blue-50 border-blue-200 text-blue-700',
-    yellow: isDark
-      ? 'bg-yellow-900/30 border-yellow-700 text-yellow-400'
-      : 'bg-yellow-50 border-yellow-200 text-yellow-700',
-    orange: isDark
-      ? 'bg-orange-900/30 border-orange-700 text-orange-400'
-      : 'bg-orange-50 border-orange-200 text-orange-700',
-    red: isDark
-      ? 'bg-red-900/30 border-red-700 text-red-400'
-      : 'bg-red-50 border-red-200 text-red-700',
-    purple: isDark
-      ? 'bg-purple-900/30 border-purple-700 text-purple-400'
-      : 'bg-purple-50 border-purple-200 text-purple-700'
+    green: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-700 dark:text-green-400',
+    blue: 'bg-surface-alt border-border text-primary',
+    yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700 dark:bg-yellow-900/30 dark:border-yellow-700 dark:text-yellow-400',
+    orange: 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/30 dark:border-orange-700 dark:text-orange-400',
+    red: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-700 dark:text-red-400',
+    purple: 'bg-purple-50 border-purple-200 text-purple-700 dark:bg-purple-900/30 dark:border-purple-700 dark:text-purple-400'
   }
   return colors[color] || colors.blue
 }
@@ -396,10 +381,7 @@ function getLevelColorClasses(color) {
               <!-- Specific warnings -->
               <div
                 v-if="flags.includes('irb-amendment-needed')"
-                class="p-3 rounded-lg mb-3"
-                :class="preferencesStore.darkMode
-                  ? 'bg-amber-900/30 text-amber-300'
-                  : 'bg-amber-50 text-amber-800'"
+                class="p-3 rounded-lg mb-3 bg-amber-50 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
               >
                 <p class="text-sm font-medium">
                   ⚠️ Your IRB protocol may need an amendment before using AI tools.
@@ -409,10 +391,7 @@ function getLevelColorClasses(color) {
 
               <div
                 v-if="flags.includes('export-control')"
-                class="p-3 rounded-lg mb-3"
-                :class="preferencesStore.darkMode
-                  ? 'bg-red-900/30 text-red-300'
-                  : 'bg-red-50 text-red-800'"
+                class="p-3 rounded-lg mb-3 bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300"
               >
                 <p class="text-sm font-medium">
                   🔒 Export controlled data requires consultation with your security office
@@ -422,10 +401,7 @@ function getLevelColorClasses(color) {
 
               <div
                 v-if="flags.includes('hipaa')"
-                class="p-3 rounded-lg mb-3"
-                :class="preferencesStore.darkMode
-                  ? 'bg-blue-900/30 text-blue-300 border border-blue-800'
-                  : 'bg-blue-50 text-blue-800 border border-blue-200'"
+                class="p-3 rounded-lg mb-3 bg-surface-alt text-primary border border-border"
               >
                 <p class="text-sm font-medium mb-2">
                   🏥 Clinical & Healthcare AI Track Available
@@ -436,8 +412,7 @@ function getLevelColorClasses(color) {
                 </p>
                 <router-link
                   to="/ai/clinical"
-                  class="inline-flex items-center gap-1 text-sm font-medium hover:underline"
-                  :class="preferencesStore.darkMode ? 'text-blue-400' : 'text-blue-600'"
+                  class="inline-flex items-center gap-1 text-sm font-medium hover:underline text-primary"
                 >
                   <span>View Clinical Track</span>
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -448,10 +423,7 @@ function getLevelColorClasses(color) {
 
               <div
                 v-if="flags.includes('reident-risk')"
-                class="p-3 rounded-lg"
-                :class="preferencesStore.darkMode
-                  ? 'bg-orange-900/30 text-orange-300'
-                  : 'bg-orange-50 text-orange-800'"
+                class="p-3 rounded-lg bg-orange-50 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300"
               >
                 <p class="text-sm font-medium">
                   ⚠️ High re-identification risk. Even de-identified data may be re-identified

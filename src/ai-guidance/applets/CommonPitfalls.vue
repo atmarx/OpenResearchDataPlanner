@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import AppletFrame from '../components/AppletFrame.vue'
 import {
   AlertTriangle,
@@ -17,7 +16,6 @@ import {
 } from 'lucide-vue-next'
 
 const aiStore = useAiGuidanceStore()
-const preferencesStore = usePreferencesStore()
 
 const APPLET_ID = 'common-pitfalls'
 
@@ -310,8 +308,7 @@ function getNextApplet() {
       <div class="flex items-center gap-2 mb-4">
         <component
           :is="currentChecklist.icon"
-          class="w-5 h-5"
-          :class="preferencesStore.darkMode ? 'text-orange-400' : 'text-orange-600'"
+          class="w-5 h-5 text-orange-600 dark:text-orange-400"
         />
         <h3 class="font-semibold text-text">
           {{ currentChecklist.name }} Checklist
@@ -326,7 +323,7 @@ function getNextApplet() {
           class="p-3 rounded-lg border cursor-pointer transition-all flex items-start gap-3"
           :class="[
             isItemChecked(item)
-              ? (preferencesStore.darkMode ? 'bg-green-900/20 border-green-700' : 'bg-green-50 border-green-300')
+              ? 'bg-green-50 border-green-300 dark:bg-green-900/20 dark:border-green-700'
               : 'bg-surface border-border hover:border-border-strong'
           ]"
         >
@@ -355,7 +352,7 @@ function getNextApplet() {
         class="w-full flex items-center justify-between"
       >
         <div class="flex items-center gap-2">
-          <Workflow class="w-5 h-5" :class="preferencesStore.darkMode ? 'text-purple-400' : 'text-purple-600'" />
+          <Workflow class="w-5 h-5 text-purple-600 dark:text-purple-400" />
           <h3 class="font-semibold text-text">
             Using AI in a Pipeline/Automation?
           </h3>
@@ -377,7 +374,7 @@ function getNextApplet() {
           class="p-3 rounded-lg border cursor-pointer transition-all flex items-start gap-3"
           :class="[
             isPipelineItemChecked(item)
-              ? (preferencesStore.darkMode ? 'bg-purple-900/20 border-purple-700' : 'bg-purple-50 border-purple-300')
+              ? 'bg-purple-50 border-purple-300 dark:bg-purple-900/20 dark:border-purple-700'
               : 'bg-surface-alt border-border hover:border-border-strong'
           ]"
         >
@@ -399,16 +396,15 @@ function getNextApplet() {
     <!-- Warning for high-risk tasks -->
     <div
       v-if="['clinical', 'legal', 'statistics', 'citations'].includes(selectedTask)"
-      class="mt-6 p-4 rounded-lg border"
-      :class="preferencesStore.darkMode ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-200'"
+      class="mt-6 p-4 rounded-lg border bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800"
     >
       <div class="flex items-start gap-3">
-        <AlertTriangle class="w-5 h-5 flex-shrink-0 mt-0.5" :class="preferencesStore.darkMode ? 'text-red-400' : 'text-red-600'" />
+        <AlertTriangle class="w-5 h-5 flex-shrink-0 mt-0.5 text-red-600 dark:text-red-400" />
         <div>
-          <p class="font-medium" :class="preferencesStore.darkMode ? 'text-red-300' : 'text-red-800'">
+          <p class="font-medium text-red-800 dark:text-red-300">
             High-Risk Task Type
           </p>
-          <p class="text-sm mt-1" :class="preferencesStore.darkMode ? 'text-red-400' : 'text-red-700'">
+          <p class="text-sm mt-1 text-red-700 dark:text-red-400">
             This task type has a poor fit for AI assistance. Consider whether the time spent on
             verification exceeds the time saved. Expert review is essential.
           </p>

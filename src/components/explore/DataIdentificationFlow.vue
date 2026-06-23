@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   ArrowRight,
   ArrowLeft,
@@ -17,7 +16,6 @@ import {
 } from 'lucide-vue-next'
 
 const emit = defineEmits(['complete', 'back'])
-const preferencesStore = usePreferencesStore()
 
 // Flow state
 const step = ref('start') // start, direct-ids, uses-codes, key-exists, key-location, result
@@ -254,7 +252,7 @@ function applyResult() {
     <!-- Start / Intro -->
     <div v-if="step === 'start'" class="space-y-6">
       <div class="text-center">
-        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-surface-alt flex items-center justify-center">
           <HelpCircle class="w-8 h-8 text-primary" />
         </div>
         <h2 class="text-2xl font-bold mb-3 text-text">
@@ -288,30 +286,18 @@ function applyResult() {
 
         <!-- The common scenario -->
         <div
-          class="p-4 rounded-lg border-2 border-dashed"
-          :class="preferencesStore.darkMode
-            ? 'bg-gray-800 border-gray-600'
-            : 'bg-amber-50 border-amber-200'"
+          class="p-4 rounded-lg border-2 border-dashed bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-700"
         >
           <div class="flex items-start gap-3">
             <FileSpreadsheet class="w-6 h-6 flex-shrink-0 text-amber-600 mt-0.5" />
             <div>
-              <p
-                class="font-medium mb-1"
-                :class="preferencesStore.darkMode ? 'text-amber-400' : 'text-amber-800'"
-              >
+              <p class="font-medium mb-1 text-amber-800 dark:text-amber-400">
                 Common confusion:
               </p>
-              <p
-                class="text-sm"
-                :class="preferencesStore.darkMode ? 'text-gray-300' : 'text-amber-900'"
-              >
+              <p class="text-sm text-amber-900 dark:text-amber-200">
                 "I replaced student names with random IDs, so it's de-identified!"
               </p>
-              <p
-                class="text-sm mt-2"
-                :class="preferencesStore.darkMode ? 'text-gray-400' : 'text-amber-700'"
-              >
+              <p class="text-sm mt-2 text-amber-700 dark:text-amber-300">
                 <strong>Reality:</strong> If you or the registrar can link those IDs back to students,
                 that's <em>encoded</em> data. FERPA and HIPAA still apply.
               </p>
@@ -347,7 +333,7 @@ function applyResult() {
           @click="toggleIdentifier(option.id)"
           class="p-3 text-left text-sm rounded-lg border transition-colors"
           :class="directIdentifiers.includes(option.id)
-            ? 'bg-blue-100 border-blue-300 text-blue-900'
+            ? 'bg-surface-alt border-primary text-primary'
             : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
         >
           <span class="flex items-center gap-2">
@@ -454,10 +440,7 @@ function applyResult() {
       <div class="space-y-3">
         <button
           @click="keyExists = 'yes'; next()"
-          class="w-full p-4 border rounded-lg text-left transition-colors bg-surface border-border"
-          :class="preferencesStore.darkMode
-            ? 'hover:border-orange-500'
-            : 'hover:border-orange-300 hover:bg-orange-50'"
+          class="w-full p-4 border rounded-lg text-left transition-colors bg-surface border-border hover:border-orange-300 hover:bg-orange-50 dark:hover:border-orange-500 dark:hover:bg-transparent"
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -477,10 +460,7 @@ function applyResult() {
 
         <button
           @click="keyExists = 'never'; next()"
-          class="w-full p-4 border rounded-lg text-left transition-colors bg-surface border-border"
-          :class="preferencesStore.darkMode
-            ? 'hover:border-green-500'
-            : 'hover:border-green-300 hover:bg-green-50'"
+          class="w-full p-4 border rounded-lg text-left transition-colors bg-surface border-border hover:border-green-300 hover:bg-green-50 dark:hover:border-green-500 dark:hover:bg-transparent"
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -500,10 +480,7 @@ function applyResult() {
 
         <button
           @click="keyExists = 'destroyed'; next()"
-          class="w-full p-4 border rounded-lg text-left transition-colors bg-surface border-border"
-          :class="preferencesStore.darkMode
-            ? 'hover:border-green-500'
-            : 'hover:border-green-300 hover:bg-green-50'"
+          class="w-full p-4 border rounded-lg text-left transition-colors bg-surface border-border hover:border-green-300 hover:bg-green-50 dark:hover:border-green-500 dark:hover:bg-transparent"
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -549,7 +526,7 @@ function applyResult() {
           @click="keyLocation = option.id"
           class="w-full p-3 border rounded-lg text-left transition-colors"
           :class="keyLocation === option.id
-            ? 'bg-blue-100 border-blue-300 text-blue-900'
+            ? 'bg-surface-alt border-primary text-primary'
             : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
         >
           {{ option.label }}
@@ -580,26 +557,26 @@ function applyResult() {
       <div
         class="rounded-lg border-2 p-6 text-center"
         :class="{
-          'bg-green-50 border-green-200': result.color === 'green',
-          'bg-orange-50 border-orange-200': result.color === 'orange',
-          'bg-red-50 border-red-200': result.color === 'red'
+          'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-700': result.color === 'green',
+          'bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-700': result.color === 'orange',
+          'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-700': result.color === 'red'
         }"
       >
         <div
           class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
           :class="{
-            'bg-green-100': result.color === 'green',
-            'bg-orange-100': result.color === 'orange',
-            'bg-red-100': result.color === 'red'
+            'bg-green-100 dark:bg-green-900/40': result.color === 'green',
+            'bg-orange-100 dark:bg-orange-900/40': result.color === 'orange',
+            'bg-red-100 dark:bg-red-900/40': result.color === 'red'
           }"
         >
           <component
             :is="result.icon"
             class="w-8 h-8"
             :class="{
-              'text-green-600': result.color === 'green',
-              'text-orange-600': result.color === 'orange',
-              'text-red-600': result.color === 'red'
+              'text-green-600 dark:text-green-400': result.color === 'green',
+              'text-orange-600 dark:text-orange-400': result.color === 'orange',
+              'text-red-600 dark:text-red-400': result.color === 'red'
             }"
           />
         </div>
@@ -607,22 +584,22 @@ function applyResult() {
         <h2
           class="text-2xl font-bold mb-2"
           :class="{
-            'text-green-800': result.color === 'green',
-            'text-orange-800': result.color === 'orange',
-            'text-red-800': result.color === 'red'
+            'text-green-800 dark:text-green-300': result.color === 'green',
+            'text-orange-800 dark:text-orange-300': result.color === 'orange',
+            'text-red-800 dark:text-red-300': result.color === 'red'
           }"
         >
           {{ result.title }}
         </h2>
 
-        <p class="text-gray-700 mb-4">{{ result.description }}</p>
+        <p class="text-text-secondary mb-4">{{ result.description }}</p>
 
         <div
           class="inline-block px-4 py-2 rounded-lg font-medium"
           :class="{
-            'bg-green-100 text-green-800': result.color === 'green',
-            'bg-orange-100 text-orange-800': result.color === 'orange',
-            'bg-red-100 text-red-800': result.color === 'red'
+            'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300': result.color === 'green',
+            'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300': result.color === 'orange',
+            'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300': result.color === 'red'
           }"
         >
           Likely tier: {{ result.tier }}
@@ -632,10 +609,7 @@ function applyResult() {
       <!-- Key location warning -->
       <div
         v-if="result.keyWarning"
-        class="p-4 rounded-lg border"
-        :class="preferencesStore.darkMode
-          ? 'bg-amber-900/30 border-amber-700 text-amber-200'
-          : 'bg-amber-50 border-amber-200 text-amber-800'"
+        class="p-4 rounded-lg border bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-200"
       >
         <div class="flex items-start gap-3">
           <AlertTriangle class="w-5 h-5 flex-shrink-0 mt-0.5" />
