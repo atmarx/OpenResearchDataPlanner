@@ -89,10 +89,14 @@ watch(
       />
     </div>
 
-    <!-- Navigation buttons (except on welcome and results) -->
+    <!-- Navigation buttons (except on welcome and results).
+         Sticky on tablet/desktop so the path forward is always in view —
+         the instant a step becomes valid, "Continue" flips from greyed to
+         active right where the eye is, no scroll-hunting. (Mobile left in
+         normal flow — its own treatment.) -->
     <div
       v-if="sessionStore.currentStep !== 'welcome' && sessionStore.currentStep !== 'results' && sessionStore.currentStep !== 'consultation'"
-      class="mt-6 flex justify-between"
+      class="static sm:sticky sm:bottom-4 z-30 mt-6 flex items-center justify-between gap-3 rounded-lg border border-border bg-canvas/90 px-4 py-3 backdrop-blur shadow-[0_-1px_14px_rgb(0_0_0/0.08)]"
     >
       <button
         v-if="wizard.hasPreviousStep.value"
@@ -107,7 +111,7 @@ watch(
         v-if="wizard.hasNextStep.value"
         @click="wizard.nextStep"
         :disabled="!wizard.canProceed.value"
-        class="px-6 py-2 bg-primary text-on-primary rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="px-6 py-2 bg-primary text-on-primary rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Continue
       </button>
