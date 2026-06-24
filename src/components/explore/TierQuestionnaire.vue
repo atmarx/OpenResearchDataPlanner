@@ -181,9 +181,6 @@ function selectAnswer(option) {
   } else if (option.next) {
     currentQuestionId.value = option.next
   }
-
-  // Scroll to top for the new question
-  nextTick(scrollToTop)
 }
 
 // Go back one step using history
@@ -198,7 +195,6 @@ function goBack() {
     // No history, go to intro
     resetQuestionnaire()
   }
-  nextTick(scrollToTop)
 }
 
 // Go back to a specific point in history (from path viewer)
@@ -208,7 +204,6 @@ function handleGoBackTo(historyIndex) {
   answers.value = state.answers
   flags.value = state.flags
   determinedTier.value = state.tier
-  nextTick(scrollToTop)
 }
 
 // Full reset
@@ -329,6 +324,11 @@ function syncHashToQuestion(id) {
 
 watch(currentQuestionId, (id) => {
   if (viewMode.value === 'questionnaire') syncHashToQuestion(id)
+  // Reset scroll on every question transition — start, answer, back, reset, deep-link.
+  // Centralized here so no single handler can forget it (the "Start Questionnaire"
+  // button used to change the view without resetting scroll, stranding the reader
+  // mid-page). One watch, every transition covered.
+  nextTick(scrollToTop)
 })
 
 watch(viewMode, (mode) => {
