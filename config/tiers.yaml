@@ -66,13 +66,12 @@ tiers:
     color: "orange"
     description: |
       HIPAA, FERPA, IRB-governed human subjects data,
-      export-controlled research (EAR/ITAR).
+      and other regulated data (PHI/PII).
     types_of_data:
       - "Protected Health Information (PHI)"
       - "Student education records (FERPA)"
       - "Human subjects research data"
       - "Personally Identifiable Information (PII)"
-      - "Export-controlled data (EAR)"
     examples:
       - "Clinical trial data"
       - "Student educational records"
@@ -86,7 +85,7 @@ tiers:
       - "Annual security training"
     help_text: |
       Choose this tier if your data is subject to regulatory
-      requirements such as HIPAA, FERPA, or export controls.
+      requirements such as HIPAA, FERPA, or human-subjects rules.
       This tier requires additional retention planning.
     consultation_required: false
     retention_questions_required: true
@@ -97,11 +96,11 @@ tiers:
     sort_order: 4
     color: "red"
     description: |
-      Secure enclaves, bespoke security requirements,
+      Secure enclaves, export-controlled research (EAR/ITAR),
       DOD/defense contractor work, CUI.
     types_of_data:
       - "Controlled Unclassified Information (CUI)"
-      - "ITAR-controlled defense data"
+      - "Export-controlled data (EAR/ITAR)"
       - "Classified research"
       - "Data requiring NIST 800-171 compliance"
       - "Select Agent research data"

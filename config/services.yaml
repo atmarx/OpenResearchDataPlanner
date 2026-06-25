@@ -1834,8 +1834,8 @@ services:
         value: partial
         detail: "Local admin; managed base image"
       high_tier_data:
-        value: full
-        detail: "All tiers including restricted"
+        value: partial
+        detail: "Regulated/PHI (L3); restricted (L4) requires the Secure Enclave"
       scalable:
         value: partial
         detail: "Upgrade to Gold/Platinum"
@@ -1899,8 +1899,8 @@ services:
         value: partial
         detail: "Local admin; managed base image"
       high_tier_data:
-        value: full
-        detail: "All tiers including restricted"
+        value: partial
+        detail: "Regulated/PHI (L3); restricted (L4) requires the Secure Enclave"
       scalable:
         value: partial
         detail: "Upgrade to Platinum"
@@ -1964,8 +1964,8 @@ services:
         value: partial
         detail: "Local admin; managed base image"
       high_tier_data:
-        value: full
-        detail: "All tiers including restricted"
+        value: partial
+        detail: "Regulated/PHI (L3); restricted (L4) requires the Secure Enclave"
       scalable:
         value: none
         detail: "Highest tier available"

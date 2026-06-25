@@ -2,8 +2,8 @@
 # Detailed approval processes for each tier
 
 workflows:
-  L1:
-    name: "Low (Public Data)"
+  low:
+    name: "Low Risk"
     process: "self-service"
     description: "No special approval needed"
     color: "green"
@@ -40,8 +40,8 @@ workflows:
       Public and non-sensitive data can be provisioned immediately
       through our self-service portal. No approval required.
 
-  L2:
-    name: "Medium (Internal Data)"
+  medium:
+    name: "Medium Risk"
     process: "self-service"
     description: "Standard institutional security"
     color: "yellow"
@@ -78,8 +78,8 @@ workflows:
       Pre-publication and proprietary data uses standard institutional
       security. Self-service provisioning with your university login.
 
-  L3:
-    name: "High (Regulated Data)"
+  high:
+    name: "High Risk"
     process: "consultation"
     description: "Requires BAA verification or IRB documentation"
     color: "orange"
@@ -160,8 +160,8 @@ workflows:
       compliance infrastructure. We've streamlined this process and
       have pre-approved options available.
 
-  L4:
-    name: "Restricted (Export-Controlled)"
+  restricted:
+    name: "Restricted"
     process: "security_review"
     description: "Requires export control review and dedicated infrastructure"
     color: "red"

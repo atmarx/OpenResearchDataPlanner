@@ -63,6 +63,7 @@ schedules:
     regulation: "EAR/ITAR"
     applies_to_tiers:
       - high
+      - restricted
     is_post_grant: true
     is_default: false
     archive_required: true
