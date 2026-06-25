@@ -39,6 +39,16 @@ const tierBadgeClasses = computed(() => {
 const isExpanded = ref(false)
 
 /**
+ * The expanded panel only renders when there's actually something to show.
+ * Drive the outer container height AND the panel v-if from this single
+ * source so they can't desync — e.g. deleting the last item while expanded
+ * used to leave a tall, empty raised footer.
+ */
+const showExpandedPanel = computed(
+  () => isExpanded.value && !slateStore.isEmpty && !slateStore.isSubmitted
+)
+
+/**
  * Format currency for display
  */
 function formatCurrency(amount) {
@@ -97,6 +107,19 @@ function goToReview() {
  */
 function handleRemoveItem(itemId) {
   slateStore.removeItem(itemId)
+  // Collapse if that was the last thing in the slate — otherwise isExpanded
+  // stays true and the footer re-raises (empty) the next time an item is added.
+  if (slateStore.isEmpty) isExpanded.value = false
+}
+
+/**
+ * Edit an item's quantity (size) inline and recalculate its cost.
+ * Guards against negative or non-numeric input.
+ */
+function handleQuantityInput(itemId, value) {
+  const next = Number(value)
+  if (!Number.isFinite(next) || next < 0) return
+  slateStore.updateQuantity(itemId, next)
 }
 
 /**
@@ -104,6 +127,7 @@ function handleRemoveItem(itemId) {
  */
 function handleRemoveSoftware(softwareId) {
   slateStore.removeSoftware(softwareId)
+  if (slateStore.isEmpty) isExpanded.value = false
 }
 
 /**
@@ -122,7 +146,7 @@ function handleWipeSlate() {
   <div
     v-if="configStore.config"
     class="fixed bottom-0 left-0 right-0 z-40 transition-all duration-300 ease-in-out"
-    :class="isExpanded ? 'h-[40vh] md:h-[35vh]' : 'h-auto'"
+    :class="showExpandedPanel ? 'h-[40vh] md:h-[35vh]' : 'h-auto'"
   >
     <!-- Collapsed Bar -->
     <div
@@ -212,7 +236,7 @@ function handleWipeSlate() {
 
     <!-- Expanded Panel -->
     <div
-      v-if="isExpanded && !slateStore.isEmpty && !slateStore.isSubmitted"
+      v-if="showExpandedPanel"
       id="slate-expanded"
       class="border-x overflow-y-auto bg-surface border-border"
       :style="{ height: 'calc(40vh - 56px)' }"
@@ -235,8 +259,19 @@ function handleWipeSlate() {
                   <div class="font-medium text-text">
                     {{ getServiceName(item.service) }}
                   </div>
-                  <div class="text-sm text-text-muted">
-                    {{ item.quantity.toLocaleString() }} {{ item.unit }}
+                  <!-- Editable size — recomputes cost on change via updateQuantity -->
+                  <div class="flex items-center gap-2 mt-1">
+                    <input
+                      type="number"
+                      inputmode="decimal"
+                      :value="item.quantity"
+                      @change="handleQuantityInput(item.id, $event.target.value)"
+                      min="0"
+                      step="any"
+                      class="w-28 text-sm px-2 py-1 rounded border bg-surface border-border-strong text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      :aria-label="`Quantity in ${item.unit}`"
+                    />
+                    <span class="text-sm text-text-muted">{{ item.unit }}</span>
                   </div>
                 </div>
                 <div class="flex items-center gap-4">
