@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import { useConfigStore } from './configStore'
+import { computeServiceCost } from '../lib/pricing.js'
 
 const STORAGE_KEY = 'odp-slate'
 
@@ -124,7 +125,9 @@ export const useSlateStore = defineStore('slate', () => {
   // ============================================================
 
   /**
-   * Calculate costs for a service at a given quantity
+   * Calculate costs for a service at a given quantity.
+   * Delegates to the shared pricing engine (src/lib/pricing.js) so the slate
+   * reads the real services.yaml schema (`price`, tiered bands, subsidies[]).
    * Returns { monthly, annual, breakdown }
    */
   function calculateItemCosts(serviceSlug, quantity) {
@@ -132,85 +135,7 @@ export const useSlateStore = defineStore('slate', () => {
     if (!service || !service.cost_model) {
       return { monthly: 0, annual: 0, breakdown: null }
     }
-
-    const costModel = service.cost_model
-    let monthlyCost = 0
-    let breakdown = []
-
-    if (costModel.type === 'unit') {
-      // Simple unit pricing: price_per_unit * quantity
-      const unitPrice = costModel.price_per_unit || 0
-      monthlyCost = unitPrice * quantity
-      breakdown.push({
-        label: `${quantity} ${costModel.unit_label || 'units'} @ $${unitPrice}/${costModel.unit_label || 'unit'}`,
-        amount: monthlyCost
-      })
-
-    } else if (costModel.type === 'tiered') {
-      // Tiered pricing: different rates for different quantities
-      let remaining = quantity
-      for (const tier of costModel.tiers || []) {
-        if (remaining <= 0) break
-
-        const tierMax = tier.up_to === 'unlimited' ? Infinity : tier.up_to
-        const tierQuantity = Math.min(remaining, tierMax - (tier.from || 0))
-        const tierCost = tierQuantity * (tier.price_per_unit || 0)
-
-        monthlyCost += tierCost
-        if (tierCost > 0) {
-          breakdown.push({
-            label: tier.label || `${tierQuantity} units @ $${tier.price_per_unit}`,
-            amount: tierCost
-          })
-        }
-        remaining -= tierQuantity
-      }
-
-    } else if (costModel.type === 'consultation') {
-      // Consultation-based: no automatic pricing
-      monthlyCost = 0
-      breakdown.push({
-        label: 'Pricing determined during consultation',
-        amount: null
-      })
-    }
-
-    // Apply auto-subsidies if configured
-    if (service.subsidies?.auto_apply) {
-      const subsidy = service.subsidies
-      let discount = 0
-
-      if (subsidy.free_units && quantity > 0) {
-        // Free units subsidy (e.g., first 10,000 SU free)
-        const freeUnits = Math.min(quantity, subsidy.free_units)
-        const unitPrice = costModel.price_per_unit || 0
-        discount = freeUnits * unitPrice
-        breakdown.push({
-          label: `Free allocation (${freeUnits} ${costModel.unit_label || 'units'})`,
-          amount: -discount
-        })
-      } else if (subsidy.discount_type === 'percent') {
-        discount = monthlyCost * (subsidy.discount_value / 100)
-        breakdown.push({
-          label: `${subsidy.discount_value}% subsidy`,
-          amount: -discount
-        })
-      } else if (subsidy.discount_type === 'fixed') {
-        discount = subsidy.discount_value
-        breakdown.push({
-          label: 'Fixed subsidy',
-          amount: -discount
-        })
-      }
-
-      monthlyCost = Math.max(0, monthlyCost - discount)
-    }
-
-    return {
-      monthly: monthlyCost,
-      annual: monthlyCost * 12,
-      breakdown
-    }
+    return computeServiceCost(service.cost_model, service.subsidies, quantity)
   }
 
   // ============================================================
