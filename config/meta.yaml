@@ -101,7 +101,7 @@ ai_disclosure:
   banner:
     title: "About This Tool"
     message: |
-      OpenDataPlanner was developed with AI coding assistance (Claude by Anthropic).
+      Research Data Planner was developed with AI coding assistance (Claude by Anthropic).
       All code, content, and recommendations have been reviewed by Research IT staff.
       We follow the same responsible AI practices we recommend to researchers: human oversight,
       transparent disclosure, and continuous verification.
@@ -119,7 +119,7 @@ ai_disclosure:
   about_page:
     intro: "How we used AI to build this tool, and why transparency matters."
     citation: |
-      OpenDataPlanner. (2024-2026). Developed by {institution} with AI coding
+      Research Data Planner. (2024-2026). Developed by {institution} with AI coding
       assistance from Claude (Anthropic). All code and content reviewed by human staff.
 
 # Feedback collection (optional)
@@ -133,4 +133,4 @@ feedback:
 # Template version (included in exports for tracking)
 version: "1.0.0"
 schema_version: "1.0"             # Schema version for upgrade compatibility
-last_updated: "2026-02-04"
+last_updated: "2026-06-25"

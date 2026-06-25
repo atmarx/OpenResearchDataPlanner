@@ -28,7 +28,7 @@ const pageIntro = computed(() =>
 
 const citationText = computed(() => {
   const template = aboutPage.value.citation ||
-    'OpenDataPlanner. (2024-2026). Developed by {institution} with AI coding assistance from Claude (Anthropic). All code and content reviewed by human staff.'
+    'Research Data Planner. (2024-2026). Developed by {institution} with AI coding assistance from Claude (Anthropic). All code and content reviewed by human staff.'
   return template.replace('{institution}', institutionName.value)
 })
 </script>
@@ -53,7 +53,7 @@ const citationText = computed(() => {
           <Bot class="w-6 h-6" />
         </div>
         <h1 class="text-2xl font-bold text-text">
-          AI in OpenDataPlanner
+          AI in Research Data Planner
         </h1>
       </div>
       <p class="text-lg text-text-secondary">
@@ -69,7 +69,7 @@ const citationText = computed(() => {
           Why This Page Exists
         </h2>
         <p class="mb-4 text-text-secondary">
-          OpenDataPlanner includes guidance on responsible AI use for researchers. We believe
+          Research Data Planner includes guidance on responsible AI use for researchers. We believe
           it's essential to practice what we teach. This page documents our own AI usage so
           you can see how we apply the same principles we recommend to faculty.
         </p>

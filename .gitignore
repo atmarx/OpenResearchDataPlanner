@@ -40,3 +40,6 @@ coverage/
 docs/ux/reviews/playwright/**/*.webm
 docs/ux/reviews/playwright/**/trace.zip
 docs/ux/reviews/playwright/**/session-packet.md
+
+# Obsidian editor config (not project docs)
+docs/.obsidian/

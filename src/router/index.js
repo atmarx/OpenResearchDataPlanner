@@ -99,7 +99,7 @@ const routes = [
     path: '/about-ai',
     name: 'about-ai',
     component: AboutAIPage,
-    meta: { title: 'AI in OpenDataPlanner' }
+    meta: { title: 'AI in Research Data Planner' }
   },
 
   // AI Guidance (standalone, extractable)
@@ -257,7 +257,7 @@ const router = createRouter({
 
 // Update document title on navigation
 router.beforeEach((to, from, next) => {
-  const baseTitle = 'OpenDataPlanner'
+  const baseTitle = 'Research Data Planner'
   document.title = to.meta.title ? `${to.meta.title} | ${baseTitle}` : baseTitle
   next()
 })

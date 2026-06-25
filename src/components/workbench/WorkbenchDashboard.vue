@@ -263,7 +263,7 @@ function getStatusBadge(status) {
           Drop plan files here or click to browse
         </p>
         <p class="mt-1 text-xs text-text-muted">
-          JSON files exported from OpenDataPlanner
+          JSON files exported from Research Data Planner
         </p>
 
         <p v-if="importError" class="mt-3 text-sm text-red-500">

@@ -38,7 +38,7 @@ export function usePdfExport() {
       header: {
         columns: [
           {
-            text: 'OpenDataPlanner',
+            text: 'Research Data Planner',
             style: 'headerText',
             margin: [50, 20, 0, 0]
           },

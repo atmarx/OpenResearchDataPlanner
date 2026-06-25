@@ -155,7 +155,7 @@ function exportBudget() {
   lines.push(`**Grand Total (Grant + Archive):** ${formatCurrency(costBreakdown.value.grandTotal)}`)
   lines.push('')
   lines.push('---')
-  lines.push('*This estimate was generated using OpenResearchDataPlanner. Actual costs may vary.*')
+  lines.push('*This estimate was generated using Research Data Planner. Actual costs may vary.*')
 
   downloadFile(lines.join('\n'), 'budget-estimate.md', 'text/markdown')
 }

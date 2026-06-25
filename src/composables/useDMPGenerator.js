@@ -263,7 +263,7 @@ export function useDMPGenerator() {
     // Footer
     sections.push('## Document Information')
     sections.push('')
-    sections.push(`*This Data Management Plan was generated using OpenResearchDataPlanner on ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}.*`)
+    sections.push(`*This Data Management Plan was generated using Research Data Planner on ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}.*`)
     sections.push('')
     sections.push(`*Template version: ${configStore.config?.meta?.version || 'unknown'}*`)
     sections.push('')

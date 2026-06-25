@@ -188,7 +188,7 @@ function handleClose() {
                 <input
                   v-model="contactEmail"
                   type="email"
-                  placeholder="schen@university.edu"
+                  placeholder="schen@northwinds.edu"
                   class="w-full px-2.5 py-1.5 rounded border text-sm bg-surface border-border-strong text-text placeholder-gray-400"
                 />
               </div>
