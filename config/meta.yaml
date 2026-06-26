@@ -56,12 +56,34 @@ contact:
 
 # Institutional policy links (typically required for university websites)
 # Leave blank or remove any links you don't need - they'll be hidden automatically
+# Footer policy links. A plain list so any institution edits policies in YAML
+# alone — add, remove, or reorder here and the footer follows. Two buckets:
+#   1. Web boilerplate every .edu carries (privacy, accessibility, terms, Title IX).
+#   2. The research-data policies THIS tool is a front-end to — the tier picker,
+#      DMP output, and retention schedules are all interpretations of these, so
+#      the footer points researchers at the source of truth.
+# Keep tier-specific regs (HIPAA, FERPA, export control) OUT — they're surfaced
+# where they bite (tier descriptions, the export-control modal), not as global noise.
+# (Legacy object form { privacy: url, ... } still renders, but prefer this list.)
 links:
-  privacy: "https://northwinds.edu/privacy"
-  accessibility: "https://northwinds.edu/accessibility"
-  terms: "https://northwinds.edu/terms"
-  # Optional additional links
-  # nondiscrimination: "https://northwinds.edu/nondiscrimination"
+  # Bucket 1 — university web boilerplate
+  - label: "Privacy Notice"
+    url: "https://northwinds.edu/privacy"
+  - label: "Accessibility"
+    url: "https://northwinds.edu/accessibility"
+  - label: "Terms of Use"
+    url: "https://northwinds.edu/terms"
+  - label: "Nondiscrimination / Title IX"
+    url: "https://northwinds.edu/nondiscrimination"
+  # Bucket 2 — the research-data policies this tool interprets
+  - label: "Data Classification Policy"
+    url: "https://rcd.northwinds.edu/policies/data-classification"
+  - label: "Research Data Management Policy"
+    url: "https://rcd.northwinds.edu/policies/data-management"
+  - label: "Data Sharing & Public Access"
+    url: "https://rcd.northwinds.edu/policies/public-access"
+  - label: "Acceptable Use Policy"
+    url: "https://rcd.northwinds.edu/policies/acceptable-use"
 
 # Indirect costs / F&A (Facilities & Administration)
 # Used to calculate fully-loaded costs for grant proposals

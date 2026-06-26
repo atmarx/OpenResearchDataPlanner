@@ -26,16 +26,22 @@ const consultationUrl = computed(() =>
   configStore.config?.meta?.contact?.consultation_url
 )
 
+// Footer links are a YAML-driven list of { label, url } so institutions edit
+// policies in config alone. A legacy object form { privacy: url, ... } is still
+// accepted and mapped to the list, so existing forks don't break on upgrade.
 const links = computed(() => {
-  const raw = configStore.config?.meta?.links || {}
-  // Filter out empty/whitespace-only values so they don't render
-  const filtered = {}
-  for (const [key, value] of Object.entries(raw)) {
-    if (value && typeof value === 'string' && value.trim()) {
-      filtered[key] = value
-    }
+  const raw = configStore.config?.meta?.links
+  const valid = (l) => l && l.label && typeof l.url === 'string' && l.url.trim()
+  if (Array.isArray(raw)) {
+    return raw.filter(valid)
   }
-  return filtered
+  if (raw && typeof raw === 'object') {
+    const legacyLabels = { privacy: 'Privacy', accessibility: 'Accessibility', terms: 'Terms' }
+    return Object.entries(raw)
+      .filter(([, url]) => url && typeof url === 'string' && url.trim())
+      .map(([key, url]) => ({ label: legacyLabels[key] || key, url }))
+  }
+  return []
 })
 
 // AI Disclosure config
@@ -82,36 +88,20 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
             </a>
           </div>
 
-          <!-- Policy links -->
+          <!-- Policy links (YAML-driven list; wraps when there are many) -->
           <div
-            class="flex items-center gap-4 text-xs text-text-muted"
+            v-if="links.length"
+            class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-muted"
           >
             <a
-              v-if="links.privacy"
-              :href="links.privacy"
+              v-for="link in links"
+              :key="link.url"
+              :href="link.url"
               target="_blank"
               rel="noopener noreferrer"
               class="hover:text-text-secondary"
             >
-              Privacy
-            </a>
-            <a
-              v-if="links.accessibility"
-              :href="links.accessibility"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="hover:text-text-secondary"
-            >
-              Accessibility
-            </a>
-            <a
-              v-if="links.terms"
-              :href="links.terms"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="hover:text-text-secondary"
-            >
-              Terms
+              {{ link.label }}
             </a>
           </div>
 
