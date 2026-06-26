@@ -23,8 +23,8 @@ const checklistItems = [
   {
     id: 'model-version',
     question: 'Did you save the exact model version?',
-    helpText: 'Model ID string, not just "ChatGPT" or "Claude"',
-    example: 'claude-3-5-sonnet-20241022 (not just "Claude")',
+    helpText: 'Exact model ID string, not just the product name',
+    example: 'The full provider/model/version string, e.g., "<model-name>-<release-date>" — not just "Claude" or "ChatGPT"',
     icon: Settings,
     critical: true
   },

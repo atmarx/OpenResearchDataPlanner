@@ -110,11 +110,11 @@ const questions = [
     helpText: 'Sending data to OpenAI, Anthropic, etc. means sharing with a third party.',
     learnMore: {
       title: 'Why this matters',
-      content: `When you paste data into ChatGPT or Claude, that data is transmitted to servers owned by OpenAI or Anthropic. This is technically "sharing data with a third party."
+      content: `When you paste data into a cloud AI service, that data is transmitted to servers owned by the AI vendor. This is technically "sharing data with a third party."
 
-Your IRB protocol may have restrictions on third-party data sharing. Even if the AI company promises not to use your data for training, the act of transmission itself may require disclosure.
+Your IRB protocol may have restrictions on third-party data sharing, and the Common Rule ties permissible uses to what participants consented to (45 CFR § 46.116). Even if the AI vendor promises not to use your data for training, the act of transmission itself may require disclosure — and for PHI, a Business Associate Agreement (45 CFR § 164.502(e)).
 
-Local AI models (running on your own computer) do not involve data sharing.`
+Local AI models (running on your own computer) do not involve third-party data sharing.`
     },
     options: [
       {
@@ -145,7 +145,7 @@ Local AI models (running on your own computer) do not involve data sharing.`
   {
     id: 'baa-check',
     question: 'For HIPAA data: Does the AI tool provider have a BAA?',
-    helpText: 'Business Associate Agreements are required for HIPAA-covered data.',
+    helpText: 'Business Associate Agreements are required before a vendor may handle HIPAA PHI (45 CFR § 164.502(e), § 164.504(e)).',
     options: [
       {
         value: 'not-hipaa',

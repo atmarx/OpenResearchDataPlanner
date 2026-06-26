@@ -1,22 +1,24 @@
 # HIPAA De-identification Decision Tree
-# Based on HHS HIPAA De-identification Guidance (45 CFR § 164.514)
-# Last reviewed: February 2025
+# Based on the HIPAA Privacy Rule de-identification standard (45 CFR § 164.514(a)-(b))
+# and HHS OCR "Guidance Regarding Methods for De-identification of PHI" (issued Nov 2012, still current)
+# Last reviewed: June 2026
 
 meta:
   applet_id: hipaa-deidentification
   title: HIPAA De-identification
   core_question: Is your health data truly de-identified?
-  version: "1.0"
-  last_updated: "2026-02-13"
-  regulatory_basis: "45 CFR § 164.514(b)"
-  official_guidance_url: "https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html"
+  version: "1.1"
+  last_updated: "2026-06-26"
+  regulatory_basis: "45 CFR § 164.514(a)-(b); HHS OCR De-identification Guidance (Nov 2012)"
+  official_guidance_url: "https://www.hhs.gov/hipaa/for-professionals/privacy/special-topics/de-identification/index.html"
 
 intro:
   text: |
-    HIPAA provides two methods for de-identification: **Safe Harbor** (remove 18 specific identifiers)
-    and **Expert Determination** (statistical risk analysis by qualified professional).
+    HIPAA's Privacy Rule provides two methods for de-identifying protected health information (PHI):
+    <strong>Safe Harbor</strong> (remove 18 specific identifiers) and <strong>Expert Determination</strong>
+    (documented statistical risk analysis by a qualified expert). Both are defined at 45 CFR § 164.514(b).
     This applet helps you determine your de-identification status.
-  source_note: "Based on official HHS guidance (45 CFR § 164.514, reviewed February 2025)."
+  source_note: "Sources: HIPAA Privacy Rule, 45 CFR § 164.514(a)-(b); HHS OCR, Guidance Regarding Methods for De-identification of PHI (issued Nov 2012, still the current OCR guidance as of June 2026)."
 
 # Decision tree questions
 questions:
@@ -120,7 +122,9 @@ questions:
         - Consent forms must explicitly address genomic data sharing and re-identification risk
 
         **HIPAA perspective:** Safe Harbor's 18 identifiers don't address biological uniqueness.
-        Expert Determination is the only path if you must share genomic data.
+        Expert Determination is the only HIPAA path if you must share genomic data.
+
+        Sources: Genetic/genomic information is PHI when held by a covered entity (45 CFR § 160.103; Genetic Information Nondiscrimination Act of 2008, Pub. L. 110-233). On genealogy-database re-identification: Erlich et al., "Identity inference of genomic data using long-range familial searches," Science 2018;362:690-694 (DOI 10.1126/science.aau4832) — ~60% of US individuals of European descent are reachable via a third-cousin-or-closer match. See also the NIH Genomic Data Sharing (GDS) Policy and the dbGaP controlled-access model.
     options:
       - value: understand-genomic
         label: I understand — genomic data requires special handling
@@ -139,7 +143,7 @@ questions:
     learn_more:
       title: The 18 HIPAA Safe Harbor Identifiers
       content: |
-        Under 45 CFR § 164.514(b)(2), you must remove:
+        Under the Safe Harbor method (45 CFR § 164.514(b)(2)(i)), you must remove all 18 of these:
 
         1. **Names** (patient, relatives, employers, household members)
         2. **Geographic subdivisions smaller than state** — except 3-digit ZIP if area >20,000 people
@@ -160,12 +164,14 @@ questions:
         17. **Full-face photographs** and comparable images
         18. **Any other unique identifying number, characteristic, or code**
 
-        **Plus special rules:**
-        - ZIP codes: 3-digit only if >20,000 people; 17 restricted ZIPs → "000"
-        - Dates: ONLY year permitted
-        - Ages 90+: Aggregate to "90 or older"
+        **Plus special rules (§ 164.514(b)(2)(i)(B)-(C)):**
+        - ZIP codes: keep the first 3 digits only if that 3-digit area has more than 20,000 people; otherwise change to "000" (OCR's guidance lists the restricted prefixes)
+        - Dates: ONLY the year may be kept — remove admission, discharge, birth, and death day/month
+        - Ages 90+: aggregate into a single "90 or older" category
 
-        Source: HHS HIPAA De-identification Guidance (Feb 2025)
+        Removing the 18 identifiers is necessary but not sufficient: you also must not have "actual knowledge" that the data could still identify someone (§ 164.514(b)(2)(ii)).
+
+        Source: 45 CFR § 164.514(b)(2)(i); HHS OCR, Guidance Regarding Methods for De-identification of PHI (Nov 2012) — https://www.hhs.gov/hipaa/for-professionals/privacy/special-topics/de-identification/index.html
     options:
       - value: all-18-removed
         label: Yes — all 18 identifiers removed
@@ -207,7 +213,7 @@ questions:
     learn_more:
       title: The "Actual Knowledge" Requirement
       content: |
-        HIPAA requires that even after removing the 18 identifiers, you must NOT have "actual knowledge"
+        Under 45 CFR § 164.514(b)(2)(ii), even after removing the 18 identifiers you must NOT have "actual knowledge"
         that the information could be used alone or in combination with other information to identify an individual.
 
         **Examples of actual knowledge:**
@@ -223,6 +229,8 @@ questions:
         - Studies about linking methods (unless you know recipient has such capabilities)
 
         If you have actual knowledge, the data is NOT de-identified under Safe Harbor.
+
+        Source: 45 CFR § 164.514(b)(2)(ii); see HHS OCR De-identification Guidance (Nov 2012).
     options:
       - value: no-knowledge
         label: No — I don't have knowledge of re-identification routes
@@ -287,6 +295,8 @@ questions:
         - Requires hiring qualified expert (cost)
         - Must document methodology
         - More complex than Safe Harbor
+
+        Source: 45 CFR § 164.514(b)(1); HHS OCR, Guidance Regarding Methods for De-identification of PHI (Nov 2012) — https://www.hhs.gov/hipaa/for-professionals/privacy/special-topics/de-identification/index.html
     options:
       - value: documented-expert
         label: Yes — have signed expert determination report
@@ -350,16 +360,17 @@ outcomes:
     icon: x-circle
     description: Your data does not meet HIPAA de-identification standards. This is identifiable PHI.
     implications:
-      - Full HIPAA Privacy Rule requirements apply
-      - Must have Business Associate Agreement (BAA) for any third-party AI tool
-      - Cannot share without patient authorization or specific HIPAA exception
-      - Must be stored on HIPAA-compliant infrastructure (L3 High tier minimum)
-      - All AI tool vendors must be HIPAA-compliant with signed BAAs
+      - Full HIPAA Privacy Rule requirements apply (45 CFR Part 164, Subpart E)
+      - A signed Business Associate Agreement (BAA) is required before any third-party AI tool may process this PHI (45 CFR § 164.502(e) and § 164.504(e))
+      - Cannot share without patient authorization or a specific Privacy Rule exception (e.g., 45 CFR § 164.512(i) for research with an IRB/Privacy Board waiver)
+      - Must be stored on HIPAA Security Rule-compliant infrastructure for ePHI (45 CFR §§ 164.302-164.318) — your L3 High tier minimum
+      - All AI tool vendors handling this data must be HIPAA-compliant with signed BAAs
     recommendations:
       - Complete de-identification using Safe Harbor method (remove all 18 identifiers)
-      - OR obtain Expert Determination from qualified professional
+      - OR obtain Expert Determination from a qualified professional
       - OR treat as identified PHI with full protections
       - Consult your institutional privacy/compliance office before proceeding
+      - Plan ahead for stricter ePHI security — HHS/OCR has proposed strengthening the HIPAA Security Rule (NPRM, 90 FR 898, Jan 6, 2025; still proposed as of June 2026), which would add mandatory encryption, MFA, and audit controls
     warnings:
       - Do NOT use consumer AI tools (ChatGPT Free, Claude.ai, etc.) with this data
       - Do NOT paste any portion of this data into non-BAA-covered AI services

@@ -1,20 +1,23 @@
 # Clinical AI Validation Checklist
 # Comprehensive checklist for clinical deployment readiness
-# Aligned with FDA good machine learning practices and clinical research standards
+# Aligned with FDA Good Machine Learning Practice (2021), FDA AI device guidances (2024-2025),
+# and clinical-AI reporting standards (TRIPOD+AI, CONSORT-AI, DECIDE-AI, STARD-AI, PROBAST+AI)
 
 meta:
   applet_id: clinical-validation
   title: Clinical Validation Checklist
   core_question: Is my AI ready for clinical deployment?
-  version: "1.0"
-  last_updated: "2026-02-13"
-  regulatory_basis: "FDA AI/ML SaMD Guidance (2025), Good Machine Learning Practice"
+  version: "1.1"
+  last_updated: "2026-06-26"
+  regulatory_basis: "FDA GMLP Guiding Principles (Oct 2021); FDA PCCP final guidance (Dec 2024, current Aug 2025); FDA/HC/MHRA Transparency Principles (June 2024); reporting standards TRIPOD+AI (2024), CONSORT-AI (2020), DECIDE-AI (2022), STARD-AI (2025)"
 
 intro:
   text: |
     Clinical AI requires rigorous validation beyond typical research standards. This checklist
-    helps you track readiness for clinical deployment or publication in medical journals.
-  source_note: "Based on FDA AI/ML guidance (2025) and clinical research best practices."
+    helps you track readiness for clinical deployment or publication in medical journals. It is
+    organized around FDA's Good Machine Learning Practice and the AI-specific reporting guidelines
+    now expected by major medical journals.
+  source_note: "Sources: FDA/Health Canada/MHRA, Good Machine Learning Practice for Medical Device Development — Guiding Principles (Oct 2021); FDA Marketing Submission Recommendations for a Predetermined Change Control Plan for AI-Enabled Device Software Functions (final Dec 2024; current version Aug 2025); FDA/HC/MHRA Transparency for ML-Enabled Medical Devices (June 2024); EQUATOR reporting guidelines TRIPOD+AI (BMJ 2024), CONSORT-AI & SPIRIT-AI (Nat Med 2020), DECIDE-AI (Nat Med 2022), STARD-AI (Nat Med 2025)."
 
 # Validation sections with items
 sections:
@@ -31,6 +34,8 @@ sections:
 
           Report: sensitivity, specificity, AUC, PPV, NPV (as appropriate for your task)
 
+          Source: TRIPOD+AI statement (Collins et al., BMJ 2024;385:e078378, DOI 10.1136/bmj-2023-078378) — report discrimination, calibration, and clinical-utility metrics on an independent test set.
+
       - id: confidence-intervals
         text: Performance metrics reported with confidence intervals
         required: true
@@ -38,6 +43,8 @@ sections:
           Single-number accuracy is insufficient. Report 95% confidence intervals for all metrics.
 
           Example: "Sensitivity: 92.3% (95% CI: 88.7-95.1%)"
+
+          Source: TRIPOD+AI (BMJ 2024) and STARD-AI for diagnostic-accuracy studies (Nat Med 2025;31:3283-3289, DOI 10.1038/s41591-025-03953-8) — report uncertainty (95% CIs) for every performance estimate.
 
       - id: failure-modes
         text: Known failure modes documented
@@ -48,6 +55,8 @@ sections:
           - Systematic errors or bias patterns
           - Adversarial or unusual inputs
           - Confidence thresholds for flagging uncertain cases
+
+          Source: FDA/HC/MHRA Good Machine Learning Practice (Oct 2021), Principles 8 & 9 (testing demonstrates performance during clinically relevant conditions; users are provided clear, essential information); document via a model card (Mitchell et al., FAccT 2019, DOI 10.1145/3287560.3287596).
 
       - id: computational-requirements
         text: Computational requirements specified
@@ -72,6 +81,8 @@ sections:
 
           AI should match or exceed current standard of care.
 
+          Source: STARD-AI reporting guideline for AI diagnostic-accuracy studies (Nat Med 2025;31:3283-3289, DOI 10.1038/s41591-025-03953-8); for prediction models see TRIPOD+AI (BMJ 2024).
+
       - id: prospective-validation
         text: Prospective validation (not just retrospective)
         required: true
@@ -79,6 +90,8 @@ sections:
           Retrospective data is for development. Prospective data proves clinical utility.
 
           Prospective validation tests the AI on new, unseen patients as they arrive.
+
+          Source: DECIDE-AI for early live-clinical evaluation (Vasey et al., Nat Med 2022;28:924-933, DOI 10.1038/s41591-022-01772-9); TRIPOD+AI calls for external/temporal validation (BMJ 2024).
 
       - id: clinician-in-loop
         text: Clinician-in-the-loop testing completed
@@ -90,6 +103,8 @@ sections:
           - Does it integrate into their workflow?
           - Are there usability issues?
 
+          Source: DECIDE-AI (Nat Med 2022) addresses human factors/usability in the live environment; FDA GMLP Principle 7 (human-AI team performance is evaluated).
+
       - id: clinical-utility
         text: Clinical utility demonstrated (not just accuracy)
         required: true
@@ -97,6 +112,8 @@ sections:
           Does it improve patient outcomes? Reduce time? Cut costs? Change clinical decisions?
 
           Accuracy alone doesn't prove utility. You need to show it helps in practice.
+
+          Source: CONSORT-AI extension for randomized trials of AI interventions (Liu et al., Nat Med 2020;26:1364-1374, DOI 10.1038/s41591-020-1034-x); trial protocols use SPIRIT-AI (Nat Med 2020, DOI 10.1038/s41591-020-1037-7).
 
   - id: bias
     title: Bias & Fairness Audit
@@ -106,7 +123,7 @@ sections:
         text: Performance disaggregated by race, ethnicity, sex, age
         required: true
         details: |
-          **FDA requirement for clinical AI:** Performance must be reported across demographic groups.
+          **Report performance across demographic subgroups.** Disaggregated performance is expected by FDA's Good Machine Learning Practice (representative datasets), reinforced by the FDA/HC/MHRA transparency principles, and is a required disclosure ("source attributes") for predictive decision support under ONC's HTI-1 rule.
 
           Stratify results by:
           - Race/ethnicity
@@ -114,7 +131,9 @@ sections:
           - Age groups
           - [Other relevant characteristics for your clinical context]
 
-          Flag any significant performance differences.
+          Flag and investigate any significant performance differences across groups.
+
+          Sources: FDA/HC/MHRA Good Machine Learning Practice (Oct 2021), Principle 3 (datasets representative of the intended patient population); ONC HTI-1 Final Rule, Decision Support Intervention criterion, 45 CFR § 170.315(b)(11) (89 FR 1192, Jan 9, 2024); Obermeyer et al., "Dissecting racial bias in an algorithm used to manage the health of populations," Science 2019;366:447-453 (DOI 10.1126/science.aax2342). Caveat: ONC's HTI-5 NPRM (Dec 29, 2025) proposes to roll back the DSI transparency requirements — still proposed as of June 2026, so they currently apply.
 
       - id: representation
         text: Training data demographics documented
@@ -127,6 +146,8 @@ sections:
           - Known underrepresented groups
           - Geographic diversity (if relevant)
 
+          Source: document the dataset with a "Datasheet for Datasets" (Gebru et al., Commun. ACM 2021;64(12):86-92, DOI 10.1145/3458723) and MINIMAR reporting (Hernandez-Boussard et al., JAMIA 2020;27:2011-2015, DOI 10.1093/jamia/ocaa088); FDA GMLP Principle 3 (clinical study representative of intended population).
+
       - id: bias-mitigation
         text: Bias mitigation strategies implemented if disparities found
         required: true
@@ -136,6 +157,8 @@ sections:
           - Fairness constraints in training
           - Ensemble methods for underrepresented groups
           - If mitigation not possible, document limitations
+
+          Source: NIST SP 1270, "Towards a Standard for Identifying and Managing Bias in Artificial Intelligence" (March 2022, DOI 10.6028/NIST.SP.1270); NIST AI Risk Management Framework 1.0 (NIST AI 100-1, Jan 2023). Appraise study risk-of-bias with PROBAST+AI (Moons et al., BMJ 2025, DOI 10.1136/bmj-2024-082505).
 
       - id: external-validation
         text: External validation on diverse sites/populations
@@ -147,6 +170,8 @@ sections:
           - Different clinical workflows
 
           Proves generalizability beyond your institution.
+
+          Source: TRIPOD+AI (BMJ 2024) emphasizes external/independent validation; WHO, Ethics and governance of AI for health — guidance on large multi-modal models (Jan 2024), calls for multi-site evaluation before deployment.
 
   - id: deployment
     title: Deployment Readiness
@@ -182,6 +207,8 @@ sections:
           - Frequency of monitoring?
           - Who receives alerts?
 
+          Source: FDA GMLP Principle 10 (deployed models are monitored for performance); FDA Predetermined Change Control Plan guidance (final Dec 2024) governs pre-specified model updates; CHAI Assurance Standards Guide (2024) covers deployment and ongoing monitoring across the AI lifecycle.
+
       - id: adverse-event-reporting
         text: Adverse event reporting mechanism in place
         required: true
@@ -190,6 +217,8 @@ sections:
           - Incident reporting system integrated
           - Criteria for AI-related adverse events defined
           - Review process for incidents
+
+          Source: for FDA-cleared/approved devices, Medical Device Reporting applies (21 CFR Part 803); align local incident criteria with your institution's patient-safety and device-vigilance processes.
 
       - id: user-training
         text: Clinician training materials prepared

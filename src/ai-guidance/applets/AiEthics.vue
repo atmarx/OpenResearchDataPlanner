@@ -56,32 +56,32 @@ const principles = [
 const disciplineResources = [
   {
     discipline: 'Computing',
-    guidelines: 'ACM Code of Ethics, IEEE Ethically Aligned Design',
+    guidelines: 'ACM Code of Ethics (2018); IEEE 7000-2021; NIST AI RMF 1.0 (2023)',
     focus: 'Algorithmic fairness, privacy, security'
   },
   {
     discipline: 'Medicine',
-    guidelines: 'AMA AI Ethics, FDA guidance',
+    guidelines: 'AMA augmented-intelligence policy; FDA GMLP (2021); WHO AI-for-health ethics (2021, LMM update 2024)',
     focus: 'Patient safety, clinical validation, informed consent'
   },
   {
     discipline: 'Psychology',
-    guidelines: 'APA Ethics Code adaptations',
+    guidelines: 'APA Ethical Principles; APA guidance on AI in research/practice',
     focus: 'Research subjects, assessment validity'
   },
   {
     discipline: 'Journalism',
-    guidelines: 'SPJ AI guidelines',
+    guidelines: 'SPJ Code of Ethics; emerging newsroom AI standards',
     focus: 'Transparency, accuracy, attribution'
   },
   {
     discipline: 'Education',
-    guidelines: 'Various emerging',
+    guidelines: 'US Dept. of Education OET, "AI and the Future of Teaching and Learning" (2023)',
     focus: 'Academic integrity, equitable access'
   },
   {
     discipline: 'Law',
-    guidelines: 'ABA guidance',
+    guidelines: 'ABA Resolution 604 (2023); state bar AI ethics opinions',
     focus: 'Confidentiality, competence, supervision'
   }
 ]
@@ -173,7 +173,8 @@ function getNextApplet() {
     <div class="p-4 rounded-lg border mb-6 bg-surface border-border">
       <p class="text-sm text-text-muted">
         A reference linking to discipline-specific ethics guidelines for AI development and deployment,
-        separate from academic integrity concerns.
+        separate from academic integrity concerns. The cross-cutting principles below align with the
+        NIST AI Risk Management Framework (2023) and the WHO guidance on AI for health (2021, updated 2024).
       </p>
     </div>
 
@@ -326,15 +327,19 @@ function getNextApplet() {
       <ul class="text-sm space-y-1 text-primary">
         <li class="flex items-center gap-1">
           <ExternalLink class="w-3 h-3" />
-          <span>Search for your professional organization's AI guidelines</span>
+          <span>NIST AI Risk Management Framework 1.0 (NIST AI 100-1, 2023) + Generative AI Profile (NIST AI 600-1, 2024)</span>
         </li>
         <li class="flex items-center gap-1">
           <ExternalLink class="w-3 h-3" />
-          <span>Check your institution's AI policy page</span>
+          <span>WHO — Ethics & governance of AI for health (2021); large multi-modal models guidance (2024)</span>
         </li>
         <li class="flex items-center gap-1">
           <ExternalLink class="w-3 h-3" />
-          <span>Review the Bias Assessment applet for fairness considerations</span>
+          <span>OECD AI Principles (2019, updated 2024); UNESCO Recommendation on the Ethics of AI (2021)</span>
+        </li>
+        <li class="flex items-center gap-1">
+          <ExternalLink class="w-3 h-3" />
+          <span>Your professional organization's AI guidelines and your institution's AI policy</span>
         </li>
       </ul>
     </div>

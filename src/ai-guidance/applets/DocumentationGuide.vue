@@ -29,8 +29,8 @@ const documentationElements = [
     id: 'tool',
     name: 'Tool Used',
     why: 'Different tools produce different outputs',
-    how: 'Full model ID string (e.g., "claude-3-5-sonnet-20241022")',
-    example: 'Claude 3.5 Sonnet via API, version claude-3-5-sonnet-20241022',
+    how: 'Full model ID string including version/date (provider, model, release date)',
+    example: 'The exact model ID/version and how you accessed it (e.g., institutional API or local deployment)',
     icon: Settings,
     required: true
   },
@@ -228,6 +228,8 @@ function getNextApplet() {
       <p class="text-sm text-text-secondary">
         AI-assisted work requires documentation for reproducibility and accountability.
         LLMs are stochastic — even the same prompt can give different outputs.
+        For models you build, document them in a model card (Mitchell et al., FAccT 2019); for clinical
+        decision support, ONC's HTI-1 rule requires "source attributes" disclosure (45 CFR § 170.315(b)(11)).
       </p>
     </div>
 

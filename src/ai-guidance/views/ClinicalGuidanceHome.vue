@@ -292,22 +292,52 @@ function getColorClasses(color) {
         <ul class="space-y-2 text-sm text-text-secondary">
           <li>
             <a
-              href="https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html"
+              href="https://www.hhs.gov/hipaa/for-professionals/privacy/special-topics/de-identification/index.html"
               target="_blank"
               rel="noopener noreferrer"
               class="hover:underline text-primary"
             >
-              HHS HIPAA De-identification Guidance (Feb 2025)
+              HHS OCR — Guidance on De-identification of PHI under the HIPAA Privacy Rule (2012); 45 CFR § 164.514
             </a>
           </li>
           <li>
             <a
-              href="https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-and-machine-learning-aiml-enabled-medical-devices"
+              href="https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-enabled-medical-devices"
               target="_blank"
               rel="noopener noreferrer"
               class="hover:underline text-primary"
             >
-              FDA AI/ML-Enabled Medical Devices
+              FDA — Artificial Intelligence-Enabled Medical Devices (authorized device list)
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.fda.gov/medical-devices/software-medical-device-samd/good-machine-learning-practice-medical-device-development-guiding-principles"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:underline text-primary"
+            >
+              FDA/Health Canada/MHRA — Good Machine Learning Practice: Guiding Principles (Oct 2021)
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.nist.gov/itl/ai-risk-management-framework"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:underline text-primary"
+            >
+              NIST AI Risk Management Framework 1.0 (NIST AI 100-1, 2023) + Generative AI Profile (NIST AI 600-1, 2024)
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.who.int/publications/i/item/9789240084759"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:underline text-primary"
+            >
+              WHO — Ethics & Governance of AI for Health: Large Multi-Modal Models (Jan 2024)
             </a>
           </li>
           <li>
@@ -317,7 +347,7 @@ function getColorClasses(color) {
               rel="noopener noreferrer"
               class="hover:underline text-primary"
             >
-              NIH AI Use Policy (NOT-OD-25-132)
+              NIH NOT-OD-25-132 — Supporting Fairness & Originality in NIH Applications (AI use; eff. Sept 2025)
             </a>
           </li>
         </ul>

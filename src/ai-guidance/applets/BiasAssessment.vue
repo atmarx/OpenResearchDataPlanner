@@ -175,6 +175,7 @@ function getNextApplet() {
       <p class="text-sm text-text-secondary">
         Every AI system has biases baked into its training data. This is not a bug to be fixed later — it is fundamental.
         Different use cases have different bias relevance. Select yours below to see tailored guidance.
+        Framework: NIST SP 1270, "Identifying and Managing Bias in AI" (2022).
       </p>
     </div>
 
@@ -312,6 +313,11 @@ function getNextApplet() {
       <h3 class="font-semibold mb-3 text-text">
         Bias Mitigation Strategies
       </h3>
+      <p class="text-xs mb-3 text-text-muted">
+        In healthcare, disaggregate performance by demographic group and audit for disparate impact —
+        see Obermeyer et al., Science 2019 (DOI 10.1126/science.aax2342) and NIST SP 1270 (2022).
+        Document results in a model card (Mitchell et al., 2019).
+      </p>
       <div class="space-y-2">
         <div
           v-for="strategy in mitigationStrategies"

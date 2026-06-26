@@ -5,14 +5,15 @@ meta:
   applet_id: irb-amendment
   title: IRB Amendment Guide
   core_question: How do I amend my protocol for AI use?
-  version: "1.0"
-  last_updated: "2026-02-13"
+  version: "1.1"
+  last_updated: "2026-06-26"
 
 intro:
   text: |
     Most IRB protocols approved before 2023 don't explicitly mention AI tools. This guide helps
     you determine if you need an amendment and provides sample language for your submission.
-  source_note: "Based on NIH AI use policy (NOT-OD-25-132, July 2025) and IRB best practices."
+    Amendments and consent changes are governed by the revised Common Rule (45 CFR Part 46).
+  source_note: "Sources: revised Common Rule (45 CFR Part 46, 2018 Requirements) — esp. § 46.116 (informed consent), § 46.116(d) (broad consent), and § 46.109 (IRB review of amendments); SACHRP advisory recommendations on AI in human-subjects research (HHS, advisory only). Related NIH policy: NOT-OD-25-132 (eff. Sept 25, 2025) limits AI-generated grant applications, and NOT-OD-23-149 prohibits generative AI in NIH peer review — neither is an IRB rule, but both affect AI use in NIH-funded work."
 
 # Decision tree
 questions:
@@ -123,6 +124,8 @@ questions:
         - Protocol predates widespread AI availability (pre-2020)
 
         **When uncertain:** Submit a determination request to your IRB. Better to ask than assume.
+
+        Note: Whether AI analysis is "human subjects research" and whether secondary data use needs consent are Common Rule questions — see 45 CFR § 46.102 (definitions / identifiable private information) and § 46.104(d)(4) & (d)(8) (secondary-research exemptions and broad consent).
     options:
       - value: clear-fit
         label: Yes — AI clearly fits existing protocol language
@@ -152,7 +155,7 @@ questions:
 
   - id: consent-check
     question: What do your consent forms say about data analysis?
-    help_text: Review what participants agreed to when they consented
+    help_text: Review what participants agreed to when they consented. Consent requirements are set by the Common Rule, 45 CFR § 46.116 (and § 46.116(d) for broad consent to secondary research).
     options:
       - value: mentions-ai
         label: Consent mentions AI or machine learning
@@ -246,7 +249,7 @@ sample_language:
           interview transcripts / extracting structured data from clinical notes / generating research summaries].
 
           **Specific tools to be used:**
-          - [Tool name, version/date if known, e.g., "OpenAI GPT-4 (accessed via institutional Azure deployment)"]
+          - [Tool name and exact model ID/version, plus access method, e.g., "institutional, BAA-covered enterprise LLM deployment — record the exact model ID/version and date of use"]
           - [Tool name 2 if applicable]
 
           **Data handling:**

@@ -51,7 +51,7 @@ Internal data: Your unpublished drafts, ideas, code — not yet shared publicly.
 
 Confidential data: Under NDA, proprietary, or pre-publication embargoed material.
 
-Regulated data: Subject to specific laws (HIPAA, FERPA, export control) with legal consequences for mishandling.`
+Regulated data: Subject to specific laws with legal consequences for mishandling — e.g., HIPAA (45 CFR Parts 160 & 164), FERPA (20 U.S.C. § 1232g; 34 CFR Part 99), and export controls (ITAR, 22 CFR 120-130; EAR, 15 CFR 730-774).`
     },
     options: [
       {
@@ -124,15 +124,15 @@ Regulated data: Subject to specific laws (HIPAA, FERPA, export control) with leg
     helpText: 'De-identification has specific requirements. "We removed names" is often insufficient.',
     learnMore: {
       title: 'De-identification standards',
-      content: `HIPAA Safe Harbor requires removing 18 specific identifiers including:
+      content: `HIPAA Safe Harbor (45 CFR § 164.514(b)(2)) requires removing 18 specific identifiers, including:
 • Names, addresses, dates (except year)
 • Phone numbers, email addresses, SSNs
 • Medical record numbers, account numbers
 • Biometric identifiers, photos, unique IDs
 
-Expert Determination requires a qualified expert to certify low re-identification risk.
+Expert Determination (45 CFR § 164.514(b)(1)) requires a qualified expert to document low re-identification risk.
 
-Warning: AI tools may re-identify individuals through pattern matching even from seemingly de-identified data, especially free-text clinical notes.`
+Warning: AI tools may re-identify individuals through pattern matching even from seemingly de-identified data, especially free-text clinical notes. See OCR's de-identification guidance (2012) and Erlich et al., Science 2018 (DOI 10.1126/science.aau4832) on re-identification risk.`
     },
     options: [
       {
@@ -262,7 +262,7 @@ const sensitivityLevels = {
   },
   high: {
     label: 'High Sensitivity',
-    description: 'Requires BAA for HIPAA. Enterprise tools with BAA, institutionally hosted, or local only. Consumer tools PROHIBITED.',
+    description: 'Requires a Business Associate Agreement for HIPAA PHI (45 CFR § 164.502(e)). Enterprise tools with BAA, institutionally hosted, or local only. Consumer tools PROHIBITED.',
     color: 'orange',
     icon: AlertTriangle
   },
@@ -394,8 +394,8 @@ function getLevelColorClasses(color) {
                 class="p-3 rounded-lg mb-3 bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300"
               >
                 <p class="text-sm font-medium">
-                  🔒 Export controlled data requires consultation with your security office
-                  before using ANY AI tools, including local models.
+                  🔒 Export controlled data (ITAR, 22 CFR 120-130; EAR, 15 CFR 730-774) requires consultation with your
+                  security office before using ANY AI tools, including local models.
                 </p>
               </div>
 
