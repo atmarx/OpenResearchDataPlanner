@@ -82,13 +82,13 @@ concepts:
       - page: "gpu-calculator"
       - component: "gpu-input"
       - term: "GPU-hour"
-      - term: "V100"
+      - term: "H100"
       - term: "A100"
     script_notes: |
       - "A GPU-hour is one graphics card running for one hour"
-      - Types matter: "A V100 is great for simulations, an A100 is better for large AI models"
+      - Types matter: "An A100 handles most simulations and ML training; cloud H100/H200s are for the very largest models"
       - Real examples: "Training a vision model: 10-100 GPU-hours. Fine-tuning an LLM: 100-1000 GPU-hours."
-      - Cloud vs on-prem: "Our on-campus GPUs are cheaper but older. Cloud GPUs cost more but scale infinitely."
+      - Cloud vs on-prem: "Our on-campus A100s are cost-effective; cloud GPUs cost more but scale on demand."
 
   - slug: what-is-data-tier
     title: "Choosing Your Data Tier"
@@ -394,7 +394,7 @@ calculators:
       - action: "open-help"
     script_notes: |
       - "GPUs are essential for ML/AI, but they're also expensive. Let's plan."
-      - On-prem vs cloud: "Our V100s are cheaper, cloud A100/H100s are faster"
+      - On-prem vs cloud: "Our on-prem A100s are cost-effective; cloud H100/H200s are faster for the largest jobs"
       - Workload types: Training (long), Inference (short), Rendering (variable)
       - Real costs: "Training a vision model: $50-500. Fine-tuning an LLM: $500-5000."
 
@@ -647,7 +647,7 @@ disciplines:
       - term: "deep learning"
       - term: "data science"
     script_notes: |
-      - GPU options: "On-prem V100s for development, cloud A100s for training"
+      - GPU options: "On-prem A100s for development and training; burst to cloud H100/H200s for the largest runs"
       - Storage: "ML datasets can be huge. Plan for 50-100TB."
       - Frameworks: "PyTorch, TensorFlow, JAX pre-installed"
       - Cost reality: "GPU time is the expensive part. Budget $5,000-50,000/year."

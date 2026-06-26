@@ -1,7 +1,7 @@
 ## HPC GPU Computing
 
 Research computations will utilize {{institution.name}}'s GPU partition
-on the SLURM-managed HPC cluster, featuring NVIDIA V100 accelerators.
+on the SLURM-managed HPC cluster, featuring NVIDIA A100 accelerators.
 
 **Resource Allocation:**
 - Estimated GPU-hours per month: {{number service.estimate}}
@@ -9,15 +9,15 @@ on the SLURM-managed HPC cluster, featuring NVIDIA V100 accelerators.
 - Grant period total: {{currency service.total_cost}}
 
 **Hardware:**
-- NVIDIA V100 GPUs (2 per node, 32GB HBM2 each)
+- NVIDIA A100 GPUs (2 per node, 80GB HBM2e each; some nodes 40GB)
 - CUDA, OpenCL, and vendor-optimized libraries
 - 100TB BeeGFS scratch storage (free, ephemeral)
 
 **Best Use Cases:**
-V100 GPUs are optimized for simulation workloads including finite element
-analysis (FEA), computational fluid dynamics (CFD), and molecular dynamics.
-For heavy ML/AI training, consider the K8s cluster (H200/GH200/A100) or
-cloud GPU options.
+A100 GPUs are well suited to both simulation workloads - finite element
+analysis (FEA), computational fluid dynamics (CFD), and molecular dynamics -
+and ML/AI training and inference. For the very largest models, consider the
+K8s cluster (H200/GH200) or cloud H100/H200 options.
 
 {{#if service.notes}}
 **Usage Guidelines:**
@@ -26,7 +26,7 @@ cloud GPU options.
 
 **Data Handling:**
 Scratch storage on BeeGFS is included free but is ephemeral. Use HPC Storage
-(Isilon) for persistent data and results that need to survive beyond job
+(Ceph) for persistent data and results that need to survive beyond job
 completion.
 
 **Access Control:**

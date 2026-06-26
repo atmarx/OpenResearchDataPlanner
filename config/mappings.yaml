@@ -55,7 +55,7 @@ mappings:
       Do not copy data to personal devices.
     dmp_template: "hpc-compute/default"
 
-  # HPC GPU (V100)
+  # HPC GPU (A100)
   - service: hpc-gpu
     tier: low
     approval: automatic
@@ -67,10 +67,10 @@ mappings:
     approval: automatic
     notes: |
       Data must remain on cluster filesystems during processing.
-      V100s best for simulation; consider K8s cluster for heavy ML.
+      A100s handle both simulation and ML; K8s cluster offers H200/GH200 for the largest jobs.
     dmp_template: "hpc-gpu/default"
 
-  # HPC Storage (Isilon)
+  # HPC Storage (Ceph)
   - service: hpc-storage
     tier: low
     approval: automatic

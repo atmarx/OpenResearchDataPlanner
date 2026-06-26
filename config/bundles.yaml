@@ -24,7 +24,7 @@ bundles:
     name: "ML/AI Model Training (On-Prem)"
     description: |
       On-premises GPU compute with high-speed storage for training
-      machine learning models. V100s for modest ML, K8s cluster for heavy training.
+      machine learning models. A100s for production ML, K8s cluster for the largest models.
     icon: "brain"
     recommended_tiers:
       - low
@@ -32,7 +32,7 @@ bundles:
     services:
       - service: hpc-gpu
         default_estimate: 500
-        note: "V100 GPUs - good for simulation, modest for ML training"
+        note: "A100 GPUs - strong for both simulation and ML training"
       - service: hpc-storage
         default_estimate: 50
         note: "Model checkpoints and training data"
@@ -138,7 +138,7 @@ bundles:
     services:
       - service: hpc-gpu
         default_estimate: 500
-        note: "V100 GPUs optimized for simulation workloads"
+        note: "A100 GPUs for simulation and ML workloads"
       - service: hpc-storage
         default_estimate: 50
         note: "Storage for simulation inputs and results"
@@ -295,7 +295,7 @@ bundles:
     services:
       - service: hpc-gpu
         default_estimate: 200
-        note: "Local V100s for development and testing"
+        note: "Local A100s for development and testing"
       - service: hpc-storage
         default_estimate: 20
         note: "Local persistent storage for results"

@@ -9,7 +9,7 @@ providing access to SLURM-managed compute resources at no cost.
 
 **Free Tier Limits:**
 - Up to 1,000 CPU-hours/month
-- Up to 100 GPU-hours/month (V100, preemptible)
+- Up to 100 GPU-hours/month (A100, preemptible)
 - 100GB BeeGFS scratch space (ephemeral)
 - Jobs may be preempted by paid users
 
@@ -20,7 +20,7 @@ providing access to SLURM-managed compute resources at no cost.
 
 **Data Handling:**
 Data is stored on ephemeral BeeGFS scratch during computation. For persistent
-storage, data must be transferred to HPC Storage (Isilon) or other approved
+storage, data must be transferred to HPC Storage (Ceph) or other approved
 storage systems.
 
 **Access Control:**

@@ -14,11 +14,11 @@ services:
     long_description: |
       Free tier access to our SLURM-managed HPC cluster with resource limits.
       Perfect for learning, prototyping, and small-scale computations.
-      Includes access to CPU nodes and limited V100 GPU time.
+      Includes access to CPU nodes and limited A100 GPU time.
 
       **Included with free tier:**
       - Up to 1,000 CPU-hours/month
-      - Up to 100 GPU-hours/month (V100, preemptible)
+      - Up to 100 GPU-hours/month (A100, preemptible)
       - 100GB BeeGFS scratch space (ephemeral)
 
       Jobs may be preempted by paid users. Best for fault-tolerant workflows.
@@ -27,7 +27,7 @@ services:
     comparison_features:
       gpu_available:
         value: partial
-        detail: "100 GPU-hours/month (preemptible V100)"
+        detail: "100 GPU-hours/month (preemptible A100)"
       batch_jobs:
         value: full
       interactive:
@@ -94,13 +94,13 @@ services:
       - InfiniBand interconnect for MPI jobs
 
       Scratch storage on BeeGFS is free but ephemeral - data is purged regularly.
-      Use HPC Storage (Isilon) for persistent data.
+      Use HPC Storage (Ceph) for persistent data.
     documentation_url: "https://docs.northwinds.edu/hpc"
 
     comparison_features:
       gpu_available:
         value: none
-        detail: "CPU-only; see HPC GPU for V100 access"
+        detail: "CPU-only; see HPC GPU for A100 access"
       batch_jobs:
         value: full
       interactive:
@@ -164,26 +164,28 @@ services:
 
   - slug: hpc-gpu
     fa_exempt: true  # Internal service center
-    name: "HPC GPU (V100)"
+    name: "HPC GPU (A100)"
     category: compute
-    description: "V100 GPU compute for simulation, FEA, and modest ML workloads"
+    description: "A100 GPU compute for simulation, FEA, and ML training/inference"
     long_description: |
-      GPU compute on our SLURM-managed HPC cluster featuring NVIDIA V100 GPUs.
-      Optimized for simulation workloads: FEA, CFD, molecular dynamics.
+      GPU compute on our SLURM-managed HPC cluster featuring NVIDIA A100 GPUs.
+      Strong for both simulation (FEA, CFD, molecular dynamics) and ML/AI
+      training and inference.
 
       **Hardware:**
-      - NVIDIA V100 GPUs (2 per node, 32GB HBM2 each)
+      - NVIDIA A100 GPUs (2 per node, 80GB HBM2e each; some nodes 40GB)
       - CUDA, OpenCL, and vendor-optimized libraries
       - 100TB BeeGFS scratch (fast, ephemeral - included free)
 
-      V100s are excellent for simulation but dated for heavy ML/AI training.
-      For cutting-edge ML, consider the K8s cluster (H200/GH200/A100) or cloud GPUs.
+      A100s handle production ML training and large simulations equally well.
+      For the very largest models, the Kubernetes cluster carries newer
+      H200/GH200 accelerators, and cloud H100/H200 instances are also available.
     documentation_url: "https://docs.northwinds.edu/hpc"
 
     comparison_features:
       gpu_available:
         value: full
-        detail: "NVIDIA V100 GPUs (32GB HBM2)"
+        detail: "NVIDIA A100 GPUs (40/80GB HBM2e)"
       batch_jobs:
         value: full
       interactive:
@@ -209,7 +211,7 @@ services:
       type: tiered
       unit: "GPU-hour"
       unit_label: "GPU Hour"
-      unit_description: "One hour of V100 GPU compute"
+      unit_description: "One hour of A100 GPU compute"
       tiers:
         - up_to: 500
           price: 0.35
@@ -247,21 +249,25 @@ services:
 
   - slug: hpc-storage
     fa_exempt: true  # Internal service center
-    name: "HPC Storage (Isilon)"
+    name: "HPC Storage (Ceph)"
     category: storage
-    description: "Persistent storage for HPC workloads (500TB Isilon array)"
+    description: "Persistent storage for HPC workloads (Ceph cluster, ~750TB usable)"
     long_description: |
-      Persistent storage on our Isilon array, designed for HPC workflows.
+      Persistent storage on our Ceph cluster, designed for HPC workflows.
       Required for any data that needs to survive beyond job completion.
 
       **Features:**
-      - 500TB total capacity
-      - Mounted on all HPC compute nodes
+      - ~750TB usable capacity (3x replicated for durability)
+      - CephFS mounted on all HPC compute nodes
+      - Continuous background scrubbing guards against silent data corruption
       - Daily snapshots, 30-day retention
-      - Accessible via SCP/SFTP from campus
+      - Accessed via SSH/SFTP (scp) from campus
 
-      Note: BeeGFS scratch (100TB) is included free with HPC compute but is
-      ephemeral. Use Isilon for data you need to keep.
+      Replication protects against disk and node failure, not accidental
+      deletion - snapshots cover the last 30 days, so keep your own copies of
+      anything irreplaceable. BeeGFS scratch (100TB) is included free with HPC
+      compute but is ephemeral and purged regularly. Use Ceph for data you
+      need to keep.
     documentation_url: "https://docs.northwinds.edu/hpc-storage"
 
     comparison_features:
@@ -517,10 +523,10 @@ services:
 
       **Features:**
       - 5PB total capacity
-      - Globus endpoint for high-speed transfers
-      - iRODS metadata management and policy engine
-      - Accessible from K8s cluster
-      - Data integrity verification
+      - Accessed two ways: Globus (high-speed transfers and external sharing)
+        and iRODS (i-commands, metadata, and policy engine)
+      - Accessible from the K8s cluster
+      - Data integrity verification via iRODS checksums
 
       Launching alongside the K8s cluster for integrated ML/AI workflows.
     documentation_url: "https://docs.northwinds.edu/globus-storage"
@@ -811,7 +817,7 @@ services:
       billing_period: month
       note: |
         Pass-through AWS pricing (1:1 cost passthrough, no markup).
-        Reference rates: m5.8xlarge ~$1.50/hr ($1,100/mo), p3.2xlarge (V100) ~$3/hr,
+        Reference rates: m5.8xlarge ~$1.50/hr ($1,100/mo),
         p4d.24xlarge (8×A100) ~$22/hr. GPU instances run $2,200-16,000+/mo at full use.
 
     subsidies:
@@ -838,10 +844,10 @@ services:
           description: "m5.8xlarge always-on (~32 vCPU)"
         - label: "Single GPU (part-time)"
           value: 3000
-          description: "p3.2xlarge at ~50% utilization"
+          description: "Single GPU instance at ~50% utilization"
         - label: "Single GPU (full-time)"
           value: 6000
-          description: "p3.2xlarge or p4d always-on"
+          description: "Single GPU instance, always-on"
         - label: "Multi-GPU training"
           value: 12000
           description: "p4d.24xlarge (8×A100) at ~50%"
@@ -1527,7 +1533,8 @@ services:
       University-managed file server with automatic backups,
       campus-wide accessibility, and integration with university SSO.
       Suitable for collaborative projects and general research data.
-      Supports SMB mounts for easy desktop access.
+      Accessed over SMB - mapped network drives on Windows, mounts on
+      macOS and Linux. Campus network or VPN required.
     documentation_url: "https://docs.northwinds.edu/nwfiles"
 
     comparison_features:

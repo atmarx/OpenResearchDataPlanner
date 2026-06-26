@@ -30,7 +30,7 @@ acronyms:
       threads, making them ideal for machine learning, scientific
       simulations, and image processing.
     examples:
-      - "Training a neural network on an NVIDIA V100"
+      - "Training a neural network on an NVIDIA A100"
       - "Running CUDA-accelerated molecular dynamics"
     related: ["HPC", "GPU-hour", "CUDA"]
     category: "infrastructure"

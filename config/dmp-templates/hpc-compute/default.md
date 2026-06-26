@@ -21,7 +21,7 @@ SLURM-managed HPC cluster for CPU-focused batch workloads.
 
 **Data Handling:**
 Scratch storage on BeeGFS is included free but is ephemeral - data is purged
-regularly. Use HPC Storage (Isilon) for any data that needs to persist beyond
+regularly. Use HPC Storage (Ceph) for any data that needs to persist beyond
 job completion.
 
 **Access Control:**

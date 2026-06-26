@@ -28,7 +28,7 @@ access to Jupyter notebooks backed by HPC compute resources.
 
 **Data Storage:**
 Notebooks and data are stored in the user's HPC home directory. For
-persistent storage beyond HPC allocations, use Isilon HPC Storage or
+persistent storage beyond HPC allocations, use Ceph HPC Storage or
 other research storage options.
 
 **Access:**
