@@ -25,10 +25,11 @@
  * @param {object} costModel - service.cost_model
  * @param {Array}  subsidies - service.subsidies (array; tolerates undefined)
  * @param {number} quantity  - quantity in the cost model's unit
- * @returns {{ monthly: number, annual: number, breakdown: Array }}
+ * @returns {{ monthly: number, annual: number, breakdown: Array,
+ *             freeUnits: number, billable: number, unitLabel: string }}
  */
 export function computeServiceCost(costModel, subsidies = [], quantity = 0) {
-  if (!costModel) return { monthly: 0, annual: 0, breakdown: [] }
+  if (!costModel) return { monthly: 0, annual: 0, breakdown: [], freeUnits: 0, billable: 0, unitLabel: 'units' }
 
   const subs = Array.isArray(subsidies) ? subsidies : []
   const unitLabel = costModel.unit_label || costModel.unit || 'units'
@@ -103,5 +104,8 @@ export function computeServiceCost(costModel, subsidies = [], quantity = 0) {
     }
   }
 
-  return { monthly, annual: monthly * 12, breakdown }
+  // freeUnits + billable are surfaced so the slate (and export) can render an
+  // explicit "X free / Y billable" line instead of silently swallowing the
+  // free allocation into the total.
+  return { monthly, annual: monthly * 12, breakdown, freeUnits, billable, unitLabel }
 }

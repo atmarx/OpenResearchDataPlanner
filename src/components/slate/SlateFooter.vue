@@ -70,6 +70,27 @@ function getServiceName(slug) {
 }
 
 /**
+ * Per-item free-allocation split, computed live from the pricing engine so the
+ * slate shows "X included free / Y billable" instead of silently swallowing the
+ * free floor into the total (Bramford's s02 trust gap). Keyed by item id; only
+ * present when the service actually has a free allocation.
+ */
+const allocations = computed(() => {
+  const map = {}
+  for (const item of slateStore.slate.items) {
+    const costs = slateStore.calculateItemCosts(item.service, item.quantity)
+    if (costs && costs.freeUnits > 0) {
+      const unit = item.unit || costs.unitLabel
+      map[item.id] = {
+        free: `${costs.freeUnits.toLocaleString()} ${unit} included free`,
+        billable: `${costs.billable.toLocaleString()} ${unit} billable`
+      }
+    }
+  }
+  return map
+})
+
+/**
  * Summary text for collapsed view
  */
 const summaryText = computed(() => {
@@ -272,6 +293,17 @@ function handleWipeSlate() {
                       :aria-label="`Quantity in ${item.unit}`"
                     />
                     <span class="text-sm text-text-muted">{{ item.unit }}</span>
+                  </div>
+                  <!-- Free-allocation split (only when the service has a free floor) -->
+                  <div
+                    v-if="allocations[item.id]"
+                    class="flex flex-wrap items-center gap-x-1.5 mt-1.5 text-xs"
+                  >
+                    <span class="font-medium text-green-600 dark:text-green-400">
+                      {{ allocations[item.id].free }}
+                    </span>
+                    <span class="text-text-muted">·</span>
+                    <span class="text-text-muted">{{ allocations[item.id].billable }}</span>
                   </div>
                 </div>
                 <div class="flex items-center gap-4">

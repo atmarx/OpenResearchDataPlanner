@@ -27,6 +27,14 @@ describe('service cost engine — real services.yaml schema (regression guard)',
     expect(annual).toBeCloseTo(399, 2)
   })
 
+  it('exposes the free-allocation split for per-item display (globus-storage)', () => {
+    const s = svc('globus-storage') // first 0.5 TB free
+    const r = computeServiceCost(s.cost_model, s.subsidies, 10)
+    expect(r.freeUnits).toBeCloseTo(0.5, 3)
+    expect(r.billable).toBeCloseTo(9.5, 3)
+    expect(typeof r.unitLabel).toBe('string')
+  })
+
   it('a request under the free floor costs $0 (onedrive, 1 TB included)', () => {
     const s = svc('onedrive') // $40/TB, first 1 TB free
     expect(computeServiceCost(s.cost_model, s.subsidies, 0.5).monthly).toBe(0)
