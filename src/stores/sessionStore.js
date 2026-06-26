@@ -38,6 +38,10 @@ export const useSessionStore = defineStore('session', () => {
 
       // User selections
       tier: null,
+      // Compliance flags derived by the tier questionnaire (classifyTier.js):
+      // hipaa, phi, ferpa, cui, ear, itar, human_genomic, ... Captured so the
+      // DMP can express the intent behind the tier, not just the tier slug.
+      classification_flags: [],
 
       grant_period: {
         start_date: null,
@@ -67,6 +71,7 @@ export const useSessionStore = defineStore('session', () => {
   // Computed helpers
   const currentStep = computed(() => session.value.current_step)
   const selectedTier = computed(() => session.value.tier)
+  const classificationFlags = computed(() => session.value.classification_flags || [])
   const grantMonths = computed(() => session.value.grant_period.months)
 
   const selectedServiceSlugs = computed(() =>
@@ -125,6 +130,7 @@ export const useSessionStore = defineStore('session', () => {
     // Clear downstream data based on which step we're clearing from
     if (stepId === 'tier-select' || allSteps.indexOf(stepId) <= allSteps.indexOf('tier-select')) {
       session.value.tier = null
+      session.value.classification_flags = []
       session.value.selected_services = []
       session.value.selected_software = []
       session.value.retention.schedules = []
@@ -148,6 +154,17 @@ export const useSessionStore = defineStore('session', () => {
    */
   function setTier(tierSlug) {
     session.value.tier = tierSlug
+    session.value.updated_at = new Date().toISOString()
+  }
+
+  /**
+   * Set tier + classification flags together. The questionnaire derives both
+   * (classifyTier.js); direct tier picks pass [] so flags from an earlier
+   * questionnaire run don't linger on a freshly chosen tier.
+   */
+  function setClassification(tierSlug, flags = []) {
+    session.value.tier = tierSlug
+    session.value.classification_flags = Array.isArray(flags) ? [...flags] : []
     session.value.updated_at = new Date().toISOString()
   }
 
@@ -397,6 +414,7 @@ export const useSessionStore = defineStore('session', () => {
     // Computed
     currentStep,
     selectedTier,
+    classificationFlags,
     grantMonths,
     selectedServiceSlugs,
     selectedSoftwareSlugs,
@@ -408,6 +426,7 @@ export const useSessionStore = defineStore('session', () => {
     completeStep,
     clearStepsFrom,
     setTier,
+    setClassification,
     setGrantPeriod,
     setRetentionSchedules,
     setArchiveRatio,

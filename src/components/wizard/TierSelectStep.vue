@@ -55,7 +55,9 @@ const tierColors = {
 }
 
 function selectTier(tierSlug) {
-  sessionStore.setTier(tierSlug)
+  // Direct pick — no questionnaire flags. Pass [] so flags from an earlier
+  // questionnaire run don't linger on a manually chosen tier.
+  sessionStore.setClassification(tierSlug, [])
 }
 
 function isSelected(tierSlug) {

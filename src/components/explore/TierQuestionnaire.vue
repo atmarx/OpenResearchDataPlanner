@@ -219,20 +219,20 @@ function resetQuestionnaire() {
 function applyTier() {
   if (determinedTier.value) {
     const tierSlug = determinedTier.value.toLowerCase()
-    sessionStore.setTier(tierSlug)
+    sessionStore.setClassification(tierSlug, flags.value)
     navigateToWizardWithTier()
   }
 }
 
 // Quick select a tier from intro (for non-sensitive data)
 function quickSelectTier(tierSlug) {
-  sessionStore.setTier(tierSlug)
+  sessionStore.setClassification(tierSlug, [])
   navigateToWizardWithTier()
 }
 
 // Select a tier from table view and navigate to wizard grant-period step
 function selectTierFromTable(tierSlug) {
-  sessionStore.setTier(tierSlug)
+  sessionStore.setClassification(tierSlug, [])
   navigateToWizardWithTier()
 }
 

@@ -2,6 +2,8 @@ import { computed } from 'vue'
 import Handlebars from 'handlebars'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
+import { computeServiceCost } from '@/lib/pricing.js'
+import { flagLabel } from '@/lib/classificationFlags.js'
 
 /**
  * Register Handlebars helpers
@@ -84,30 +86,21 @@ export function useDMPGenerator() {
     const grantMonths = sessionStore.grantMonths
     const retentionYears = sessionStore.session.retention.longest_years
 
-    // Calculate costs
-    let monthlyCost = 0
-    if (serviceConfig?.cost_model?.type === 'unit') {
-      monthlyCost = (service.estimate || 0) * serviceConfig.cost_model.price
+    // Cost via the shared pricing engine (src/lib/pricing.js) so the DMP, the
+    // slate, and the wizard all agree. The old inline calc here used flat-tier
+    // pricing (not marginal banding) and skipped the free allocation on tiered
+    // services — so the exported grant doc could disagree with the slate the
+    // researcher had just seen.
+    const costResult = computeServiceCost(
+      serviceConfig?.cost_model,
+      serviceConfig?.subsidies,
+      service.estimate || 0
+    )
+    let monthlyCost = costResult.monthly
 
-      // Apply auto-subsidies
-      const autoSubsidy = serviceConfig.subsidies?.find(sub => sub.auto_apply)
-      if (autoSubsidy?.discount_type === 'free_units') {
-        const billable = Math.max(0, (service.estimate || 0) - autoSubsidy.discount_value)
-        monthlyCost = billable * serviceConfig.cost_model.price
-      }
-    } else if (serviceConfig?.cost_model?.type === 'tiered') {
-      const estimate = service.estimate || 0
-      for (const tier of serviceConfig.cost_model.tiers) {
-        if (!tier.up_to || estimate <= tier.up_to) {
-          monthlyCost = estimate * tier.price
-          break
-        }
-      }
-    }
-
-    // Apply opt-in subsidy
+    // Opt-in (user-selected) subsidy applies on top of the auto-applied ones.
     if (service.use_subsidy) {
-      const subsidy = serviceConfig.subsidies?.find(sub => sub.slug === service.use_subsidy)
+      const subsidy = serviceConfig?.subsidies?.find(sub => sub.slug === service.use_subsidy)
       if (subsidy?.discount_type === 'percent') {
         monthlyCost = monthlyCost * (1 - subsidy.discount_value / 100)
       }
@@ -115,7 +108,7 @@ export function useDMPGenerator() {
 
     const totalCost = monthlyCost * grantMonths
 
-    // Archive calculations
+    // Archive costs — same engine, so the archive line also honours free floors.
     const grantYears = grantMonths / 12
     const archiveYears = Math.max(0, retentionYears - grantYears)
     let archiveEstimate = service.archive_estimate
@@ -125,11 +118,10 @@ export function useDMPGenerator() {
 
     if (serviceConfig?.archive_option?.service_slug && archiveEstimate) {
       const archiveConfig = configStore.servicesBySlug[serviceConfig.archive_option.service_slug]
-      if (archiveConfig?.cost_model?.price) {
-        archiveMonthlyCost = archiveEstimate * archiveConfig.cost_model.price
-        archiveAnnualCost = archiveMonthlyCost * 12
-        archiveTotalCost = archiveAnnualCost * archiveYears
-      }
+      const archiveResult = computeServiceCost(archiveConfig?.cost_model, archiveConfig?.subsidies, archiveEstimate)
+      archiveMonthlyCost = archiveResult.monthly
+      archiveAnnualCost = archiveMonthlyCost * 12
+      archiveTotalCost = archiveAnnualCost * archiveYears
     }
 
     return {
@@ -140,6 +132,8 @@ export function useDMPGenerator() {
         estimate: service.estimate,
         unit: serviceConfig?.cost_model?.unit,
         unit_label: serviceConfig?.cost_model?.unit_label,
+        free_units: costResult.freeUnits,
+        billable: costResult.billable,
         monthly_cost: monthlyCost,
         total_cost: totalCost,
         notes: service.notes || mapping?.notes || null
@@ -176,6 +170,14 @@ export function useDMPGenerator() {
     const startDate = sessionStore.session.grant_period.start_date
     const endDate = sessionStore.session.grant_period.end_date
 
+    // Classification flags from the questionnaire (classifyTier.js), exposed two
+    // ways: `flags` as a map for conditional template sections ({{#if flags.phi}})
+    // and `classification.flags`/`labels` for iteration/display. This is how the
+    // DMP expresses the intent behind the tier (HIPAA, PHI, export control, and
+    // FAIR/open-data once that flag is added) — not just the tier slug. Templates
+    // opt in; an absent flag is simply falsy.
+    const flags = sessionStore.classificationFlags || []
+
     return {
       institution: {
         name: configStore.config?.meta?.institution?.name || 'Institution',
@@ -186,6 +188,11 @@ export function useDMPGenerator() {
         end_date: endDate,
         months: grantMonths,
         years: grantMonths / 12
+      },
+      flags: Object.fromEntries(flags.map(f => [f, true])),
+      classification: {
+        flags,
+        labels: flags.map(flagLabel)
       },
       generated: {
         date: new Date().toISOString(),
@@ -241,6 +248,10 @@ export function useDMPGenerator() {
     sections.push(`**Project:** Research Data Infrastructure`)
     sections.push(`**Institution:** ${institution}`)
     sections.push(`**Data Classification:** ${tierConfig?.name || 'Unknown'}`)
+    const classificationFlags = sessionStore.classificationFlags || []
+    if (classificationFlags.length > 0) {
+      sections.push(`**Compliance considerations:** ${classificationFlags.map(flagLabel).join(', ')}`)
+    }
     sections.push(`**Grant Period:** ${sessionStore.session.grant_period.start_date} to ${sessionStore.session.grant_period.end_date}`)
     if (sessionStore.session.retention.longest_years > 0) {
       sections.push(`**Data Retention:** ${sessionStore.session.retention.longest_years} years`)
