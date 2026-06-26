@@ -358,12 +358,19 @@ calculator_config:
     icon: "message-square-text"
     description: "Estimate costs for commercial LLM APIs (OpenAI, Anthropic, Google, DeepSeek). OpenAI models also available via Microsoft AI Foundry."
 
+    # PHI/BAA guardrail surfaced as a callout in the calculator UI (fork-customizable).
+    phi_notice: >
+      PHI must not be sent to a standard LLM API. At Northwinds, PHI is permitted
+      only via Azure (Azure OpenAI under the institutional BAA) and requires review
+      and approval before use. Other endpoints — DeepSeek especially (foreign-hosted,
+      not BAA-eligible) — must never receive PHI.
+
     # Pricing as of June 2026 - update periodically
     # Prices are per million tokens (direct API pricing)
     # Microsoft AI Foundry uses same per-token rates as OpenAI direct
     # No academic discount on per-token pricing; check institutional agreements
-    # Models flagged `disabled: true` with a `status` (preview/embargoed) are
-    # shown grayed out and are not yet selectable
+    # Models flagged `disabled: true` with a `status` (preview / embargoed /
+    # export-controlled) are shown grayed out and are not selectable.
     models:
       # OpenAI (also available via Microsoft AI Foundry at the same per-token rates)
       - label: "GPT-5.5"
@@ -395,9 +402,9 @@ calculator_config:
         input_per_million: 5.00
         output_per_million: 30.00
         context_window: 1500000
-        description: "Next flagship, 1.5M context — staged release under government-requested embargo. Pricing not yet finalized"
+        description: "Next flagship, 1.5M context — federally export-controlled; not available for use. Pricing not finalized."
         disabled: true
-        status: "embargoed"
+        status: "export-controlled"
 
       # Anthropic
       - label: "Claude Opus 4.8"
@@ -423,9 +430,9 @@ calculator_config:
         input_per_million: 10.00
         output_per_million: 50.00
         context_window: 1000000
-        description: "Most capable model for the hardest long-horizon work — preview, not yet generally available"
+        description: "Anthropic's most capable model — federally export-controlled; access was withdrawn and it is currently unavailable."
         disabled: true
-        status: "preview"
+        status: "export-controlled"
 
       # Google
       - label: "Gemini 3.1 Pro"

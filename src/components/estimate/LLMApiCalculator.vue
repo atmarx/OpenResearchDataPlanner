@@ -129,11 +129,12 @@ function formatCurrency(amount) {
   return `$${Math.round(amount).toLocaleString()}`
 }
 
-// Short badge for models that aren't selectable yet (preview/embargoed)
+// Short badge for models that aren't selectable (preview / embargoed / export-controlled)
 function statusLabel(status) {
   const labels = {
     preview: 'Preview',
     embargoed: 'Embargoed',
+    'export-controlled': 'Export controlled',
   }
   return labels[status] || 'Coming soon'
 }
@@ -159,6 +160,15 @@ function statusLabel(status) {
   >
     <template #inputs>
       <div class="space-y-4">
+        <!-- PHI / BAA compliance guardrail (config-driven) -->
+        <div
+          v-if="config?.phi_notice"
+          class="flex items-start gap-2 p-3 rounded-lg text-xs bg-amber-50 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-800/50"
+        >
+          <AlertTriangle class="w-4 h-4 mt-0.5 flex-shrink-0" aria-hidden="true" />
+          <span>{{ config?.phi_notice }}</span>
+        </div>
+
         <!-- Model Selection -->
         <div>
           <label class="block text-sm font-medium text-text-secondary mb-1">

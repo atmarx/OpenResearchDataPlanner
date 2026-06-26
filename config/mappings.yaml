@@ -81,7 +81,7 @@ mappings:
     tier: medium
     approval: automatic
     notes: |
-      Encryption at rest enabled by default.
+      Encryption at rest via self-encrypting drives (hardware-level); no Ceph-layer (software) encryption.
       Data accessible from HPC compute nodes.
     dmp_template: "hpc-storage/default"
 
