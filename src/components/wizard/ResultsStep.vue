@@ -155,7 +155,7 @@ function exportBudget() {
   lines.push(`**Grand Total (Grant + Archive):** ${formatCurrency(costBreakdown.value.grandTotal)}`)
   lines.push('')
   lines.push('---')
-  lines.push('*This estimate was generated using Research Data Planner. Actual costs may vary.*')
+  lines.push('*' + (configStore.config?.meta?.cost_disclaimer?.long || 'Planning estimate, not a quote. Prices are subject to change.') + ' Generated using Research Data Planner.*')
 
   downloadFile(lines.join('\n'), 'budget-estimate.md', 'text/markdown')
 }
@@ -439,8 +439,8 @@ function startOver() {
     <!-- Disclaimer and contact (shown on both tabs) -->
     <div class="rounded-lg p-4 mb-6 bg-yellow-50 dark:bg-yellow-900/30">
       <p class="text-sm text-yellow-800 dark:text-yellow-200">
-        <strong>Note:</strong> This is an estimate based on current pricing and your inputs.
-        Actual costs may vary. Please consult with
+        <strong>Note:</strong> {{ configStore.config?.meta?.cost_disclaimer?.long || 'This is a planning estimate, not a quote. Prices are subject to change.' }}
+        Please consult with
         <a
           :href="'mailto:' + configStore.config?.meta?.contact?.primary?.value"
           class="text-primary hover:underline"

@@ -85,6 +85,17 @@ links:
   - label: "Acceptable Use Policy"
     url: "https://rcd.northwinds.edu/policies/acceptable-use"
 
+# Cost-estimate disclaimer — shown wherever dollar figures appear (slate, wizard
+# results, exported budget + DMP). These are PLANNING estimates, never a quote.
+# Fork-and-own: customize the wording for your institution.
+cost_disclaimer:
+  short: "Planning estimate, not a quote — prices are subject to change."
+  long: |
+    These figures are planning estimates, not a quote for services. They are
+    anticipatory, based on current prices that are subject to change — cloud
+    rates especially. We work to keep them current, and any on-platform price
+    changes are announced in advance, so you will have time to plan.
+
 # Indirect costs / F&A (Facilities & Administration)
 # Used to calculate fully-loaded costs for grant proposals
 indirect_costs:

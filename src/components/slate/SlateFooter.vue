@@ -7,6 +7,7 @@ import { useSessionStore } from '@/stores/sessionStore'
 import { useWizard } from '@/composables/useWizard'
 import { ChevronUp, ChevronDown, ArrowRight, FileText, Trash2, CheckCircle, Shield, MessageSquare } from 'lucide-vue-next'
 import ExportModal from './ExportModal.vue'
+import CostDisclaimer from '@/components/CostDisclaimer.vue'
 
 const slateStore = useSlateStore()
 const configStore = useConfigStore()
@@ -433,6 +434,9 @@ function handleWipeSlate() {
             {{ formatCurrency(slateStore.totalAnnualCost) }}/yr
           </div>
         </div>
+
+        <!-- Estimate-not-a-quote disclaimer (config-driven, shown wherever costs appear) -->
+        <CostDisclaimer variant="short" class="mt-3" />
 
         <!-- Actions (placeholder for full review modal) -->
         <div class="mt-6 flex justify-end gap-3">

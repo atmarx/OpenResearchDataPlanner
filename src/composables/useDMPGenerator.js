@@ -280,6 +280,12 @@ export function useDMPGenerator() {
     sections.push('')
     sections.push('> **Draft — requires review before submission.** This document is a starting point generated from your inputs. Review and customize it with your institution\'s research office or grants administrator before submitting to any funding agency. It does not guarantee compliance with funder requirements.')
 
+    const costDisclaimer = configStore.config?.meta?.cost_disclaimer?.long
+    if (costDisclaimer) {
+      sections.push('')
+      sections.push('> **Cost estimate, not a quote.** ' + costDisclaimer)
+    }
+
     return sections.join('\n')
   })
 
