@@ -1,14 +1,26 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useSlateStore } from '@/stores/slateStore'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
+import { useWizard } from '@/composables/useWizard'
 import { ChevronUp, ChevronDown, ArrowRight, FileText, Trash2, CheckCircle, Shield, MessageSquare } from 'lucide-vue-next'
 import ExportModal from './ExportModal.vue'
 
 const slateStore = useSlateStore()
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
+const route = useRoute()
+const wizard = useWizard()
+
+/**
+ * Wizard mode: on the wizard route, on a step that has Back/Continue nav.
+ * In this mode the footer hosts the wizard nav (WizardView teleports it into
+ * #slate-nav-slot) so there's a single bottom bar — no sticky-nav-vs-fixed-
+ * footer z-fight. Off the wizard, the footer behaves exactly as before.
+ */
+const wizardMode = computed(() => route.path === '/' && wizard.showStepNav.value)
 
 // Export modal state
 const showExportModal = ref(false)
@@ -175,8 +187,42 @@ function handleWipeSlate() {
       :class="{ 'rounded-t-lg': isExpanded }"
     >
       <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-3">
+        <!-- Wizard mode: slate context on the left, teleported Back/Continue on
+             the right. One bottom bar replaces the old sticky wizard nav. -->
+        <div v-if="wizardMode" class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3 min-w-0">
+            <!-- Expand toggle (only if there's a slate to peek at) -->
+            <button
+              v-if="!slateStore.isEmpty"
+              @click="toggleExpanded"
+              class="flex items-center gap-2 hover:bg-white/10 rounded-lg px-2 py-1 transition-colors flex-shrink-0"
+              :aria-expanded="isExpanded"
+              aria-controls="slate-expanded"
+            >
+              <component :is="isExpanded ? ChevronDown : ChevronUp" class="w-5 h-5" />
+            </button>
+            <span
+              v-if="selectedTierConfig"
+              class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium border flex-shrink-0"
+              :class="tierBadgeClasses"
+            >
+              <Shield class="w-3 h-3" />
+              {{ selectedTierConfig.short_name || selectedTierConfig.name }}
+            </span>
+            <span v-if="!slateStore.isEmpty" class="text-sm truncate">
+              <span class="text-on-primary/90">{{ summaryText }}</span>
+              <span class="text-white/50 mx-1">•</span>
+              <span class="font-semibold">{{ formatCurrency(slateStore.totalAnnualCost) }}/yr</span>
+            </span>
+            <span v-else class="text-sm text-on-primary/80 truncate">Building your plan…</span>
+          </div>
+
+          <!-- Teleport target: WizardView drops Back / Continue here -->
+          <div id="slate-nav-slot" class="flex items-center gap-2 flex-shrink-0"></div>
+        </div>
+
         <!-- Empty State -->
-        <div v-if="slateStore.isEmpty && !slateStore.isSubmitted" class="flex items-center justify-center gap-3 text-on-primary">
+        <div v-else-if="slateStore.isEmpty && !slateStore.isSubmitted" class="flex items-center justify-center gap-3 text-on-primary">
           <FileText class="w-5 h-5" />
           <!-- Show tier if selected -->
           <span

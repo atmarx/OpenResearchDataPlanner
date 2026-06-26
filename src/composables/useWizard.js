@@ -194,6 +194,17 @@ export function useWizard() {
   })
 
   /**
+   * Whether the Back/Continue nav should show for the current step. Welcome has
+   * its own CTA; results and consultation are terminal. Single source of truth
+   * so the wizard and the slate footer (which now hosts the teleported nav) agree
+   * on when to show it — they can't drift apart.
+   */
+  const showStepNav = computed(() => {
+    const step = sessionStore.currentStep
+    return step !== 'welcome' && step !== 'results' && step !== 'consultation'
+  })
+
+  /**
    * Get step IDs that would be affected by navigating back
    */
   function getAffectedSteps(targetStepId) {
@@ -346,6 +357,7 @@ export function useWizard() {
     canProceed,
     hasNextStep,
     hasPreviousStep,
+    showStepNav,
     showNavigationWarning,
     pendingNavigation,
 

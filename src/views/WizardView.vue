@@ -89,33 +89,29 @@ watch(
       />
     </div>
 
-    <!-- Navigation buttons (except on welcome and results).
-         Sticky on tablet/desktop so the path forward is always in view —
-         the instant a step becomes valid, "Continue" flips from greyed to
-         active right where the eye is, no scroll-hunting. (Mobile left in
-         normal flow — its own treatment.) -->
-    <div
-      v-if="sessionStore.currentStep !== 'welcome' && sessionStore.currentStep !== 'results' && sessionStore.currentStep !== 'consultation'"
-      class="static sm:sticky sm:bottom-4 z-30 mt-6 flex items-center justify-between gap-3 rounded-lg border border-border bg-canvas/90 px-4 py-3 backdrop-blur shadow-[0_-1px_14px_rgb(0_0_0/0.08)]"
-    >
+    <!-- Wizard navigation now lives inside the slate footer — one bottom bar
+         instead of a sticky nav (z-30) fighting the fixed slate footer (z-40),
+         which used to clip Continue. WizardView keeps ownership of the buttons
+         (so previousStep's "clear selections?" warning still fires here), but
+         teleports them into the footer's #slate-nav-slot. `defer` lets the slot
+         — rendered later in the tree, inside SlateFooter — resolve. -->
+    <Teleport defer to="#slate-nav-slot" v-if="wizard.showStepNav.value">
       <button
         v-if="wizard.hasPreviousStep.value"
         @click="wizard.previousStep"
-        class="px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-text-secondary bg-surface border border-border-strong hover:bg-surface-alt"
+        class="px-4 py-2 rounded-md font-medium text-on-primary/90 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/60 transition-colors"
       >
         Back
       </button>
-      <div v-else></div>
-
       <button
         v-if="wizard.hasNextStep.value"
         @click="wizard.nextStep"
         :disabled="!wizard.canProceed.value"
-        class="px-6 py-2 bg-primary text-on-primary rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+        class="px-6 py-2 rounded-md font-medium bg-surface text-primary hover:bg-surface-alt focus:outline-none focus:ring-2 focus:ring-white/70 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Continue
       </button>
-    </div>
+    </Teleport>
   </div>
 
   <!-- Navigation warning modal -->
