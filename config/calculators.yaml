@@ -291,16 +291,16 @@ calculator_config:
     description: "Deep learning model training"
 
     model_sizes:
-      - label: "Small (ResNet-18, BERT-base)"
+      - label: "Small (ViT-B, Llama 3.2 3B)"
         typical_hours: 10
         description: "Fine-tuning or small datasets"
-      - label: "Medium (ResNet-50, GPT-2)"
+      - label: "Medium (ViT-L, Llama 3.1 8B)"
         typical_hours: 50
         description: "Full training, medium datasets"
-      - label: "Large (ViT-L, LLaMA-7B)"
+      - label: "Large (Llama 4 Scout, 109B MoE)"
         typical_hours: 200
         description: "Large models, big datasets"
-      - label: "Very Large (LLaMA-70B)"
+      - label: "Very Large (Llama 4 Maverick, 400B MoE)"
         typical_hours: 2000
         description: "Requires multi-GPU"
 
@@ -358,61 +358,59 @@ calculator_config:
     icon: "message-square-text"
     description: "Estimate costs for commercial LLM APIs (OpenAI, Anthropic, Google, DeepSeek). OpenAI models also available via Microsoft AI Foundry."
 
-    # Pricing as of February 2026 - update periodically
+    # Pricing as of June 2026 - update periodically
     # Prices are per million tokens (direct API pricing)
-    # Azure AI Foundry uses same per-token rates as OpenAI direct
+    # Microsoft AI Foundry uses same per-token rates as OpenAI direct
     # No academic discount on per-token pricing; check institutional agreements
+    # Models flagged `disabled: true` with a `status` (preview/embargoed) are
+    # shown grayed out and are not yet selectable
     models:
-      # OpenAI
-      - label: "GPT-5.3"
+      # OpenAI (also available via Microsoft AI Foundry at the same per-token rates)
+      - label: "GPT-5.5"
         provider: "OpenAI"
-        input_per_million: 1.25
-        output_per_million: 10.00
+        input_per_million: 5.00
+        output_per_million: 30.00
+        context_window: 1050000
+        description: "Latest flagship (June 2026), unified reasoning. Prompts over 272K tokens bill at 2x input / 1.5x output"
+      - label: "GPT-5.5 Pro"
+        provider: "OpenAI"
+        input_per_million: 30.00
+        output_per_million: 180.00
+        context_window: 1050000
+        description: "Highest-stakes reasoning tier, premium pricing"
+      - label: "GPT-5.4 Mini"
+        provider: "OpenAI"
+        input_per_million: 0.75
+        output_per_million: 4.50
         context_window: 400000
-        description: "Latest flagship model, strong general performance"
-      - label: "GPT-5 Mini"
+        description: "Balanced cost and capability for most tasks"
+      - label: "GPT-5.4 Nano"
         provider: "OpenAI"
-        input_per_million: 0.25
-        output_per_million: 2.00
-        context_window: 200000
-        description: "Balanced cost and capability"
-      - label: "GPT-4o"
+        input_per_million: 0.20
+        output_per_million: 1.25
+        context_window: 400000
+        description: "Cheapest tier, ideal for high-volume workloads"
+      - label: "GPT-5.6"
         provider: "OpenAI"
-        input_per_million: 2.50
-        output_per_million: 10.00
-        context_window: 128000
-        description: "Previous gen multimodal, still widely used"
-      - label: "GPT-4o mini"
-        provider: "OpenAI"
-        input_per_million: 0.15
-        output_per_million: 0.60
-        context_window: 128000
-        description: "Very affordable for high-volume tasks"
-      - label: "o3 (reasoning)"
-        provider: "OpenAI"
-        input_per_million: 2.00
-        output_per_million: 8.00
-        context_window: 200000
-        description: "Advanced reasoning, chain-of-thought (hidden reasoning tokens billed as output)"
-      - label: "o4-mini"
-        provider: "OpenAI"
-        input_per_million: 1.10
-        output_per_million: 4.40
-        context_window: 128000
-        description: "Affordable reasoning model"
+        input_per_million: 5.00
+        output_per_million: 30.00
+        context_window: 1500000
+        description: "Next flagship, 1.5M context — staged release under government-requested embargo. Pricing not yet finalized"
+        disabled: true
+        status: "embargoed"
 
       # Anthropic
-      - label: "Claude Opus 4.6"
+      - label: "Claude Opus 4.8"
         provider: "Anthropic"
         input_per_million: 5.00
         output_per_million: 25.00
-        context_window: 200000
-        description: "Most capable Claude (Feb 2026), excellent for complex tasks"
-      - label: "Claude Sonnet 4.5"
+        context_window: 1000000
+        description: "Most capable Claude (June 2026), state-of-the-art for complex and agentic work"
+      - label: "Claude Sonnet 4.6"
         provider: "Anthropic"
         input_per_million: 3.00
         output_per_million: 15.00
-        context_window: 200000
+        context_window: 1000000
         description: "Best balance of intelligence and speed"
       - label: "Claude Haiku 4.5"
         provider: "Anthropic"
@@ -420,26 +418,42 @@ calculator_config:
         output_per_million: 5.00
         context_window: 200000
         description: "Fast and affordable"
+      - label: "Claude Fable 5"
+        provider: "Anthropic"
+        input_per_million: 10.00
+        output_per_million: 50.00
+        context_window: 1000000
+        description: "Most capable model for the hardest long-horizon work — preview, not yet generally available"
+        disabled: true
+        status: "preview"
 
       # Google
-      - label: "Gemini 3 Pro"
+      - label: "Gemini 3.1 Pro"
         provider: "Google"
         input_per_million: 2.00
         output_per_million: 12.00
+        context_window: 2000000
+        description: "Flagship model, 2M context, strong multimodal (prompts over 200K bill higher)"
+      - label: "Gemini 3.5 Flash"
+        provider: "Google"
+        input_per_million: 1.50
+        output_per_million: 9.00
         context_window: 1000000
-        description: "Flagship model, strong multimodal, long context"
+        description: "Latest fast model (May 2026), strong on coding and agentic tasks"
       - label: "Gemini 3 Flash"
         provider: "Google"
         input_per_million: 0.50
         output_per_million: 3.00
         context_window: 1000000
-        description: "Fast and capable, free tier available"
-      - label: "Gemini 2.5 Flash"
+        description: "Budget option, good for high-volume, free tier available"
+      - label: "Gemini 3.5 Pro"
         provider: "Google"
-        input_per_million: 0.30
-        output_per_million: 2.50
-        context_window: 1000000
-        description: "Budget option, good for high-volume"
+        input_per_million: 15.00
+        output_per_million: 60.00
+        context_window: 2000000
+        description: "Next-gen flagship with Deep Think — limited preview, expected pricing"
+        disabled: true
+        status: "preview"
 
       # DeepSeek
       - label: "DeepSeek R1"
@@ -510,9 +524,9 @@ calculator_config:
       - "Input tokens are usually cheaper than output"
       - "Batch API (50% off) available from all major providers for non-urgent workloads"
       - "Prompt caching saves 50-90% on repeated content (e.g., system prompts, few-shot examples)"
-      - "Reasoning models (o3, R1) use hidden 'thinking tokens' billed as output—actual costs may be 2-5× visible tokens"
+      - "Reasoning models (GPT-5.5, DeepSeek R1) use hidden 'thinking tokens' billed as output—actual costs may be 2-5× visible tokens"
       - "DeepSeek offers 50-75% off-peak discounts (16:30-00:30 GMT)"
-      - "Azure AI Foundry: check your institution's enterprise agreement for negotiated rates"
+      - "Microsoft AI Foundry: check your institution's enterprise agreement for negotiated rates"
       - "Prices change frequently - verify with IT before finalizing grants"
 
     # Factors that affect cost

@@ -128,6 +128,15 @@ function formatCurrency(amount) {
   if (amount < 100) return `$${amount.toFixed(2)}`
   return `$${Math.round(amount).toLocaleString()}`
 }
+
+// Short badge for models that aren't selectable yet (preview/embargoed)
+function statusLabel(status) {
+  const labels = {
+    preview: 'Preview',
+    embargoed: 'Embargoed',
+  }
+  return labels[status] || 'Coming soon'
+}
 </script>
 
 <template>
@@ -161,8 +170,13 @@ function formatCurrency(amount) {
           >
             <option :value="null" disabled>Select a model...</option>
             <optgroup v-for="(models, provider) in modelsByProvider" :key="provider" :label="provider">
-              <option v-for="model in models" :key="model.label" :value="model.label">
-                {{ model.label }}
+              <option
+                v-for="model in models"
+                :key="model.label"
+                :value="model.label"
+                :disabled="model.disabled"
+              >
+                {{ model.label }}{{ model.disabled ? ` — ${statusLabel(model.status)}` : '' }}
               </option>
             </optgroup>
           </select>
@@ -285,7 +299,7 @@ function formatCurrency(amount) {
             <p class="text-yellow-700 dark:text-yellow-300 text-xs">
               <strong>Note:</strong> API pricing changes frequently. Verify current prices
               with providers before finalizing grant budgets. Prices shown are estimates
-              as of February 2026.
+              as of June 2026.
             </p>
           </div>
         </div>
