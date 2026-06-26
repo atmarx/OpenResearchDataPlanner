@@ -10,8 +10,8 @@
 
    Theme (light/dark) is owned by preferencesStore (.dark on <html>);
    this engine owns only the skin (data-skin on <html>). They compose:
-     :root[data-skin="drexel"]        -> light skin tokens
-     :root[data-skin="drexel"].dark   -> dark skin tokens
+     :root[data-skin="northwinds"]        -> light skin tokens
+     :root[data-skin="northwinds"].dark   -> dark skin tokens
    =================================================================== */
 import { ref } from 'vue'
 
@@ -97,7 +97,6 @@ function deriveSkin(tok) {
 /* ---- registry: the built-in skins are themselves design.md token blocks ----
    default = base ODP look (no data-skin; uses @theme + :root.dark as written).
    northwinds = the demo sandbox (cool academic slate-blue).
-   drexel = the production environment (Drexel navy + gold — Go Dragons).
    highcontrast = WCAG AAA. */
 const SKINS = {
   default: { label: 'ODP (default)', base: true },
@@ -108,19 +107,6 @@ const SKINS = {
       typography: { body: { fontFamily: 'Inter' } },
       rounded: { sm: 2, md: 4, lg: 6, xl: 8 }
     }
-  },
-  drexel: {
-    label: 'Drexel · Go Dragons',
-    tokens: {
-      colors: { primary: '#07294D', secondary: '#5b6b7f', tertiary: '#07294D', neutral: '#f7f8fa', surface: '#ffffff', 'on-primary': '#FFC600' },
-      typography: { body: { fontFamily: 'Inter' } },
-      rounded: { sm: 2, md: 3, lg: 4, xl: 6 }
-    },
-    /* gold is Drexel's signal colour: active nav + focus ring wear it,
-       while text/buttons stay navy for contrast. */
-    extraCss:
-      ':root[data-skin="drexel"]{--color-accent-gold:#FFC600}\n' +
-      ':root[data-skin="drexel"] *:focus-visible{outline-color:#FFC600}'
   },
   highcontrast: {
     label: 'High Contrast · WCAG AAA',
