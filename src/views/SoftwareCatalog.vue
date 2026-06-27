@@ -578,8 +578,11 @@ function formatTierRestriction(software) {
         to discuss options.
       </p>
     </div>
-  </div>
 
+  <!-- Modals nested inside the root <div> (not siblings) so this view keeps a
+       SINGLE root element — the layout's <Transition mode="out-in"> boundary
+       requires it. Root-level sibling Teleports make the view multi-root, which
+       blanks <main> on navigate-away. Teleport still renders to <body>. -->
   <!-- Legend Definition Modal -->
   <Teleport to="body">
     <div
@@ -863,4 +866,5 @@ function formatTierRestriction(software) {
       </div>
     </div>
   </Teleport>
+  </div>
 </template>

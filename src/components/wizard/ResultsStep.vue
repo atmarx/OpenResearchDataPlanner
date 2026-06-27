@@ -5,6 +5,7 @@ import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { useWizard } from '@/composables/useWizard'
 import { useDMPGenerator } from '@/composables/useDMPGenerator'
+import { computeEstimate } from '@/lib/pricing.js'
 import { Download, FileText, RefreshCw, ExternalLink, CheckCircle, FileCode, Copy, Check } from 'lucide-vue-next'
 import PageFeedback from '@/components/feedback/PageFeedback.vue'
 
@@ -19,87 +20,18 @@ const activeTab = ref('budget')
 // Copy state
 const copied = ref(false)
 
-// Calculate costs (simplified version - full version in composable)
-const costBreakdown = computed(() => {
-  const services = sessionStore.session.selected_services
-  const grantMonths = sessionStore.grantMonths
-  const retentionYears = sessionStore.session.retention.longest_years
-  const grantYears = grantMonths / 12
-  const archiveYears = Math.max(0, retentionYears - grantYears)
-
-  let monthlyTotal = 0
-  let grantTotal = 0
-  let archiveTotal = 0
-
-  const byService = services.map(s => {
-    const config = configStore.servicesBySlug[s.service_slug]
-    if (!config) return null
-
-    // Calculate monthly cost
-    let monthly = 0
-    if (config.cost_model.type === 'unit') {
-      monthly = (s.estimate || 0) * config.cost_model.price
-
-      // Apply auto-subsidies
-      const autoSubsidy = config.subsidies?.find(sub => sub.auto_apply)
-      if (autoSubsidy && autoSubsidy.discount_type === 'free_units') {
-        const billable = Math.max(0, (s.estimate || 0) - autoSubsidy.discount_value)
-        monthly = billable * config.cost_model.price
-      }
-    } else if (config.cost_model.type === 'tiered') {
-      // Simplified tiered calculation
-      const estimate = s.estimate || 0
-      for (const tier of config.cost_model.tiers) {
-        if (!tier.up_to || estimate <= tier.up_to) {
-          monthly = estimate * tier.price
-          break
-        }
-      }
-    }
-
-    // Apply opt-in subsidy
-    if (s.use_subsidy) {
-      const subsidy = config.subsidies?.find(sub => sub.slug === s.use_subsidy)
-      if (subsidy?.discount_type === 'percent') {
-        monthly = monthly * (1 - subsidy.discount_value / 100)
-      }
-    }
-
-    const grantCost = monthly * grantMonths
-
-    // Archive cost
-    let archiveCost = 0
-    if (config.archive_option?.service_slug && s.archive_estimate) {
-      const archiveConfig = configStore.servicesBySlug[config.archive_option.service_slug]
-      if (archiveConfig?.cost_model?.price) {
-        const annualArchive = s.archive_estimate * archiveConfig.cost_model.price * 12
-        archiveCost = annualArchive * archiveYears
-      }
-    }
-
-    monthlyTotal += monthly
-    grantTotal += grantCost
-    archiveTotal += archiveCost
-
-    return {
-      service_slug: s.service_slug,
-      name: config.name,
-      monthly,
-      grant: grantCost,
-      archive: archiveCost
-    }
-  }).filter(Boolean)
-
-  return {
-    byService,
-    monthlyTotal,
-    grantTotal,
-    archiveTotal,
-    grandTotal: grantTotal + archiveTotal,
-    grantMonths,
-    archiveYears
+// Costs flow through the shared pricing engine (src/lib/pricing.js) so the
+// on-screen budget, the exported DMP, and the slate all agree. The old inline
+// reimplementation here used flat-tier pricing and skipped free allocations on
+// tiered services, so it could disagree with the numbers the user just saw.
+const costBreakdown = computed(() => computeEstimate(
+  sessionStore.session.selected_services,
+  {
+    servicesBySlug: configStore.servicesBySlug,
+    grantMonths: sessionStore.grantMonths,
+    retentionYears: sessionStore.session.retention.longest_years
   }
-})
+))
 
 // Rendered DMP HTML
 const dmpHtml = computed(() => {

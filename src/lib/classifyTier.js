@@ -1,4 +1,4 @@
-// Pure tier classification logic — mirrors src/components/explore/TierQuestionnaire.vue
+// Pure tier classification logic — mirrors src/views/TierQuestionnaire.vue
 // Walks the tier-questionnaire.yaml decision tree given a map of answers and
 // returns the resulting tier, flags, and the question path that was traversed.
 //

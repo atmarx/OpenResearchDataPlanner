@@ -2,7 +2,7 @@ import { computed } from 'vue'
 import Handlebars from 'handlebars'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
-import { computeServiceCost } from '@/lib/pricing.js'
+import { computeServiceLineItem } from '@/lib/pricing.js'
 import { flagLabel } from '@/lib/classificationFlags.js'
 
 /**
@@ -86,43 +86,16 @@ export function useDMPGenerator() {
     const grantMonths = sessionStore.grantMonths
     const retentionYears = sessionStore.session.retention.longest_years
 
-    // Cost via the shared pricing engine (src/lib/pricing.js) so the DMP, the
-    // slate, and the wizard all agree. The old inline calc here used flat-tier
-    // pricing (not marginal banding) and skipped the free allocation on tiered
-    // services — so the exported grant doc could disagree with the slate the
-    // researcher had just seen.
-    const costResult = computeServiceCost(
-      serviceConfig?.cost_model,
-      serviceConfig?.subsidies,
-      service.estimate || 0
-    )
-    let monthlyCost = costResult.monthly
-
-    // Opt-in (user-selected) subsidy applies on top of the auto-applied ones.
-    if (service.use_subsidy) {
-      const subsidy = serviceConfig?.subsidies?.find(sub => sub.slug === service.use_subsidy)
-      if (subsidy?.discount_type === 'percent') {
-        monthlyCost = monthlyCost * (1 - subsidy.discount_value / 100)
-      }
-    }
-
-    const totalCost = monthlyCost * grantMonths
-
-    // Archive costs — same engine, so the archive line also honours free floors.
-    const grantYears = grantMonths / 12
-    const archiveYears = Math.max(0, retentionYears - grantYears)
-    let archiveEstimate = service.archive_estimate
-    let archiveMonthlyCost = 0
-    let archiveAnnualCost = 0
-    let archiveTotalCost = 0
-
-    if (serviceConfig?.archive_option?.service_slug && archiveEstimate) {
-      const archiveConfig = configStore.servicesBySlug[serviceConfig.archive_option.service_slug]
-      const archiveResult = computeServiceCost(archiveConfig?.cost_model, archiveConfig?.subsidies, archiveEstimate)
-      archiveMonthlyCost = archiveResult.monthly
-      archiveAnnualCost = archiveMonthlyCost * 12
-      archiveTotalCost = archiveAnnualCost * archiveYears
-    }
+    // Cost via the shared pricing engine (src/lib/pricing.js): one line-item
+    // builder shared by the DMP, the slate, and the wizard, so the exported
+    // grant doc agrees with the slate the researcher just saw. It folds in the
+    // auto subsidies, the opt-in (user-selected) subsidy, and the archive tail
+    // — which honours free floors because it prices through the same engine.
+    const li = computeServiceLineItem(serviceConfig, service, {
+      grantMonths,
+      retentionYears,
+      resolveService: (slug) => configStore.servicesBySlug[slug]
+    })
 
     return {
       service: {
@@ -132,18 +105,18 @@ export function useDMPGenerator() {
         estimate: service.estimate,
         unit: serviceConfig?.cost_model?.unit,
         unit_label: serviceConfig?.cost_model?.unit_label,
-        free_units: costResult.freeUnits,
-        billable: costResult.billable,
-        monthly_cost: monthlyCost,
-        total_cost: totalCost,
+        free_units: li.freeUnits,
+        billable: li.billable,
+        monthly_cost: li.monthly,
+        total_cost: li.grant,
         notes: service.notes || mapping?.notes || null
       },
-      archive: archiveEstimate ? {
-        estimate: archiveEstimate,
-        monthly_cost: archiveMonthlyCost,
-        annual_cost: archiveAnnualCost,
-        total_cost: archiveTotalCost,
-        years: archiveYears
+      archive: service.archive_estimate ? {
+        estimate: service.archive_estimate,
+        monthly_cost: li.archive?.monthly || 0,
+        annual_cost: li.archive?.annual || 0,
+        total_cost: li.archive?.total || 0,
+        years: li.archiveYears
       } : null,
       tier: {
         slug: tierSlug,

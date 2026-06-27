@@ -119,3 +119,16 @@ body {
 .skip-link:focus {
   top: 0;
 }
+
+/* ===================================================================
+   Route page transition. Applied to the nested route component's root,
+   which lives outside each layout's scoped-style scope — so these rules
+   are GLOBAL (un-scoped) by necessity. Drives the <Transition name="page"
+   mode="out-in"> boundary inside every layout's <main>. Keyed by
+   route.path, so it fades on a real route change only; Pinia-driven
+   wizard steps stay within '/' and don't retrigger it.
+   =================================================================== */
+.page-enter-active,
+.page-leave-active { transition: opacity .2s ease, transform .2s ease; }
+.page-enter-from { opacity: 0; transform: translateY(4px); }
+.page-leave-to   { opacity: 0; transform: translateY(-4px); }

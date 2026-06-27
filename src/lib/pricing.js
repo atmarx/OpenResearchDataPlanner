@@ -25,10 +25,14 @@
  * @param {object} costModel - service.cost_model
  * @param {Array}  subsidies - service.subsidies (array; tolerates undefined)
  * @param {number} quantity  - quantity in the cost model's unit
+ * @param {object} [opts]
+ * @param {string|null} [opts.selectedSubsidySlug] - an opt-in (non-auto) subsidy
+ *        the user chose, folded in AFTER the auto subsidies. Omitting it (a
+ *        3-arg call, e.g. the slate) is a no-op — output stays byte-identical.
  * @returns {{ monthly: number, annual: number, breakdown: Array,
  *             freeUnits: number, billable: number, unitLabel: string }}
  */
-export function computeServiceCost(costModel, subsidies = [], quantity = 0) {
+export function computeServiceCost(costModel, subsidies = [], quantity = 0, { selectedSubsidySlug = null } = {}) {
   if (!costModel) return { monthly: 0, annual: 0, breakdown: [], freeUnits: 0, billable: 0, unitLabel: 'units' }
 
   const subs = Array.isArray(subsidies) ? subsidies : []
@@ -104,8 +108,148 @@ export function computeServiceCost(costModel, subsidies = [], quantity = 0) {
     }
   }
 
+  // Opt-in (user-selected, non-auto) subsidy folds in AFTER the auto loop.
+  // A 3-arg call leaves selectedSubsidySlug null, so this is a no-op and the
+  // slate's totals stay byte-identical. The percent form is numerically equal
+  // to the old inline monthly * (1 - v/100).
+  if (selectedSubsidySlug) {
+    const optIn = subs.find((s) => s.slug === selectedSubsidySlug)
+    if (optIn) {
+      const v = optIn.discount_value || 0
+      if (optIn.discount_type === 'percent') {
+        const discount = monthly * (v / 100)
+        monthly = Math.max(0, monthly - discount)
+        breakdown.push({ label: `${optIn.name || 'Subsidy'} (${v}% off)`, amount: -discount })
+      } else if (optIn.discount_type === 'fixed') {
+        monthly = Math.max(0, monthly - v)
+        breakdown.push({ label: optIn.name || 'Subsidy', amount: -v })
+      }
+    }
+  }
+
   // freeUnits + billable are surfaced so the slate (and export) can render an
   // explicit "X free / Y billable" line instead of silently swallowing the
   // free allocation into the total.
   return { monthly, annual: monthly * 12, breakdown, freeUnits, billable, unitLabel }
+}
+
+/**
+ * Price one selected service into a grant-period line item: the monthly cost
+ * (auto + opt-in subsidies), the grant-period total, and the optional archive
+ * tail that runs from grant end through the retention horizon.
+ *
+ * Stays pure — the caller passes the full service config plus a resolveService
+ * lookup so the archive service can be priced through the same engine.
+ *
+ * @param {object} service   - full service config (carries .slug/.name/.cost_model/.subsidies/.archive_option)
+ * @param {object} selection - a selected-services entry { service_slug, estimate, use_subsidy, archive_estimate }
+ * @param {object} ctx
+ * @param {number} ctx.grantMonths    - billed months in the grant period
+ * @param {number} ctx.retentionYears - total retention horizon (years)
+ * @param {(slug: string) => object} ctx.resolveService - look up the archive service config
+ * @returns {{ slug, name, estimate, monthly, grant, freeUnits, billable,
+ *             unitLabel, breakdown, archive: object|null, archiveYears, total }}
+ */
+export function computeServiceLineItem(service, selection, { grantMonths, retentionYears, resolveService }) {
+  const main = computeServiceCost(
+    service?.cost_model,
+    service?.subsidies,
+    selection?.estimate || 0,
+    { selectedSubsidySlug: selection?.use_subsidy || null }
+  )
+
+  const monthly = main.monthly
+  const grant = monthly * grantMonths
+  const archiveYears = Math.max(0, retentionYears - grantMonths / 12)
+
+  // Archive runs only when the service offers one AND the user committed a real
+  // archive estimate. No archive_ratio default here — that estimate*ratio guess
+  // is UI-only and would invent cost. Priced through the engine (no opt-in).
+  let archive = null
+  const archiveSlug = service?.archive_option?.service_slug
+  if (archiveSlug && selection?.archive_estimate) {
+    const archiveConfig = resolveService(archiveSlug)
+    const archiveResult = computeServiceCost(
+      archiveConfig?.cost_model,
+      archiveConfig?.subsidies,
+      selection.archive_estimate
+    )
+    const annual = archiveResult.monthly * 12
+    archive = {
+      estimate: selection.archive_estimate,
+      monthly: archiveResult.monthly,
+      annual,
+      total: annual * archiveYears,
+      years: archiveYears
+    }
+  }
+
+  return {
+    slug: service?.slug,
+    name: service?.name,
+    estimate: selection?.estimate,
+    monthly,
+    grant,
+    freeUnits: main.freeUnits,
+    billable: main.billable,
+    unitLabel: main.unitLabel,
+    breakdown: main.breakdown,
+    archive,
+    archiveYears,
+    total: grant + (archive?.total || 0)
+  }
+}
+
+/**
+ * Roll a full set of selections into the budget summary the ResultsStep renders:
+ * per-service grant/archive rows plus the monthly / grant / archive / grand
+ * totals. Unknown service slugs are skipped (config may have changed under a
+ * saved session). Accumulation matches the wizard's historical loop exactly.
+ *
+ * @param {Array}  selections - sessionStore.session.selected_services
+ * @param {object} ctx
+ * @param {Object} ctx.servicesBySlug - slug -> service config
+ * @param {number} ctx.grantMonths
+ * @param {number} ctx.retentionYears
+ * @returns {{ byService: Array, monthlyTotal: number, grantTotal: number,
+ *             archiveTotal: number, grandTotal: number, grantMonths: number,
+ *             archiveYears: number }}
+ */
+export function computeEstimate(selections, { servicesBySlug, grantMonths, retentionYears }) {
+  const resolveService = (slug) => servicesBySlug[slug]
+
+  let monthlyTotal = 0
+  let grantTotal = 0
+  let archiveTotal = 0
+  const byService = []
+
+  for (const s of selections) {
+    const service = servicesBySlug[s.service_slug]
+    if (!service) continue
+
+    const li = computeServiceLineItem(service, s, { grantMonths, retentionYears, resolveService })
+    const archive = li.archive?.total || 0
+
+    monthlyTotal += li.monthly
+    grantTotal += li.grant
+    archiveTotal += archive
+
+    byService.push({
+      service_slug: s.service_slug,
+      name: li.name,
+      monthly: li.monthly,
+      grant: li.grant,
+      archive
+    })
+  }
+
+  return {
+    byService,
+    monthlyTotal,
+    grantTotal,
+    archiveTotal,
+    grandTotal: grantTotal + archiveTotal,
+    grantMonths,
+    archiveYears: Math.max(0, retentionYears - grantMonths / 12)
+  }
 }

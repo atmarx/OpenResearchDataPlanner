@@ -112,9 +112,13 @@ watch(
         Continue
       </button>
     </Teleport>
-  </div>
 
-  <!-- Navigation warning modal -->
+  <!-- Navigation warning modal. Nested inside the root <div> (not a sibling) so
+       this view keeps a SINGLE root element — the layout's <Transition
+       mode="out-in"> boundary requires it. A root-level sibling Teleport makes
+       the view multi-root, which prevents the leave transition from completing
+       and blanks <main> on navigate-away. Teleport still renders to <body>
+       regardless of where it sits in the template. -->
   <Teleport to="body">
     <div
       v-if="wizard.showNavigationWarning.value"
@@ -156,4 +160,5 @@ watch(
       </div>
     </div>
   </Teleport>
+  </div>
 </template>
