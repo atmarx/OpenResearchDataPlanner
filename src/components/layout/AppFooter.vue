@@ -44,6 +44,11 @@ const links = computed(() => {
   return []
 })
 
+// Legal fine print (config/legal.yaml). The short "as is / planning only"
+// warranty notice belongs in the footer; the full terms live in the export +
+// (future) About page. Renders only if the boilerplate is present.
+const legalFinePrint = computed(() => configStore.config?.legal?.no_warranty?.short)
+
 // AI Disclosure config
 const aiDisclosure = computed(() => configStore.config?.meta?.ai_disclosure)
 const showAiFooter = computed(() => aiDisclosure.value?.enabled !== false)
@@ -125,6 +130,14 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
             class="text-xs text-text-muted"
           >
             Template v{{ templateVersion }}
+          </div>
+
+          <!-- Legal fine print: the "as is / planning only" disclaimer -->
+          <div
+            v-if="legalFinePrint"
+            class="text-xs text-text-muted max-w-prose leading-snug"
+          >
+            {{ legalFinePrint }}
           </div>
         </div>
 

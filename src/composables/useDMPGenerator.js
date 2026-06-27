@@ -263,6 +263,26 @@ export function useDMPGenerator() {
       sections.push('> **Cost estimate, not a quote.** ' + costDisclaimer)
     }
 
+    // Legal framing (config/legal.yaml): the escalating per-tier legal notice
+    // plus the "About This Plan" framing — the plan is a planning artifact
+    // subject to institutional policy and funder terms. Surfaced here so the
+    // exported DMP carries the same terms the app states elsewhere.
+    const legal = configStore.config?.legal
+    if (legal) {
+      const tierNotice = legal.tier_notices?.[sessionStore.selectedTier]
+      if (tierNotice) {
+        sections.push('')
+        sections.push('> ' + tierNotice.trim().replace(/\s*\n\s*/g, ' '))
+      }
+      const framing = legal.dmp_legal_framing
+      if (framing?.body) {
+        sections.push('')
+        sections.push(`### ${framing.heading || 'About This Plan'}`)
+        sections.push('')
+        sections.push(framing.body.trim())
+      }
+    }
+
     return sections.join('\n')
   })
 
