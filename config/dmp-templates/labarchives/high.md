@@ -43,6 +43,7 @@ infrastructure, with references maintained in the lab notebook.
 - Timestamped entries for research integrity
 - Witness and signature functionality available
 - All modifications logged with user attribution
+- Electronic records and signatures meet FDA 21 CFR Part 11 requirements
 
 **Access Control:**
 Notebook access is strictly limited to authorized project personnel.

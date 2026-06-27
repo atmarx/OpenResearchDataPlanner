@@ -3,7 +3,7 @@ import Handlebars from 'handlebars'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { computeServiceLineItem } from '@/lib/pricing.js'
-import { flagLabel } from '@/lib/classificationFlags.js'
+import { flagLabel, flagGuidance } from '@/lib/classificationFlags.js'
 
 /**
  * Register Handlebars helpers
@@ -236,6 +236,26 @@ export function useDMPGenerator() {
     sections.push('')
     sections.push('---')
     sections.push('')
+
+    // Expanded regulatory + sharing guidance, driven by the classification flags
+    // the questionnaire set — turns each flag label into actual handling language
+    // (HIPAA → a HIPAA sentence) so the plan reads as compliance prose, not tags.
+    // Stated once at the document level rather than repeated per service section.
+    const guided = classificationFlags
+      .map(f => ({ label: flagLabel(f), text: flagGuidance(f) }))
+      .filter(g => g.text)
+    if (guided.length > 0) {
+      sections.push('## Regulatory and Sharing Considerations')
+      sections.push('')
+      sections.push('The data classification for this project carries the following obligations:')
+      sections.push('')
+      for (const g of guided) {
+        sections.push(`- **${g.label}.** ${g.text}`)
+      }
+      sections.push('')
+      sections.push('---')
+      sections.push('')
+    }
 
     // Render each service's DMP section
     for (const service of services) {

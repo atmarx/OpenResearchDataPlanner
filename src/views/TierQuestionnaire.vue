@@ -224,9 +224,13 @@ function applyTier() {
   }
 }
 
-// Quick select a tier from intro (for non-sensitive data)
+// Quick select a tier from intro (for non-sensitive data). The "not sensitive /
+// standard tier" path is the open-science fast lane, so set the open_data flag on
+// the low tier — the DMP then documents a FAIR / public-access sharing plan.
+// (Heuristic: a dedicated open-data question could refine this later.)
 function quickSelectTier(tierSlug) {
-  sessionStore.setClassification(tierSlug, [])
+  const flags = tierSlug === 'low' ? ['open_data'] : []
+  sessionStore.setClassification(tierSlug, flags)
   navigateToWizardWithTier()
 }
 

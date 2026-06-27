@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
 import yaml from 'js-yaml'
-import { FLAG_LABELS, flagLabel } from '../src/lib/classificationFlags.js'
+import { FLAG_LABELS, FLAG_GUIDANCE, flagLabel, flagGuidance } from '../src/lib/classificationFlags.js'
 
 // Collect every flag the questionnaire can emit. A new sets_flags value without
 // a matching human label should fail here, not ship a raw_snake slug into a
@@ -36,5 +36,23 @@ describe('classification flag labels (DMP intent rendering)', () => {
 
   it('unmapped slugs fall back to a title-cased label (never raw_snake)', () => {
     expect(flagLabel('some_new_flag')).toBe('Some New Flag')
+  })
+})
+
+describe('flag guidance (DMP compliance prose)', () => {
+  it('core compliance flags carry handling guidance, not just a label', () => {
+    for (const f of ['hipaa', 'phi', 'ferpa', 'cui', 'ear', 'itar', 'open_data']) {
+      expect(FLAG_GUIDANCE[f], `guidance for ${f}`).toBeTruthy()
+      expect(flagGuidance(f).length, `guidance for ${f} is substantive`).toBeGreaterThan(20)
+    }
+  })
+
+  it('open_data carries FAIR / public-access language and a label', () => {
+    expect(flagGuidance('open_data')).toMatch(/FAIR/)
+    expect(FLAG_LABELS.open_data).toBeTruthy()
+  })
+
+  it('flagGuidance returns null for an unmapped flag', () => {
+    expect(flagGuidance('totally_unknown_flag')).toBeNull()
   })
 })
