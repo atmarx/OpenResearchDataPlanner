@@ -128,14 +128,14 @@ mappings:
     tier: low
     approval: automatic
     notes: null
-    dmp_template: "globus-storage/default"
+    dmp_template: "northstar/default"
 
   - service: globus-storage
     tier: medium
     approval: automatic
     notes: |
       Encryption at rest enabled. Verify recipient endpoint security before sharing.
-    dmp_template: "globus-storage/default"
+    dmp_template: "northstar/default"
 
   # =============================================================================
   # AWS CLOUD - Low through High

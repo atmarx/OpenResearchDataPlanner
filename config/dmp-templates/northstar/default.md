@@ -25,8 +25,9 @@ platform's provenance record.
 **Backup and Recoverability:**
 Project data is backed up on a fixed schedule, and — unlike conventional backup
 practice — recoverability is *verified*: the platform performs scheduled test
-restores and records a dated receipt confirming the data came back intact. We
-will not discover a failed backup at the moment we need it.
+restores and records a dated receipt confirming the data came back intact. A
+failed restore is detected on that schedule, not at the moment the data is
+needed.
 
 **Data Retention:**
 {{#if retention}}
@@ -52,8 +53,8 @@ complete, citable record.
 {{/if}}
 
 **Plan Enforcement:**
-This plan is not aspirational. On award, it is bound to the project scope as
-machine-readable policy: the access rules, retention commitments, and sharing
-terms stated here are enforced by the platform as the data is used, and
+On award, this plan is bound to the project scope as machine-readable policy:
+the access rules, retention commitments, and sharing terms stated here are
+enforced by the platform as the data is used, and
 compliance with this plan is reportable on demand for progress reports and
 audits from the platform's compliance record.
