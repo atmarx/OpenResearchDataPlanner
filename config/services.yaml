@@ -10,6 +10,8 @@ services:
     fa_exempt: true  # Internal service center
     name: "HPC Free Tier"
     category: compute
+    deployment:
+      - on-prem
     description: "Free access to HPC with limited CPU and GPU resources"
     long_description: |
       Free tier access to our SLURM-managed HPC cluster with resource limits.
@@ -82,6 +84,8 @@ services:
     fa_exempt: true  # Internal service center
     name: "HPC Compute (CPU)"
     category: compute
+    deployment:
+      - on-prem
     description: "CPU compute on SLURM cluster for batch workloads"
     long_description: |
       CPU-focused compute on our SLURM-managed HPC cluster. Suitable for
@@ -166,6 +170,8 @@ services:
     fa_exempt: true  # Internal service center
     name: "HPC GPU (A100)"
     category: compute
+    deployment:
+      - on-prem
     description: "A100 GPU compute for simulation, FEA, and ML training/inference"
     long_description: |
       GPU compute on our SLURM-managed HPC cluster featuring NVIDIA A100 GPUs.
@@ -251,6 +257,8 @@ services:
     fa_exempt: true  # Internal service center
     name: "HPC Storage (Ceph)"
     category: storage
+    deployment:
+      - on-prem
     description: "Persistent storage for HPC workloads (Ceph cluster, ~750TB usable)"
     long_description: |
       Persistent storage on our Ceph cluster, designed for HPC workflows.
@@ -344,6 +352,8 @@ services:
     fa_exempt: true  # Internal service center
     name: "Kubernetes Cluster (Beta)"
     category: compute
+    deployment:
+      - on-prem
     description: "GPU-accelerated Kubernetes with H200, GH200, and A100 nodes"
     long_description: |
       Our Kubernetes cluster provides container orchestration for GPU-accelerated
@@ -615,6 +625,9 @@ services:
   - slug: aws-compute-small
     name: "AWS Compute - Small"
     category: compute
+    deployment:
+      - cloud
+    pricing_url: "https://calculator.aws/"
     description: "Small cloud VMs (~2 vCPU, 8GB RAM)"
     long_description: |
       Small-tier AWS compute for lightweight workloads. You control your own
@@ -697,6 +710,9 @@ services:
   - slug: aws-compute-medium
     name: "AWS Compute - Medium"
     category: compute
+    deployment:
+      - cloud
+    pricing_url: "https://calculator.aws/"
     description: "Medium cloud VMs (~8 vCPU, 32GB RAM)"
     long_description: |
       Medium-tier AWS compute for standard workloads. You control your own
@@ -778,6 +794,9 @@ services:
   - slug: aws-compute-large
     name: "AWS Compute - Large"
     category: compute
+    deployment:
+      - cloud
+    pricing_url: "https://calculator.aws/"
     description: "Large cloud VMs (~32 vCPU, 128GB RAM) or GPU instances"
     long_description: |
       Large-tier AWS compute for heavy workloads including GPU instances.
@@ -863,6 +882,9 @@ services:
   - slug: aws-storage-hot
     name: "AWS Storage - Hot (S3 Standard)"
     category: storage
+    deployment:
+      - cloud
+    pricing_url: "https://calculator.aws/"
     description: "Frequently accessed cloud storage"
     long_description: |
       S3 Standard storage for frequently accessed data. Best for active
@@ -932,6 +954,9 @@ services:
   - slug: aws-storage-cold
     name: "AWS Storage - Cold (S3 Infrequent Access)"
     category: storage
+    deployment:
+      - cloud
+    pricing_url: "https://calculator.aws/"
     description: "Infrequently accessed cloud storage at reduced cost"
     long_description: |
       S3 Infrequent Access for data accessed less than once per month.
@@ -1001,6 +1026,9 @@ services:
   - slug: aws-storage-archive
     name: "AWS Storage - Archive (S3 Glacier)"
     category: storage
+    deployment:
+      - cloud
+    pricing_url: "https://calculator.aws/"
     description: "Long-term archival storage for compliance and retention"
     long_description: |
       S3 Glacier Deep Archive for data retention and compliance.
@@ -1076,6 +1104,9 @@ services:
   - slug: azure-compute-small
     name: "Azure Compute - Small"
     category: compute
+    deployment:
+      - cloud
+    pricing_url: "https://azure.microsoft.com/pricing/calculator/"
     description: "Small cloud VMs (~2 vCPU, 8GB RAM)"
     long_description: |
       Small-tier Azure compute for lightweight workloads. You control your own
@@ -1158,6 +1189,9 @@ services:
   - slug: azure-compute-medium
     name: "Azure Compute - Medium"
     category: compute
+    deployment:
+      - cloud
+    pricing_url: "https://azure.microsoft.com/pricing/calculator/"
     description: "Medium cloud VMs (~8 vCPU, 32GB RAM)"
     long_description: |
       Medium-tier Azure compute for standard workloads. You control your own
@@ -1239,6 +1273,9 @@ services:
   - slug: azure-compute-large
     name: "Azure Compute - Large"
     category: compute
+    deployment:
+      - cloud
+    pricing_url: "https://azure.microsoft.com/pricing/calculator/"
     description: "Large cloud VMs (~32 vCPU, 128GB RAM) or GPU instances"
     long_description: |
       Large-tier Azure compute for heavy workloads including GPU instances.
@@ -1324,6 +1361,9 @@ services:
   - slug: azure-storage-hot
     name: "Azure Storage - Hot (Blob Hot)"
     category: storage
+    deployment:
+      - cloud
+    pricing_url: "https://azure.microsoft.com/pricing/calculator/"
     description: "Frequently accessed cloud storage"
     long_description: |
       Azure Blob Hot tier for frequently accessed data. Best for active
@@ -1393,6 +1433,9 @@ services:
   - slug: azure-storage-cold
     name: "Azure Storage - Cold (Blob Cool)"
     category: storage
+    deployment:
+      - cloud
+    pricing_url: "https://azure.microsoft.com/pricing/calculator/"
     description: "Infrequently accessed cloud storage at reduced cost"
     long_description: |
       Azure Blob Cool tier for data accessed less than once per month.
@@ -1462,6 +1505,9 @@ services:
   - slug: azure-storage-archive
     name: "Azure Storage - Archive (Blob Archive)"
     category: storage
+    deployment:
+      - cloud
+    pricing_url: "https://azure.microsoft.com/pricing/calculator/"
     description: "Long-term archival storage for compliance and retention"
     long_description: |
       Azure Blob Archive tier for data retention and compliance.
@@ -1536,6 +1582,8 @@ services:
     fa_exempt: true  # Internal service center
     name: "University File Server (NWFiles)"
     category: storage
+    deployment:
+      - on-prem
     description: "Campus network storage for general research files"
     long_description: |
       University-managed file server with automatic backups,
@@ -1615,6 +1663,8 @@ services:
     fa_exempt: true  # Included with institutional M365
     name: "OneDrive for Business"
     category: storage
+    deployment:
+      - cloud
     description: "Cloud storage included with university Microsoft 365"
     long_description: |
       OneDrive cloud storage included with your university account.
@@ -1702,6 +1752,8 @@ services:
     fa_exempt: true  # Institutional license
     name: "LabArchives ELN"
     category: storage
+    deployment:
+      - cloud
     description: "Electronic lab notebook with institutional license"
     long_description: |
       Electronic lab notebook for documenting research processes,
@@ -1790,6 +1842,9 @@ services:
     fa_exempt: true  # Internal institutional service
     name: "Azure OpenAI Service"
     category: api
+    deployment:
+      - cloud
+    pricing_url: "https://azure.microsoft.com/pricing/calculator/"
     description: "GPT-4, embeddings, and other Azure-hosted AI models"
     long_description: |
       Institutional Azure OpenAI instance with approved models.
@@ -1833,6 +1888,10 @@ services:
     fa_exempt: true  # Internal service center
     name: "Research VDI - Silver"
     category: environment
+    deployment:
+      - on-prem
+      - cloud
+    pricing_url: "https://azure.microsoft.com/pricing/calculator/"
     description: "Entry-level virtual desktop (4 vCPU, 16GB RAM) with daily backups"
 
     comparison_features:
@@ -1864,9 +1923,13 @@ services:
     long_description: |
       Silver tier Research Virtual Desktop provides a dedicated Windows or Linux
       VM on our Azure Local cluster. Includes 4 vCPU, 16GB RAM, and 100GB OS disk.
-      Ideal for general research computing, document processing, and light analysis.
-      All VDI tiers include automated daily backups with 30-day retention, Azure AD
-      authentication, and optional domain join.
+      Memory is dynamic, scaling up to 64GB by default and 128GB on request, so the
+      desktop can stretch to meet bursty workloads. Ideal for general research
+      computing, document processing, and light analysis. Each VDI node connects to
+      the NWFiles storage fabric over multiple 25 Gbps links - about 25x the 1 GbE
+      wired to most offices and labs - which keeps data-heavy work fast even when
+      your tools only run on Windows. All VDI tiers include automated daily backups
+      with 30-day retention, Azure AD authentication, and optional domain join.
     documentation_url: "https://docs.northwinds.edu/vdi"
 
     cost_model:
@@ -1898,6 +1961,10 @@ services:
     fa_exempt: true  # Internal service center
     name: "Research VDI - Gold"
     category: environment
+    deployment:
+      - on-prem
+      - cloud
+    pricing_url: "https://azure.microsoft.com/pricing/calculator/"
     description: "Mid-tier virtual desktop (8 vCPU, 32GB RAM) with daily backups"
 
     comparison_features:
@@ -1929,8 +1996,12 @@ services:
     long_description: |
       Gold tier Research Virtual Desktop provides a dedicated Windows or Linux
       VM on our Azure Local cluster. Includes 8 vCPU, 32GB RAM, and 200GB OS disk.
-      Suited for moderate computational work, statistical analysis, and development.
-      All VDI tiers include automated daily backups with 30-day retention, Azure AD
+      Memory is dynamic, scaling up to 64GB by default and 128GB on request. Suited
+      for moderate computational work, statistical analysis, and development. Like
+      every VDI node, it reaches the NWFiles storage fabric over multiple 25 Gbps
+      links - roughly 25x faster than the 1 GbE found in most offices and labs - so
+      processing large datasets stays quick even when Windows is required. All VDI
+      tiers include automated daily backups with 30-day retention, Azure AD
       authentication, and optional domain join.
     documentation_url: "https://docs.northwinds.edu/vdi"
 
@@ -1963,6 +2034,10 @@ services:
     fa_exempt: true  # Internal service center
     name: "Research VDI - Platinum"
     category: environment
+    deployment:
+      - on-prem
+      - cloud
+    pricing_url: "https://azure.microsoft.com/pricing/calculator/"
     description: "High-performance virtual desktop (16 vCPU, 64GB RAM) with daily backups"
 
     comparison_features:
@@ -1994,9 +2069,13 @@ services:
     long_description: |
       Platinum tier Research Virtual Desktop provides a dedicated Windows or Linux
       VM on our Azure Local cluster. Includes 16 vCPU, 64GB RAM, and 500GB OS disk.
-      Designed for memory-intensive workloads, large dataset analysis, and complex
-      development environments. All VDI tiers include automated daily backups with
-      30-day retention, Azure AD authentication, and optional domain join.
+      Memory is dynamic, running at 64GB by default and expandable to 128GB on
+      request for the most demanding sessions. Designed for memory-intensive
+      workloads, large dataset analysis, and complex development environments. Each
+      VDI node links to the NWFiles storage fabric over multiple 25 Gbps connections
+      - about 25x the 1 GbE most offices and labs have - so even large Windows-bound
+      datasets move and process fast. All VDI tiers include automated daily backups
+      with 30-day retention, Azure AD authentication, and optional domain join.
     documentation_url: "https://docs.northwinds.edu/vdi"
 
     cost_model:
@@ -2025,6 +2104,8 @@ services:
     fa_exempt: true  # Internal service center
     name: "Secure Research Enclave"
     category: environment
+    deployment:
+      - on-prem
     description: "Isolated environment for restricted data"
 
     comparison_features:
@@ -2074,6 +2155,8 @@ services:
     # Note: Web hosting uses Azure but is pass-through; F&A may apply depending on structure
     name: "Research Web Hosting"
     category: environment
+    deployment:
+      - on-prem
     description: "Managed web application hosting on Azure with CI/CD pipelines"
 
     comparison_features:
@@ -2147,6 +2230,8 @@ services:
     fa_exempt: true  # Free internal service
     name: "JupyterHub (Shared)"
     category: environment
+    deployment:
+      - on-prem
     description: "Free browser-based Jupyter notebooks on shared HPC backend"
 
     comparison_features:
@@ -2227,6 +2312,9 @@ services:
     fa_exempt: true  # Internal service center
     name: "JupyterHub (Dedicated)"
     category: environment
+    deployment:
+      - cloud
+    pricing_url: "https://azure.microsoft.com/pricing/calculator/"
     description: "Dedicated Jupyter environment for sensitive data (L3/High tier)"
 
     comparison_features:
