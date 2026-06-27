@@ -559,7 +559,9 @@ mappings:
     tier: medium
     approval: automatic
     notes: |
-      Encryption at rest enabled. Use departmental share for collaboration.
+      Encryption at rest via self-encrypting drives + BitLocker on storage and
+      system volumes, with recovery keys escrowed in Active Directory. Use
+      departmental share for collaboration.
     dmp_template: "nwfiles/default"
 
   - service: nwfiles
@@ -580,7 +582,7 @@ mappings:
         - "Data Handling Policy Training"
       timeline: "1-2 business days"
       audit_logging: true
-      encryption: at_rest
+      encryption: both
 
   # OneDrive
   - service: onedrive
