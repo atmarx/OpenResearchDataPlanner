@@ -65,6 +65,16 @@ watch(
     })
   }
 )
+
+// Mirror wizard selections into the slate as they change, so the slate bar shows
+// services/software the moment you add them — not only after the estimate step.
+// syncToSlate is idempotent; immediate:true also syncs a session restored from
+// localStorage on mount.
+watch(
+  () => [sessionStore.session.selected_services, sessionStore.session.selected_software],
+  () => wizard.syncToSlate(),
+  { deep: true, immediate: true }
+)
 </script>
 
 <template>

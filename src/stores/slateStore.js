@@ -259,6 +259,23 @@ export const useSlateStore = defineStore('slate', () => {
     slate.value.software = slate.value.software.filter(s => s.id !== softwareId)
   }
 
+  /**
+   * Remove all items that came from a given source (fromCalculator tag). The
+   * wizard uses this to idempotently re-sync its contribution without disturbing
+   * items the user added via the explore / calculator path.
+   */
+  function removeItemsBySource(sources) {
+    slate.value.items = slate.value.items.filter(i => !sources.includes(i.fromCalculator))
+  }
+
+  /**
+   * Clear all slate software. Slate software is populated only by the wizard
+   * sync, so this is the wizard's idempotent reset for the software list.
+   */
+  function clearSoftware() {
+    slate.value.software = []
+  }
+
   // ============================================================
   // SLATE LIFECYCLE
   // ============================================================
@@ -394,6 +411,8 @@ export const useSlateStore = defineStore('slate', () => {
     // Software management
     addSoftware,
     removeSoftware,
+    removeItemsBySource,
+    clearSoftware,
 
     // Lifecycle
     wipeSlate,

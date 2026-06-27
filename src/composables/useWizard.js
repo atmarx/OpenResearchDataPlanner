@@ -279,7 +279,16 @@ export function useWizard() {
    * Called when moving from estimate to results step
    */
   function syncToSlate() {
-    // Sync each selected service to the slate
+    // Idempotent mirror of the wizard's selections into the slate, so the slate
+    // bar reflects what you've picked AS YOU GO — this is driven by a watcher on
+    // every selection change, not only at the estimate->results hop. addItem
+    // merges by service, so re-running without first dropping the wizard's prior
+    // contribution would balloon quantities. Explore/calculator items (other
+    // fromCalculator tags) are left untouched; slate software is wizard-only so
+    // it's rebuilt wholesale.
+    slateStore.removeItemsBySource(['wizard', 'wizard-archive'])
+    slateStore.clearSoftware()
+
     for (const selection of sessionStore.session.selected_services) {
       const serviceConfig = configStore.servicesBySlug[selection.service_slug]
       if (!serviceConfig) continue
@@ -313,6 +322,19 @@ export function useWizard() {
           })
         }
       }
+    }
+
+    // Software: mirror sessionStore.selected_software into the slate. A null
+    // costToUser renders as "Included" (campus-licensed); BYOL keeps its note.
+    for (const sel of sessionStore.session.selected_software) {
+      const sw = configStore.config?.software?.software?.find(s => s.slug === sel.software_slug)
+      slateStore.addSoftware({
+        id: sw?.name || sel.software_slug,
+        licenseModel: sw?.license_model || 'campus',
+        costToUser: sw?.cost_to_user ?? null,
+        costPeriod: sw?.cost_period || null,
+        note: sel.note || null
+      })
     }
   }
 
