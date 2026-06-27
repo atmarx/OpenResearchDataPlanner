@@ -1,0 +1,239 @@
+# config/legal.yaml
+# ---------------------------------------------------------------------------
+# The LEGAL / TERMS layer.
+#
+# Named, reusable boilerplate that wraps the tool's (technical) service
+# descriptions and its generated outputs.  These strings frame what the
+# planner is (guidance, not a decision), who is responsible for what, and on
+# what terms the institution offers it.
+#
+# WHERE THIS FITS
+#   - meta.yaml `cost_disclaimer`  = the PRICING layer ("estimate, not a quote").
+#   - meta.yaml `links`            = the AUTHORITATIVE policies (privacy, terms,
+#                                    AUP, data classification, RDM, public access).
+#   - this file `legal.yaml`       = the TERMS layer that ties the app and its
+#                                    outputs back to those policies.
+#   These layers are complementary.  This file does NOT restate the cost
+#   disclaimer and defers to it on pricing; it does NOT duplicate the policies
+#   in meta.links, it points at them by name.
+#
+# HOW IT SURFACES (the PM wires this in — see notes per section)
+#   Plain strings, no template interpolation required, so the same text can
+#   appear verbatim in a footer, an inline notice, a modal, or an exported
+#   document.  `short` = compact surfaces (footers, tooltips).  `body` = full
+#   notice (modals, About page, exported artifacts).  `policy_refs` lists the
+#   exact meta.links labels an app surface may hyperlink to; the prose also
+#   names the policies so it reads correctly even with no link resolution.
+#
+# FORK-AND-OWN
+#   Edit these strings for your institution.  This config is written for a
+#   *university*; if you are a hospital, lab, or company, replace "the
+#   University" accordingly.  If your policy labels differ from meta.links,
+#   update the `policy_refs` to match.
+#
+#   IMPORTANT: This is boilerplate, not legal advice.  Have your Office of
+#   General Counsel review it before deployment.  The "no warranty / limitation
+#   of liability" wording in particular is jurisdiction-specific (public
+#   institutions face limits on what they can disclaim) and must be reviewed by
+#   counsel.  See `counsel_review` at the bottom of this file.
+# ---------------------------------------------------------------------------
+
+# === Using the planner ======================================================
+# Framing for the platform itself.  The planner is a planning aid; using it is
+# not a request, a reservation, or an agreement.
+# Surfaces: Welcome page, About page, footer ("Terms of Use" in-app companion
+# to the external policy link of the same name).
+terms_of_use:
+  heading: "Terms of Use"
+  short: >-
+    This planner is a self-service guidance tool.  Using it does not request
+    services, reserve resources, or create an agreement.
+  body: |
+    The Research Data Planner is a self-service tool that helps you explore data
+    infrastructure options, estimate costs for proposals, and draft Data
+    Management Plan language.  By using it, you agree to use it for legitimate
+    research-planning purposes, consistent with our Acceptable Use Policy and
+    Terms of Use.
+
+    The planner offers guidance, not decisions.  Selecting a tier, a service, or
+    a bundle here does not request, reserve, authorize, or provision anything,
+    and does not create any agreement between you and the University.  Actual
+    services are arranged separately through the appropriate offices, under their
+    own terms.
+  policy_refs:
+    - "Terms of Use"
+    - "Acceptable Use Policy"
+
+# === Acceptable use of the underlying services ==============================
+# The planner describes real infrastructure.  When you go on to use that
+# infrastructure, the institution's AUP and service terms govern it.
+# Surfaces: ServiceMatrix / explore pages, service detail, About page.
+acceptable_use:
+  heading: "Acceptable Use of Services"
+  short: >-
+    Services you request through this tool are governed by our Acceptable Use
+    Policy and any service-specific terms.
+  body: |
+    The infrastructure described here — computing, storage, and related services
+    — is provided under the University's Acceptable Use Policy and any
+    service-specific terms.  When you provision or use these services, you are
+    responsible for complying with those policies, with applicable laws and
+    regulations, and with the terms of any grant, contract, license, or data use
+    agreement that governs your project.
+
+    This tool does not grant access to any system and does not override any
+    policy, license, or agreement.
+  policy_refs:
+    - "Acceptable Use Policy"
+
+# === No warranty / limitation of liability ==================================
+# "As is," no warranty, limitation of liability.  Written to be
+# institution-appropriate; the limitation clause MUST be reviewed by counsel
+# (see counsel_review below) because public-institution liability law varies.
+# Surfaces: footer fine print, About page, appended to exported artifacts
+# (DMP, slate / budget export).
+no_warranty:
+  heading: "No Warranty and Limitation of Liability"
+  short: >-
+    Provided "as is," without warranty.  Estimates and generated text are for
+    planning only — verify anything important before you rely on it.
+  body: |
+    This tool, and the information, estimates, and documents it generates, are
+    provided "as is" and "as available," without warranties of any kind, express
+    or implied, including any implied warranties of accuracy, completeness,
+    merchantability, or fitness for a particular purpose.  Cost figures are
+    estimates for planning, and recommendations are general guidance that may not
+    fit every project.
+
+    To the extent permitted by applicable law, the University is not liable for
+    any loss or damage arising from your use of this tool or your reliance on its
+    output — including budgeting, classification, compliance, procurement, or
+    funding decisions.  You are responsible for verifying anything important with
+    the appropriate office before you rely on it.
+
+# === Data classification responsibility =====================================
+# The researcher owns classification.  This tool is GUIDANCE, not an official
+# determination.  The institution is the custodian of research data under its
+# RDM policy.
+# Surfaces: TierSelect step, tier questionnaire outcome, ServiceMatrix grid,
+# and the generated DMP.  This is the load-bearing clause.
+data_responsibility:
+  heading: "Your Responsibility for Data Classification"
+  short: >-
+    You are responsible for correctly classifying your data.  The tier suggested
+    here is guidance, not an official determination.
+  body: |
+    You are responsible for correctly identifying and classifying the data your
+    research involves.  The tier this tool suggests is guidance to help you start
+    the conversation — it is not an official data classification determination,
+    and it does not certify that any service meets a particular legal,
+    regulatory, or contractual requirement.
+
+    Data classification is governed by the University's Data Classification
+    Policy, and research data is managed under its Research Data Management
+    Policy, under which the University is the custodian of institutional research
+    data.  When the tool's suggestion is unclear, when your data may be regulated,
+    or when a sponsor or agreement imposes specific requirements, confirm the
+    correct classification and controls with the appropriate office before you
+    proceed.
+  policy_refs:
+    - "Data Classification Policy"
+    - "Research Data Management Policy"
+
+# === DMP legal framing ======================================================
+# Beyond the existing "draft, requires review" note already emitted by
+# useDMPGenerator.js: the plan is a PLANNING ARTIFACT, not a binding commitment,
+# and is subordinate to institutional policy and funder requirements.
+# Surfaces: appended to the generated DMP (alongside the existing draft note)
+# and to the DMP export.
+dmp_legal_framing:
+  heading: "About This Plan"
+  short: >-
+    This plan is a planning document, not a binding commitment.  It is subject to
+    University policy and funder requirements.
+  body: |
+    This Data Management Plan is a planning artifact generated from the inputs you
+    provided.  It is a starting point for discussion and proposal preparation —
+    not a contract, not a binding commitment by you or the University, and not a
+    guarantee that any service, cost, or timeline will be available as described.
+
+    How your data is actually managed is governed by the University's Research
+    Data Management Policy, by the requirements of your funder and any award
+    terms, and by the data use or data sharing agreements that apply to your
+    project.  Where this plan and those requirements differ, those requirements
+    control.  Review and customize this plan with your research office or grants
+    administrator before submitting it to any sponsor.
+  policy_refs:
+    - "Research Data Management Policy"
+    - "Data Sharing & Public Access"
+
+# === Per-tier legal nuance ==================================================
+# Optional escalating notices keyed by tier slug (matches tiers.yaml: low,
+# medium, high, restricted).  Lower tiers stay light; L3/L4 carry real legal
+# weight and say so.  Surfaces: tier result, ServiceMatrix per-tier column,
+# and may be folded into the DMP for the selected tier.
+tier_notices:
+  low: >-
+    Low-risk data carries the fewest restrictions, but you remain responsible
+    for honoring any license, data use agreement, or sharing requirement that
+    applies to it.
+
+  medium: >-
+    Medium-risk data is typically covered by intellectual-property interests or a
+    data use agreement.  Make sure the controls you choose, and any sharing, are
+    consistent with those terms.
+
+  high: |
+    High-risk (L3) data is subject to legal and regulatory obligations — which
+    may include HIPAA, FERPA, IRB / human-subjects rules, or other regulated-data
+    requirements.  This tool does not create, satisfy, or waive any of those
+    obligations, and selecting a service here does not, on its own, establish a
+    compliant environment.  Required agreements and approvals — for example, a
+    Business Associate Agreement or IRB approval — must be in place through the
+    appropriate office before regulated data is collected or stored.
+
+  restricted: |
+    Restricted (L4) data — such as export-controlled information (EAR/ITAR),
+    Controlled Unclassified Information, or other data requiring a secure enclave
+    — is the most legally sensitive category and requires a consultation with the
+    Research Security team before any plan is finalized.  Nothing in this tool
+    authorizes the handling of restricted data, and selecting a service is not an
+    authorization to proceed.  Access, controls, and budget for restricted data
+    are determined only through that consultation and the required approvals.
+
+# === Optional click-through acknowledgement =================================
+# Off by default.  Most institutions surface the notices above as footer /
+# inline text rather than gating the tool behind an "I agree" click.  Turn this
+# on if your counsel wants explicit acceptance recorded.
+acknowledgement:
+  required: false
+  label: >-
+    I understand this tool provides planning guidance — not official
+    determinations, approvals, or commitments — and that my data classification
+    must be confirmed through the appropriate office.
+  # Where the acknowledgement (or persistent notice) appears if enabled.
+  show_on:
+    - "welcome"
+
+# Date the boilerplate was last reviewed (by your institution / counsel).
+last_reviewed: "2026-06-25"
+
+# === Note to the forking institution ========================================
+# Not display text — guidance for whoever adopts this config.
+counsel_review:
+  reviewed_by_counsel: false
+  notes: |
+    Before you deploy, have your Office of General Counsel review this file,
+    with particular attention to:
+      - no_warranty: limitation-of-liability and "as is" disclaimers are
+        jurisdiction-specific; public institutions often cannot disclaim
+        liability as broadly as private entities (sovereign immunity, state
+        tort-claims acts, consumer-protection limits).
+      - data_responsibility: confirm the "custodian / steward" language matches
+        the wording and allocation of responsibility in your actual Research
+        Data Management Policy.
+      - acceptable_use: confirm it does not conflict with the binding terms of
+        the services it describes, or with your AUP.
+    This config intentionally omits an indemnification clause, which is rarely
+    appropriate (and often unenforceable) against individual researchers at a
+    public institution.  Add one only on counsel's advice.
