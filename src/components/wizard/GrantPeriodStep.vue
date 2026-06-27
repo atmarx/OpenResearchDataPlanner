@@ -1,128 +1,69 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useSessionStore } from '@/stores/sessionStore'
-import { Calendar, Info } from 'lucide-vue-next'
+import { Calendar, Info, ChevronDown } from 'lucide-vue-next'
 
 const sessionStore = useSessionStore()
 
+// Duration is the source of truth — every estimate is computed from the number
+// of months, never from specific dates. Researchers rarely know real dates until
+// the award lands, so the period is all we ask for. Dates are optional and only
+// echoed into the DMP for those who want them.
 const presets = [
   { label: '1 year', months: 12 },
   { label: '2 years', months: 24 },
   { label: '3 years', months: 36 },
-  { label: '5 years', months: 60 },
-  { label: 'Custom', months: null }
+  { label: '5 years', months: 60 }
 ]
 
-// Track which preset is selected (null = custom or none)
-const selectedPreset = ref(null)
+const months = ref(sessionStore.session.grant_period.months || 36)
+const customMode = ref(!presets.some(p => p.months === months.value))
 
-// Local state for inputs
+// Optional specific dates (collapsible) — display/DMP only.
 const startDate = ref(sessionStore.session.grant_period.start_date || '')
-const endDate = ref(sessionStore.session.grant_period.end_date || '')
-
-// True when user has explicitly skipped dates (or has never entered any)
-const noDates = computed(() => !startDate.value && !endDate.value && selectedPreset.value === null)
-
-function clearDates() {
-  startDate.value = ''
-  endDate.value = ''
-  selectedPreset.value = null
-  sessionStore.setGrantPeriod(null, null)
-}
-
-// Get today's date as YYYY-MM-DD string
-function getTodayString() {
-  return new Date().toISOString().split('T')[0]
-}
-
-// Calculate end date from start date and months
-function calculateEndDate(start, months) {
-  const startDt = new Date(start)
-  const endDt = new Date(startDt)
-  endDt.setMonth(endDt.getMonth() + months)
-  // Keep the same day of month (handles month-end edge cases automatically)
-  return endDt.toISOString().split('T')[0]
-}
-
-// Calculate months between dates
-const calculatedMonths = computed(() => {
-  if (!startDate.value || !endDate.value) return null
-
-  const start = new Date(startDate.value)
-  const end = new Date(endDate.value)
-
-  if (end <= start) return null
-
-  const months = (end.getFullYear() - start.getFullYear()) * 12 +
-                 (end.getMonth() - start.getMonth())
-  return Math.max(1, months)
-})
+const showDates = ref(!!sessionStore.session.grant_period.start_date)
 
 const years = computed(() => {
-  if (!calculatedMonths.value) return null
-  return (calculatedMonths.value / 12).toFixed(1)
+  const m = Number(months.value) || 0
+  return (m / 12).toFixed(m % 12 === 0 ? 0 : 1)
 })
 
-// Validation
-const isValid = computed(() => {
-  return startDate.value && endDate.value && calculatedMonths.value > 0
+// End date derived from start + duration, for display and the DMP.
+const computedEndDate = computed(() => {
+  if (!startDate.value || !months.value) return ''
+  const start = new Date(startDate.value)
+  if (Number.isNaN(start.getTime())) return ''
+  const end = new Date(start)
+  end.setMonth(end.getMonth() + Number(months.value))
+  return end.toISOString().split('T')[0]
 })
 
-const errorMessage = computed(() => {
-  if (!startDate.value || !endDate.value) return null
-  if (calculatedMonths.value === null || calculatedMonths.value <= 0) {
-    return 'End date must be after start date'
-  }
-  return null
-})
+function selectPreset(m) {
+  customMode.value = false
+  months.value = m
+}
+function selectCustom() {
+  customMode.value = true
+}
+function isSelected(m) {
+  return !customMode.value && Number(months.value) === m
+}
+function onCustomMonths(val) {
+  months.value = Math.max(1, Math.round(Number(val) || 0))
+}
 
-// Is custom mode (end date is editable)
-const isCustom = computed(() => selectedPreset.value === null || selectedPreset.value === 'custom')
-
-// Sync to store on change
-watch([startDate, endDate], () => {
-  if (isValid.value) {
-    sessionStore.setGrantPeriod(startDate.value, endDate.value)
-  }
-})
-
-// When start date changes and a preset is selected, auto-update end date
-watch(startDate, (newStart) => {
-  if (selectedPreset.value && selectedPreset.value !== 'custom' && newStart) {
-    const preset = presets.find(p => p.months === selectedPreset.value)
-    if (preset && preset.months) {
-      endDate.value = calculateEndDate(newStart, preset.months)
-    }
-  }
-})
-
-// Apply a preset
-function applyPreset(preset) {
-  if (preset.months === null) {
-    // Custom mode
-    selectedPreset.value = 'custom'
-    // Keep current start date, clear end date for manual entry
-    if (!startDate.value) {
-      startDate.value = getTodayString()
-    }
+// Sync to the store. With an optional start date set, push start + computed end
+// (setGrantPeriod re-derives the same month count); otherwise push the duration
+// directly (dates stay null). Not immediate, so a returning session isn't
+// overwritten until the user actually changes something.
+watch([months, startDate, showDates], () => {
+  const m = Math.max(1, Number(months.value) || 36)
+  if (showDates.value && startDate.value && computedEndDate.value) {
+    sessionStore.setGrantPeriod(startDate.value, computedEndDate.value)
   } else {
-    selectedPreset.value = preset.months
-    // Set start to today if not already set
-    if (!startDate.value) {
-      startDate.value = getTodayString()
-    }
-    // Calculate end date
-    endDate.value = calculateEndDate(startDate.value, preset.months)
+    sessionStore.setGrantMonths(m)
   }
-}
-
-// Check if a preset is currently selected
-function isPresetSelected(preset) {
-  if (preset.months === null) {
-    return selectedPreset.value === 'custom'
-  }
-  return selectedPreset.value === preset.months
-}
+})
 </script>
 
 <template>
@@ -132,120 +73,102 @@ function isPresetSelected(preset) {
         Grant Period
       </h2>
       <p class="text-text-secondary">
-        Select your grant duration and start date.
-        This is used to calculate total costs over the project duration.
+        How long is your project? Estimates are calculated over this duration.
+        You usually won't know exact dates until the award is made — the period
+        is all we need.
       </p>
     </div>
 
-    <!-- Duration presets -->
+    <!-- Duration (primary) -->
     <div class="mb-6">
       <p class="text-sm font-medium mb-2 text-text-secondary">Grant duration:</p>
       <div class="flex flex-wrap gap-2">
         <button
-          @click="clearDates"
-          class="px-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
-          :class="[
-            noDates
-              ? 'bg-primary text-on-primary'
-              : 'bg-surface-alt text-text-secondary hover:bg-border-strong'
-          ]"
-        >
-          No dates yet
-        </button>
-
-        <button
           v-for="preset in presets"
-          :key="preset.label"
-          @click="applyPreset(preset)"
+          :key="preset.months"
+          @click="selectPreset(preset.months)"
           class="px-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
-          :class="[
-            isPresetSelected(preset)
-              ? 'bg-primary text-on-primary'
-              : 'bg-surface-alt text-text-secondary hover:bg-border-strong'
-          ]"
+          :class="isSelected(preset.months)
+            ? 'bg-primary text-on-primary'
+            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'"
         >
           {{ preset.label }}
         </button>
+        <button
+          @click="selectCustom"
+          class="px-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
+          :class="customMode
+            ? 'bg-primary text-on-primary'
+            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'"
+        >
+          Custom
+        </button>
+      </div>
+
+      <!-- Custom months input -->
+      <div v-if="customMode" class="mt-3 flex items-center gap-2">
+        <input
+          type="number"
+          min="1"
+          step="1"
+          :value="months"
+          @input="onCustomMonths($event.target.value)"
+          class="w-24 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-surface border-border-strong text-text"
+          aria-label="Grant duration in months"
+        />
+        <span class="text-sm text-text-secondary">months</span>
       </div>
     </div>
-
-    <!-- Date inputs (hidden when "No dates yet" is selected) -->
-    <div v-if="!noDates" class="grid gap-6 md:grid-cols-2 mb-6">
-      <div>
-        <label
-          for="start-date"
-          class="block text-sm font-medium mb-1 text-text-secondary"
-        >
-          Start Date
-        </label>
-        <div class="relative">
-          <input
-            id="start-date"
-            v-model="startDate"
-            type="date"
-            class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-surface border-border-strong text-text"
-          />
-          <Calendar class="absolute right-3 top-2.5 w-5 h-5 text-text-muted pointer-events-none" />
-        </div>
-      </div>
-
-      <div v-if="isCustom">
-        <label
-          for="end-date"
-          class="block text-sm font-medium mb-1 text-text-secondary"
-        >
-          End Date
-        </label>
-        <div class="relative">
-          <input
-            id="end-date"
-            v-model="endDate"
-            type="date"
-            :min="startDate"
-            class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-surface border-border-strong text-text"
-          />
-          <Calendar class="absolute right-3 top-2.5 w-5 h-5 text-text-muted pointer-events-none" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Error message -->
-    <p v-if="errorMessage" class="text-sm text-red-600 dark:text-red-400 mb-4">
-      {{ errorMessage }}
-    </p>
 
     <!-- Duration summary -->
-    <div
-      v-if="calculatedMonths"
-      class="rounded-lg p-4 bg-surface-alt"
-    >
+    <div class="rounded-lg p-4 bg-surface-alt mb-6">
       <div class="flex items-center gap-2 text-primary">
         <Info class="w-5 h-5 text-primary" />
         <span class="font-medium">Grant Duration:</span>
-        <span>{{ calculatedMonths }} months ({{ years }} years)</span>
+        <span>{{ months }} months ({{ years }} years)</span>
       </div>
       <p class="text-sm mt-2 text-primary">
-        Cost estimates will be calculated for this {{ calculatedMonths }}-month period.
+        Cost estimates will be calculated for this {{ months }}-month period.
       </p>
     </div>
 
-    <!-- Placeholder when no dates selected -->
-    <div
-      v-else
-      class="rounded-lg p-4 bg-surface-alt"
-    >
-      <p
-        v-if="noDates"
-        class="text-sm text-text-muted"
+    <!-- Optional specific dates (collapsible) -->
+    <div class="border-t border-border pt-4">
+      <button
+        @click="showDates = !showDates"
+        class="flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-text transition-colors"
+        :aria-expanded="showDates"
       >
-        No dates set — estimates will use the default 36-month period. You can come back and update this any time.
-      </p>
-      <p
-        v-else
-        class="text-sm text-center text-text-muted"
-      >
-        Select a duration above or enter custom dates
-      </p>
+        <ChevronDown class="w-4 h-4 transition-transform" :class="showDates ? 'rotate-180' : ''" />
+        Add a specific start date (optional — for your DMP)
+      </button>
+
+      <div v-if="showDates" class="mt-3 grid gap-4 md:grid-cols-2">
+        <div>
+          <label
+            for="start-date"
+            class="block text-sm font-medium mb-1 text-text-secondary"
+          >
+            Anticipated start date
+          </label>
+          <div class="relative">
+            <input
+              id="start-date"
+              v-model="startDate"
+              type="date"
+              class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-surface border-border-strong text-text"
+            />
+            <Calendar class="absolute right-3 top-2.5 w-5 h-5 text-text-muted pointer-events-none" />
+          </div>
+        </div>
+        <div v-if="startDate && computedEndDate" class="flex items-end">
+          <p class="text-sm text-text-muted pb-2">
+            Through <span class="font-medium text-text-secondary">{{ computedEndDate }}</span>
+            (≈ {{ months }} months). Dates appear in your DMP; only the duration
+            affects costs.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>

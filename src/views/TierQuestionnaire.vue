@@ -368,11 +368,11 @@ function dismissDeepLinkBanner() {
 
 <template>
   <div
-    class="min-h-screen transition-colors bg-canvas"
+    class="max-w-3xl 2xl:max-w-6xl mx-auto my-6 rounded-xl border border-border bg-canvas shadow-sm overflow-hidden transition-colors"
   >
     <!-- Header -->
     <header
-      class="border-b sticky top-0 z-10 bg-surface border-border"
+      class="border-b bg-surface border-border"
     >
       <div class="max-w-3xl 2xl:max-w-6xl mx-auto px-4 py-3">
         <div class="flex items-center justify-center gap-6">

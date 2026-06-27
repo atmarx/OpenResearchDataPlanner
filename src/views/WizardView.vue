@@ -87,14 +87,38 @@ watch(
         @next="wizard.nextStep"
         @back="wizard.previousStep"
       />
+
+      <!-- Inline step nav, INSIDE the card under the step's content (mirrors the
+           Back/Continue teleported into the slate bar). On a tall screen the
+           primary action sits right here under the selections, not only pinned
+           at the page bottom. Same handlers; reads on the card surface. -->
+      <div
+        v-if="wizard.showStepNav.value"
+        class="flex items-center justify-between gap-3 px-8 pb-8 pt-4 border-t border-border"
+      >
+        <button
+          v-if="wizard.hasPreviousStep.value"
+          @click="wizard.previousStep"
+          class="px-4 py-2 rounded-md font-medium text-text-secondary hover:bg-surface-alt focus:outline-none focus:ring-2 focus:ring-primary/40 transition-colors"
+        >
+          Back
+        </button>
+        <span v-else></span>
+        <button
+          v-if="wizard.hasNextStep.value"
+          @click="wizard.nextStep"
+          :disabled="!wizard.canProceed.value"
+          class="px-6 py-2 rounded-md font-medium bg-primary text-on-primary hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Continue
+        </button>
+      </div>
     </div>
 
-    <!-- Wizard navigation now lives inside the slate footer — one bottom bar
-         instead of a sticky nav (z-30) fighting the fixed slate footer (z-40),
-         which used to clip Continue. WizardView keeps ownership of the buttons
-         (so previousStep's "clear selections?" warning still fires here), but
-         teleports them into the footer's #slate-nav-slot. `defer` lets the slot
-         — rendered later in the tree, inside SlateFooter — resolve. -->
+    <!-- The same Back/Continue is ALSO teleported into the slate bar's
+         #slate-nav-slot, so it stays reachable from the persistent bottom bar.
+         WizardView keeps ownership (previousStep's "clear selections?" warning
+         still fires here); `defer` lets the later-rendered slot resolve. -->
     <Teleport defer to="#slate-nav-slot" v-if="wizard.showStepNav.value">
       <button
         v-if="wizard.hasPreviousStep.value"

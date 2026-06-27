@@ -122,11 +122,11 @@ function getCategoryClasses(cat, type = 'bg') {
 
 <template>
   <div
-    class="min-h-screen transition-colors bg-canvas"
+    class="max-w-4xl 2xl:max-w-5xl mx-auto my-6 rounded-xl border border-border bg-canvas shadow-sm overflow-hidden transition-colors"
   >
     <!-- Header -->
     <header
-      class="border-b sticky top-0 z-10 bg-surface border-border"
+      class="border-b bg-surface border-border"
     >
       <div class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-4">
         <div class="flex items-center gap-3 mb-4">

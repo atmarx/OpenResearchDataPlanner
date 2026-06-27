@@ -196,11 +196,11 @@ function getTierColorClass(tierSlug) {
 
 <template>
   <div
-    class="min-h-screen transition-colors bg-canvas"
+    class="max-w-7xl mx-auto my-6 rounded-xl border border-border bg-canvas shadow-sm overflow-hidden transition-colors"
   >
     <!-- Header -->
     <div
-      class="border-b sticky top-0 z-10 bg-surface border-border"
+      class="border-b bg-surface border-border"
     >
       <div class="max-w-7xl mx-auto px-4 py-4">
         <div class="mb-4">

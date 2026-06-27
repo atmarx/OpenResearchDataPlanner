@@ -1,8 +1,9 @@
 <script setup>
-// Lightweight placeholder shown by each layout's <Suspense> fallback while a
-// lazy route chunk loads. Upgrades the old blank lazy-chunk gap into a visible,
-// theme-aware shimmer. Keyed by route.path, so it only appears on a real route
-// change — Pinia-driven wizard step swaps stay within '/' and never trip it.
+// Lightweight placeholder shown by each layout's <Suspense> fallback. NOTE:
+// vue-router resolves a lazy route chunk DURING navigation (the old page stays
+// visible), so this does NOT cover the chunk-download gap. It shows only when an
+// incoming routed component has an async setup() that suspends — bridging that
+// with a theme-aware shimmer instead of a blank flash.
 </script>
 
 <template>

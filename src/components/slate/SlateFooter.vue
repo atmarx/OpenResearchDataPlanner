@@ -176,10 +176,13 @@ function handleWipeSlate() {
 </script>
 
 <template>
-  <!-- Slate Footer - Only show when config is loaded -->
+  <!-- Slate Footer - Only show when config is loaded.
+       Sticky (not fixed): the bar rides the bottom of the viewport while there's
+       content below it, then comes to rest on top of the site footer at the end
+       of the page instead of floating over it. -->
   <div
     v-if="configStore.config"
-    class="fixed bottom-0 left-0 right-0 z-40 transition-all duration-300 ease-in-out"
+    class="sticky bottom-0 z-40 transition-all duration-300 ease-in-out"
     :class="showExpandedPanel ? 'h-[40vh] md:h-[35vh]' : 'h-auto'"
   >
     <!-- Collapsed Bar -->
@@ -467,7 +470,4 @@ function handleWipeSlate() {
     v-if="showExportModal"
     @close="showExportModal = false"
   />
-
-  <!-- Spacer to prevent content from being hidden under fixed footer -->
-  <div v-if="configStore.config" class="h-14"></div>
 </template>

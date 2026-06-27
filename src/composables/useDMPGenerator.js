@@ -225,7 +225,11 @@ export function useDMPGenerator() {
     if (classificationFlags.length > 0) {
       sections.push(`**Compliance considerations:** ${classificationFlags.map(flagLabel).join(', ')}`)
     }
-    sections.push(`**Grant Period:** ${sessionStore.session.grant_period.start_date} to ${sessionStore.session.grant_period.end_date}`)
+    const gp = sessionStore.session.grant_period
+    const grantPeriodStr = gp.start_date && gp.end_date
+      ? `${gp.start_date} to ${gp.end_date}`
+      : `${sessionStore.grantMonths} months (${(sessionStore.grantMonths / 12).toFixed(1)} years)`
+    sections.push(`**Grant Period:** ${grantPeriodStr}`)
     if (sessionStore.session.retention.longest_years > 0) {
       sections.push(`**Data Retention:** ${sessionStore.session.retention.longest_years} years`)
     }

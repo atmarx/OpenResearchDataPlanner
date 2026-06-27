@@ -59,6 +59,10 @@ function exportJSON() {
 
 // Export budget as markdown
 function exportBudget() {
+  const gp = sessionStore.session.grant_period
+  const grantPeriodStr = gp.start_date && gp.end_date
+    ? `${gp.start_date} to ${gp.end_date} (${sessionStore.grantMonths} months)`
+    : `${sessionStore.grantMonths} months (${(sessionStore.grantMonths / 12).toFixed(1)} years)`
   const lines = [
     '# Research Data Budget Estimate',
     '',
@@ -69,7 +73,7 @@ function exportBudget() {
     '## Project Parameters',
     '',
     `- **Data Classification:** ${configStore.tiersBySlug[sessionStore.selectedTier]?.name}`,
-    `- **Grant Period:** ${sessionStore.session.grant_period.start_date} to ${sessionStore.session.grant_period.end_date} (${sessionStore.grantMonths} months)`,
+    `- **Grant Period:** ${grantPeriodStr}`,
     `- **Retention Requirement:** ${sessionStore.session.retention.longest_years} years`,
     '',
     '## Cost Summary',

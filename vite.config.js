@@ -17,7 +17,11 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    // 'hidden' still emits maps to dist for manual debugging but omits the
+    // //# sourceMappingURL comment — so browsers don't fetch the multi-MB maps
+    // on load (the first-load stall when devtools was open against the deploy),
+    // and we don't expose full source publicly.
+    sourcemap: 'hidden'
   },
   resolve: {
     alias: {

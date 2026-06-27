@@ -1,8 +1,10 @@
 <script setup>
-// Bare shell: no global chrome at all — no header, banner, cart, or footer.
-// WorkbenchPage paints its own staff header and bg-canvas, so this layout is
-// just the skip-link <main> target plus the page Transition + Suspense boundary
-// around the nested <router-view>.
+// Near-bare shell: no header, banner, or cart — WorkbenchPage paints its own
+// staff header and bg-canvas. The global AppFooter IS kept here, so the
+// institutional / accessibility links persist on staff pages too. Otherwise this
+// is just the skip-link <main> target plus the page Transition + Suspense
+// boundary around the nested <router-view>.
+import AppFooter from '@/components/layout/AppFooter.vue'
 import RouteSkeleton from '@/components/layout/RouteSkeleton.vue'
 </script>
 
@@ -19,4 +21,6 @@ import RouteSkeleton from '@/components/layout/RouteSkeleton.vue'
       </Transition>
     </router-view>
   </main>
+
+  <AppFooter class="relative z-10" />
 </template>

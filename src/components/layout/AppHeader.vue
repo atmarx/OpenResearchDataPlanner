@@ -10,6 +10,7 @@ import {
   Moon,
   Image,
   ImageOff,
+  Settings,
   Compass,
   Calculator,
   Grid,
@@ -49,13 +50,30 @@ function handleScroll() {
   isScrolled.value = window.scrollY > 20
 }
 
+// Settings dropdown (gear) — collapses skin + wallpaper + dark mode into one
+// popover instead of three loose header buttons. Closes on outside-click / Esc.
+const settingsOpen = ref(false)
+const settingsRef = ref(null)
+function closeSettingsOnOutside(e) {
+  if (settingsOpen.value && settingsRef.value && !settingsRef.value.contains(e.target)) {
+    settingsOpen.value = false
+  }
+}
+function closeSettingsOnEsc(e) {
+  if (e.key === 'Escape') settingsOpen.value = false
+}
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
   handleScroll()
+  document.addEventListener('click', closeSettingsOnOutside)
+  document.addEventListener('keydown', closeSettingsOnEsc)
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
+  document.removeEventListener('click', closeSettingsOnOutside)
+  document.removeEventListener('keydown', closeSettingsOnEsc)
 })
 
 const institutionName = computed(() =>
@@ -122,31 +140,70 @@ function handleReset() {
             {{ siteTitle }}
           </h1>
 
-          <!-- Preference toggles -->
-          <div class="flex items-center gap-1 ml-4">
-            <!-- Institution skin selector -->
-            <SkinPicker class="mr-1" />
-
-            <!-- Wallpaper toggle (only show if hero background is configured) -->
+          <!-- Settings: one gear collapses skin + wallpaper + dark mode into a
+               dropdown instead of three loose header buttons. -->
+          <div class="relative ml-4" ref="settingsRef">
             <button
-              v-if="hasHeroBackground"
-              @click="preferencesStore.toggleWallpaper"
-              class="p-2 rounded-lg transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
-              :title="preferencesStore.showWallpaper ? 'Hide wallpaper' : 'Show wallpaper'"
+              @click="settingsOpen = !settingsOpen"
+              class="p-2 rounded-lg transition-colors hover:bg-surface-alt"
+              :class="settingsOpen ? 'bg-surface-alt text-text' : 'text-text-muted hover:text-text'"
+              :aria-expanded="settingsOpen"
+              aria-haspopup="true"
+              title="Display settings"
             >
-              <Image v-if="preferencesStore.showWallpaper" class="w-5 h-5" />
-              <ImageOff v-else class="w-5 h-5" />
+              <Settings class="w-5 h-5" />
             </button>
 
-            <!-- Dark mode toggle -->
-            <button
-              @click="preferencesStore.toggleDarkMode"
-              class="p-2 rounded-lg transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
-              :title="preferencesStore.darkMode ? 'Light mode' : 'Dark mode'"
+            <div
+              v-if="settingsOpen"
+              class="absolute right-0 mt-2 w-64 rounded-lg border border-border bg-surface shadow-lg z-50 p-3 space-y-3"
+              role="menu"
             >
-              <Moon v-if="!preferencesStore.darkMode" class="w-5 h-5" />
-              <Sun v-else class="w-5 h-5" />
-            </button>
+              <!-- Institution theme -->
+              <div>
+                <label class="block text-xs font-medium mb-1 text-text-muted">Institution theme</label>
+                <SkinPicker />
+              </div>
+
+              <!-- Background photo (only if a hero background is configured) -->
+              <button
+                v-if="hasHeroBackground"
+                @click="preferencesStore.toggleWallpaper"
+                class="w-full flex items-center justify-between gap-2 px-2 py-1.5 rounded-md text-sm text-text-secondary hover:bg-surface-alt transition-colors"
+                role="menuitemcheckbox"
+                :aria-checked="preferencesStore.showWallpaper"
+              >
+                <span class="flex items-center gap-2">
+                  <component :is="preferencesStore.showWallpaper ? Image : ImageOff" class="w-4 h-4" />
+                  Background photo
+                </span>
+                <span
+                  class="text-xs font-medium"
+                  :class="preferencesStore.showWallpaper ? 'text-primary' : 'text-text-muted'"
+                >
+                  {{ preferencesStore.showWallpaper ? 'On' : 'Off' }}
+                </span>
+              </button>
+
+              <!-- Dark mode -->
+              <button
+                @click="preferencesStore.toggleDarkMode"
+                class="w-full flex items-center justify-between gap-2 px-2 py-1.5 rounded-md text-sm text-text-secondary hover:bg-surface-alt transition-colors"
+                role="menuitemcheckbox"
+                :aria-checked="preferencesStore.darkMode"
+              >
+                <span class="flex items-center gap-2">
+                  <component :is="preferencesStore.darkMode ? Sun : Moon" class="w-4 h-4" />
+                  Dark mode
+                </span>
+                <span
+                  class="text-xs font-medium"
+                  :class="preferencesStore.darkMode ? 'text-primary' : 'text-text-muted'"
+                >
+                  {{ preferencesStore.darkMode ? 'On' : 'Off' }}
+                </span>
+              </button>
+            </div>
           </div>
 
           <!-- Start over -->

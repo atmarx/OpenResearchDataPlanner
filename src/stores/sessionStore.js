@@ -189,6 +189,20 @@ export const useSessionStore = defineStore('session', () => {
   }
 
   /**
+   * Set grant duration directly in months, no specific dates (period-first).
+   * Dates are optional and only echoed in display/DMP — every calculation uses
+   * `months`. Setting a duration clears any stale start/end so the DMP doesn't
+   * print a range that contradicts the chosen length; the optional date field
+   * re-populates them via setGrantPeriod.
+   */
+  function setGrantMonths(months) {
+    session.value.grant_period.months = Math.max(1, Number(months) || 36)
+    session.value.grant_period.start_date = null
+    session.value.grant_period.end_date = null
+    session.value.updated_at = new Date().toISOString()
+  }
+
+  /**
    * Set retention schedules
    */
   function setRetentionSchedules(scheduleSlugs, longestYears) {
@@ -428,6 +442,7 @@ export const useSessionStore = defineStore('session', () => {
     setTier,
     setClassification,
     setGrantPeriod,
+    setGrantMonths,
     setRetentionSchedules,
     setArchiveRatio,
     addService,
