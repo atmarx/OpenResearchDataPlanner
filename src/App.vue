@@ -97,15 +97,24 @@ watch(() => configStore.config?.meta?.branding, injectCustomStyles)
   <div
     v-else
     class="min-h-screen flex flex-col transition-colors duration-200 relative bg-canvas"
-    :class="showBackground ? 'bg-cover bg-center' : ''"
-    :style="showBackground ? { backgroundImage: `url(${heroBackgroundUrl})` } : {}"
   >
-    <!-- Overlay for readability when background is shown -->
-    <div
-      v-if="showBackground"
-      class="absolute inset-0 pointer-events-none bg-canvas"
-      :style="{ opacity: heroOverlay }"
-    ></div>
+    <!-- Hero background: fixed, viewport-sized layers BEHIND the content. The
+         photo used to sit on this flex-col root with `bg-cover`, so as the page
+         grew taller (more wizard steps, the slate, expanded panels) bg-cover
+         scaled the image up to cover that height — the "background zooms in as
+         you progress" bug. Pinning it to a position:fixed layer (NOT the janky
+         background-attachment:fixed) means it only ever fits the viewport and
+         never sees the page height. -->
+    <template v-if="showBackground">
+      <div
+        class="fixed inset-0 z-0 bg-cover bg-center pointer-events-none"
+        :style="{ backgroundImage: `url(${heroBackgroundUrl})` }"
+      ></div>
+      <div
+        class="fixed inset-0 z-0 pointer-events-none bg-canvas"
+        :style="{ opacity: heroOverlay }"
+      ></div>
+    </template>
 
     <!-- Each layout (Planner / Guidance / Bare) renders the page chrome and its
          own <main id="main-content"> + page-transition boundary. They're
