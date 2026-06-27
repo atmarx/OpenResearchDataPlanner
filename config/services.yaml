@@ -445,7 +445,11 @@ services:
   - slug: globus-transfer
     fa_exempt: true  # Free service
     name: "Globus Data Transfer"
-    category: storage
+    category: data-transfer
+    deployment:
+      - on-prem
+    tech:
+      - "Globus"
     description: "High-speed data transfer service via Globus"
     long_description: |
       Globus provides reliable, high-performance data transfer for research data.
@@ -513,9 +517,13 @@ services:
 
   - slug: globus-storage
     fa_exempt: true  # Internal service center
-    name: "Globus-Connected Storage (iRODS)"
+    name: "NorthStar"
     category: storage
-    description: "5PB iRODS-managed storage with Globus connectivity"
+    deployment:
+      - on-prem
+    tech:
+      - "Globus"
+    description: "NorthStar — 5PB iRODS-managed research storage with native Globus connectivity"
     long_description: |
       High-capacity research storage on our 5PB iRODS-managed array with
       native Globus connectivity. Ideal for large-scale data sharing,

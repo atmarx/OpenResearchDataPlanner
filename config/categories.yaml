@@ -61,6 +61,12 @@ categories:
         label: "Free Allocation"
         description: "No-cost storage included"
 
+  - slug: data-transfer
+    name: "Data Transfer"
+    description: "Moving data between systems, sites, and collaborators"
+    icon: "arrow-left-right"
+    sort_order: 7
+
   - slug: api
     name: "APIs & Services"
     description: "Cloud APIs, AI services, specialized tools"

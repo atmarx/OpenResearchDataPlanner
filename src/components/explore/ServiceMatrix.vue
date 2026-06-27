@@ -30,6 +30,13 @@ const selectedService = ref(null)
 const showQuickAdd = ref(false)
 const quickAddQuantity = ref(1)
 
+// Row descriptions toggle — on by default (show the per-service description)
+const showDescriptions = ref(true)
+
+function deploymentLabel(d) {
+  return { 'on-prem': 'On-prem', cloud: 'Cloud', hybrid: 'Hybrid' }[d] || d
+}
+
 // Get tiers from config
 const tiers = computed(() => {
   return configStore.config?.tiers || []
@@ -78,7 +85,7 @@ const filteredServices = computed(() => {
     const query = searchQuery.value.toLowerCase()
     services = services.filter(s =>
       s.name.toLowerCase().includes(query) ||
-      s.short_description?.toLowerCase().includes(query)
+      s.description?.toLowerCase().includes(query)
     )
   }
 
@@ -237,6 +244,12 @@ function getTierColorClass(tierSlug) {
               </option>
             </select>
           </div>
+
+          <!-- Description toggle (on by default) -->
+          <label class="flex items-center gap-2 text-sm cursor-pointer text-text-secondary whitespace-nowrap">
+            <input type="checkbox" v-model="showDescriptions" class="rounded border-border-strong text-primary focus:ring-primary" />
+            Show descriptions
+          </label>
         </div>
 
         <!-- Tier legend -->
@@ -307,10 +320,30 @@ function getTierColorClass(tierSlug) {
                   class="hover:bg-surface-alt"
                 >
                   <td class="px-4 py-3">
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1.5 flex-wrap">
                       <span
                         class="font-medium text-text"
                       >{{ service.name }}</span>
+                      <!-- Deployment: on-prem / cloud (a service can be both) -->
+                      <span
+                        v-for="d in service.deployment || []"
+                        :key="d"
+                        class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium shrink-0"
+                        :class="d === 'cloud'
+                          ? 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300'
+                          : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'"
+                      >
+                        {{ deploymentLabel(d) }}
+                      </span>
+                      <!-- Tech / access badges (e.g. Globus) -->
+                      <span
+                        v-for="t in service.tech || []"
+                        :key="t"
+                        class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium border bg-surface-alt text-text-secondary border-border shrink-0"
+                      >
+                        {{ t }}
+                      </span>
+                      <!-- BAA (compliance-derived: cloud services with a negotiated BAA) -->
                       <span
                         v-if="getServiceComplianceInfo(service.slug)?.hasBaa"
                         class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300 shrink-0"
@@ -320,11 +353,23 @@ function getTierColorClass(tierSlug) {
                         BAA
                       </span>
                     </div>
+                    <!-- Description (toggle, on by default) -->
                     <div
-                      class="text-sm truncate max-w-[250px] text-text-muted"
+                      v-if="showDescriptions"
+                      class="text-sm mt-1 text-text-muted max-w-prose"
                     >
-                      <AnnotatedText :text="service.short_description" />
+                      <AnnotatedText :text="service.description" />
                     </div>
+                    <!-- External pricing calculator (cloud-variable services) -->
+                    <a
+                      v-if="service.pricing_url"
+                      :href="service.pricing_url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-block mt-1 text-xs hover:underline text-primary"
+                    >
+                      Estimate on the provider's pricing calculator →
+                    </a>
                   </td>
 
                   <!-- Tier availability cells -->
@@ -474,7 +519,7 @@ function getTierColorClass(tierSlug) {
           <p
             class="text-sm mb-4 text-text-secondary"
           >
-            <AnnotatedText :text="selectedService.short_description" />
+            <AnnotatedText :text="selectedService.description" />
           </p>
 
           <!-- Quantity input -->
