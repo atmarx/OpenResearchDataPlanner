@@ -38,7 +38,7 @@ const toolCategories = [
     id: 'enterprise',
     name: 'Enterprise Cloud',
     icon: Building,
-    examples: 'ChatGPT Enterprise, Claude for Enterprise, Azure OpenAI',
+    examples: 'ChatGPT Enterprise, Claude for Enterprise, Azure AI Foundry',
     description: 'Data not used for training. BAA available for HIPAA.',
     dataPolicy: 'Enterprise agreements. Audit logs. Data isolation.',
     forSensitivity: ['public', 'internal', 'confidential'],

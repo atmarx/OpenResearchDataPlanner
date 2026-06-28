@@ -1840,15 +1840,18 @@ services:
 
   - slug: azure-openai
     fa_exempt: true  # Internal institutional service
-    name: "Azure OpenAI Service"
+    name: "Azure AI Foundry"
     category: api
     deployment:
       - cloud
     pricing_url: "https://azure.microsoft.com/pricing/calculator/"
-    description: "GPT-4, embeddings, and other Azure-hosted AI models"
+    description: "Managed access to many foundation models (GPT, o-series, Llama, Mistral, Phi, embeddings) inside the university's Azure tenant"
     long_description: |
-      Institutional Azure OpenAI instance with approved models.
-      Data does not leave the university's Azure tenant.
+      Institutional Azure AI Foundry deployment offering a catalog of approved
+      foundation models — OpenAI (GPT-4o, o-series) plus open models such as
+      Llama, Mistral, and Phi — through a single endpoint. Data stays in the
+      university's Azure tenant and is not used to train the models. Approved for
+      high-risk (L3) projects under the institutional BAA, subject to review.
     documentation_url: "https://docs.northwinds.edu/azure-ai"
 
     cost_model:

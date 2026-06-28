@@ -164,13 +164,12 @@ mappings:
       - Dedicated VPC with restricted access
       - All data encrypted with customer-managed KMS keys
       - Requires completed cloud security assessment
+      - No HIPAA BAA with AWS — not approved for PHI; use Azure for PHI/HIPAA workloads
     dmp_template: "cloud-compute/high"
     compliance:
-      frameworks: [hipaa, ferpa]
-      baa_status: in_place
-      baa_reference: "AWS Business Associate Addendum"
+      frameworks: [ferpa]
+      baa_status: not_available
       training_required:
-        - "HIPAA Security Awareness (annual)"
         - "Cloud Security Fundamentals"
       timeline: "3-5 business days after security assessment"
       audit_logging: true
@@ -199,13 +198,12 @@ mappings:
       - Dedicated VPC with restricted access
       - All data encrypted with customer-managed KMS keys
       - Requires completed cloud security assessment
+      - No HIPAA BAA with AWS — not approved for PHI; use Azure for PHI/HIPAA workloads
     dmp_template: "cloud-compute/high"
     compliance:
-      frameworks: [hipaa, ferpa]
-      baa_status: in_place
-      baa_reference: "AWS Business Associate Addendum"
+      frameworks: [ferpa]
+      baa_status: not_available
       training_required:
-        - "HIPAA Security Awareness (annual)"
         - "Cloud Security Fundamentals"
       timeline: "3-5 business days after security assessment"
       audit_logging: true
@@ -234,13 +232,12 @@ mappings:
       - Dedicated VPC with restricted access
       - All data encrypted with customer-managed KMS keys
       - Requires completed cloud security assessment
+      - No HIPAA BAA with AWS — not approved for PHI; use Azure for PHI/HIPAA workloads
     dmp_template: "cloud-compute/high"
     compliance:
-      frameworks: [hipaa, ferpa]
-      baa_status: in_place
-      baa_reference: "AWS Business Associate Addendum"
+      frameworks: [ferpa]
+      baa_status: not_available
       training_required:
-        - "HIPAA Security Awareness (annual)"
         - "Cloud Security Fundamentals"
       timeline: "3-5 business days after security assessment"
       audit_logging: true
@@ -269,13 +266,13 @@ mappings:
       - Block public access
       - Server-side encryption with KMS
       - Access logging required
+      - No HIPAA BAA with AWS — not approved for PHI; use Azure for PHI/HIPAA workloads
     dmp_template: "cloud-storage/high"
     compliance:
-      frameworks: [hipaa, ferpa]
-      baa_status: in_place
-      baa_reference: "AWS Business Associate Addendum"
+      frameworks: [ferpa]
+      baa_status: not_available
       training_required:
-        - "HIPAA Security Awareness (annual)"
+        - "Cloud Security Fundamentals"
       timeline: "Same day after security assessment"
       audit_logging: true
       encryption: both
@@ -301,11 +298,10 @@ mappings:
       Same security requirements as hot storage.
     dmp_template: "cloud-storage/high"
     compliance:
-      frameworks: [hipaa, ferpa]
-      baa_status: in_place
-      baa_reference: "AWS Business Associate Addendum"
+      frameworks: [ferpa]
+      baa_status: not_available
       training_required:
-        - "HIPAA Security Awareness (annual)"
+        - "Cloud Security Fundamentals"
       timeline: "Same day after security assessment"
       audit_logging: true
       encryption: both
@@ -330,11 +326,10 @@ mappings:
       Archive tier maintains same security controls as source storage.
     dmp_template: "cloud-storage/archive"
     compliance:
-      frameworks: [hipaa, ferpa]
-      baa_status: in_place
-      baa_reference: "AWS Business Associate Addendum"
+      frameworks: [ferpa]
+      baa_status: not_available
       training_required:
-        - "HIPAA Security Awareness (annual)"
+        - "Cloud Security Fundamentals"
       timeline: "Immediate (archive from existing storage)"
       audit_logging: true
       encryption: both
@@ -648,7 +643,7 @@ mappings:
       audit_logging: true
       encryption: both
 
-  # Azure OpenAI - Low/Medium only
+  # Azure AI Foundry (slug: azure-openai) - Low/Medium/High
   - service: azure-openai
     tier: low
     approval: automatic
@@ -662,6 +657,28 @@ mappings:
       Do not include sensitive or proprietary data in prompts.
       Use for general analysis, not for processing protected data.
     dmp_template: "azure-openai/default"
+
+  - service: azure-openai
+    tier: high
+    approval: review
+    approval_contact: "cloud-team@northwinds.edu"
+    notes: |
+      **Additional requirements:**
+      - PHI permitted only within the institutional Azure tenant under the BAA
+      - Prompts and completions are not used to train or improve models
+      - Access limited to approved study personnel; prompt/response logging restricted
+      - Requires completed cloud security assessment
+    dmp_template: "azure-openai/high"
+    compliance:
+      frameworks: [hipaa, ferpa]
+      baa_status: in_place
+      baa_reference: "Microsoft Cloud Terms (Azure AI Foundry)"
+      training_required:
+        - "HIPAA Security Awareness (annual)"
+        - "Responsible AI / GenAI Use (annual)"
+      timeline: "3-5 business days after security assessment"
+      audit_logging: true
+      encryption: both
 
   # =============================================================================
   # VDI & SECURE ENVIRONMENTS - All Tiers

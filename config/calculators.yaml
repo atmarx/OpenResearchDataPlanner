@@ -356,23 +356,23 @@ calculator_config:
   llm-api-costs:
     name: "LLM API Costs"
     icon: "message-square-text"
-    description: "Estimate costs for commercial LLM APIs (OpenAI, Anthropic, Google, DeepSeek). OpenAI models also available via Microsoft AI Foundry."
+    description: "Estimate costs for commercial LLM APIs (OpenAI, Anthropic, Google, DeepSeek). OpenAI models also available via Azure AI Foundry."
 
     # PHI/BAA guardrail surfaced as a callout in the calculator UI (fork-customizable).
     phi_notice: >
       PHI must not be sent to a standard LLM API. At Northwinds, PHI is permitted
-      only via Azure (Azure OpenAI under the institutional BAA) and requires review
+      only via Azure (Azure AI Foundry under the institutional BAA) and requires review
       and approval before use. Other endpoints — DeepSeek especially (foreign-hosted,
       not BAA-eligible) — must never receive PHI.
 
     # Pricing as of June 2026 - update periodically
     # Prices are per million tokens (direct API pricing)
-    # Microsoft AI Foundry uses same per-token rates as OpenAI direct
+    # Azure AI Foundry uses same per-token rates as OpenAI direct
     # No academic discount on per-token pricing; check institutional agreements
     # Models flagged `disabled: true` with a `status` (preview / embargoed /
     # export-controlled) are shown grayed out and are not selectable.
     models:
-      # OpenAI (also available via Microsoft AI Foundry at the same per-token rates)
+      # OpenAI (also available via Azure AI Foundry at the same per-token rates)
       - label: "GPT-5.5"
         provider: "OpenAI"
         input_per_million: 5.00
@@ -533,7 +533,7 @@ calculator_config:
       - "Prompt caching saves 50-90% on repeated content (e.g., system prompts, few-shot examples)"
       - "Reasoning models (GPT-5.5, DeepSeek R1) use hidden 'thinking tokens' billed as output—actual costs may be 2-5× visible tokens"
       - "DeepSeek offers 50-75% off-peak discounts (16:30-00:30 GMT)"
-      - "Microsoft AI Foundry: check your institution's enterprise agreement for negotiated rates"
+      - "Azure AI Foundry: check your institution's enterprise agreement for negotiated rates"
       - "Prices change frequently - verify with IT before finalizing grants"
 
     # Factors that affect cost

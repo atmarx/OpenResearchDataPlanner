@@ -1,7 +1,7 @@
 ## AI/ML Services
 
-This project will utilize {{institution.name}}'s Azure OpenAI Service
-for natural language processing and AI-powered analysis.
+This project will utilize {{institution.name}}'s Azure AI Foundry
+deployment for natural language processing and AI-powered analysis.
 
 **Service Allocation:**
 - Estimated usage: {{number service.estimate}} million tokens per month
@@ -20,12 +20,13 @@ for natural language processing and AI-powered analysis.
 {{/if}}
 
 **Available Models:**
-- GPT-4 and GPT-4 Turbo for complex reasoning tasks
-- GPT-3.5 Turbo for high-volume, lower-complexity tasks
+- OpenAI GPT-4o and o-series models for complex reasoning tasks
+- Smaller, faster models (e.g., GPT-4o mini) for high-volume, lower-complexity tasks
+- Open models (Llama, Mistral, Phi) where a project prefers them
 - Text embedding models for semantic search and RAG applications
 
 **Access Control:**
-Access to the Azure OpenAI service requires:
+Access to the Azure AI Foundry deployment requires:
 - Active university credentials
 - Project-specific API key allocation
 - Acceptance of acceptable use policy

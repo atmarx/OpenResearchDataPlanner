@@ -62,7 +62,7 @@ bundles:
     name: "LLM/Chatbot Application"
     description: |
       Build a chatbot, RAG system, or other LLM-powered application
-      using Azure OpenAI with document storage.
+      using Azure AI Foundry with document storage.
     icon: "message-square"
     recommended_tiers:
       - low
