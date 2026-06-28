@@ -11,6 +11,7 @@ import {
   ExternalLink,
   ArrowLeft
 } from 'lucide-vue-next'
+import PageFeedback from '@/components/feedback/PageFeedback.vue'
 
 const configStore = useConfigStore()
 
@@ -253,10 +254,10 @@ const citationText = computed(() => {
         </div>
       </section>
 
-      <!-- Report Issues -->
-      <section class="rounded-xl border p-6 bg-surface border-border">
+      <!-- Report Issues / Feedback (footer "Share your feedback" links to #feedback) -->
+      <section id="feedback" class="rounded-xl border p-6 bg-surface border-border scroll-mt-6">
         <h2 class="text-lg font-semibold mb-3 text-text">
-          Found an Issue?
+          Found an Issue? Tell Us What You Think
         </h2>
         <p class="mb-4 text-text-secondary">
           If you notice errors, have concerns, or want to suggest improvements, please let us know.
@@ -278,6 +279,12 @@ const citationText = computed(() => {
           >
             Contact Research IT
           </router-link>
+        </div>
+
+        <!-- Quick feedback — same widget used across the app; renders only when
+             meta.feedback.enabled is true -->
+        <div class="mt-5 pt-5 border-t border-border">
+          <PageFeedback variant="card" page-id="/about-ai" prompt="Was this tool useful?" />
         </div>
       </section>
 

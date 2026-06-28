@@ -17,6 +17,23 @@
         reverse_proxy feedback-api:4001
     }
 
+    # --- Optional: staff-only feedback metrics without shipping the admin key ---
+    # /feedback/stats returns PII and requires the ADMIN key. By default the Support
+    # Workbench has a staffer paste that key at runtime (held in sessionStorage). To
+    # avoid handing the admin key to the browser at all, let Caddy hold it: gate a
+    # staff-only path with basic_auth and inject the key server-side. Then point the
+    # workbench at /staff-api/feedback/stats and drop the in-app key prompt.
+    #
+    #   handle_path /staff-api/* {
+    #       basic_auth {
+    #           {env.WORKBENCH_USER} {env.WORKBENCH_BCRYPT_HASH}
+    #       }
+    #       rewrite * /api/v1{path}
+    #       reverse_proxy feedback-api:4001 {
+    #           header_up X-API-Key {env.API_KEY_ADMIN}
+    #       }
+    #   }
+
     # SPA routing: try file, then index.html
     handle {
         try_files {path} /index.html

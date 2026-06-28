@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useWorkbenchStore } from '@/stores/workbenchStore'
 import { Upload, FileJson, FolderOpen, Clock, ChevronDown } from 'lucide-vue-next'
 import PlanReview from './PlanReview.vue'
+import WorkbenchFeedback from './WorkbenchFeedback.vue'
 
 const workbenchStore = useWorkbenchStore()
 
@@ -279,5 +280,8 @@ function getStatusBadge(status) {
         </p>
       </div>
     </div>
+
+    <!-- Site feedback metrics (collapsible; admin-key gated, IT staff only) -->
+    <WorkbenchFeedback class="mt-8" />
   </div>
 </template>

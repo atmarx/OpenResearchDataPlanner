@@ -128,13 +128,13 @@ indirect_costs:
 # Shown in a dismissable banner on first visit and in the footer
 ai_disclosure:
   # Enable/disable AI disclosure features
-  enabled: false
+  enabled: true
 
   # Welcome banner (shown once, dismissable)
   banner:
     title: "About This Tool"
     message: |
-      Research Data Planner was developed with AI coding assistance (Claude by Anthropic).
+      Research Data Planner was built with agentic coding assistants (Claude by Anthropic).
       All code, content, and recommendations have been reviewed by Research IT staff.
       We follow the same responsible AI practices we recommend to researchers: human oversight,
       transparent disclosure, and continuous verification.
@@ -142,10 +142,13 @@ ai_disclosure:
     report_issue_url: "https://github.com/anthropics/claude-code"
     report_issue_label: "Report an issue"
 
-  # Footer acknowledgment (always visible if enabled)
+  # Footer acknowledgment (always visible if enabled). learn_more_label links to
+  # the /about-ai page; feedback_label links to its feedback section so the
+  # transparency note carries a "tell us what you think" CTA on every page.
   footer:
-    text: "Built with AI assistance."
+    text: "Built with agentic coders — every change reviewed by Research IT."
     learn_more_label: "Learn more"
+    feedback_label: "Share your feedback"
 
   # About AI page content (structured sections)
   # If you need deeper customization, edit AboutAIPage.vue directly

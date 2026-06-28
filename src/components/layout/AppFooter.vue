@@ -54,6 +54,7 @@ const aiDisclosure = computed(() => configStore.config?.meta?.ai_disclosure)
 const showAiFooter = computed(() => aiDisclosure.value?.enabled !== false)
 const aiFooterText = computed(() => aiDisclosure.value?.footer?.text || 'Built with AI assistance.')
 const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_label || 'Learn more')
+const aiFooterFeedback = computed(() => aiDisclosure.value?.footer?.feedback_label || 'Share your feedback')
 </script>
 
 <template>
@@ -119,9 +120,16 @@ const aiFooterLearnMore = computed(() => aiDisclosure.value?.footer?.learn_more_
             <span>{{ aiFooterText }}</span>
             <router-link
               to="/about-ai"
-              class="hover:text-text-secondary"
+              class="underline hover:text-text-secondary"
             >
               {{ aiFooterLearnMore }}
+            </router-link>
+            <span aria-hidden="true" class="opacity-50">·</span>
+            <router-link
+              to="/about-ai#feedback"
+              class="underline hover:text-text-secondary"
+            >
+              {{ aiFooterFeedback }}
             </router-link>
           </div>
 
