@@ -172,8 +172,9 @@ function loadClinicalGuidance() {
 /**
  * Validate referential integrity of the configuration
  */
-function validateConfig(config) {
+export function validateConfig(config) {
   const errors = []
+  const warnings = []
 
   // Build lookup sets
   const tierSlugs = new Set(config.tiers?.map(t => t.slug) || [])
@@ -235,7 +236,52 @@ function validateConfig(config) {
     }
   }
 
-  return errors
+  // 5. Validate compliance-block invariants.
+  //
+  //    Sections 1-4 check shapes and references. These check *meaning* — they're
+  //    what makes "policy as code" enforce policy instead of just structure. Every
+  //    rule here is deliberately UNIVERSAL (a regulatory or logical truth, not a
+  //    Northwinds-specific rule) and carries its reasoning, so a fork whose rules
+  //    genuinely differ can see what a check is for and bend it on purpose rather
+  //    than trip over it. Errors block the build; warnings are advisory.
+  const BAA_STATUSES = new Set(['in_place', 'available', 'not_available', 'not_applicable'])
+
+  for (const mapping of config.mappings || []) {
+    const compliance = mapping.compliance
+    if (!compliance) continue
+    const where = `Mapping "${mapping.service}:${mapping.tier}"`
+    const frameworks = compliance.frameworks || []
+
+    // 5a. baa_status must be a known value. The matrix lights the BAA badge only on
+    //     an exact "in_place" match, so a typo fails closed — it would silently hide
+    //     a real agreement. Catch the misspelling at build time instead.
+    if (compliance.baa_status && !BAA_STATUSES.has(compliance.baa_status)) {
+      errors.push(`${where} has unknown baa_status "${compliance.baa_status}" (expected one of: ${[...BAA_STATUSES].join(', ')})`)
+    }
+
+    // 5b. HIPAA requires a secured BAA. Processing PHI through a third party is only
+    //     lawful under a signed Business Associate Agreement (45 CFR 164.502(e)). The
+    //     lone exception is a service with no business associate at all — e.g. on-prem
+    //     institutional infrastructure — which is why "not_applicable" is allowed
+    //     alongside "in_place". Claiming "hipaa" while a BAA is only "available"
+    //     (offered, unsigned) or "not_available" is a contradiction: the badge would
+    //     advertise PHI capability the paperwork doesn't support.
+    //     To bend: an institution that secures PHI through some instrument other than
+    //     a BAA should widen the allowed set below — don't delete the check.
+    if (frameworks.includes('hipaa') && !['in_place', 'not_applicable'].includes(compliance.baa_status)) {
+      errors.push(`${where} lists framework "hipaa" but baa_status is "${compliance.baa_status ?? 'unset'}" — PHI needs an in-place BAA (or "not_applicable" for on-prem services with no business associate)`)
+    }
+
+    // 5c. If a BAA is in place, name it. This is an auditability convention — a
+    //     reviewer should be able to find the actual contract — not a legal
+    //     requirement, so it's a warning, not a red build. A fork that records
+    //     agreements elsewhere can ignore it.
+    if (compliance.baa_status === 'in_place' && !compliance.baa_reference) {
+      warnings.push(`${where} has baa_status "in_place" but no baa_reference — name the agreement so it can be audited`)
+    }
+  }
+
+  return { errors, warnings }
 }
 
 /**
@@ -292,7 +338,14 @@ function buildConfig() {
 
   // Validate configuration
   console.log('\nValidating configuration...')
-  const errors = validateConfig(config)
+  const { errors, warnings } = validateConfig(config)
+
+  if (warnings.length > 0) {
+    console.warn('\nValidation warnings (advisory — not blocking):')
+    for (const warning of warnings) {
+      console.warn(`  - ${warning}`)
+    }
+  }
 
   if (errors.length > 0) {
     console.error('\nValidation errors:')
@@ -323,5 +376,8 @@ function buildConfig() {
   console.log(`  Size: ${(fs.statSync(OUTPUT_FILE).size / 1024).toFixed(1)} KB`)
 }
 
-// Run
-buildConfig()
+// Run only when executed directly, so tests can import validateConfig()
+// without triggering a full build.
+if (path.resolve(process.argv[1]) === __filename) {
+  buildConfig()
+}
