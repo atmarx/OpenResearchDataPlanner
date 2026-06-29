@@ -716,28 +716,6 @@ mappings:
       audit_logging: true
       encryption: both
 
-  - service: research-vdi-silver
-    tier: restricted
-    approval: review
-    approval_contact: "security@northwinds.edu"
-    notes: |
-      **Additional requirements:**
-      - Isolated network segment
-      - No internet access from VM
-      - Session logging may be required
-    dmp_template: null
-    compliance:
-      frameworks: [cui, itar, ear]
-      baa_status: not_applicable
-      training_required:
-        - "CUI Handling (if applicable)"
-        - "Export Control Awareness"
-        - "VDI Security Best Practices"
-      timeline: "2-4 weeks (security assessment required)"
-      audit_logging: true
-      encryption: both
-      contact: "security@northwinds.edu"
-
   # Research VDI - Gold
   - service: research-vdi-gold
     tier: low
@@ -770,28 +748,6 @@ mappings:
       audit_logging: true
       encryption: both
 
-  - service: research-vdi-gold
-    tier: restricted
-    approval: review
-    approval_contact: "security@northwinds.edu"
-    notes: |
-      **Additional requirements:**
-      - Isolated network segment
-      - No internet access from VM
-      - Session logging may be required
-    dmp_template: null
-    compliance:
-      frameworks: [cui, itar, ear]
-      baa_status: not_applicable
-      training_required:
-        - "CUI Handling (if applicable)"
-        - "Export Control Awareness"
-        - "VDI Security Best Practices"
-      timeline: "2-4 weeks (security assessment required)"
-      audit_logging: true
-      encryption: both
-      contact: "security@northwinds.edu"
-
   # Research VDI - Platinum
   - service: research-vdi-platinum
     tier: low
@@ -823,28 +779,6 @@ mappings:
       timeline: "Same day provisioning"
       audit_logging: true
       encryption: both
-
-  - service: research-vdi-platinum
-    tier: restricted
-    approval: review
-    approval_contact: "security@northwinds.edu"
-    notes: |
-      **Additional requirements:**
-      - Isolated network segment
-      - No internet access from VM
-      - Session logging may be required
-    dmp_template: null
-    compliance:
-      frameworks: [cui, itar, ear]
-      baa_status: not_applicable
-      training_required:
-        - "CUI Handling (if applicable)"
-        - "Export Control Awareness"
-        - "VDI Security Best Practices"
-      timeline: "2-4 weeks (security assessment required)"
-      audit_logging: true
-      encryption: both
-      contact: "security@northwinds.edu"
 
   # JupyterHub (Shared) - Free for L1/L2
   - service: jupyterhub-shared
@@ -879,27 +813,6 @@ mappings:
       timeline: "1-2 business days"
       audit_logging: true
       encryption: both
-
-  - service: jupyterhub-dedicated
-    tier: restricted
-    approval: review
-    approval_contact: "security@northwinds.edu"
-    notes: |
-      **Additional requirements:**
-      - Isolated network segment
-      - No internet access from VM (if required by protocol)
-      - Session logging may be required
-    dmp_template: "jupyterhub/dedicated"
-    compliance:
-      frameworks: [cui, itar, ear]
-      baa_status: not_applicable
-      training_required:
-        - "CUI Handling (if applicable)"
-        - "Export Control Awareness"
-      timeline: "2-4 weeks (security assessment required)"
-      audit_logging: true
-      encryption: both
-      contact: "security@northwinds.edu"
 
   # Web Hosting
   - service: web-hosting
@@ -941,7 +854,7 @@ mappings:
   - service: secure-enclave
     tier: restricted
     approval: consultation
-    approval_contact: "security@northwinds.edu"
+    approval_contact: "research-security@northwinds.edu"
     notes: |
       Secure enclaves are provisioned through consultation.
       Allow 4-8 weeks lead time for setup.
@@ -957,7 +870,7 @@ mappings:
       timeline: "4-8 weeks (full security assessment and build-out)"
       audit_logging: true
       encryption: both
-      contact: "security@northwinds.edu"
+      contact: "research-security@northwinds.edu"
 
   # =============================================================================
   # SUPPORT SERVICES - All Tiers

@@ -2144,7 +2144,7 @@ services:
 
     cost_model:
       type: consultation
-      contact: "security@northwinds.edu"
+      contact: "research-security@northwinds.edu"
       note: |
         Pricing varies significantly based on requirements.
         Typical range: $5,000 - $50,000/year depending on scale

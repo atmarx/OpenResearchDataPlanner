@@ -51,7 +51,7 @@ contact:
     # type: "url"
     # value: "https://tickets.northwinds.edu/submit"
     # label: "Submit a ticket"
-  security: "data-security@northwinds.edu"           # Security-specific contact
+  security: "research-security@northwinds.edu"       # Security-specific contact
   consultation_url: "https://northwinds.edu/research-computing/consult"
 
 # Institutional policy links (typically required for university websites)
