@@ -545,6 +545,7 @@ services:
         and iRODS (i-commands, metadata, and policy engine)
       - Accessible from the K8s cluster
       - Data integrity verification via iRODS checksums
+      - Encrypted at rest in two layers: S3 buckets (access key required) over erasure-coded, self-encrypting-drive storage
 
       Launching alongside the K8s cluster for integrated ML/AI workflows.
     documentation_url: "https://docs.northwinds.edu/globus-storage"

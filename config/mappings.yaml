@@ -134,7 +134,7 @@ mappings:
     tier: medium
     approval: automatic
     notes: |
-      Encryption at rest via self-encrypting drives (hardware-level); no iRODS-layer (software) encryption.
+      Encryption at rest in two layers: encrypted S3 buckets (storage-layer; access key required) on an erasure-coded distributed backend using self-encrypting drives (hardware-level). iRODS provides metadata and policy, not encryption.
       Verify recipient endpoint security before sharing.
     dmp_template: "northstar/default"
 
