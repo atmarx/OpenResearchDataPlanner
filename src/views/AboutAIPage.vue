@@ -12,6 +12,7 @@ import {
   ArrowLeft
 } from 'lucide-vue-next'
 import PageFeedback from '@/components/feedback/PageFeedback.vue'
+import { fillDisclosureTokens } from '@/lib/aiDisclosure.js'
 
 const configStore = useConfigStore()
 
@@ -23,14 +24,24 @@ const institutionName = computed(() =>
 const aiDisclosure = computed(() => configStore.config?.meta?.ai_disclosure)
 const aboutPage = computed(() => aiDisclosure.value?.about_page || {})
 
+// AI vendor name — single config knob (meta.ai_disclosure.assistant). Absent =>
+// the upstream default; "" => no vendor named anywhere. See src/lib/aiDisclosure.js.
+const assistantName = computed(() => {
+  const a = aiDisclosure.value?.assistant
+  return a === undefined ? 'Claude (Anthropic)' : a
+})
+
 const pageIntro = computed(() =>
   aboutPage.value.intro || 'How we used AI to build this tool, and why transparency matters.'
 )
 
 const citationText = computed(() => {
   const template = aboutPage.value.citation ||
-    'Research Data Planner. (2024-2026). Developed by {institution} with AI coding assistance from Claude (Anthropic). All code and content reviewed by human staff.'
-  return template.replace('{institution}', institutionName.value)
+    'Research Data Planner. (2024-2026). Developed by {institution} with AI coding assistance from {assistant}. All code and content reviewed by human staff.'
+  return fillDisclosureTokens(template, {
+    institution: institutionName.value,
+    assistant: assistantName.value
+  })
 })
 </script>
 
@@ -100,7 +111,7 @@ const citationText = computed(() => {
               </h3>
               <p class="text-sm mt-1 text-text-muted">
                 Vue components, JavaScript logic, and CSS styling were developed with
-                AI coding assistance (Claude by Anthropic via Claude Code). This accelerated
+                AI coding assistance<template v-if="assistantName"> from {{ assistantName }}</template>. This accelerated
                 development while maintaining code quality through human review.
               </p>
             </div>

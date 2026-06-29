@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { Bot, X, ExternalLink } from 'lucide-vue-next'
+import { fillDisclosureTokens } from '@/lib/aiDisclosure.js'
 
 const STORAGE_KEY = 'odp-welcome-dismissed'
 
@@ -14,10 +15,20 @@ const aiDisclosure = computed(() => configStore.config?.meta?.ai_disclosure)
 const isEnabled = computed(() => aiDisclosure.value?.enabled !== false)
 const banner = computed(() => aiDisclosure.value?.banner || {})
 
+const institutionName = computed(() => configStore.config?.meta?.institution?.name || 'Research IT')
+// AI vendor name — single config knob (meta.ai_disclosure.assistant); see src/lib/aiDisclosure.js
+const assistantName = computed(() => {
+  const a = aiDisclosure.value?.assistant
+  return a === undefined ? 'Claude (Anthropic)' : a
+})
+
 const title = computed(() => banner.value.title || 'About This Tool')
 const message = computed(() =>
-  banner.value.message ||
-  'This tool was developed with AI coding assistance. All content has been reviewed by staff.'
+  fillDisclosureTokens(
+    banner.value.message ||
+      'This tool was built with AI coding assistance from {assistant}. All content has been reviewed by staff.',
+    { institution: institutionName.value, assistant: assistantName.value }
+  )
 )
 const learnMoreLabel = computed(() => banner.value.learn_more_label || 'Learn more')
 const reportIssueUrl = computed(() => banner.value.report_issue_url)

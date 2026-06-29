@@ -130,11 +130,17 @@ ai_disclosure:
   # Enable/disable AI disclosure features
   enabled: true
 
+  # The AI vendor/assistant name — the SINGLE place to rebrand or remove it.
+  # Referenced as {assistant} in the copy below and on the About AI page. Set it to
+  # your own tool (e.g. "Codex"), or to "" to drop the vendor mention entirely; the
+  # surrounding copy collapses cleanly either way. No source edits required.
+  assistant: "Claude (Anthropic)"
+
   # Welcome banner (shown once, dismissable)
   banner:
     title: "About This Tool"
     message: |
-      Research Data Planner was built with agentic coding assistants (Claude by Anthropic).
+      Research Data Planner was built with agentic coding assistance from {assistant}.
       All code, content, and recommendations have been reviewed by Research IT staff.
       We follow the same responsible AI practices we recommend to researchers: human oversight,
       transparent disclosure, and continuous verification.
@@ -156,7 +162,7 @@ ai_disclosure:
     intro: "How we used AI to build this tool, and why transparency matters."
     citation: |
       Research Data Planner. (2024-2026). Developed by {institution} with AI coding
-      assistance from Claude (Anthropic). All code and content reviewed by human staff.
+      assistance from {assistant}. All code and content reviewed by human staff.
 
 # Feedback collection (optional)
 # Requires the feedback-api microservice to be running
