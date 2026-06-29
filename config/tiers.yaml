@@ -43,6 +43,7 @@ tiers:
       - "Data under standard DUA"
       - "Industry collaboration data"
       - "Licensed commercial datasets"
+      - "Routine instructional / coursework education records (FERPA) — no transcripts, financial aid, disciplinary, or SSN"
     examples:
       - "Unpublished research data"
       - "Licensed commercial datasets"
@@ -69,7 +70,7 @@ tiers:
       and other regulated data (PHI/PII).
     types_of_data:
       - "Protected Health Information (PHI)"
-      - "Student education records used for research (FERPA)"
+      - "Sensitive or research-use student education records (FERPA)"
       - "Human subjects research data"
       - "Personally Identifiable Information (PII)"
     examples:

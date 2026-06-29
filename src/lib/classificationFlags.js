@@ -12,7 +12,9 @@
 export const FLAG_LABELS = {
   hipaa: 'HIPAA',
   phi: 'Protected Health Information (PHI)',
-  ferpa: 'FERPA (student records)',
+  ferpa: 'FERPA — sensitive education records',
+  ferpa_instructional: 'FERPA — instructional / coursework use',
+  ferpa_research: 'FERPA — research use',
   cui: 'Controlled Unclassified Information (CUI)',
   cui_possible: 'Possible CUI — review required',
   nist_800_171: 'NIST SP 800-171 controls',
@@ -36,7 +38,9 @@ export const FLAG_LABELS = {
 export const FLAG_GUIDANCE = {
   hipaa: 'Protected Health Information will be handled under HIPAA: a Business Associate Agreement will be in place with any third-party service, access will be limited to authorized study personnel, and access will be logged.',
   phi: 'Identifiable health information will be treated as Protected Health Information — minimized, encrypted at rest and in transit, and disclosed only as permitted by the IRB-approved protocol.',
-  ferpa: 'Student education records protected under FERPA will be disclosed only to personnel with a legitimate educational interest, consistent with the applicable data use agreement.',
+  ferpa: 'Sensitive student education records (such as transcripts, disciplinary, financial-aid, or health records) will be treated as High risk — access limited to personnel with a legitimate educational interest, encrypted at rest and in transit, and disclosed only as permitted by FERPA (and GLBA where financial-aid data is involved).',
+  ferpa_instructional: 'Education records used to deliver instruction (routine coursework, assignments, and course grades) will be handled under the FERPA school-official exception, limited to course personnel with a legitimate educational interest, with each course context isolated from other uses.',
+  ferpa_research: 'Identifiable education records used for research will be handled under the FERPA "studies" exception with IRB oversight, disclosed only under the governing agreement and consent, with access logged.',
   cui: 'Controlled Unclassified Information will be safeguarded under NIST SP 800-171, with marking, access control, and dissemination following the governing contract.',
   cui_possible: 'This project may involve Controlled Unclassified Information; the controlling agency or contract will be consulted before data is collected to confirm CUI status and required controls.',
   nist_800_171: 'Security controls will follow NIST SP 800-171, including access control, audit logging, and configuration management appropriate to controlled data.',

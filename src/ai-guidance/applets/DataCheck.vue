@@ -86,8 +86,8 @@ Regulated data: Subject to specific laws with legal consequences for mishandling
       },
       {
         value: 'student',
-        label: 'Student records (FERPA)',
-        description: 'Grades, enrollment, student identifiers',
+        label: 'Sensitive student records (FERPA)',
+        description: 'Transcripts, disciplinary, financial aid, or identifiable research records (routine coursework is lower risk)',
         setsOutput: { sensitivity: 'high', dataType: 'student' },
         setsFlags: ['ferpa'],
         next: 'deidentification'

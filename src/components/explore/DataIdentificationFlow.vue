@@ -66,7 +66,7 @@ const result = computed(() => {
         'Cannot be shared without authorization',
         'Requires appropriate security controls',
         'If health data: HIPAA applies (L3)',
-        'If student data: FERPA applies (L3)'
+        'If student data: FERPA applies (L2 routine coursework / L3 sensitive or research)'
       ],
       recommendations: [
         'Consider encoding (replacing names with codes) if you don\'t need identifiers inline',

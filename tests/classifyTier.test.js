@@ -32,21 +32,42 @@ describe('tier questionnaire — priority paths (V1.0 regression guards)', () =>
     expect(flags).toContain('hipaa')
   })
 
-  it('FERPA: student records → high', () => {
-    // Per config/tier-questionnaire.yaml student_data "Yes" sets_tier: high.
-    // (Earlier PM brief said "medium"; the YAML is the source of truth.)
-    // Reaching student_data requires human_subjects=true, health_data=false —
-    // student records are human-subject data even though they're not health data.
-    const { tier, flags } = run({
-      human_subjects: true,
-      health_data: false,
-      student_data: true,
-      government_data: false,
-      export_control: false,
-      proprietary_check: false,
-    })
+  // FERPA is classified by CONTENT, not a flat "student records → high".
+  // student_data="Yes" routes to student_data_content, which sets the tier:
+  // directory→low, instructional→medium, sensitive→high, research→high.
+  // (Peer R1s escalate by content; routine coursework is Medium.)
+  // Reaching student_data requires human_subjects=true, health_data=false.
+  const studentBase = {
+    human_subjects: true,
+    health_data: false,
+    student_data: true,
+    government_data: false,
+    export_control: false,
+    proprietary_check: false,
+  }
+
+  it('FERPA: sensitive records (transcripts/disciplinary/aid/SSN/health) → high', () => {
+    const { tier, flags } = run({ ...studentBase, student_data_content: 'sensitive' })
     expect(tier).toBe('high')
     expect(flags).toContain('ferpa')
+  })
+
+  it('FERPA: research use of identifiable records → high', () => {
+    const { tier, flags } = run({ ...studentBase, student_data_content: 'research' })
+    expect(tier).toBe('high')
+    expect(flags).toContain('ferpa_research')
+  })
+
+  it('FERPA: routine instructional / coursework records → medium', () => {
+    const { tier, flags } = run({ ...studentBase, student_data_content: 'instructional' })
+    expect(tier).toBe('medium')
+    expect(flags).toContain('ferpa_instructional')
+  })
+
+  it('FERPA: directory information only → low, no FERPA flag', () => {
+    const { tier, flags } = run({ ...studentBase, student_data_content: 'directory' })
+    expect(tier).toBe('low')
+    expect(flags).not.toContain('ferpa')
   })
 
   it('Clean: no sensitive data, no gov funding → null (no tier set)', () => {

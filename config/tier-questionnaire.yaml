@@ -296,39 +296,61 @@ questions:
 
   - id: student_data
     question: "Does your data include student education records?"
-    help_text: "Grades, enrollment status, financial aid, disciplinary records, or other data from student information systems."
+    help_text: "Grades, enrollment, coursework, or other data from student information systems."
     icon: "graduation-cap"
-    learn_more:
-      title: "Research use vs. operational use of education records"
-      content: |
-        FERPA protects education records, but the risk tier depends on *why*
-        you hold them.
-
-        - **Research** — analyzing or linking identifiable education records to
-          study educational outcomes. Heightened protection; typically requires
-          IRB review and the FERPA "studies" exception. → **High risk.**
-        - **Operational** — handling student data to deliver instruction or run
-          a course or program (for example, students doing coursework in an
-          instructional AI platform). Routine school-official use under
-          legitimate educational interest. → **Medium risk.**
-
-        Either way the data is FERPA-protected and access-controlled; the tier
-        reflects how it's used.
     options:
       - label: "No"
         value: false
         next: government_data
-      - label: "Yes — research use (analyzing or linking education records)"
-        value: "research"
+      - label: "Yes"
+        value: true
+        next: student_data_content
+
+  - id: student_data_content
+    question: "What kind of education records — and how are they used?"
+    help_text: "FERPA covers all of these; the risk tier follows the content and use, the way peer universities classify student data."
+    icon: "graduation-cap"
+    learn_more:
+      title: "How student records are classified"
+      content: |
+        All of these are FERPA-protected and access-controlled. The tier reflects
+        how sensitive the content is and how it's used:
+
+        - **Directory information** (name, enrollment status, dates of attendance)
+          is disclosable without consent → **Low.**
+        - **Routine coursework / instruction** — using LLMs and tools in a course,
+          assignments, submissions, and course grades. School-official use under
+          legitimate educational interest → **Medium.**
+        - **Sensitive records** — transcripts, disciplinary records, financial-aid
+          data (also GLBA-regulated), Social Security numbers, or health data —
+          carry heightened protection regardless of use → **High.**
+        - **Research** — analyzing or linking identifiable education records to
+          study outcomes (IRB + the FERPA "studies" exception) → **High.**
+
+        Peer R1 universities escalate by content, not by use: sensitive records
+        stay High even in routine handling.
+    options:
+      - label: "Directory information only (name, enrollment status, dates of attendance)"
+        value: "directory"
+        sets_tier: low
+        next: government_data
+      - label: "Routine coursework / instructional records (incl. classroom LLM use)"
+        value: "instructional"
+        sets_tier: medium
+        sets_flags:
+          - ferpa_instructional
+        next: government_data
+      - label: "Sensitive records — transcripts, disciplinary, financial aid, SSN, or health"
+        value: "sensitive"
         sets_tier: high
         sets_flags:
           - ferpa
         next: government_data
-      - label: "Yes — operational use (coursework or running a course/program)"
-        value: "operational"
-        sets_tier: medium
+      - label: "Research use — analyzing or linking identifiable education records"
+        value: "research"
+        sets_tier: high
         sets_flags:
-          - ferpa
+          - ferpa_research
         next: government_data
 
   - id: government_data

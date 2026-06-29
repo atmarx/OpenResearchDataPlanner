@@ -272,9 +272,12 @@ acronyms:
     expansion: "Family Educational Rights and Privacy Act"
     short_def: "Federal law protecting student records"
     long_def: |
-      FERPA protects the privacy of student education records. Research
-      using student data (grades, enrollment, financial aid) requires
-      appropriate data use agreements and typically IRB approval.
+      FERPA protects the privacy of student education records. The risk tier
+      follows the content and use: directory information is Low; routine
+      coursework and instructional records are Medium; transcripts, disciplinary,
+      financial-aid, or health records — and research use of identifiable
+      records — are High. Research use also typically requires a data use
+      agreement and IRB approval.
     related: ["IRB", "high-tier"]
     category: "compliance"
 

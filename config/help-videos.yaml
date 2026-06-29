@@ -104,8 +104,8 @@ concepts:
     script_notes: |
       - Start reassuring: "Most research is L1 or L2. Don't overthink this."
       - L1 (Low): "Published data, public datasets, teaching materials"
-      - L2 (Medium): "Unpublished research, pre-publication, most industry NDAs"
-      - L3 (High): "HIPAA, patient data, student records (FERPA)"
+      - L2 (Medium): "Unpublished research, pre-publication, NDAs, instructional coursework records (FERPA)"
+      - L3 (High): "HIPAA, patient data, sensitive or research student records (FERPA)"
       - L4 (Restricted): "Defense contracts, export-controlled, classified"
       - Decision tree: "If you're not sure, answer these 3 questions..."
       - Reassurance: "You can always start at L2 and upgrade later if needed."
@@ -195,10 +195,10 @@ concepts:
       - term: "student data"
       - term: "educational records"
     script_notes: |
-      - "Student data is protected by FERPA - but the process is similar to HIPAA"
-      - When it applies: "Grades, enrollment, financial aid, disciplinary records..."
-      - De-identification: "If you remove names and IDs, you may not need L3"
-      - IRB connection: "Your IRB approval usually covers FERPA requirements"
+      - "Student data is protected by FERPA - but the tier follows the content"
+      - When it applies: "Routine coursework and grades are Medium; transcripts, financial aid, and disciplinary records are High"
+      - Directory info: "Name and enrollment status are Low (disclosable without consent)"
+      - Research: "Analyzing identifiable records is High - your IRB approval usually covers FERPA"
 
   # ---------------------------------------------------------------------------
   # FDA / REGULATORY
@@ -598,7 +598,7 @@ disciplines:
     script_notes: |
       - Common needs: Stata, SPSS, R, NVivo, survey storage
       - Data tiers: "Most survey data is L2, unless you have identifiers"
-      - FERPA note: "Student data requires L3"
+      - FERPA note: "Sensitive or research student data is L3; routine coursework is L2"
       - Typical project: "10TB storage + VDI with Stata"
 
   - slug: guide-biomedical
