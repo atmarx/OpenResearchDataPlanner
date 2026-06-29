@@ -1,0 +1,78 @@
+# config/explainers.yaml
+# ---------------------------------------------------------------------------
+# The EXPLAINERS layer — short, plain-language "why" pieces the planner can
+# surface just-in-time, each linking out to the full, statute-grounded version
+# in the research-data-governance corpus (the legal-text home; the app LINKS,
+# never forks).
+#
+# WHERE THIS FITS
+#   - The full, authoritative text lives in the governance corpus (markdown):
+#     governance/overhead-and-direct-costs-explainer.md.
+#   - This file holds the IN-APP version: a short answer, a worked table, and
+#     the just-in-time link copy. It is ALL TEXT, NO CODE — edit these strings
+#     to adapt for your institution and the planner renders whatever they say.
+#     You never touch a .vue/.js file to change what a researcher reads.
+#
+# HOW IT SURFACES (the build owner wires the render — see notes per field)
+#   - `jit`         : a small "→" nudge the planner drops next to a confusing
+#                     thing (the cost column, a direct-charge flag, the estimate).
+#                     `anchors` name the spots; the surface decides where each
+#                     renders. Keep it gentle — one quiet link, not a lecture.
+#   - `short`       : the in-app explainer card's opening answer.
+#   - `table`       : the worked who-pays-what example, as structured data.
+#   - `bottom_line` : the one-sentence takeaway.
+#   - `full_guide`  : the corpus page for depth ("read the full guide →").
+#
+# FORK-AND-OWN
+#   Edit these strings for your institution. The dollar figures in `table` are
+#   illustrative Northwinds storage numbers — replace them with your own
+#   approved rates. This is plain content, not legal advice; the rules (and the
+#   citations) live in the corpus page, reviewed by your counsel.
+# ---------------------------------------------------------------------------
+
+explainers:
+
+  overhead-and-direct-costs:
+    title: "Why doesn't my overhead pay for this?"
+    audience: [researchers, pi, grants]
+
+    # Just-in-time nudge — where the planner offers the quiet "→"
+    jit:
+      link_text: "Why isn't this covered by my overhead? →"
+      anchors:                 # build owner maps each to a surface
+        - cost-column          #   beside a service's $ cost in the matrix
+        - direct-charge        #   on any service shown as a direct cost
+        - tier-cost            #   on the tier / estimate surfaces
+
+    short: >-
+      Your overhead (F&A) already pays for everything common to every
+      researcher — the network, the buildings, the baseline storage every lab
+      gets. It can't pay for infrastructure that belongs to one project,
+      because federal cost rules call a cost you can pin to a single project a
+      *direct* cost, budgeted on the award. There is no "my overhead" account
+      to draw from — it's a rate that reimburses the institution for the
+      commons you already use. You pay our cost, not market, for the part
+      that's yours alone.
+
+    # The worked example — pure data, so the table is editable without code.
+    table:
+      caption: "Who pays what — a 50 TB project"
+      columns: ["", "What you get", "Who pays", "What it costs"]
+      rows:
+        - ["The commons", "100 GB baseline, network, backup, building, admin", "Institution (via F&A)", "Free to you"]
+        - ["Your increment", "50 TB dedicated, compliant research storage", "Your grant (direct cost)", "$2,400/yr — our cost"]
+        - ["Market alternative", "the same 50 TB on compliant cloud", "You, retail", "~$7,500/yr"]
+      footnote: >-
+        You pay ~32% of market for the part that's yours alone — and only that
+        part. The commons is already free to you.
+
+    bottom_line: >-
+      Overhead covers what's common and can't be pinned to one project. The
+      moment a cost can be pinned to your project, the rules call it direct, and
+      it belongs on your award. You already get the commons for free.
+
+    full_guide:
+      text: "Read the full guide (with statute) →"
+      # Resolved against the governance corpus base URL (set at deploy).
+      corpus_path: "governance/overhead-and-direct-costs-explainer/"
+      corpus_ref: "research-data-governance: docs/governance/overhead-and-direct-costs-explainer.md"

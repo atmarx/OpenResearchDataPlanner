@@ -42,7 +42,8 @@ const CONFIG_FILES = [
   'calculators.yaml',
   'help.yaml',
   'help-videos.yaml',
-  'legal.yaml'
+  'legal.yaml',
+  'explainers.yaml'
 ]
 
 /**
