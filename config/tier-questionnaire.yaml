@@ -298,13 +298,35 @@ questions:
     question: "Does your data include student education records?"
     help_text: "Grades, enrollment status, financial aid, disciplinary records, or other data from student information systems."
     icon: "graduation-cap"
+    learn_more:
+      title: "Research use vs. operational use of education records"
+      content: |
+        FERPA protects education records, but the risk tier depends on *why*
+        you hold them.
+
+        - **Research** — analyzing or linking identifiable education records to
+          study educational outcomes. Heightened protection; typically requires
+          IRB review and the FERPA "studies" exception. → **High risk.**
+        - **Operational** — handling student data to deliver instruction or run
+          a course or program (for example, students doing coursework in an
+          instructional AI platform). Routine school-official use under
+          legitimate educational interest. → **Medium risk.**
+
+        Either way the data is FERPA-protected and access-controlled; the tier
+        reflects how it's used.
     options:
       - label: "No"
         value: false
         next: government_data
-      - label: "Yes"
-        value: true
+      - label: "Yes — research use (analyzing or linking education records)"
+        value: "research"
         sets_tier: high
+        sets_flags:
+          - ferpa
+        next: government_data
+      - label: "Yes — operational use (coursework or running a course/program)"
+        value: "operational"
+        sets_tier: medium
         sets_flags:
           - ferpa
         next: government_data
