@@ -1884,6 +1884,72 @@ services:
           value: 100
           description: "Large-scale document analysis"
 
+  - slug: librechat
+    fa_exempt: true  # Internal institutional platform — free during the grant period
+    name: "LibreChat"
+    category: api
+    deployment:
+      - on-prem
+    tech:
+      - "LibreChat"
+    description: "Self-hosted LibreChat for LLMs in coursework and non-regulated research, isolated by per-context virtual API keys (L1/L2 only)"
+    long_description: |
+      Self-hosted LibreChat platform for using large language models in coursework
+      and non-regulated research. Available to students (in a course context) and
+      to researchers, at Low and Medium risk only.
+
+      **How it's isolated:**
+      - Access is provisioned through per-user, per-context virtual API keys.
+      - A key created for a course cannot reach research data; a key created for a
+        research project cannot run in a class context.
+      - No key can access data outside the silo it was created in.
+
+      **What it's for / not for:**
+      - For: instructional LLM use, course assignments, and non-regulated research.
+      - Not for: PHI, Social Security numbers, financial-aid, transcripts, disciplinary
+        records, or other regulated/protected data — those require a High-tier path.
+
+      Free during the NSF grant period; usage is metered in Mtok and shown at a
+      cloud-equivalent value rate so departments can see the value received.
+    documentation_url: "https://docs.northwinds.edu/librechat"
+
+    cost_model:
+      type: unit
+      unit: "1M tokens"
+      unit_label: "Million tokens"
+      # Illustrative cloud-equivalent value rate, subsidized to $0 now. Pending the
+      # canonical rate from the cost-value model; shows departments the value received.
+      price: 10.00
+      billing_period: month
+      note: "Free during the NSF grant period. Usage is metered in Mtok and shown at an illustrative cloud-equivalent rate so departments can see the value received — it is not a charge. A fair-use rate may take effect after the grant period."
+
+    subsidies:
+      - name: "NSF grant subsidy — instructional & research"
+        slug: nsf-grant-subsidy
+        auto_apply: true
+        discount_type: percent
+        discount_value: 100
+
+    archive_option: null
+
+    estimation:
+      prompt: "Estimated token usage per month?"
+      default_value: 5
+      min_value: 0.1
+      max_value: 1000
+      step: 1
+      unit_display: "M tokens"
+      presets:
+        - label: "One course section"
+          value: 5
+          description: "A class using LLMs for assignments over a term"
+        - label: "Department-wide"
+          value: 50
+          description: "Several courses across a department"
+        - label: "Research prototyping"
+          value: 20
+          description: "Non-regulated research experimentation"
+
   # =============================================================================
   # VDI & SECURE ENVIRONMENTS (All Tiers including High)
   # =============================================================================

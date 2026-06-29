@@ -657,11 +657,9 @@ mappings:
     notes: |
       Keep regulated or protected data out of prompts — no PHI, SSN, financial-aid,
       transcripts, disciplinary records, or export-controlled content (those are High).
-      Routine instructional coursework and non-regulated research use of LLMs are
-      supported at this tier, with each session scoped to its own context so a course
-      cannot reach research data and a research project cannot run in a class context.
-      A dedicated coursework and research LLM platform (LibreChat) is being formalized
-      to provision this with per-context virtual API keys siloed to their project.
+      For LLMs in coursework or non-regulated research, the self-hosted LibreChat
+      platform (this tier) isolates each course and project with per-context virtual
+      API keys.
     dmp_template: "azure-openai/default"
 
   - service: azure-openai
@@ -675,6 +673,29 @@ mappings:
       - Access limited to approved study personnel; prompt/response logging restricted
       - Requires completed cloud security assessment
     dmp_template: "azure-openai/high"
+
+  # =============================================================================
+  # LIBRECHAT - Low/Medium only (instructional + non-regulated research)
+  # =============================================================================
+
+  - service: librechat
+    tier: low
+    approval: automatic
+    notes: |
+      For LLM use in coursework and non-regulated research. Access is isolated by
+      per-context virtual API keys — a course key cannot reach research data, and
+      no key can access data outside its silo.
+    dmp_template: "librechat/default"
+
+  - service: librechat
+    tier: medium
+    approval: automatic
+    notes: |
+      Supports routine instructional coursework (including FERPA coursework records)
+      and non-regulated research. Per-context virtual API keys keep course and
+      research sessions siloed. Keep regulated or sensitive data out — PHI, SSN,
+      financial-aid, transcripts, and disciplinary records require a High-tier path.
+    dmp_template: "librechat/default"
     compliance:
       frameworks: [hipaa, ferpa]
       baa_status: in_place
