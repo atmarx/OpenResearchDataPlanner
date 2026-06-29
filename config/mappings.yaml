@@ -134,7 +134,8 @@ mappings:
     tier: medium
     approval: automatic
     notes: |
-      Encryption at rest enabled. Verify recipient endpoint security before sharing.
+      Encryption at rest via self-encrypting drives (hardware-level); no iRODS-layer (software) encryption.
+      Verify recipient endpoint security before sharing.
     dmp_template: "northstar/default"
 
   # =============================================================================
