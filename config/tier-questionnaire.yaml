@@ -533,6 +533,10 @@ examples_by_discipline:
         - "Proprietary designs before patent filing"
         - "Industry collaboration data under NDA"
         - "Unpublished experimental results"
+      high:
+        - "Human-subjects data from wearable, biomechanics, or human-factors studies (IRB)"
+        - "Patient data from biomedical-device or rehabilitation trials (PHI)"
+        - "Identifiable telematics or GPS trajectory data from human participants"
       restricted:
         - "Defense contractor research (ITAR)"
         - "CUI-marked government data"
@@ -567,6 +571,10 @@ examples_by_discipline:
         - "Unpublished manuscripts"
         - "Licensed digital collections"
         - "Pre-publication analyses"
+      high:
+        - "Oral histories with living subjects under consent or embargo restrictions"
+        - "Ethnographic or fieldwork data identifying vulnerable communities (IRB)"
+        - "Archival collections containing personal records under privacy restrictions"
 
   physical_science:
     name: "Physical Sciences"
@@ -580,6 +588,10 @@ examples_by_discipline:
         - "Unpublished experimental results"
         - "Proprietary instrument data"
         - "Pre-publication findings"
+      high:
+        - "Medical physics: patient dose or treatment-planning data (PHI)"
+        - "Personnel dosimetry and radiation-exposure health records"
+        - "Precise locations of protected sites (archaeological, sacred, endangered habitat)"
 
 # Allow users to override the recommendation
 override:
