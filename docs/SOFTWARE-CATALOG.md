@@ -38,41 +38,40 @@ A config-driven software catalog with:
 
 # License status definitions (for UI legend)
 license_statuses:
-  green:
-    label: "Fully Licensed"
-    description: "Available for all standard research use at no additional cost"
+  full:
+    label: "Available"
+    color: "green"
     icon: "check-circle"
-    color: "#22c55e"
+    description: "Fully licensed, ready to use"
 
-  yellow:
-    label: "Restricted License"
-    description: "Available but with usage restrictions - check details"
-    icon: "alert-triangle"
-    color: "#eab308"
+  restricted:
+    label: "Restricted"
+    color: "yellow"
+    icon: "alert-circle"
+    description: "Available with limitations or approval required"
 
-  red:
+  byol:
     label: "Bring Your Own"
-    description: "No institutional license - you must provide your own"
+    color: "gray"
+    icon: "external-link"
+    description: "You must provide your own license"
+
+  unavailable:
+    label: "Not Available"
+    color: "red"
     icon: "x-circle"
-    color: "#ef4444"
+    description: "Not available on this platform"
 
 # License server hosting info (global)
-license_server_hosting:
-  available: true
+license_hosting:
+  enabled: true
+  title: "Need to host your own license server?"
   description: |
-    Research IT provides central FlexLM/RLM license server hosting at no cost.
-    We manage the server infrastructure, firewall rules, and monitoring.
-    You provide the license file from your vendor.
-  contact: "licenses@northwinds.edu"
-  documentation_url: "https://docs.northwinds.edu/license-servers"
-  supported_managers:
-    - FlexLM / FlexNet
-    - RLM (Reprise License Manager)
-    - LM-X
-    - Sentinel RMS
-  note: |
-    You do NOT need to run license servers on lab machines.
-    Contact us before purchasing software that requires network licensing.
+    Research Computing can host FlexLM/RLM license servers for your
+    lab or department. This is useful for software with "bring your
+    own license" requirements.
+  contact: "rc-help@northwinds.edu"
+  more_info_url: "https://docs.rc.northwinds.edu/licenses/hosting"
 
 # Software categories
 categories:
@@ -132,7 +131,6 @@ software:
       Used for electronic structure modeling including DFT, HF, MP2, and coupled
       cluster methods. GaussView provides a graphical interface for visualization.
 
-    license_status: green
     license_details: |
       Site license covers all academic research use.
       Commercial use requires separate license from vendor.
@@ -141,22 +139,22 @@ software:
 
     availability:
       hpc:
-        available: true
+        status: full
         versions: ["g16", "g09"]
-        access: "module load gaussian/g16"
+        module: "gaussian/g16"
         notes: "Linda parallel available for multi-node jobs"
       jupyterhub:
-        available: false
+        status: unavailable
         notes: "Batch computation only - use HPC"
       vdi:
-        available: true
+        status: full
         versions: ["g16"]
-        access: "GaussView GUI available on Research VDI"
+        notes: "GaussView GUI available on Research VDI"
       cloud:
-        available: false
+        status: unavailable
         notes: "License terms prohibit cloud deployment"
       local:
-        available: false
+        status: unavailable
         notes: "HPC/VDI only due to license terms"
 
     documentation_url: "https://docs.northwinds.edu/software/gaussian"
@@ -171,7 +169,6 @@ software:
     category: computational-chemistry
     description: "Quantum chemistry program package"
 
-    license_status: green
     license_details: |
       Free for academic use. Register with vendor for download.
       We maintain pre-installed versions on HPC.
@@ -179,16 +176,16 @@ software:
 
     availability:
       hpc:
-        available: true
+        status: full
         versions: ["5.0.4", "4.2.1"]
-        access: "module load orca/5.0.4"
+        module: "orca/5.0.4"
       vdi:
-        available: false
+        status: unavailable
       cloud:
-        available: true
+        status: full
         notes: "Can be installed on cloud VMs"
       local:
-        available: true
+        status: full
         notes: "Download from vendor after registration"
 
     documentation_url: "https://docs.northwinds.edu/software/orca"
@@ -204,24 +201,23 @@ software:
     category: molecular-dynamics
     description: "High-performance molecular dynamics simulation"
 
-    license_status: green
     license_details: "Open source (LGPL). No restrictions."
     license_type: "Open Source"
 
     availability:
       hpc:
-        available: true
+        status: full
         versions: ["2024.1", "2023.3", "2022.5"]
-        access: "module load gromacs/2024.1"
+        module: "gromacs/2024.1"
         notes: "GPU-accelerated versions available"
         gpu_support: true
       vdi:
-        available: false
+        status: unavailable
         notes: "Use HPC for simulations"
       cloud:
-        available: true
+        status: full
       local:
-        available: true
+        status: full
 
     documentation_url: "https://docs.northwinds.edu/software/gromacs"
     vendor_url: "https://www.gromacs.org"
@@ -232,7 +228,6 @@ software:
     category: molecular-dynamics
     description: "Biomolecular simulation programs"
 
-    license_status: yellow
     license_details: |
       **Restriction:** License covers unfunded academic research only.
       Industry-sponsored or grant-funded research may require additional licensing.
@@ -243,17 +238,17 @@ software:
 
     availability:
       hpc:
-        available: true
+        status: restricted
         versions: ["24", "22"]
-        access: "module load amber/24"
+        module: "amber/24"
         gpu_support: true
       vdi:
-        available: false
+        status: unavailable
       cloud:
-        available: false
+        status: unavailable
         notes: "License prohibits cloud deployment"
       local:
-        available: false
+        status: unavailable
 
     documentation_url: "https://docs.northwinds.edu/software/amber"
     vendor_url: "https://ambermd.org"
@@ -268,26 +263,24 @@ software:
     category: statistics
     description: "Statistical software for data science"
 
-    license_status: green
     license_details: "Campus site license. All editions available."
     license_type: "Site License"
 
     availability:
       hpc:
-        available: true
+        status: full
         versions: ["18", "17"]
-        access: "module load stata/18"
+        module: "stata/18"
         notes: "Stata/MP available for parallel jobs"
       vdi:
-        available: true
+        status: full
         versions: ["18"]
-        access: "Available in Research VDI application menu"
+        notes: "Available in Research VDI application menu"
       cloud:
-        available: false
+        status: unavailable
         notes: "License terms require on-premises deployment"
       local:
-        available: true
-        access: "Download from software.northwinds.edu"
+        status: full
         notes: "Faculty/staff/student install available"
 
     documentation_url: "https://docs.northwinds.edu/software/stata"
@@ -299,7 +292,6 @@ software:
     category: statistics
     description: "Analytics and business intelligence software"
 
-    license_status: yellow
     license_details: |
       **Restriction:** Teaching and unfunded research only.
       Grant-funded research requires grant to purchase license.
@@ -309,18 +301,17 @@ software:
 
     availability:
       hpc:
-        available: true
+        status: restricted
         versions: ["9.4"]
-        access: "module load sas/9.4"
+        module: "sas/9.4"
       vdi:
-        available: true
+        status: restricted
         versions: ["9.4"]
-        access: "Available in Research VDI"
+        notes: "Available in Research VDI"
       cloud:
-        available: false
+        status: unavailable
       local:
-        available: true
-        access: "Download from software.northwinds.edu"
+        status: restricted
         notes: "Student edition available"
 
     documentation_url: "https://docs.northwinds.edu/software/sas"
@@ -332,23 +323,22 @@ software:
     category: statistics
     description: "Statistical analysis software"
 
-    license_status: green
     license_details: "Campus site license with concurrent seats."
     license_type: "Site License (Concurrent)"
     license_note: "50 concurrent seats - may need to wait during peak times"
 
     availability:
       hpc:
-        available: false
+        status: unavailable
       vdi:
-        available: true
+        status: full
         versions: ["29"]
-        access: "Available in Research VDI"
+        notes: "Available in Research VDI"
       cloud:
-        available: false
+        status: unavailable
       local:
-        available: true
-        access: "Download from software.northwinds.edu"
+        status: full
+        notes: "Download from software.northwinds.edu"
 
     documentation_url: "https://docs.northwinds.edu/software/spss"
     vendor_url: "https://www.ibm.com/spss"
@@ -363,7 +353,6 @@ software:
     category: eda
     description: "Custom IC design and verification"
 
-    license_status: yellow
     license_details: |
       **Restriction:** Instruction and academic research only.
       Industry-sponsored research prohibited without separate license.
@@ -373,25 +362,24 @@ software:
     export_controlled: true
 
     license_server:
-      centrally_hosted: true
+      we_can_host: true
       contact: "eda-licenses@northwinds.edu"
       notes: "FlexLM server managed by Research IT"
 
     availability:
       hpc:
-        available: false
+        status: unavailable
         notes: "Interactive use only - see VDI"
       vdi:
-        available: true
+        status: restricted
         versions: ["IC23.1"]
-        access: "Request access via ServiceNow"
         notes: "Dedicated EDA VDI environment"
         requires_approval: true
       cloud:
-        available: false
+        status: unavailable
         notes: "License and export control prohibit"
       local:
-        available: false
+        status: unavailable
 
     documentation_url: "https://docs.northwinds.edu/software/cadence"
     vendor_url: "https://www.cadence.com"
@@ -403,7 +391,6 @@ software:
     category: eda
     description: "RTL synthesis and optimization"
 
-    license_status: yellow
     license_details: |
       **Restriction:** Instruction and academic research only.
       Industry collaboration requires TAP (Technology Access Program).
@@ -413,24 +400,24 @@ software:
     export_controlled: true
 
     license_server:
-      centrally_hosted: true
+      we_can_host: true
       contact: "eda-licenses@northwinds.edu"
 
     availability:
       hpc:
-        available: true
+        status: restricted
         versions: ["2023.09"]
-        access: "module load synopsys/dc"
+        module: "synopsys/dc"
         notes: "Batch synthesis jobs supported"
       vdi:
-        available: true
+        status: restricted
         versions: ["2023.09"]
-        access: "Dedicated EDA VDI environment"
+        notes: "Dedicated EDA VDI environment"
         requires_approval: true
       cloud:
-        available: false
+        status: unavailable
       local:
-        available: false
+        status: unavailable
 
     documentation_url: "https://docs.northwinds.edu/software/synopsys"
     vendor_url: "https://www.synopsys.com"
@@ -445,7 +432,6 @@ software:
     category: engineering
     description: "Finite element analysis and simulation"
 
-    license_status: yellow
     license_details: |
       **Restriction:** Academic research and teaching only.
       Limited concurrent seats (25). May experience contention.
@@ -454,25 +440,24 @@ software:
     restriction_type: "academic-only"
 
     license_server:
-      centrally_hosted: true
+      we_can_host: true
       contact: "engineering-sw@northwinds.edu"
 
     availability:
       hpc:
-        available: true
+        status: restricted
         versions: ["2024R1", "2023R2"]
-        access: "module load ansys/2024R1"
+        module: "ansys/2024R1"
         gpu_support: true
         notes: "HPC license tokens available"
       vdi:
-        available: true
+        status: restricted
         versions: ["2024R1"]
-        access: "Engineering VDI image"
+        notes: "Engineering VDI image"
       cloud:
-        available: false
+        status: unavailable
       local:
-        available: true
-        access: "Request via ServiceNow"
+        status: restricted
         notes: "Student version has geometry limits"
 
     documentation_url: "https://docs.northwinds.edu/software/ansys"
@@ -485,7 +470,6 @@ software:
     category: engineering
     description: "Numerical computing and programming platform"
 
-    license_status: green
     license_details: |
       Campus Total Academic Headcount (TAH) license.
       All toolboxes included. No restrictions on use.
@@ -493,20 +477,20 @@ software:
 
     availability:
       hpc:
-        available: true
+        status: full
         versions: ["R2024a", "R2023b"]
-        access: "module load matlab/R2024a"
+        module: "matlab/R2024a"
         notes: "Parallel Computing Toolbox enabled"
       vdi:
-        available: true
+        status: full
         versions: ["R2024a"]
-        access: "Available in all Research VDI images"
+        notes: "Available in all Research VDI images"
       cloud:
-        available: true
+        status: full
         notes: "MATLAB Online available via MathWorks"
       local:
-        available: true
-        access: "Download from mathworks.com with @northwinds.edu email"
+        status: full
+        notes: "Download from mathworks.com with @northwinds.edu email"
 
     documentation_url: "https://docs.northwinds.edu/software/matlab"
     vendor_url: "https://www.mathworks.com"
@@ -522,30 +506,29 @@ software:
     category: engineering
     description: "Multiphysics simulation software"
 
-    license_status: red
     license_details: |
       **No institutional license.** Individual labs/grants must purchase.
       We can host your FlexLM server if you provide the license.
     license_type: "Bring Your Own"
 
     license_server:
-      centrally_hosted: true
+      we_can_host: true
       notes: "We will host your license server at no cost"
       contact: "licenses@northwinds.edu"
 
     availability:
       hpc:
-        available: true
+        status: byol
         notes: "If you provide license, we install and support"
         requires_own_license: true
       vdi:
-        available: true
+        status: byol
         notes: "If you provide license"
         requires_own_license: true
       cloud:
-        available: false
+        status: unavailable
       local:
-        available: true
+        status: byol
         notes: "Purchase from vendor"
         requires_own_license: true
 
@@ -558,45 +541,40 @@ software:
     category: engineering
     description: "Finite element analysis software"
 
-    license_status: red
     license_details: |
       **No institutional license.** Contact vendor for academic pricing.
       Central license server hosting available if you purchase.
     license_type: "Bring Your Own"
 
     license_server:
-      centrally_hosted: true
+      we_can_host: true
       notes: "We will host your license server"
 
     availability:
       hpc:
-        available: true
+        status: byol
         notes: "Installed and maintained if you provide license"
         requires_own_license: true
       vdi:
-        available: true
+        status: byol
         requires_own_license: true
       cloud:
-        available: false
+        status: unavailable
       local:
-        available: true
+        status: byol
         requires_own_license: true
 
     vendor_url: "https://www.3ds.com/products-services/simulia/products/abaqus/"
 
-# Global settings
-settings:
-  # Show license expiry warnings this many days before
-  expiry_warning_days: 90
-
-  # Contact for general software questions
-  general_contact: "software@northwinds.edu"
-
-  # Link to software request form
-  request_form_url: "https://servicenow.northwinds.edu/software-request"
-
-  # Show "Request Software" button
-  show_request_button: true
+# Search configuration
+search:
+  enabled: true
+  placeholder: "Search software..."
+  search_fields:
+    - name
+    - description
+    - tags
+    - vendor
 ```
 
 ---

@@ -48,7 +48,10 @@ site:
   tagline: "Plan your data infrastructure and budget for grant proposals"
 
 contact:
-  general: "research-it@contoso.edu"
+  primary:
+    type: "email"                       # "email" or "url"
+    value: "research-it@contoso.edu"
+    label: "research-it@contoso.edu"    # Display text for the link
   security: "data-security@contoso.edu"
   consultation_url: "https://contoso.edu/research-it/consult"
 
@@ -136,7 +139,7 @@ services:
       billing_period: usage
 
     estimation:
-      unit: "SU"
+      unit_display: "SU"
       prompt: "How many Service Units?"
       default_value: 10000
 
@@ -172,7 +175,7 @@ services:
         auto_apply: true
 
     estimation:
-      unit: "TB"
+      unit_display: "TB"
       prompt: "How much storage?"
       default_value: 5
 
@@ -273,12 +276,14 @@ bundles:
   - slug: starter
     name: "HPC Starter"
     description: "Everything to get started with HPC"
+    recommended_tiers:
+      - public
+      - internal
     services:
       - service: hpc-compute
         default_estimate: 10000
       - service: research-storage
         default_estimate: 1
-    estimated_monthly_cost: 0
 ```
 
 ### Add Software Catalog

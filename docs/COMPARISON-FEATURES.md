@@ -101,7 +101,7 @@ services:
     comparison_features:
       gpu_available:
         value: none
-        detail: "CPU-only; see HPC GPU for V100 access"
+        detail: "CPU-only; see HPC GPU for A100 access"
       batch_jobs:
         value: full
       interactive:
@@ -238,7 +238,7 @@ The "Compare Options" button only appears on a category if:
 ### Writing good `detail` text
 - Keep it under 50 characters if possible
 - Be specific: "4-hour limit" not "time limited"
-- Point to alternatives: "See HPC GPU for V100 access"
+- Point to alternatives: "See HPC GPU for A100 access"
 - Mention costs if relevant: "$0.50/GB retrieval fee"
 
 ---
@@ -274,7 +274,7 @@ When "Compare Options" is clicked:
 │  │                  │            │            │            │            │  │
 │  ├──────────────────┼────────────┼────────────┼────────────┼────────────┤  │
 │  │ GPU Available    │ 🟡 Partial │ ❌ None    │ ✅ Full    │ ✅ Full    │  │
-│  │                  │ 100 GPU-hr │ CPU only   │ V100 32GB  │ P3/P4      │  │
+│  │                  │ 100 GPU-hr │ CPU only   │ A100 80GB  │ P3/P4      │  │
 │  ├──────────────────┼────────────┼────────────┼────────────┼────────────┤  │
 │  │ Batch Jobs       │ ✅ Full    │ ✅ Full    │ ✅ Full    │ 🟡 Partial │  │
 │  │                  │            │            │            │ AWS Batch  │  │
@@ -319,7 +319,7 @@ On smaller screens, switch to card-based comparison:
 │  Compare: HPC GPU                   │
 ├─────────────────────────────────────┤
 │  ✅ GPU Available                   │
-│     NVIDIA V100 GPUs (32GB HBM2)   │
+│     NVIDIA A100 GPUs (80GB HBM2e)   │
 │                                     │
 │  ✅ Batch Jobs                      │
 │     Full support                    │
@@ -358,7 +358,7 @@ Clicking on a feature row shows more detail:
 │  • GPU time is more expensive but often more cost-effective    │
 │                                                                 │
 │  Related services:                                              │
-│  • HPC GPU - On-premises V100 GPUs                             │
+│  • HPC GPU - On-premises A100 GPUs                             │
 │  • K8s Cluster - Cutting-edge H200/A100 GPUs                   │
 │  • AWS/Azure Large - Cloud GPUs (P4, NC-series)                │
 │                                                                 │
@@ -379,45 +379,43 @@ Allow users to filter which services appear in comparison:
 
 ### Component Structure
 
+The comparison feature lives in two files under `src/components/wizard/`. There is no
+separate `comparison/` directory and no standalone `FeatureValue.vue` — the table,
+value icons, and legend are all rendered inline in `CompareModal.vue`.
+
 ```
-src/components/
-  comparison/
-    CompareButton.vue           # "Compare Options" button
-    ComparisonModal.vue         # Main modal container
-    ComparisonTable.vue         # Desktop table view
-    ComparisonCards.vue         # Mobile card view
-    FeatureRow.vue              # Single feature row with tooltip
-    FeatureTooltip.vue          # Detailed feature explanation
-    ServiceColumn.vue           # Service header with selection
-    ComparisonFilters.vue       # Filter controls
-    ComparisonLegend.vue        # ✅ 🟡 ❌ legend
+src/components/wizard/
+  ServiceSelectStep.vue   # renders the "Compare Options" button → openCompare(category.slug); imports CompareModal
+  CompareModal.vue        # entire comparison modal: table, value icons, and legend all inline
 ```
 
-### Value Display Component
+### Value Display
 
-```vue
-<!-- FeatureValue.vue -->
-<script setup lang="ts">
-const props = defineProps<{
-  value: 'full' | 'partial' | 'none'
-  detail?: string
-}>()
+Value rendering is inline in `CompareModal.vue`, not a separate component. Icons come
+from `lucide-vue-next` and are mapped by value — `full` → `Check`, `partial` → `Minus`,
+`none` → `Circle`:
 
-const icons = {
-  full: { icon: 'check-circle', color: 'text-green-600', label: 'Full' },
-  partial: { icon: 'minus-circle', color: 'text-yellow-600', label: 'Partial' },
-  none: { icon: 'x-circle', color: 'text-gray-400', label: 'None' }
+```js
+import { X, Check, Minus, Circle, Plus, Info } from 'lucide-vue-next'
+
+function getValueIcon(value) {
+  switch (value) {
+    case 'full': return Check
+    case 'partial': return Minus
+    default: return Circle
+  }
 }
-</script>
 
-<template>
-  <div class="feature-value" :class="icons[value].color">
-    <component :is="icons[value].icon" class="icon" />
-    <span class="label">{{ icons[value].label }}</span>
-    <span v-if="detail" class="detail">{{ detail }}</span>
-  </div>
-</template>
+function getValueClasses(value) {
+  switch (value) {
+    case 'full': return 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-900/30'
+    case 'partial': return 'text-yellow-600 bg-yellow-50 dark:text-yellow-400 dark:bg-yellow-900/30'
+    default: return 'text-text-muted bg-canvas'
+  }
+}
 ```
+
+The legend is rendered inline in the same component.
 
 ---
 

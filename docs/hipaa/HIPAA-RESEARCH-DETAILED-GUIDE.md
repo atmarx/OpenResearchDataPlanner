@@ -8,7 +8,7 @@
 **Last Updated:** 2026-02-13
 **Regulatory Basis:** 45 CFR Parts 160, 164 (as of 2025)
 **Source:** 8 HHS Privacy Components PDFs (2008)
-**Related:** OpenDataPlanner v1.2, AI Guidance Track 2 (Clinical)
+**Related:** OpenDataPlanner v1.0, AI Guidance Track 2 (Clinical)
 
 ---
 
@@ -4699,11 +4699,12 @@ NPP should mention:
 
 ## Section 10: Integration with OpenDataPlanner
 
-### 10.1 L3 Tier (Sensitive Data)
+### 10.1 L3 Tier (High Risk — HIPAA / PHI / regulated data)
 
 **When L3 Tier Selected**:
+- The L3 "High Risk" tier covers regulated data broadly: HIPAA (PHI), FERPA, IRB-governed human subjects data, and PII
 - May involve identifiable research data
-- May involve sensitive data not rising to PHI level (sensitive but not health-related, or not covered entity)
+- May involve sensitive/regulated data not rising to PHI level (sensitive but not health-related, or not covered entity) — PHI is one subset of L3, not the whole tier
 - HIPAA considerations appear if PHI involved
 
 **Decision Tree in OpenDataPlanner**:
@@ -4736,14 +4737,9 @@ If PHI Involved:
 - Mention BAAs with vendors (if cloud storage)
 - Describe safeguards (encryption, access controls, training)
 
----
-
-### 10.2 L4 Tier (PHI/Highly Sensitive)
-
-**When L4 Tier Selected**:
-- PHI confirmed
-- Highly sensitive data (genetic, HIV, substance abuse with Part 2 applicability)
-- Full HIPAA compliance assumed
+**When PHI Is Confirmed (within L3)**:
+- PHI confirmed → Full HIPAA compliance assumed
+- Highly sensitive data (genetic, HIV, substance abuse with Part 2 applicability) requires additional care
 
 **OpenDataPlanner Guidance**:
 
@@ -4757,7 +4753,7 @@ If PHI Involved:
 - [ ] Breach notification plan in place
 - [ ] Data retention/destruction schedule defined
 
-**DMP Generation for L4**:
+**DMP Generation (PHI)**:
 ```
 Data Security and Privacy:
 
@@ -4785,6 +4781,32 @@ In event of unauthorized disclosure, the institution will follow breach notifica
 Data Retention:
 Identifiable data will be retained for 7 years post-study completion per institutional policy, then securely destroyed (degaussing/shredding). De-identified datasets will be retained indefinitely for secondary research.
 ```
+
+---
+
+### 10.2 L4 Tier (Restricted)
+
+**When L4 Tier Selected**:
+- Restricted, non-HIPAA data requiring a dedicated secure enclave
+- Export-controlled research (EAR/ITAR), Controlled Unclassified Information (CUI), classified research, DOD/defense contractor work
+- Select Agent research data; data requiring NIST 800-171 compliance
+
+**Not a HIPAA tier**: L4 is **not** for PHI. Protected Health Information belongs in **L3 (High Risk)** above. If your only sensitivity is HIPAA/PHI, select L3, not L4.
+
+**OpenDataPlanner Guidance**:
+
+**Required Elements Checklist**:
+- [ ] Isolated secure enclave provisioned
+- [ ] NIST 800-171 compliance documented
+- [ ] US persons only access enforced
+- [ ] Physical security controls in place
+- [ ] Continuous monitoring enabled
+- [ ] Incident response plan defined
+- [ ] Security consultation completed (Research Security team)
+
+**L4 Guidance**:
+- Pricing and controls are determined through consultation with the Research Security team
+- Contact: research-security@northwinds.edu
 
 ---
 

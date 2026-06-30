@@ -87,9 +87,11 @@ config/
 ├── retention.yaml            # Data retention schedules
 ├── software.yaml             # Licensed software catalog
 └── dmp-templates/            # Handlebars templates for DMP output
-    ├── storage/
-    ├── compute/
-    └── ...
+    ├── hpc-compute/
+    ├── hpc-storage/
+    ├── cloud-compute/
+    ├── cloud-storage/
+    └── ...                   # one dir per service slug
 ```
 
 ---
@@ -106,45 +108,36 @@ Institution identity, branding, and primary contact information.
 institution:
   name: "Northwinds University"
   short_name: "Northwinds"
-  abbreviation: "NWU"
-  logo_url: "/assets/logo.svg"
-  favicon_url: "/assets/favicon.ico"
-  primary_color: "#003366"      # Used in UI theming
+  logo: "/images/northwinds_horizontal.png"        # Header logo
+  footer_logo: "/images/northwinds_logo.png"       # Crest shown in the footer
 
-  # Research computing organization name
-  rc_name: "Research Computing"
-  rc_url: "https://rc.northwinds.edu"
+# Visual branding & theming
+branding:
+  # Built-in skin booted as the default theme (users can switch in-app).
+  # Options: northwinds | highcontrast | (omit for the ODP default)
+  default_skin: northwinds
+  # Override theme colors with inline CSS custom properties (or null)
+  custom_css: null
+  # External stylesheet loaded after the main styles (or null)
+  custom_css_url: null
 
 contact:
-  # Primary support
-  general: "rc-help@northwinds.edu"
-  general_name: "Research Computing Help Desk"
+  # Primary support — appears in the footer as "Questions? [label]"
+  primary:
+    type: "email"                                  # "email" or "url"
+    value: "rc-help@northwinds.edu"
+    label: "rc-help@northwinds.edu"                # Display text for the link
 
   # Security/compliance inquiries
   security: "research-security@northwinds.edu"
 
-  # Export control
-  export_control: "export-control@northwinds.edu"
-
   # Consultation booking
-  consultation_url: "https://calendly.com/northwinds-rc/consult"
-  consultation_description: "30-minute consultation with RC staff"
-
-  # ServiceNow or ticketing integration (optional)
-  ticketing_url: "https://northwinds.service-now.com/rc"
+  consultation_url: "https://northwinds.edu/research-computing/consult"
 
 # App versioning
 version: "1.0.0"
 schema_version: "1.0"            # Schema version for upgrade compatibility
 last_updated: "2025-01-15"
-
-# Feature flags
-features:
-  show_pricing: true           # Show cost estimates
-  show_comparison: true        # Enable service comparison modal
-  show_software_catalog: true  # Enable software catalog
-  show_access_program: true    # Show ACCESS national resources
-  require_auth: false          # Require SSO login (V2)
 ```
 
 ---
@@ -157,9 +150,9 @@ Data security classifications. Most institutions use 3-4 tiers aligned with thei
 # config/tiers.yaml
 
 tiers:
-  - slug: L1
+  - slug: low
     name: "Low (Public Data)"
-    short_name: "Low"
+    short_name: "L1"
     sort_order: 1                   # Display order in the wizard and matrix
     color: "green"                  # green, yellow, orange, red
     description: |
@@ -182,9 +175,9 @@ tiers:
     consultation_required: false        # Skip the consultation step in the wizard
     retention_questions_required: false # Skip the retention questions step
 
-  - slug: L2
+  - slug: medium
     name: "Medium (Internal Data)"
-    short_name: "Medium"
+    short_name: "L2"
     sort_order: 2
     color: "yellow"
     description: |
@@ -204,9 +197,9 @@ tiers:
     consultation_required: false
     retention_questions_required: false
 
-  - slug: L3
+  - slug: high
     name: "High (Regulated Data)"
-    short_name: "High"
+    short_name: "L3"
     sort_order: 3
     color: "orange"
     description: |
@@ -229,9 +222,9 @@ tiers:
     consultation_required: false       # Regulated tiers often skip consultation when services are pre-approved
     retention_questions_required: true # Ask retention questions for regulated data
 
-  - slug: L4
+  - slug: restricted
     name: "Restricted (Export-Controlled)"
-    short_name: "Restricted"
+    short_name: "L4"
     sort_order: 4
     color: "red"
     description: |
@@ -273,7 +266,7 @@ categories:
     name: "Compute"
     description: "Processing and analysis resources"
     icon: "cpu"
-    order: 1
+    sort_order: 1
 
     # Features for the comparison modal
     # Users see these as rows when comparing services
@@ -307,7 +300,7 @@ categories:
     name: "Storage"
     description: "Data storage and management"
     icon: "database"
-    order: 2
+    sort_order: 2
 
     comparison_features:
       - key: hpc_mounted
@@ -339,7 +332,7 @@ categories:
     name: "Environments"
     description: "Dedicated workspaces and VMs"
     icon: "monitor"
-    order: 3
+    sort_order: 3
 
     comparison_features:
       - key: dedicated_resources
@@ -371,7 +364,7 @@ categories:
     name: "National Resources"
     description: "ACCESS and other external programs"
     icon: "globe"
-    order: 4
+    sort_order: 4
 
     comparison_features:
       - key: free_nsf
@@ -503,11 +496,12 @@ services:
       unit_label: "TB"
       price: 5.00                                # Flat monthly rate per unit
 
-    # Auto-applied subsidy — reduces billable units
+    # Auto-applied subsidy — reduces billable units (first 1 TB free)
     subsidies:
-      auto_apply: true
-      free_units: 1                              # First 1 TB free
-      label: "Base Allocation (1 TB free)"
+      - name: "Base Allocation"
+        auto_apply: true
+        discount_type: free_units
+        discount_value: 1
 
     # Pair this service with an archive service (shown as "also archive?" in wizard)
     archive_option:
@@ -566,7 +560,7 @@ services:
 | `cost_model.unit_label` | ✅ | Display label throughout UI |
 | `cost_model.price` | unit only | `ResultsStep`, `slateStore`, `useDMPGenerator` |
 | `cost_model.tiers[].up_to/price/label` | tiered only | Same — tiered cost calculation |
-| `subsidies.auto_apply/free_units` | optional | `slateStore` auto-applies to billable units |
+| `subsidies[].auto_apply / discount_type / discount_value` | optional | `pricing.js` `computeServiceCost()` (called by `slateStore`) applies them; free units use `discount_type: free_units` |
 | `archive_option.service_slug/description` | optional | `EstimateStep` surfaces paired archive prompt |
 | `estimation.prompt/default_value/min_value/max_value/step/presets` | optional | `EstimateStep` UI |
 
@@ -1341,7 +1335,7 @@ questions:
         next: student_data
       - label: "Yes"
         value: true
-        sets_tier: L3
+        sets_tier: high
         sets_flags:
           - hipaa
           - phi
@@ -1353,18 +1347,18 @@ questions:
     options:
       - label: "Fully de-identified (Safe Harbor method)"
         value: "deidentified"
-        sets_tier: L2
+        sets_tier: medium
         clears_flags:
           - hipaa
           - phi
         next: government_data
       - label: "Limited dataset (some identifiers)"
         value: "limited"
-        sets_tier: L3
+        sets_tier: high
         next: government_data
       - label: "Identifiable / not sure"
         value: "identifiable"
-        sets_tier: L3
+        sets_tier: high
         next: government_data
 
   - id: student_data
@@ -1376,7 +1370,7 @@ questions:
         next: government_data
       - label: "Yes"
         value: true
-        sets_tier: L3
+        sets_tier: high
         sets_flags:
           - ferpa
         next: government_data
@@ -1406,7 +1400,7 @@ questions:
         next: export_control
       - label: "Yes"
         value: true
-        sets_tier: L4
+        sets_tier: restricted
         sets_flags:
           - cui
           - nist_800_171
@@ -1421,13 +1415,13 @@ questions:
         next: complete
       - label: "Yes - ITAR"
         value: "itar"
-        sets_tier: L4
+        sets_tier: restricted
         sets_flags:
           - itar
         next: complete
       - label: "Yes - EAR"
         value: "ear"
-        sets_tier: L4
+        sets_tier: restricted
         sets_flags:
           - ear
         next: complete
@@ -1438,37 +1432,46 @@ questions:
 # Discipline-specific examples to help users understand
 examples_by_discipline:
   biomedical:
-    L1:
-      - "Published protein structures from PDB"
-      - "Public genomics datasets from NCBI"
-    L2:
-      - "Your lab's unpublished experimental results"
-      - "Pre-publication manuscripts and figures"
-    L3:
-      - "Patient samples with clinical data"
-      - "Genetic data linked to individuals"
+    name: "Biomedical / Life Sciences"
+    icon: "microscope"
+    examples:
+      low:
+        - "Published protein structures from PDB"
+        - "Public genomics datasets from NCBI"
+      medium:
+        - "Your lab's unpublished experimental results"
+        - "Pre-publication manuscripts and figures"
+      high:
+        - "Patient samples with clinical data"
+        - "Genetic data linked to individuals"
 
   engineering:
-    L1:
-      - "Published simulation results"
-      - "Open-source CAD models"
-    L2:
-      - "Proprietary designs before patent filing"
-      - "Industry collaboration data under NDA"
-    L4:
-      - "Defense contractor research (ITAR)"
-      - "CUI-marked government data"
+    name: "Engineering"
+    icon: "cog"
+    examples:
+      low:
+        - "Published simulation results"
+        - "Open-source CAD models"
+      medium:
+        - "Proprietary designs before patent filing"
+        - "Industry collaboration data under NDA"
+      restricted:
+        - "Defense contractor research (ITAR)"
+        - "CUI-marked government data"
 
   social_science:
-    L1:
-      - "Census data and public surveys"
-      - "Published interview transcripts"
-    L2:
-      - "Ongoing survey responses (anonymized)"
-      - "Interview recordings (consent obtained)"
-    L3:
-      - "Student educational records"
-      - "Identifiable interview data"
+    name: "Social Science"
+    icon: "users"
+    examples:
+      low:
+        - "Census data and public surveys"
+        - "Published interview transcripts"
+      medium:
+        - "Ongoing survey responses (anonymized)"
+        - "Interview recordings (consent obtained)"
+      high:
+        - "Student educational records"
+        - "Identifiable interview data"
 
 # Allow users to override the recommendation
 override:
@@ -1494,7 +1497,7 @@ Detailed approval processes for each tier, shown when users select high-tier dat
 # config/tier-workflow.yaml
 
 workflows:
-  L1:
+  low:
     name: "Low (Public Data)"
     process: "self-service"
     description: "No special approval needed"
@@ -1503,7 +1506,7 @@ workflows:
       - "Provision directly via self-service portal"
     typical_time: "Same day"
 
-  L2:
+  medium:
     name: "Medium (Internal Data)"
     process: "self-service"
     description: "Standard institutional security"
@@ -1512,7 +1515,7 @@ workflows:
       - "Provision via self-service with institutional auth"
     typical_time: "Same day"
 
-  L3:
+  high:
     name: "High (Regulated Data)"
     process: "consultation"
     description: "Requires BAA verification or IRB documentation"
@@ -1553,7 +1556,7 @@ workflows:
       - "cloud-high-security"
       - "vdi-hipaa"
 
-  L4:
+  restricted:
     name: "Restricted (Export-Controlled)"
     process: "security_review"
     description: "Requires export control review and dedicated infrastructure"
@@ -1970,7 +1973,6 @@ Templates in `config/dmp-templates/` use Handlebars syntax to generate Data Mana
 {{!-- Institution info --}}
 {{institution.name}}
 {{institution.short_name}}
-{{institution.rc_name}}
 
 {{!-- Selected tier --}}
 {{tier.name}}
@@ -1996,7 +1998,7 @@ Templates in `config/dmp-templates/` use Handlebars syntax to generate Data Mana
 {{#if condition}}...{{/if}}
 ```
 
-### Example: `config/dmp-templates/storage/default.md`
+### Example: `config/dmp-templates/hpc-storage/default.md`
 
 ```markdown
 ## Data Storage and Preservation
@@ -2049,9 +2051,10 @@ Validation checks:
 - All tier references exist
 - All category references exist
 - All DMP templates referenced in mappings exist
-- Comparison features match category definitions
-- No circular references in bundles
-- Required fields are present
+- Archive-option service references exist
+- Bundle recommended tiers exist
+- Retention schedule tiers exist
+- Compliance/BAA invariants enforced (e.g. HIPAA frameworks require an in-place BAA; `baa_status` must be a known value)
 
 ### Deployment
 
@@ -2100,7 +2103,7 @@ Deploy to any static host (Netlify, Vercel, GitHub Pages, S3, etc.). No server-s
 
 ### Adding a calculator
 
-1. Create Vue component in `src/components/estimate/calculators/`
+1. Create Vue component in `src/components/estimate/` (e.g. `src/components/estimate/MyThingCalculator.vue`)
 2. Add to `calculators.yaml` enabled list
 3. Add configuration in `calculator_config` section
 4. Calculator appears in Help Me Estimate modal
@@ -2108,8 +2111,8 @@ Deploy to any static host (Netlify, Vercel, GitHub Pages, S3, etc.). No server-s
 ### Changing institution branding
 
 1. Edit `meta.yaml` with your institution details
-2. Replace logo files in `public/assets/`
-3. Update `primary_color` for theme
+2. Replace logo files in `public/images/` and point `institution.logo` / `institution.footer_logo` at them
+3. Set `branding.default_skin` (or override colors via `branding.custom_css` / `custom_css_url`) — `primary_color` is not used by the app
 4. Run `npm run build`
 
 ### Adding licensed software

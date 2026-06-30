@@ -82,8 +82,9 @@ config-local/
 ├── tier-questionnaire.yaml
 ├── retention.yaml
 ├── software.yaml
-├── dmp-templates/         # Handlebars templates for DMP output
-│   └── *.hbs
+├── dmp-templates/         # Per-service Handlebars-templated Markdown for DMP output
+│   └── <service-slug>/
+│       └── <variant>.md    # e.g. default.md, high.md (build reads only .md; .hbs files here are ignored)
 ├── images/                # Branding (optional)
 │   ├── logo.png
 │   ├── logo-dark.png
@@ -106,7 +107,7 @@ Production (docker-compose.yml):
 │                                          │
 │  Stage 2: caddy:2-alpine                │
 │    └─ Copy /dist → /srv                 │
-│    └─ Serve on :4000                    │
+│    └─ Serve on :3000 (host :4000)       │
 └─────────────────────────────────────────┘
 
 Development (docker-compose.dev.yml):
@@ -116,7 +117,7 @@ Development (docker-compose.dev.yml):
 │  node:20-alpine + caddy                 │
 │    └─ Mount ./config-local → /app/config│
 │    └─ Build at startup                  │
-│    └─ Serve on :4000                    │
+│    └─ Serve on :3000 (host :4000)       │
 └─────────────────────────────────────────┘
 ```
 
@@ -200,7 +201,7 @@ If running behind nginx/Caddy/Traefik:
 services:
   planner:
     ports:
-      - "127.0.0.1:4000:4000"  # Only localhost
+      - "127.0.0.1:4000:3000"  # Only localhost
 ```
 
 Then proxy from your frontend:
@@ -250,5 +251,5 @@ docker-compose -f docker-compose.dev.yml restart
 ```bash
 # Change the port mapping
 ports:
-  - "4001:4000"
+  - "4001:3000"
 ```

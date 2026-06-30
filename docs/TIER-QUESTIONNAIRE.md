@@ -1,6 +1,6 @@
 # Tier Questionnaire: "Help Me Pick My Tier"
 
-This document describes the interactive questionnaire that helps researchers determine the appropriate data classification tier (Low, Medium, High) for their project.
+This document describes the interactive questionnaire that helps researchers determine the appropriate data classification tier (Low, Medium, High, Restricted) for their project.
 
 ---
 
@@ -79,7 +79,7 @@ When "Help me decide" is clicked:
 │  the appropriate tier based on your answers.                   │
 │                                                                 │
 │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
-│  Progress: ████████░░░░░░░░░░░░ Question 2 of 6                │
+│  Progress: ████████░░░░░░░░░░░░ Question 2                     │
 │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
 │                                                                 │
 │  (Question content here)                                        │
@@ -92,157 +92,255 @@ When "Help me decide" is clicked:
 
 ## Question Flow
 
-### Question 1: Human Subjects
+The questionnaire is a **branching decision tree**, not a fixed-length list.
+Every question is single-select (radio buttons); the option you choose decides
+which question comes next (its `next:` pointer) and may raise the recommended
+tier and attach compliance flags. The walk starts at **Human Subjects** and
+ends at the summary (`complete`). Which questions you see — and how many —
+depends on your answers.
 
-```
-Does your research involve data from or about people?
+> The progress indicator shows a running **"Question N"** count (not "N of 6") —
+> there is no fixed total, because branches differ in length.
 
-( ) No - My data is about things, not people
-      Examples: environmental sensors, astronomical observations,
-      materials science, computational chemistry
-
-( ) Yes - My data involves human subjects or their information
-      Examples: survey responses, medical records, interviews,
-      behavioral data, genetic samples
-```
-
-**If No → Skip to Question 5 (likely Low tier)**
-**If Yes → Continue to Question 2**
+The three opening branches (human subjects, biological samples, or neither) all
+converge on the government/defense questions before the summary.
 
 ---
 
-### Question 2: Health Information
+### Human Subjects  *(start)*
+
+```
+Does your research involve human subjects?
+(surveys, interviews, medical records, genetic data — any data from people)
+
+( ) No   → Biological Samples
+( ) Yes  → Health Information
+```
+
+---
+
+### Biological Samples
+
+```
+Does your research involve biological samples or genetic/genomic data?
+(DNA, RNA, tissue, cell cultures, or other biological materials — any organism)
+
+( ) No   → Government / Defense
+( ) Yes  → Organism Source
+```
+
+---
+
+### Organism Source
+
+```
+What is the source of your biological samples or genetic data?
+(pick the most sensitive if several apply)
+
+( ) Human-derived (tissue, cell lines, DNA/RNA)         → Human Sample Detail
+( ) Model organisms (mouse, rat, zebrafish, fly, yeast) → Low tier · Government / Defense
+( ) Wildlife, field samples, or endangered species      → Wildlife Sensitivity
+( ) Agricultural, livestock, or plants                  → Agricultural Sensitivity
+```
+
+ℹ️ Why organism source matters
+   Human-derived material can re-identify individuals even without an IRB
+   protocol. Model organisms are low sensitivity. Wildlife may carry location
+   sensitivity (endangered species, poaching). Agricultural may involve
+   proprietary breeding or biosecurity concerns.
+
+---
+
+### Human Sample Detail  *(human-derived branch)*
+
+```
+What type of human-derived samples are you working with?
+
+( ) Research participant samples (with consent/IRB)
+      → High tier · flags: human_genomic
+( ) Biobank samples (commercial or repository)    → Biobank Consent
+( ) Immortalized cell lines (HeLa, HEK293, etc.)  → Low tier
+( ) Ancient DNA or archaeological samples         → Low tier
+```
+
+ℹ️ When in doubt, treat human genomic data as identifiable — it is easier to
+   reclassify down than to contain a breach.
+   [Check your data's identification status →] (opens the Data Identification helper)
+
+All paths except Biobank continue to **Government / Defense**.
+
+---
+
+### Biobank Consent  *(biobank branch)*
+
+```
+What consent and de-identification applies to your biobank samples?
+
+( ) Fully de-identified with broad consent      → Low tier
+( ) Coded samples (key held by biobank)         → Medium tier
+( ) Identifiable or consent restrictions apply  → High tier · flags: human_genomic
+( ) Not sure - need to check MTA/DUA            → High tier · flags: human_genomic, needs_review
+```
+
+All paths continue to **Government / Defense**.
+
+---
+
+### Wildlife Sensitivity  *(wildlife branch)*
+
+```
+Does your wildlife data have location or conservation sensitivity?
+(endangered-species locations, nesting sites, poaching/harassment risk)
+
+( ) No - common species, no location concerns   → Low tier
+( ) Yes - endangered species or sensitive sites → Medium tier · flags: location_sensitive
+( ) Not sure                                     → Medium tier
+```
+
+All paths continue to **Government / Defense**.
+
+---
+
+### Agricultural Sensitivity  *(agricultural branch)*
+
+```
+Does your agricultural/plant data involve proprietary or biosecurity concerns?
+
+( ) No - standard research crops/livestock           → Low tier
+( ) Yes - proprietary breeding or commercial partner → Medium tier · flags: proprietary
+( ) Yes - USDA Select Agent or biosecurity concern   → Restricted tier · flags: select_agent, biosecurity → summary
+```
+
+The first two options continue to **Government / Defense**; Select Agent ends
+the questionnaire.
+
+---
+
+### Health Information  *(human-subjects branch)*
 
 ```
 Does your data include health or medical information?
+(medical records, diagnoses, treatments, genetic info linked to individuals,
+mental-health or substance-abuse records)
 
-( ) No - No health data involved
-
-( ) Yes, but de-identified
-      Data has been stripped of identifiers per HIPAA Safe Harbor
-      or Expert Determination method
-
-      ⚠️ "I replaced names with codes" is NOT de-identified!
-         [Help me figure out if my data is truly de-identified →]
-         (Opens Data Identification Status helper)
-
-( ) Yes, with identifiers (PHI)
-      Includes names, dates, medical record numbers, or other
-      identifiers linked to health information
-
-ℹ️ What counts as PHI?
-   Protected Health Information includes any health data that can be
-   linked to an individual: diagnoses, treatments, test results,
-   insurance info, appointment records, genetic data, etc.
+( ) No   → Student Records
+( ) Yes  → flags: hipaa, phi → Identifiable?
 ```
-
-**If "Yes, with identifiers" → High tier (HIPAA)**
-**Otherwise → Continue**
 
 ---
 
-### Question 3: Student Records
+### Identifiable?
+
+```
+Is the health data identifiable or de-identified?
+(de-identified = all 18 HIPAA identifiers removed AND no linking key exists)
+
+( ) Fully de-identified (Safe Harbor, no linking key)
+      → Medium tier · clears flags: hipaa, phi
+( ) Encoded (codes with a linking key somewhere)  → High tier
+( ) Limited dataset (some identifiers remain)     → High tier
+( ) Identifiable (names, SSNs, etc. in the data)  → High tier
+```
+
+ℹ️ Replacing names with codes is NOT de-identification if a linking key exists
+   anywhere (spreadsheet, database, a collaborator's copy).
+   [Help me figure out my data's status →] (opens the Data Identification helper)
+
+All paths continue to **Government / Defense**.
+
+---
+
+### Student Records
 
 ```
 Does your data include student education records?
+(grades, enrollment, coursework, or other student-information-system data)
 
-( ) No - No student records
-
-( ) Yes, but only directory information
-      Name, enrollment status, major - things the university
-      publishes in directories
-
-( ) Yes, including protected records
-      Grades, transcripts, financial aid, disciplinary records,
-      disability accommodations
-
-ℹ️ What's protected under FERPA?
-   The Family Educational Rights and Privacy Act protects student
-   "education records" - anything directly related to a student and
-   maintained by the institution. This includes grades, transcripts,
-   class schedules, financial information, and disciplinary records.
+( ) No   → Government / Defense
+( ) Yes  → Education Record Type
 ```
-
-**If "Yes, protected records" → High tier (FERPA)**
-**Otherwise → Continue**
 
 ---
 
-### Question 4: Government/Defense
+### Education Record Type
 
 ```
-Is your research funded by or related to government or defense work?
+What kind of education records — and how are they used?
+(FERPA covers all of these; the tier follows content and use)
 
-( ) No - Standard academic research
-
-( ) Yes, federal contract but no controlled information
-      NIH, NSF, DOE basic research without classification
-
-( ) Yes, involves CUI (Controlled Unclassified Information)
-      DFARS 7012, NIST 800-171 requirements
-
-( ) Yes, involves export-controlled data (ITAR/EAR)
-      Defense articles, dual-use technology, international
-      collaboration restrictions
-
-( ) Yes, involves classified information
-      ⚠️ Contact security@northwinds.edu - this requires
-      special facilities not covered by this tool
-
-ℹ️ Not sure if your grant has CUI/ITAR requirements?
-   Check your award terms or contact your grants administrator.
-   Common indicators: DFARS clauses, export control notices,
-   restrictions on foreign nationals.
+( ) Directory information only (name, enrollment status, dates)
+      → Low tier
+( ) Routine coursework / instructional records (incl. classroom LLM use)
+      → Medium tier · flags: ferpa_instructional
+( ) Sensitive records — transcripts, disciplinary, financial aid, SSN, or health
+      → High tier · flags: ferpa
+( ) Research use — analyzing or linking identifiable education records
+      → High tier · flags: ferpa_research
 ```
 
-**If CUI/ITAR/Classified → High tier**
-**If federal contract no CUI → Medium tier**
-**Otherwise → Continue**
+ℹ️ Peer R1 universities escalate by content, not by use: sensitive records stay
+   High even in routine handling.
+
+All paths continue to **Government / Defense**.
 
 ---
 
-### Question 5: Data Sensitivity
+### Government / Defense  *(convergence point)*
 
 ```
-How would you describe the sensitivity of your data?
+Is this research funded by or for a government agency?
 
-( ) Public or intended for publication
-      Open data, published datasets, publicly available records,
-      data you plan to share openly
-
-( ) Internal but not regulated
-      Unpublished research, proprietary methods, pre-publication
-      results, internal analyses
-
-( ) Confidential or legally protected
-      Contractual confidentiality, trade secrets, legal privilege,
-      data covered by NDAs or DUAs
+( ) No                                             → Export Control
+( ) Yes - NSF, NIH, NEH, NEA, or standard federal  → Export Control
+( ) Yes - DoD/defense-related                       → flags: cui_possible → CUI Check
+( ) Yes - DOE, DHS, NASA, or other possible-CUI     → flags: cui_possible → CUI Check
 ```
 
-**If "Public" → Low tier**
-**If "Internal" → Medium tier**
-**If "Confidential" → High tier**
+ℹ️ Standard science and humanities agencies (NSF, NIH, USDA, NASA science, NEH,
+   NEA) follow open-data policies with no special controls. Defense and security
+   agencies (DoD, DHS, some DOE programs) may impose CUI. Check your award for
+   "CUI," "DFARS," or "NIST 800-171."
+
+Standard federal funding does **not** by itself raise the tier — it continues
+to the next question.
 
 ---
 
-### Question 6: Data Sources (Confirmation)
+### CUI Check  *(defense branch)*
 
 ```
-Where does your data come from? (Select all that apply)
+Does your contract specify CUI (Controlled Unclassified Information)?
+(look for "CUI", "DFARS 252.204-7012", or "NIST 800-171")
 
-[ ] Public datasets (Kaggle, data.gov, published repositories)
-[ ] My own experiments/observations (no human subjects)
-[ ] Surveys or interviews I conduct
-[ ] Medical/clinical records
-[ ] Existing research datasets (with DUA)
-[ ] Partner institution data sharing
-[ ] Government or defense contracts
-[ ] Commercial data purchases
-[ ] Social media scraping
-[ ] Other: _______________
+( ) No / Not sure  → Export Control
+( ) Yes            → Restricted tier · flags: cui, nist_800_171 → summary
 ```
 
-This question helps validate the recommendation and may surface edge cases.
+---
+
+### Export Control
+
+```
+Does your research involve export-controlled technology?
+(ITAR — defense articles; EAR — dual-use; tech not shareable with non-US persons)
+
+( ) No / Not sure                                 → Proprietary Check
+( ) Yes - ITAR (defense articles, military tech)  → Restricted tier · flags: itar → summary
+( ) Yes - EAR (dual-use commercial technology)    → Restricted tier · flags: ear → summary
+( ) Yes - both ITAR and EAR apply                 → Restricted tier · flags: itar, ear → summary
+```
+
+---
+
+### Proprietary Check  *(final question)*
+
+```
+Does your research involve proprietary or confidential data?
+(industry NDAs, proprietary algorithms, trade secrets, confidential data)
+
+( ) No - publicly shareable                 → summary
+( ) Yes - pre-publication or NDA-protected  → Medium tier → summary
+```
 
 ---
 
@@ -337,6 +435,33 @@ This question helps validate the recommendation and may surface edge cases.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+### Recommended: Restricted Tier (L4)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Recommended Tier: ⛔ Restricted (L4)                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Your answers indicate export-controlled or otherwise           │
+│  restricted data requiring a secure enclave and a security      │
+│  consultation before any data is stored.                        │
+│                                                                 │
+│  ⚠️ What this means:                                            │
+│  • Isolated secure enclave, US-persons-only access              │
+│  • NIST 800-171 controls and continuous monitoring              │
+│  • Pricing and services set through consultation                │
+│                                                                 │
+│  Compliance factors detected:                                   │
+│  🔒 CUI / ITAR / EAR - export-controlled data                    │
+│                                                                 │
+│  Consultation required — export control review must happen      │
+│  before any data is stored.                                     │
+│                                                                 │
+│  [Schedule Consultation]    [Continue Planning (Preliminary)]   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 ---
 
 ## Override Flow
@@ -409,8 +534,8 @@ Show relevant examples based on earlier discipline selection:
 | Simulation outputs | Low | Computational data |
 | Sensor/instrument data | Low/Medium | Depends on source |
 | NSF-funded research | Medium | Standard federal |
-| DoD contract data | High | Likely CUI/ITAR |
-| Dual-use technology | High | Export controlled |
+| DoD contract data | Restricted | Likely CUI/ITAR |
+| Dual-use technology | Restricted | Export controlled |
 
 ### Humanities
 
@@ -428,107 +553,82 @@ Show relevant examples based on earlier discipline selection:
 
 ```yaml
 # config/tier-questionnaire.yaml
+#
+# Top-level keys actually present in this file:
+#   intro / questions / summary / examples_by_discipline / override / quick_select
+# Tiers are NOT defined here — they live in config/tiers.yaml (described below),
+# and there is no compliance_flags block: flags are bare string tokens (see below).
 
-tiers:
-  low:
-    name: "Low"
-    label: "Public/Non-Sensitive"
-    color: "#22c55e"
-    icon: "check-circle"
-    description: "Published datasets, public records, non-sensitive research data"
-    implications:
-      - "Access to all standard HPC and storage services"
-      - "No special compliance requirements"
-      - "Lowest cost options available"
-      - "Data can be shared openly"
-
-  medium:
-    name: "Medium"
-    label: "Internal/Pre-Publication"
-    color: "#eab308"
-    icon: "shield"
-    description: "Unpublished research, proprietary methods, non-regulated internal data"
-    implications:
-      - "Access to most HPC and storage services"
-      - "Standard security controls"
-      - "Some services may have restrictions"
-      - "Data should not be shared publicly until publication"
-
-  high:
-    name: "High"
-    label: "Regulated/Protected"
-    color: "#ef4444"
-    icon: "lock"
-    description: "Patient data, student records, export-controlled, legally protected"
-    implications:
-      - "Limited to High-tier approved services"
-      - "VDI, secure enclaves, compliant cloud required"
-      - "Higher costs due to compliance requirements"
-      - "Additional onboarding steps (BAAs, DUAs, training)"
-
-compliance_flags:
-  hipaa:
-    name: "HIPAA"
-    description: "Health Insurance Portability and Accountability Act"
-    triggers_tier: "high"
-    requirements:
-      - "BAA must be in place"
-      - "HIPAA training required"
-      - "PHI handling procedures"
-
-  ferpa:
-    name: "FERPA"
-    description: "Family Educational Rights and Privacy Act"
-    triggers_tier: "high"
-    requirements:
-      - "Student data handling training"
-      - "Access controls documentation"
-
-  cui:
-    name: "CUI"
-    description: "Controlled Unclassified Information"
-    triggers_tier: "high"
-    requirements:
-      - "NIST 800-171 compliance"
-      - "Secure enclave required"
-      - "Access restricted to authorized personnel"
-
-  itar:
-    name: "ITAR"
-    description: "International Traffic in Arms Regulations"
-    triggers_tier: "high"
-    requirements:
-      - "US persons only"
-      - "Export control training"
-      - "Technology control plan"
-
-  fda_11:
-    name: "FDA 21 CFR Part 11"
-    description: "FDA Electronic Records"
-    triggers_tier: "high"
-    requirements:
-      - "Validated systems"
-      - "Audit trails"
-      - "Electronic signatures"
-
+# The decision tree. Each question is a node; the chosen option's `next:`
+# pointer decides the following question (or the literal `complete` to finish).
 questions:
-  # Questions defined here for customization
   - id: human_subjects
-    text: "Does your research involve data from or about people?"
+    question: "Does your research involve human subjects?"
+    help_text: "Surveys, interviews, medical records, genetic data, or any data collected from people."
+    icon: "users"
     options:
-      - value: "no"
-        label: "No - My data is about things, not people"
-        examples: ["environmental sensors", "astronomical observations"]
-        tier_impact: null  # Continue to next question
-      - value: "yes"
-        label: "Yes - My data involves human subjects"
-        examples: ["survey responses", "medical records"]
-        tier_impact: null  # Continue to next question
-    skip_to:
-      "no": "data_sensitivity"  # Skip human-related questions
+      - label: "No"
+        value: false             # value may be boolean or string; the walker keys answers on it
+        next: biological_samples  # id of the next question
+      - label: "Yes"
+        value: true
+        next: health_data
 
-  # ... additional questions
+  # An option may also escalate the tier and add/remove compliance flags:
+  #   - label: "Yes - ITAR (defense articles)"
+  #     value: "itar"
+  #     sets_tier: restricted    # low | medium | high | restricted — UPGRADE-ONLY, never downgrades
+  #     sets_flags: [itar]       # string tokens unioned into the running flag set
+  #     clears_flags: [hipaa]    # string tokens removed from the flag set
+  #     next: complete           # `complete` is the terminal summary node
+
+# Per-tier call-to-action shown on the summary page (keys are tier slugs):
+summary:
+  show_flags: true
+  show_reasoning: true
+  cta:
+    # one block per tier slug — low, medium, high, restricted — each with
+    # title / message / action (high & restricted add a secondary_action)
 ```
+
+Tiers themselves are defined in **`config/tiers.yaml`**, as a list of objects
+(one per tier) keyed by `slug`. There are **four** tiers — `low`, `medium`,
+`high`, and `restricted`:
+
+```yaml
+# config/tiers.yaml
+tiers:
+  - slug: low                 # also: medium, high, restricted
+    name: "Low Risk"
+    short_name: "L1"           # L1–L4
+    sort_order: 1
+    color: "green"             # named color: green | yellow | orange | red (not hex)
+    description: |
+      Open science data, publicly available datasets, ...
+    types_of_data: [ ... ]
+    examples: [ ... ]
+    requirements: [ ... ]
+    help_text: |
+      ...
+    consultation_required: false
+    retention_questions_required: false
+    # the `restricted` tier additionally carries:
+    #   consultation_message, consultation_contact
+```
+
+A tier has **no** `label`, `icon`, or `implications` field; the per-tier icon
+is derived in code from the color via `getTierIcon(tier.color)` in
+`src/views/TierQuestionnaire.vue`.
+
+**Compliance flags** are not a config block and carry no `triggers_tier` or
+`requirements` of their own. They are bare string tokens attached to options via
+`sets_flags:` / `clears_flags:` (lists of strings). The classifier
+(`src/lib/classifyTier.js`) unions them into — and removes them from — a running
+set and returns `flags: string[]`. Tier escalation is driven by `sets_tier` on
+the option (upgrade-only), not by any flag. Real tokens include: `hipaa`,
+`phi`, `ferpa`, `ferpa_instructional`, `ferpa_research`, `cui`, `cui_possible`,
+`nist_800_171`, `itar`, `ear`, `human_genomic`, `location_sensitive`,
+`proprietary`, `select_agent`, `biosecurity`, `needs_review`.
 
 ---
 
@@ -537,23 +637,23 @@ questions:
 ### With Wizard State
 
 ```typescript
+// The pure classifier (src/lib/classifyTier.js) returns
+// { tier, flags: string[], path: string[] }. This wizard-level result wraps
+// that with the user's selection / override state.
 interface TierQuestionnaireResult {
-  recommendedTier: 'low' | 'medium' | 'high'
-  selectedTier: 'low' | 'medium' | 'high'
+  recommendedTier: 'low' | 'medium' | 'high' | 'restricted'
+  selectedTier: 'low' | 'medium' | 'high' | 'restricted'
   overridden: boolean
   overrideReason?: string
 
-  complianceFlags: {
-    hipaa: boolean
-    ferpa: boolean
-    cui: boolean
-    itar: boolean
-    fda11: boolean
-  }
+  // Bare string tokens accumulated while walking the tree, e.g.
+  // 'hipaa', 'phi', 'ferpa', 'cui', 'nist_800_171', 'itar', 'ear'.
+  // Set via sets_flags / removed via clears_flags (see classifyTier.js).
+  flags: string[]
 
-  answers: Record<string, string>
+  answers: Record<string, string | boolean>
 
-  requirements: string[]  // Aggregated from triggered flags
+  requirements: string[]  // Surfaced from the selected tier (tiers.yaml)
 }
 ```
 
@@ -581,7 +681,8 @@ High tier services typically cost more:
 const tierMultiplier = {
   low: 1.0,
   medium: 1.0,
-  high: 1.5  // Compliance overhead
+  high: 1.5,       // Compliance overhead
+  restricted: 2.0  // Secure enclave + security consultation
 }
 ```
 

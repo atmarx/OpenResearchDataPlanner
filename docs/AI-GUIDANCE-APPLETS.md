@@ -137,7 +137,7 @@ For health or education data, additional questions:
 
 ### Outputs
 
-- Data sensitivity level: `public` | `internal` | `confidential` | `restricted`
+- Data sensitivity level: `public` | `internal` | `confidential` | `high` | `restricted` (plus `variable` when IRB-dependent)
 - Flags: `hipaa` | `ferpa` | `export_control` | `nda` | `irb` | `ip_sensitive`
 - Recommendation: Proceed / Proceed with caution / Consult before proceeding / Do not use cloud AI
 - If `irb` flag → Link to IRB/Human Subjects Workflow
@@ -1091,7 +1091,7 @@ Before using AI, ask yourself:
 Each applet should be:
 - **Vue component** following existing patterns
 - **Config-driven** where possible (questions/options in YAML)
-- **Standalone route** (`/ai/stakes`, `/ai/data-check`, etc.)
+- **Standalone route** (`/ai/stakes-assessment`, `/ai/data-check`, etc.)
 - **Linkable** with query params to pre-fill from previous applet
 
 ### State Management
@@ -1128,16 +1128,16 @@ Aggregate feedback informs future revisions and identifies applets needing impro
 7. Pitfall Checklist
 8. Documentation Guide
 9. Reproducibility Checkpoint
-10. Pipeline Integration Check
-11. Disclosure Wizard
-12. Model Selection Guide
-13. Prompt Engineering Basics
-14. AI Ethics Quick Reference
+10. Disclosure Wizard
+11. Model Selection Guide
 
 ### Phase 3 (Teaching + Specialized)
 
-15. Teaching Policy Builder
-16. Student Guidance
+12. Prompt Engineering Basics
+13. Teaching Policy Builder
+14. Student Guidance
+15. Pipeline Integration Check
+16. AI Ethics Quick Reference
 17. Bias Assessment
 
 ---

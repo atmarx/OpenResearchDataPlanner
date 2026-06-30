@@ -20,7 +20,7 @@ Both commands run the same checks. `validate:config` stops after validation; `bu
 
 ## What the Validator Checks
 
-The build script enforces **referential integrity** between config files — it makes sure every slug you reference actually exists. It does **not** check YAML schema shape (field types, required fields, enum values). If a required field is missing or a value is malformed, you'll usually see the symptom at runtime in the wizard, not during validation.
+The build script enforces **referential integrity** between config files — it makes sure every slug you reference actually exists — plus a small set of **compliance-block invariants**: it enum-validates `compliance.baa_status` on mappings and rejects any mapping that lists the `hipaa` framework without an `in_place` (or `not_applicable`) BAA. Outside of that, it does **not** check YAML schema shape — other field types, required fields, and enum values such as `cost_model.type` or `approval` aren't validated. If a required field is missing or a value is malformed, you'll usually see the symptom at runtime in the wizard, not during validation.
 
 | Check | What it catches |
 |-------|-----------------|
@@ -33,6 +33,10 @@ The build script enforces **referential integrity** between config files — it 
 | Bundle → service | Bundle items that reference a nonexistent service |
 | Bundle → tier | `recommended_tiers` that reference a nonexistent tier |
 | Retention → tier | `applies_to_tiers` that reference a nonexistent tier |
+| Mapping compliance → baa_status | A `compliance.baa_status` that isn't one of `in_place` / `available` / `not_available` / `not_applicable` |
+| Mapping compliance → HIPAA/BAA | A mapping whose `frameworks` includes `hipaa` but whose `baa_status` isn't `in_place` or `not_applicable` |
+
+One compliance check is advisory rather than build-blocking: a `baa_status` of `in_place` with no `baa_reference` emits a non-blocking *warning* (the build still succeeds) so the agreement can be named for auditing.
 
 ---
 
@@ -196,7 +200,7 @@ Retention schedule "clinical-7yr" references unknown tier: "sensitive"
 
 ## What the Validator *Doesn't* Catch
 
-The build only enforces referential integrity. These issues slip past validation and surface later:
+The build enforces referential integrity plus the compliance-block invariants noted above — beyond those, these issues slip past validation and surface later:
 
 ### Missing or typo'd field names
 
@@ -212,7 +216,7 @@ Fields like `cost_model.type` (`free`, `unit`, `tiered`, `subscription`, `consul
 
 ### Duplicate slugs
 
-Two services with the same slug won't fail validation. The second entry silently wins (Map-style overwrite during build).
+Two services with the same slug won't fail validation. The second entry silently wins (the build keeps both entries in config.json; the frontend builds a slug→service map at load time, so the last duplicate wins).
 
 **How to notice:** One of your services seems to be missing from the wizard, or shows the wrong pricing.
 

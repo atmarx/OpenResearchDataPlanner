@@ -13,20 +13,28 @@ The Support Workbench is a review interface for Research IT staff to process sub
 ```
 /workbench              → Password gate (if not authenticated)
 /workbench              → Dashboard (list of imported requests)
-/workbench/:requestId   → Request review detail view
 ```
 
 ### Password Protection
 
-Simple client-side gate using a password stored in `meta.yaml`:
+Simple client-side gate. The password is a **build-time** environment
+variable, `VITE_WORKBENCH_PASSWORD`, read by `src/stores/workbenchStore.js`.
+When it isn't set, the store falls back to `support2024` — and it is currently
+unset in the repo, so `support2024` is the effective password until you
+override it.
 
-```yaml
-# config/meta.yaml
-workbench:
-  enabled: true
-  password: "northwinds-it-2024"  # Simple shared password
-  session_duration: 8  # hours before re-auth required
+```bash
+# .env — consumed by the docker-compose build
+VITE_WORKBENCH_PASSWORD=northwinds-it-2024
 ```
+
+Because this is a Vite variable, the value is baked into the static bundle at
+build time. Change it and rebuild the image; there is no runtime config to edit.
+
+There is no session-expiry or re-auth logic. On a successful login the store
+writes only `{ isAuthenticated, staffName }` to `sessionStorage` (no
+timestamp), so a session lasts until the staff member logs out or the browser
+tab/session ends.
 
 **Security note:** This is not meant to protect sensitive data—the JSON files contain the same info faculty already have. It's a light gate to prevent accidental access and keep the interface focused for IT staff.
 
@@ -286,21 +294,13 @@ Add notes capability to the slate item cards:
 
 ```json
 {
-  "schemaVersion": "1.2",
-  "exportedAt": "2024-01-15T14:30:00Z",
-  "exportedFrom": "planner",
-
-  "project": {
-    "name": "Genomics of Treatment Resistance",
-    "status": "submitted",
-    "createdAt": "2024-01-10T09:00:00Z"
-  },
-
-  "device": {
-    "label": "Office MacBook",
-    "userAgent": "Mozilla/5.0...",
-    "lastModified": "2024-01-15T14:30:00Z"
-  },
+  "schema_version": "1.2",
+  "exported_at": "2024-01-15T14:30:00Z",
+  "project_name": "Genomics of Treatment Resistance",
+  "institution": "Northwinds University",
+  "tier": "high",
+  "tier_name": "High Risk (L3)",
+  "final_notes": null,
 
   "contact": {
     "name": "Dr. Sarah Chen",
@@ -308,32 +308,8 @@ Add notes capability to the slate item cards:
     "department": "Genomics Lab"
   },
 
-  "classification": {
-    "tier": "high",
-    "tierName": "High Risk (L3)",
-    "flags": ["hipaa", "phi"],
-    "questionnaireAnswers": { "..." : "..." }
-  },
-
-  "grantPeriod": {
-    "years": 3,
-    "startDate": "2024-07-01",
-    "endDate": "2027-06-30"
-  },
-
-  "slateVersion": 1,
-  "slateHistory": [
-    {
-      "version": 1,
-      "timestamp": "2024-01-15T14:30:00Z",
-      "actor": "researcher",
-      "actorName": "Dr. Sarah Chen",
-      "changeNote": "Initial submission",
-      "items": ["... snapshot ..."]
-    }
-  ],
-
   "slate": {
+    "status": "submitted",
     "items": [
       {
         "id": "uuid-1234",
@@ -356,35 +332,68 @@ Add notes capability to the slate item cards:
       }
     ],
     "software": ["..."],
-    "totals": {
-      "monthlyBase": 1033.33,
-      "annualBase": 12400,
-      "annualWithFA": 18600
+    "projectName": "Genomics of Treatment Resistance",
+    "finalNotes": null,
+    "contact": {
+      "name": "Dr. Sarah Chen",
+      "email": "schen@northwinds.edu",
+      "department": "Genomics Lab"
     }
   },
 
-  "dmp": {
-    "generated": true,
-    "tierTemplate": "high",
-    "text": "..."
-  },
+  "slate_version": 1,
+  "slate_history": [
+    {
+      "version": 1,
+      "timestamp": "2024-01-15T14:30:00Z",
+      "actor": "researcher",
+      "actor_name": "Dr. Sarah Chen",
+      "change_note": "Initial submission",
+      "items": ["uuid-1234"]
+    }
+  ],
 
-  "itReview": {
-    "overallStatus": "pending",
-    "reviewedAt": null,
-    "reviewedBy": null,
-    "internalNotes": null,
-    "approvalPdfGeneratedAt": null
+  "totals": {
+    "monthly": 1033.33,
+    "annual": 12400,
+    "fandaRate": 0.5,
+    "fandaRateLabel": "50% MTDC",
+    "fandaAnnual": 6200,
+    "totalMonthlyWithFanda": 1550,
+    "totalAnnualWithFanda": 18600
   }
 }
 ```
 
+This is the researcher-side export emitted by `exportJSON()` in
+`src/composables/useExport.js`. A few things to keep straight:
+
+- **Flat, snake_case top level.** The keys are `schema_version`,
+  `exported_at`, `project_name`, `institution`, `tier`, `tier_name`,
+  `final_notes`, `contact`, `slate`, `slate_version`, `slate_history`,
+  `totals`.
+- **Redundant nesting.** The `slate` sub-object is the raw slate-store object,
+  so it repeats `projectName`/`finalNotes` (and `contact`) in camelCase
+  alongside the snake_case top-level copies. `totals` (camelCase sub-keys, from
+  `buildTotals`) lives at the top level, not under `slate`.
+- **`slate_history`** entries use snake_case `actor_name`/`change_note`, and
+  their `items` field holds item IDs, not full snapshots.
+- **Casing is load-bearing.** The dashboard importer rejects any file missing
+  both `schema_version` and `export_version` (`WorkbenchDashboard.vue`), and
+  the workbench re-export (`workbenchStore.exportPlanJSON`) appends a
+  `slate_history` entry with `actor: "support"` and adds `last_reviewed_at` /
+  `last_reviewed_by` / `review_status` — all snake_case.
+
 **Key changes from v1.1:**
-- `schemaVersion` bumped to 1.2
-- `project.name` replaces `request.id` (no auto-generated IDs)
-- `device` block for sync metadata
-- `slateVersion` + `slateHistory` for round-trip versioning
-- `itReview.approvalPdfGeneratedAt` tracks when final PDF was generated
+- `schema_version` bumped to `1.2`
+- Flat `project_name` replaces `request.id` — no auto-generated IDs (the
+  workbench derives a local id by slugifying `project_name` + `exported_at`)
+- Flat `tier` + `tier_name` carry the classification
+- `slate_version` + `slate_history` for round-trip versioning (snake_case
+  `actor_name`/`change_note` per entry)
+- Planned for later phases, not yet emitted: a `device` block, `dmp`,
+  `itReview` (including `approvalPdfGeneratedAt`), `grant_period`, and a nested
+  `classification` block
 
 ---
 
@@ -483,7 +492,7 @@ src/composables/useExportImport.js            # Handle versioned JSON format
 For display/tracking, use:
 - **Project name** (researcher provides this)
 - **Timestamp** (when exported/imported)
-- **Device label** (already collected via draftsStore sync metadata)
+- **Device label** (to be collected via the planned `draftsStore` sync metadata — V1.1/V1.2)
 
 This avoids duplicating the ticketing system's ID scheme.
 

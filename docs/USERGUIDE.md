@@ -67,10 +67,11 @@ Click **"Get Started"** on the welcome page. The wizard walks you through:
 
 1. **Data Classification** — What security tier fits your research?
 2. **Grant Period** — How long is your project?
-3. **Data Retention** — How long must you keep data?
+3. **Data Retention** — How long must you keep data? (High-risk L3 projects only)
 4. **Service Selection** — What do you need?
-5. **Usage Estimates** — How much of each service?
-6. **Results** — Your budget and DMP text
+5. **Software** — Licensed or campus software your project needs
+6. **Usage Estimates** — How much of each service?
+7. **Results** — Your budget and DMP text
 
 At the end, your selections are added to your **Service Slate**.
 
@@ -149,6 +150,12 @@ Calculators translate your research into infrastructure requirements.
 | **ML Training** | Model size, training runs | GPU-hours |
 | **ML Inference** | Workload type, item count | GPU-hours |
 | **GPU Simulation** | Package, simulation time | GPU-hours |
+
+### API Costs Calculators
+
+| Calculator | You describe... | We calculate... |
+|------------|-----------------|-----------------|
+| **LLM API Costs** | Provider/model, token volume (input + output), requests per day, time period | Estimated $ cost |
 
 ### How Calculators Work
 
@@ -237,15 +244,14 @@ Generate budget content for your proposal:
 
 ### Submit to Research IT
 
-When you're ready to provision services:
+When you're ready to provision services, send your plan to Research IT for review:
 
-1. Click **"Submit to Research IT"** in your slate
-2. Provide contact information
-3. Select funding source
-4. Indicate timeline/urgency
-5. Submit
+1. Click **"Export for Grant"** in your slate
+2. In the export dialog, optionally add your contact info and any notes for IT
+3. Download the **JSON** option (labeled "JSON (for Research IT)")
+4. Send that file to Research IT via email or a help ticket
 
-You'll receive a request ID and can track status.
+The JSON file contains your full request for their review and approval.
 
 **Note:** You don't need to complete the tier classification to submit. Research IT can help determine the right tier during consultation.
 
@@ -253,7 +259,7 @@ You'll receive a request ID and can track status.
 
 ## Wizard Walkthrough
 
-If you're using the guided wizard path:
+If you're using the guided wizard path, here's what to expect. The exact steps adapt to your data tier — most projects see seven steps; High-risk (L3) projects add a Data Retention step, and Restricted (L4) projects go straight to a consultation (see below).
 
 ### Step 1: Welcome
 
@@ -267,11 +273,11 @@ Select your security tier or take the questionnaire. See [Data Classification](#
 
 Set your grant duration:
 - Presets: 1, 2, 3, or 5 years
-- Custom: Set specific start and end dates
+- Custom: Enter a specific number of months. (Optionally add a start date for your DMP — only the duration affects cost estimates.)
 
-### Step 4: Data Retention
+### Step 4: Data Retention (High-risk L3 only)
 
-Specify how long you must keep data after the grant ends. This helps calculate archive storage needs.
+Specify how long you must keep data after the grant ends. This helps calculate archive storage needs. This step appears only for High-risk (L3) projects.
 
 ### Step 5: Select Services
 
@@ -279,14 +285,18 @@ Choose services from:
 - **Bundles** — Pre-configured combinations for common use cases
 - **Individual services** — Pick exactly what you need
 
-### Step 6: Usage Estimates
+### Step 6: Software
+
+Select any licensed or campus software your project needs. This step is optional — skip it if it doesn't apply.
+
+### Step 7: Usage Estimates
 
 Enter how much of each service you need:
 - Use presets for quick estimates
 - Use calculators for precision
 - Apply available subsidies
 
-### Step 7: Results
+### Step 8: Results
 
 View your complete plan:
 - Budget estimate with costs
@@ -294,6 +304,10 @@ View your complete plan:
 - Next steps for your tier
 
 Your selections are automatically added to your slate.
+
+### Restricted (L4) Projects
+
+If you select the Restricted (L4) tier, the wizard skips the planning steps and takes you straight to a **Consultation** step — Restricted data requires Research IT involvement before anything is provisioned.
 
 ---
 

@@ -27,7 +27,7 @@ OpenResearchDataPlanner is a config-driven, client-side single-page application 
 │          ▼                   ▼                                              │
 │  ┌───────────────────────────────────────────────────────────────────────┐ │
 │  │                      Composables Layer                                 │ │
-│  │  useWizard │ useAcronyms │ useCalculator │ useComparison │ useDMP    │ │
+│  │  useWizard │ useCalculator │ useDMPGenerator │ useExport │ useSkin   │ │
 │  └───────────────────────────────────────────────────────────────────────┘ │
 │                                    │                                        │
 │                                    ▼                                        │
@@ -86,6 +86,9 @@ All configuration lives in `config/`:
 | `tier-workflow.yaml` | Compliance processes | L3/L4 approval steps |
 | `retention.yaml` | Data retention | Funder requirements, archive ratios |
 | `software.yaml` | Software catalog | Licensed software by platform |
+| `explainers.yaml` | Concept explainers | Progressive-disclosure explanatory content |
+| `help-videos.yaml` | Help video catalog | Tutorial/walkthrough video links |
+| `legal.yaml` | Legal/policy text | Footer links, DMP boilerplate |
 
 See [CUSTOMIZE.md](CUSTOMIZE.md) for complete schemas.
 
@@ -96,28 +99,37 @@ See [CUSTOMIZE.md](CUSTOMIZE.md) for complete schemas.
 | Store | Purpose | Persisted |
 |-------|---------|-----------|
 | `configStore` | Loads and provides access to config.json | No |
-| `sessionStore` | User selections throughout wizard | Yes (localStorage) |
-| `wizardStore` | Current step, validation state | No |
-| `comparisonStore` | Comparison modal state | No |
+| `sessionStore` | User selections + wizard progress (`current_step`, `completed_steps`) | Yes (localStorage) |
+| `preferencesStore` | UI/user preferences | Yes (localStorage) |
+| `slateStore` | Active slate/plan working state | Yes (localStorage `odp-slate`) |
+| `workbenchStore` | Saved plans + auth | Yes (localStorage for plans, sessionStorage for auth) |
 
 ### Session Store Shape
 
 ```typescript
 interface SessionState {
-  tier: string | null           // Selected data tier (L1-L4)
-  grantPeriod: {
-    start: Date
-    end: Date
+  id: string
+  created_at: string
+  updated_at: string
+  template_version: string | null
+  current_step: string
+  completed_steps: string[]
+  tier: string | null                      // Selected data tier (L1-L4)
+  classification_flags: string[]           // Compliance flags from the tier questionnaire
+  grant_period: {
+    start_date: string | null
+    end_date: string | null
     months: number
   }
   retention: {
-    years: number
-    archiveRatio: number
+    schedules: string[]
+    longest_years: number
+    archive_ratio: number
+    custom_ratio: boolean
   }
-  selectedServices: Map<string, ServiceSelection>
-  estimates: Map<string, EstimateValue>
-  questionnaireAnswers: Answer[]
-  comparisonSelections: string[]
+  selected_services: ServiceSelection[]    // { service_slug, estimate, use_subsidy, notes, archive_estimate, acknowledged }
+  selected_software: SoftwareSelection[]   // { software_slug, note, platforms }
+  cost_summary: CostSummary | null
 }
 ```
 
@@ -128,14 +140,13 @@ interface SessionState {
 | Composable | Purpose |
 |------------|---------|
 | `useWizard` | Step navigation, validation, flow control |
-| `useAcronyms` | Text annotation, tooltips, modals |
 | `useCalculator` | Help Me Estimate calculator logic |
-| `useComparison` | Service comparison matrix |
 | `useDMPGenerator` | Handlebars template compilation |
-| `useTierQuestionnaire` | Decision tree navigation |
-| `useComplianceWorkflow` | L3/L4 process explainer |
-| `useHelp` | Escape hatch, contact options |
-| `useSoftwareCatalog` | Software search and filtering |
+| `useExport` | Session/config export |
+| `useFeedback` | Feedback capture |
+| `usePdfExport` | PDF rendering of results |
+| `useQuestionnaireHistory` | Tier-questionnaire answer history |
+| `useSkin` | Theme/branding skinning |
 
 ---
 
@@ -144,76 +155,55 @@ interface SessionState {
 ```
 src/
 ├── components/
+│   ├── CostDisclaimer.vue         # Top-level disclaimer (loose component)
+│   │
 │   ├── wizard/                    # Wizard steps
 │   │   ├── WelcomeStep.vue
 │   │   ├── TierSelectStep.vue
-│   │   ├── TierQuestionnaire.vue
 │   │   ├── GrantPeriodStep.vue
 │   │   ├── RetentionStep.vue
 │   │   ├── ServiceSelectStep.vue
+│   │   ├── SoftwareStep.vue
 │   │   ├── EstimateStep.vue
 │   │   ├── ResultsStep.vue
-│   │   └── ConsultationStep.vue
+│   │   ├── ConsultationStep.vue
+│   │   └── CompareModal.vue        # Service comparison modal
 │   │
 │   ├── acronyms/                  # Terminology system
-│   │   ├── AcronymProvider.vue
-│   │   ├── AcronymAnnotator.vue
-│   │   ├── AcronymTooltip.vue
-│   │   └── AcronymModal.vue
+│   │   ├── AnnotatedText.vue      # Annotates plain text via :text prop
+│   │   ├── AnnotatedHtml.vue      # Annotates pre-rendered HTML via :html prop
+│   │   └── TermTooltip.vue        # Internal hover/click tooltip child
 │   │
-│   ├── estimate/                  # Help Me Estimate
-│   │   ├── EstimateModal.vue
-│   │   ├── CalculatorTabs.vue
-│   │   └── calculators/
-│   │       ├── MicroscopyCalculator.vue
-│   │       ├── GenomicsCalculator.vue
-│   │       ├── MLTrainingCalculator.vue
-│   │       └── VideoCalculator.vue
+│   ├── estimate/                  # Help Me Estimate (one calculator per domain)
+│   │   ├── BaseCalculator.vue
+│   │   ├── BatchProcessingCalculator.vue
+│   │   ├── DocumentsCalculator.vue
+│   │   ├── GenomicsPipelinesCalculator.vue
+│   │   ├── GenomicsStorageCalculator.vue
+│   │   ├── GPUSimulationCalculator.vue
+│   │   ├── LLMApiCalculator.vue
+│   │   ├── MedicalImagingCalculator.vue
+│   │   ├── MicroscopyCalculator.vue
+│   │   ├── MLInferenceCalculator.vue
+│   │   ├── MLTrainingCalculator.vue
+│   │   ├── PhotographyCalculator.vue
+│   │   ├── SimulationsCalculator.vue
+│   │   ├── StatisticsCalculator.vue
+│   │   └── VideoCalculator.vue
 │   │
-│   ├── comparison/                # Service comparison
-│   │   ├── CompareButton.vue
-│   │   ├── ComparisonModal.vue
-│   │   ├── ComparisonTable.vue
-│   │   ├── FeatureRow.vue
-│   │   └── FeatureValue.vue
-│   │
-│   ├── compliance/                # L3/L4 workflows
-│   │   ├── WorkflowModal.vue
-│   │   ├── WorkflowTimeline.vue
-│   │   └── WorkflowStep.vue
-│   │
-│   ├── software/                  # Software catalog
-│   │   ├── SoftwareCatalog.vue
-│   │   ├── SoftwareSearch.vue
-│   │   ├── SoftwareCard.vue
-│   │   └── AvailabilityBadge.vue
-│   │
-│   ├── help/                      # Escape hatch
-│   │   ├── HelpButton.vue
-│   │   ├── HelpModal.vue
-│   │   └── ContactOptions.vue
-│   │
-│   ├── services/                  # Service selection
-│   │   ├── ServiceCard.vue
-│   │   ├── BundleCard.vue
-│   │   └── CategorySection.vue
-│   │
-│   ├── results/                   # Output generation
-│   │   ├── BudgetSummary.vue
-│   │   ├── CostBreakdown.vue
-│   │   ├── DMPPreview.vue
-│   │   └── NextSteps.vue
-│   │
-│   └── shared/                    # Reusable components
-│       ├── Modal.vue
-│       ├── Tooltip.vue
-│       ├── ProgressBar.vue
-│       └── LoadingSpinner.vue
+│   ├── explore/                   # Tier questionnaire / guided exploration
+│   ├── feedback/                  # Page feedback widget
+│   ├── layout/                    # App shell: header, footer, layouts
+│   ├── slate/                     # Slate export + footer
+│   └── workbench/                 # Saved-plans workbench (dashboard, login, review)
 │
+├── ai-guidance/                   # AI guidance surface (applets, views, stores)
+├── assets/                        # Styles and static assets
 ├── composables/                   # Business logic
+├── lib/                           # Helpers (pricing, tier classification, AI disclosure)
+├── router/                        # Vue Router route definitions
 ├── stores/                        # Pinia stores
-├── utils/                         # Helper functions
-└── types/                         # TypeScript interfaces
+└── views/                         # Top-level routed views (incl. TierQuestionnaire.vue)
 ```
 
 ---
@@ -227,9 +217,10 @@ src/
 | 3 | `GrantPeriodStep` | Duration selection |
 | 4 | `RetentionStep` | Data retention requirements |
 | 5 | `ServiceSelectStep` | Service/bundle selection (with comparison) |
-| 6 | `EstimateStep` | Usage estimates (with calculators) |
-| 7 | `ResultsStep` | Cost summary, DMP output, next steps |
-| 8 | `ConsultationStep` | Restricted tier redirect |
+| 6 | `SoftwareStep` | Software selection (optional) |
+| 7 | `EstimateStep` | Usage estimates (with calculators) |
+| 8 | `ResultsStep` | Cost summary, DMP output, next steps |
+| — | `ConsultationStep` | Restricted-tier branch (replaces flow: Welcome → TierSelect → Consultation) |
 
 ---
 
@@ -287,13 +278,13 @@ Selected Services + Estimates
 Automatically annotates technical terms throughout the app:
 
 ```vue
-<AcronymProvider :config="acronymConfig">
-  <AcronymAnnotator>
-    <p>Store your data on HPC storage with SU-based billing.</p>
-  </AcronymAnnotator>
-</AcronymProvider>
+<!-- Plain text -->
+<AnnotatedText text="Store your data on HPC storage with SU-based billing." />
 
-<!-- Renders with tooltips on "HPC" and "SU" -->
+<!-- Pre-rendered HTML (e.g. markdown output) -->
+<AnnotatedHtml :html="renderedHtml" />
+
+<!-- Matched terms (e.g. "HPC", "SU") get hover tooltips, rendered internally via TermTooltip -->
 ```
 
 Terms defined in `acronyms.yaml` get:
@@ -421,9 +412,9 @@ No code changes required for institutional customization.
 ## Testing
 
 ```bash
-npm run test           # Unit tests
-npm run test:e2e       # End-to-end tests
-npm run test:a11y      # Accessibility tests
+npm run test            # Unit tests (Vitest)
+npm run test:watch      # Unit tests, watch mode (Vitest)
+npm run persona-session # Browser persona/regression runs (Playwright)
 ```
 
 ### Key Test Areas

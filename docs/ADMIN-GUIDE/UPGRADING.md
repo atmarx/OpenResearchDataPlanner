@@ -16,7 +16,7 @@ schema_version: "1.0"
 - **Major version** (1.x → 2.x): Breaking changes, migration required
 - **Minor version** (1.0 → 1.1): New optional features, backwards compatible
 
-The build process warns if your schema version is outdated or unrecognized.
+The `schema_version` field in `config/meta.yaml` is recorded for upgrade-compatibility tracking but is not currently validated by the build — the build does not warn on an outdated or unrecognized version. `npm run validate:config` checks referential integrity (services, mappings, bundles, retention, DMP templates) and compliance/BAA invariants, not the schema version.
 
 ---
 
@@ -46,7 +46,7 @@ git diff HEAD..upstream/main -- docs/
 
 ### 3. Check the Changelog
 
-Review `CHANGELOG.md` for breaking changes and migration notes.
+Review the upstream commit history with `git log upstream/main --oneline` for breaking changes and migration notes.
 
 ---
 
@@ -131,7 +131,7 @@ git merge upgrade-to-vX.Y
    ```yaml
    # Old (still works)
    comparison_features:
-     gpu_available: true
+     gpu_available: full
 
    # New (recommended)
    comparison_features:
@@ -148,7 +148,7 @@ git merge upgrade-to-vX.Y
 
 This section will be updated with migration instructions for each release.
 
-Check the [CHANGELOG.md](../../CHANGELOG.md) for version-specific notes.
+Check the [GitHub Releases](https://github.com/ORIGINAL-ORG/OpenResearchDataPlanner/releases) for version-specific notes.
 
 ---
 
@@ -234,7 +234,7 @@ However, we recommend staying reasonably current for:
 If you encounter upgrade issues:
 
 1. Check [VALIDATION.md](./VALIDATION.md) for error solutions
-2. Review the [CHANGELOG.md](../../CHANGELOG.md) for breaking changes
+2. Review the upstream commit history (`git log upstream/main --oneline`) for breaking changes
 3. Open a GitHub issue with:
    - Your current version
    - Target version
@@ -245,7 +245,7 @@ If you encounter upgrade issues:
 
 ## Changelog
 
-See [CHANGELOG.md](../../CHANGELOG.md) for the full release history.
+See [GitHub Releases](https://github.com/ORIGINAL-ORG/OpenResearchDataPlanner/releases) for the full release history.
 
 ### Recent Versions
 

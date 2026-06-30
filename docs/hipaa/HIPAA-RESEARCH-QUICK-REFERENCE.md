@@ -27,8 +27,8 @@
 - Need comprehensive FAQ coverage
 
 **Connection to OpenDataPlanner**:
-- **L3 Tier (Sensitive Data)**: HIPAA may apply → See Essential Concepts below
-- **L4 Tier (PHI/Highly Sensitive)**: HIPAA applies → See Section 2 (De-identification) and all principles
+- **L3 Tier (High Risk)**: The HIPAA/PHI tier - HIPAA applies to identifiable PHI → See Section 2 (De-identification) and all principles
+- **L4 Tier (Restricted)**: Secure-enclave tier for export-controlled (EAR/ITAR), CUI, and classified data - not a HIPAA/PHI tier
 - **AI Guidance Track 2** (Clinical): Integration with HIPAA de-identification decision trees
 
 ---
@@ -50,9 +50,10 @@
 - ✅ Health survey data from non-covered entity researcher → NOT PHI (but may be human subjects data)
 - ✅ Genomic data linked to medical record → PHI
 
-**Connection to L3/L4 Tiers**:
-- **L3**: May or may not be PHI (decision tree determines)
-- **L4**: Confirmed PHI, full HIPAA compliance required
+**Connection to L2/L3/L4 Tiers**:
+- **L2 (Medium Risk)**: Fully de-identified health data (Safe Harbor, no linking key) maps here — not PHI
+- **L3 (High Risk)**: Identifiable PHI — confirmed PHI, full HIPAA compliance required (BAA, HIPAA-compliant infrastructure)
+- **L4 (Restricted)**: Export-controlled / CUI / classified — not a HIPAA tier
 
 ---
 
@@ -439,22 +440,16 @@ END
 
 ## Part 4: Connection to OpenDataPlanner
 
-### L3 Tier (Sensitive Data) - HIPAA Considerations
+### L3 Tier (High Risk) - Full HIPAA Compliance
 
-**When L3 Selected**: OpenDataPlanner asks: "Is this health information from a covered entity?"
+**When your data includes health information**, OpenDataPlanner asks two questions: (1) "Does your data include health or medical information?" — answering Yes flags the data as HIPAA/PHI; then (2) "Is the health data identifiable or de-identified?". Fully de-identified Safe Harbor data (no linking key) clears the PHI flag and is classified L2 (Medium). Identifiable, encoded (codes with a linking key), or limited-dataset answers keep PHI and classify the data L3 (High). The tier is the result of these answers — there is no separate "covered entity" question.
 
-**If YES → PHI**: Follow HIPAA guidance
+**Identifiable PHI (L3) → Full HIPAA safeguards required**: Follow HIPAA guidance
 - Review de-identification decision tree (below)
 - Consider BAAs for cloud vendors
 - Include HIPAA compliance in DMP
 
-**If NO → Not PHI**: Institutional policies may still apply, but HIPAA does not
-
----
-
-### L4 Tier (PHI/Highly Sensitive) - Full HIPAA Compliance
-
-**When L4 Selected**: Full HIPAA safeguards required
+**Note**: L3 also covers non-PHI regulated data (FERPA student records, PII). Institutional and FERPA policies apply to those even where HIPAA does not.
 
 **OpenDataPlanner Generates DMP Content**:
 - De-identification method (if applicable)
@@ -472,6 +467,21 @@ END
 - [ ] Access controls configured
 - [ ] Audit logging enabled
 - [ ] Breach response plan documented
+
+---
+
+### L4 Tier (Restricted) - Export-Controlled / CUI / Classified
+
+**When L4 Selected**: This is the secure-enclave tier for export-controlled (EAR/ITAR), Controlled Unclassified Information (CUI), and classified research — **not a HIPAA/PHI tier**. HIPAA does not govern this tier; its governing frameworks are ITAR/EAR, CUI, and NIST 800-171.
+
+**Requirements**:
+- Isolated secure enclave
+- NIST 800-171 compliance
+- US persons only access
+- Physical security controls
+- Continuous monitoring
+- Incident response plan
+- Research Security consultation (research-security@northwinds.edu)
 
 ---
 

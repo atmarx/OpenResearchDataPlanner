@@ -798,65 +798,65 @@ SU = cores × hours × jobs × buffer
 All calculators can be customized in `config/calculators.yaml`:
 
 ```yaml
-calculators:
-  # Enable/disable calculators
+# Which calculators are enabled (and their display order)
+enabled_calculators:
   storage:
     - microscopy
+    - photography
     - genomics
     - video
-    - simulation-output
-    - general
+    - medical-imaging
+    - documents
 
-  compute:
-    - hpc-batch
+  cpu:
     - genomics-pipelines
     - simulations
+    - batch-processing
+    - statistics
 
   gpu:
     - ml-training
     - ml-inference
+    - gpu-simulation
 
-  # Global settings
-  global:
-    buffer_multiplier: 1.2      # Add 20% buffer to all estimates
-    show_calculation: true      # Show math breakdown
-    show_cost_estimate: true    # Show dollar amounts
+  api:
+    - llm-api-costs
 
-  # Per-calculator customization
+# Per-calculator customization
+calculator_config:
   microscopy:
     presets:
-      - id: confocal-core
-        label: "Confocal Core"
-        resolution: "2048x2048"
+      - label: "Confocal Core"
+        resolution: "4k"         # must match a resolutions key (2k/4k/8k)
         bit_depth: 16
         channels: 4
-      - id: light-sheet
-        label: "Light Sheet"
-        resolution: "2048x2048"
+        description: "Standard confocal microscope settings"
+      - label: "Light Sheet"
+        resolution: "4k"
         bit_depth: 16
         channels: 2
         z_slices: 200
+        description: "Light sheet microscopy with Z-stack"
 
-  genomics:
-    # Institution-specific pipeline benchmarks
+  # Institution-specific pipeline benchmarks (a compute calculator)
+  genomics-pipelines:
     pipelines:
-      wgs_alignment:
+      - label: "WGS Alignment (BWA-MEM2)"
         su_per_sample: 300
-        note: "BWA-MEM2 on our cluster"
+        description: "30x genome alignment"
 
-  ml_training:
-    # Available GPU types at this institution
-    gpus:
-      - id: v100
-        name: "NVIDIA V100 (16GB)"
-        available: true
-      - id: a100-40
-        name: "NVIDIA A100 (40GB)"
-        available: true
-      - id: a100-80
-        name: "NVIDIA A100 (80GB)"
-        available: false
-        note: "Coming Q2 2024"
+  ml-training:
+    model_sizes:
+      - label: "Small (ViT-B, Llama 3.2 3B)"
+        typical_hours: 10
+        description: "Fine-tuning or small datasets"
+
+# Global settings — a top-level key, sibling to the two above
+global:
+  safety_multiplier: 1.5    # Add 50% buffer to all estimates
+  safety_message: "Includes 1.5x buffer for processing intermediates"
+  show_calculation: true    # Show math breakdown
+  show_cost_estimate: true  # Show dollar amounts
 ```
 
 ---

@@ -16,7 +16,7 @@ This document provides unit conversion examples for helping researchers estimate
 | 1 TB (terabyte) | 1,000,000,000,000 | 1,000 GB |
 | 1 PB (petabyte) | 1,000,000,000,000,000 | 1,000 TB |
 
-*Note: We use SI units (base 1000) which match cloud provider billing. Binary units (KiB, MiB, GiB) use base 1024.*
+*Note: The estimate calculators convert sizes using binary units (base 1024) — 1 TB = 1,024 GB, 1 GB = 1,024 MB, etc. (see `src/composables/useCalculator.js`). Cloud providers typically bill in SI units (base 1000), so an invoiced TB figure can run ~10% higher than the calculator's TB estimate.*
 
 ---
 

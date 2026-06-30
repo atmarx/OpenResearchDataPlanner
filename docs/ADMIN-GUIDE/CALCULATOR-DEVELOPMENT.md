@@ -8,180 +8,161 @@ Build custom "Help Me Estimate" calculators that translate domain-specific input
 
 Calculators help researchers who think in terms of their domain ("I have 500 microscopy images at 4K resolution") rather than infrastructure units ("I need 2.5 TB of storage").
 
-The app ships with generic calculators for storage, CPU, and GPU. You can customize these or build domain-specific calculators for your institution's common use cases.
+The app ships with generic calculators for storage, CPU, GPU, and LLM API costs. You can customize these or build domain-specific calculators for your institution's common use cases.
 
 ---
 
 ## Calculator Types
 
-Three estimation categories, each with multiple calculators:
+Four estimation categories, each with multiple calculators:
 
 | Category | Unit Output | Example Calculators |
 |----------|-------------|---------------------|
 | `storage` | TB | Microscopy, Genomics, Video, Photography |
 | `cpu` | SU (Service Units) | Genomics Pipelines, Simulations, Batch Processing |
 | `gpu` | GPU-hours | ML Training, Inference, GPU Simulation |
+| `api` | $ (USD) | LLM API Costs |
 
 ---
 
 ## Component Interface
 
-Each calculator is a Vue component that receives props and emits an estimate.
+Each calculator is a Vue component that gets its config and reactive state from the `useCalculator` composable and renders the shared `<BaseCalculator>` wrapper. The component holds the inputs and UI; the composable computes the result.
 
-### Props Received
+### State from `useCalculator`
 
-```typescript
-interface CalculatorProps {
-  // Calculator ID from calculators.yaml
-  calculatorId: string
+A calculator does **not** receive its config via props. Instead it calls `useCalculator('<calculator-id>')`, which returns the config (from `calculators.yaml`) plus reactive state and actions:
 
-  // Configuration from calculators.yaml
-  config: {
-    name: string
-    icon: string
-    description: string
-    presets?: Preset[]
-    // ...custom config fields
-  }
+```js
+const {
+  config,        // calculator_config.<id> from calculators.yaml
+  inputs,        // reactive user inputs
+  result,        // computed numeric result
+  breakdown,     // step-by-step calculation lines
+  error,         // validation / error message
+  outputUnit,    // { label, plural }
+  relatableComparison,
+  applyPreset,
+  calculate,
+  addToSlate,
+  resetInputs
+} = useCalculator('microscopy')
+```
 
-  // Global settings
-  globalConfig: {
-    safety_multiplier: number
-    safety_message: string
-    show_calculation: boolean
+The composable exposes more than this (e.g. `category`, `targetService`, `alternativeServices`, `displayResult`) — destructure the subset you need. Global settings come from the composable's `globalSettings` (sourced from the `global:` block in `calculators.yaml`), not a `globalConfig` prop.
+
+### Events Emitted
+
+A calculator emits a single event, `added`, after its result is successfully written to the slate:
+
+```js
+const emit = defineEmits(['added'])
+
+function handleAddToSlate() {
+  if (addToSlate()) {   // returns true on success
+    emit('added')
   }
 }
 ```
 
-### Events Emitted
+The estimate is **not** emitted as a payload. `addToSlate()` (from the composable) writes it to the Pinia slate store via `slateStore.addItem({ service, quantity, unit, fromCalculator, calculatorInputs })`. Reset is handled by `resetInputs()`, not a `clear` event.
 
-```typescript
-// When user completes estimation
-emit('estimate', {
-  value: number,           // e.g., 15.5 (TB)
-  unit: string,            // e.g., "TB"
-  breakdown: string[],     // e.g., ["500 images × 50 MB = 25 GB", "× 1.5 safety = 37.5 GB"]
-  inputs: Record<string, any>  // User's inputs for reference
-})
-
-// When user clears/resets
-emit('clear')
-```
+The shared `<BaseCalculator>` wrapper emits the UI events the component listens for: `applyPreset`, `calculate`, `addToSlate`, and `reset`.
 
 ---
 
 ## Template Skeleton
 
-Create your component in `src/components/estimate/calculators/`:
+Create your component in `src/components/estimate/`:
 
 ```vue
-<!-- src/components/estimate/calculators/MyCustomCalculator.vue -->
+<!-- src/components/estimate/MyCustomCalculator.vue -->
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
+import { useCalculator } from '@/composables/useCalculator'
+import BaseCalculator from './BaseCalculator.vue'
+import { Beaker } from 'lucide-vue-next'
 
-const props = defineProps({
-  calculatorId: String,
-  config: Object,
-  globalConfig: Object
-})
+const emit = defineEmits(['added'])
 
-const emit = defineEmits(['estimate', 'clear'])
+const {
+  config,
+  inputs,
+  result,
+  breakdown,
+  error,
+  outputUnit,
+  relatableComparison,
+  applyPreset,
+  calculate,
+  addToSlate,
+  resetInputs
+} = useCalculator('my-custom')
 
-// User inputs
-const sampleCount = ref(100)
-const sizePerSample = ref(1.5)  // GB
+const justAdded = ref(false)
 
-// Calculation
-const estimate = computed(() => {
-  const rawGB = sampleCount.value * sizePerSample.value
-  const withSafety = rawGB * props.globalConfig.safety_multiplier
-  return {
-    value: withSafety / 1000,  // Convert to TB
-    unit: 'TB',
-    breakdown: [
-      `${sampleCount.value} samples × ${sizePerSample.value} GB = ${rawGB} GB`,
-      `× ${props.globalConfig.safety_multiplier} safety buffer = ${withSafety} GB`,
-      `= ${(withSafety / 1000).toFixed(2)} TB`
-    ],
-    inputs: {
-      sampleCount: sampleCount.value,
-      sizePerSample: sizePerSample.value
-    }
-  }
-})
-
-function applyEstimate() {
-  emit('estimate', estimate.value)
+// Seed default inputs once config has loaded
+if (config.value) {
+  inputs.sample_count = 100
+  inputs.size_per_sample = 1.5  // GB
 }
 
-function clear() {
-  sampleCount.value = 100
-  sizePerSample.value = 1.5
-  emit('clear')
+function handleApplyPreset(preset) {
+  applyPreset(preset)
+  justAdded.value = false
+}
+
+function handleCalculate() {
+  calculate()
+  justAdded.value = false
+}
+
+function handleReset() {
+  resetInputs()
+  justAdded.value = false
+}
+
+function handleAddToSlate() {
+  if (addToSlate()) {
+    justAdded.value = true
+    emit('added')
+  }
 }
 </script>
 
 <template>
-  <div class="calculator">
-    <h3>{{ config.name }}</h3>
-    <p class="description">{{ config.description }}</p>
-
-    <!-- Presets (if configured) -->
-    <div v-if="config.presets" class="presets">
-      <button
-        v-for="preset in config.presets"
-        :key="preset.label"
-        @click="sizePerSample = preset.size_gb"
-        class="preset-btn"
-      >
-        {{ preset.label }}
-      </button>
-    </div>
-
-    <!-- Inputs -->
-    <div class="inputs">
+  <BaseCalculator
+    title="My Custom Calculator"
+    description="Estimate storage for custom samples"
+    category-label="Storage"
+    :icon="Beaker"
+    :presets="config?.presets || []"
+    :result="result"
+    :result-unit="outputUnit.label"
+    :breakdown="breakdown"
+    :error="error"
+    :comparison="relatableComparison"
+    :just-added="justAdded"
+    @apply-preset="handleApplyPreset"
+    @calculate="handleCalculate"
+    @add-to-slate="handleAddToSlate"
+    @reset="handleReset"
+  >
+    <template #inputs>
       <label>
         Number of samples
-        <input
-          v-model.number="sampleCount"
-          type="number"
-          min="1"
-        />
+        <input v-model.number="inputs.sample_count" type="number" min="1" />
       </label>
-
       <label>
         Size per sample (GB)
-        <input
-          v-model.number="sizePerSample"
-          type="number"
-          min="0.1"
-          step="0.1"
-        />
+        <input v-model.number="inputs.size_per_sample" type="number" min="0.1" step="0.1" />
       </label>
-    </div>
-
-    <!-- Live calculation preview -->
-    <div v-if="globalConfig.show_calculation" class="breakdown">
-      <h4>Calculation</h4>
-      <ul>
-        <li v-for="step in estimate.breakdown" :key="step">{{ step }}</li>
-      </ul>
-    </div>
-
-    <!-- Result -->
-    <div class="result">
-      <span class="value">{{ estimate.value.toFixed(1) }}</span>
-      <span class="unit">{{ estimate.unit }}</span>
-    </div>
-
-    <!-- Actions -->
-    <div class="actions">
-      <button @click="clear" class="secondary">Clear</button>
-      <button @click="applyEstimate" class="primary">Use This Estimate</button>
-    </div>
-  </div>
+    </template>
+  </BaseCalculator>
 </template>
 ```
+
+The component holds inputs and UI only — `<BaseCalculator>` renders the presets, result, breakdown, comparison, and the Calculate / Add to Slate / Reset actions. The actual math lives in `useCalculator.js` (see step 4 below).
 
 ---
 
@@ -189,23 +170,21 @@ function clear() {
 
 ### 1. Create the Component
 
-Save your component in `src/components/estimate/calculators/`.
+Save your component in `src/components/estimate/`.
 
-### 2. Register in the Calculator Index
+### 2. Register the Component
 
-Edit `src/components/estimate/calculators/index.js`:
+Add it to the `calculatorComponents` map in `src/views/CalculatorBrowser.vue`:
 
 ```javascript
-import MicroscopyCalculator from './MicroscopyCalculator.vue'
-import GenomicsCalculator from './GenomicsCalculator.vue'
-import MyCustomCalculator from './MyCustomCalculator.vue'  // Add import
-
-export const calculators = {
-  microscopy: MicroscopyCalculator,
-  genomics: GenomicsCalculator,
-  'my-custom': MyCustomCalculator  // Add mapping
+const calculatorComponents = {
+  microscopy: defineAsyncComponent(() => import('@/components/estimate/MicroscopyCalculator.vue')),
+  // ...existing calculators
+  'my-custom': defineAsyncComponent(() => import('@/components/estimate/MyCustomCalculator.vue'))  // Add mapping
 }
 ```
+
+If your calculator uses a new icon, import it from `lucide-vue-next` and add it to the `iconMap` in the same file (this maps the `icon:` string in `calculators.yaml` to the imported icon).
 
 ### 3. Enable in calculators.yaml
 
@@ -216,12 +195,12 @@ enabled_calculators:
   storage:
     - microscopy
     - genomics
-    - my-custom      # Add your calculator
+    - my-custom      # Add your calculator under its category
 
 calculator_config:
   my-custom:
     name: "My Custom Calculator"
-    icon: "beaker"
+    icon: "beaker"            # Must exist in iconMap (step 2)
     description: "Estimate storage for custom samples"
 
     # Optional: presets for quick selection
@@ -233,6 +212,27 @@ calculator_config:
       - label: "Large (20 GB/sample)"
         size_gb: 20
 ```
+
+### 4. Implement the Calculation
+
+The math is **not** in the component. Add a `case '<calculator-id>':` block to the matching `calculate*()` function in `src/composables/useCalculator.js` — `calculateStorage()`, `calculateCPU()`, `calculateGPU()`, or `calculateAPI()`, chosen by the calculator's category. Without it, the id falls through to the default branch and errors with `Unknown <category> calculator: <id>`.
+
+```javascript
+// in calculateStorage(), src/composables/useCalculator.js
+case 'my-custom': {
+  const sampleCount = inputs.sample_count || 1
+  const sizePerSample = inputs.size_per_sample || 1  // GB
+  totalBytes = sizePerSample * sampleCount * 1024 * 1024 * 1024
+
+  breakdown.value = [
+    { label: 'Size per sample', value: `${sizePerSample} GB` },
+    { label: 'Number of samples', value: sampleCount.toLocaleString() }
+  ]
+  break
+}
+```
+
+Storage cases set `totalBytes` and `breakdown.value`; the shared tail converts to TB and `calculate()` applies the global `safety_multiplier` and rounding. Each `calculate*()` function uses its own accumulator and shared tail — match the existing cases in the function you're editing.
 
 ---
 
@@ -296,7 +296,7 @@ global:
   show_calculation: true
 
   # Decimal precision
-  storage_precision: 1    # TB shown as 15.5
+  storage_precision: 3    # 3 decimals = 1 GB precision
   compute_precision: 0    # SU shown as 50000
 ```
 
@@ -358,15 +358,18 @@ The global `safety_multiplier` (default 1.5x) accounts for:
 
 ### 6. Link to Services
 
-Connect the calculator result to the relevant service:
+Each calculator's result maps to a service so it can be added to the slate. By default the mapping follows the calculator's **category** — `storage` → `hpc-storage`, `cpu` → `hpc-cpu`, `gpu` → `hpc-gpu`. To target a specific service, set `target_services` in `calculators.yaml`:
 
 ```yaml
-# In services.yaml
-services:
-  - slug: research-storage
-    estimation:
-      help_calculator: "storage"  # Opens storage calculators
+# config/calculators.yaml
+calculator_config:
+  my-custom:
+    target_services:
+      default: hpc-storage             # Service slug from services.yaml
+      alternatives: [archive-storage]  # Optional fallbacks
 ```
+
+Note: the built-in `cpu` category default is the slug `hpc-cpu`, but the shipped CPU service is `hpc-compute`. For CPU calculators, set `target_services.default: hpc-compute` explicitly rather than relying on the category default.
 
 ---
 
@@ -375,8 +378,8 @@ services:
 ### Manual Testing
 
 1. Run `npm run dev`
-2. Navigate to a storage/compute service
-3. Click "Help Me Estimate"
+2. Open "Calculators" in the top navigation (the `/calculators` page, headed "Estimate Your Needs")
+3. Find your calculator's card under its category (Storage / Compute / GPU / API Costs) and click it to open it in the modal
 4. Verify your calculator appears and works
 
 ### Verification Checklist
