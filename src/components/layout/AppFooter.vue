@@ -62,12 +62,16 @@ const aiFooterFeedback = computed(() => aiDisclosure.value?.footer?.feedback_lab
     class="border-t px-6 py-6 pb-20 transition-colors duration-200 bg-surface border-border"
   >
     <div class="max-w-5xl mx-auto">
-      <div class="flex items-center justify-between gap-8">
+      <!-- Stack on mobile so the crest drops below the text instead of
+           fighting it for width (was a fixed two-column row → 65px overflow) -->
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
         <!-- Left side: Contact info, links, version -->
-        <div class="flex flex-col gap-2">
-          <!-- Contact info -->
+        <!-- min-w-0 lets this column shrink when side-by-side on sm+ -->
+        <div class="flex flex-col gap-2 min-w-0">
+          <!-- Contact info — wraps so the long support email can't blow out
+               the row on narrow screens -->
           <div
-            class="flex items-center gap-4 text-sm text-text-muted"
+            class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-text-muted"
           >
             <span v-if="primaryContact">
               Questions?
@@ -155,7 +159,7 @@ const aiFooterFeedback = computed(() => aiDisclosure.value?.footer?.feedback_lab
             v-if="footerLogo"
             :src="footerLogo"
             :alt="institutionName"
-            class="h-24 w-auto"
+            class="h-16 sm:h-24 w-auto"
           />
           <span
             v-else

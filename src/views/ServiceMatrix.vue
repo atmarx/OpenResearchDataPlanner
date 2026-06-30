@@ -192,6 +192,22 @@ function getTierColorClass(tierSlug) {
     default: return 'bg-surface-alt text-text'
   }
 }
+
+// Mobile card availability display — icon + text colour + short label per
+// status. The desktop table inlines these branches per cell; the mobile
+// card funnels them through one helper so the two stay in sync.
+function getAvailabilityStyle(status) {
+  switch (status) {
+    case 'available':
+      return { icon: Check, text: 'text-green-600 dark:text-green-400', label: 'Available' }
+    case 'review':
+      return { icon: AlertTriangle, text: 'text-yellow-600 dark:text-yellow-400', label: 'Review' }
+    case 'consultation':
+      return { icon: Info, text: 'text-orange-600 dark:text-orange-400', label: 'Consult' }
+    default:
+      return { icon: XCircle, text: 'text-text-muted', label: 'N/A' }
+  }
+}
 </script>
 
 <template>
@@ -285,7 +301,9 @@ function getTierColorClass(tierSlug) {
         <div
           class="rounded-lg border overflow-hidden bg-surface border-border"
         >
-          <div class="overflow-x-auto">
+          <!-- Desktop / tablet: the aligned table (md and up). Below md it
+               would force a 640px horizontal scroll, so phones get cards instead. -->
+          <div class="hidden md:block overflow-x-auto">
             <!-- table-fixed: every category section divides the same full width
                  identically, so the tier + Add columns line up down the whole
                  page (default auto-layout sizes each section to its own content) -->
@@ -424,6 +442,102 @@ function getTierColorClass(tierSlug) {
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <!-- Mobile: stacked cards (below md). Every tier's availability is
+               labeled and visible, so phones never need horizontal scroll. -->
+          <div class="md:hidden divide-y divide-border">
+            <div
+              v-for="service in services"
+              :key="service.slug"
+              class="p-4"
+            >
+              <!-- Name + badges (mirrors the desktop Service cell) -->
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-medium text-text">{{ service.name }}</span>
+                <span
+                  v-for="d in service.deployment || []"
+                  :key="d"
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium shrink-0"
+                  :class="d === 'cloud'
+                    ? 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300'
+                    : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'"
+                >
+                  {{ deploymentLabel(d) }}
+                </span>
+                <span
+                  v-for="t in service.tech || []"
+                  :key="t"
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium border bg-surface-alt text-text-secondary border-border shrink-0"
+                >
+                  {{ t }}
+                </span>
+                <span
+                  v-if="getServiceComplianceInfo(service.slug)?.hasBaa"
+                  class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300 shrink-0"
+                  :title="getServiceComplianceInfo(service.slug)?.baaReference || 'BAA in place for sensitive data tiers'"
+                >
+                  <ShieldCheck class="w-3 h-3" />
+                  BAA
+                </span>
+              </div>
+
+              <!-- Description (respects the toggle, on by default) -->
+              <div
+                v-if="showDescriptions"
+                class="text-sm mt-1 text-text-muted"
+              >
+                <AnnotatedText :text="service.description" />
+              </div>
+
+              <!-- External pricing calculator (cloud-variable services) -->
+              <a
+                v-if="service.pricing_url"
+                :href="service.pricing_url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-block mt-1 text-xs hover:underline text-primary"
+              >
+                Estimate on the provider's pricing calculator →
+              </a>
+
+              <!-- Tier availability — 2-col grid, every tier labeled -->
+              <div class="grid grid-cols-2 gap-2 mt-3">
+                <div
+                  v-for="tier in tiers"
+                  :key="tier.slug"
+                  class="flex items-center gap-2 rounded-lg border px-2 py-1.5 border-border bg-surface-alt"
+                >
+                  <span
+                    class="px-1.5 py-0.5 rounded text-xs font-medium shrink-0"
+                    :class="getTierColorClass(tier.slug)"
+                  >
+                    {{ tier.short_name }}
+                  </span>
+                  <span
+                    class="inline-flex items-center gap-1 text-xs font-medium min-w-0"
+                    :class="getAvailabilityStyle(getAvailability(service.slug, tier.slug).status).text"
+                  >
+                    <component
+                      :is="getAvailabilityStyle(getAvailability(service.slug, tier.slug).status).icon"
+                      class="w-3.5 h-3.5 shrink-0"
+                    />
+                    <span class="truncate">
+                      {{ getAvailabilityStyle(getAvailability(service.slug, tier.slug).status).label }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Add button (full width on mobile) -->
+              <button
+                @click="openQuickAdd(service)"
+                class="mt-3 w-full inline-flex items-center justify-center gap-1 px-3 py-2 text-sm rounded-lg bg-primary text-on-primary hover:bg-primary-dark"
+              >
+                <Plus class="w-4 h-4" />
+                Add
+              </button>
+            </div>
           </div>
         </div>
       </div>
