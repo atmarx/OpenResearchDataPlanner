@@ -123,11 +123,14 @@ watch(() => configStore.config?.meta?.branding, injectCustomStyles)
          above the overlay exactly as before. -->
     <router-view />
 
-    <!-- Floating Get Help button -->
+    <!-- Floating Get Help button. bottom-20 clears the sticky slate bar
+         (SlateFooter, also bottom-0 z-40) — on narrow screens its empty-state
+         text wraps to ~65px tall and the FAB used to land right on the bar's
+         buttons. Floats above it at every width instead. -->
     <button
       v-if="helpEnabled"
       @click="showHelpModal = true"
-      class="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg font-medium text-sm transition-all hover:scale-105 active:scale-95 bg-primary text-on-primary hover:opacity-90"
+      class="fixed bottom-20 right-6 z-40 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg font-medium text-sm transition-all hover:scale-105 active:scale-95 bg-primary text-on-primary hover:opacity-90"
       aria-label="Get help"
     >
       <MessageCircle class="w-4 h-4" />
