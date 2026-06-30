@@ -43,3 +43,11 @@ docs/ux/reviews/playwright/**/session-packet.md
 
 # Obsidian editor config (not project docs)
 docs/.obsidian/
+
+# Claude Code — machine-local + secret-bearing agent files only.
+# CLAUDE.md (project orientation) and .claude/skills/ (the persona-review
+# methodology) stay tracked on purpose — they help anyone who forks this repo.
+# settings.local.json is per-machine convenience; .mcp.json can carry internal
+# hostnames / knowledge-base collections. Those two don't belong in a public fork.
+.claude/settings.local.json
+.mcp.json

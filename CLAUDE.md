@@ -44,7 +44,7 @@ PRE-GRANT                                    DURING-GRANT
 
 **Design principle:** Tools integrate via well-defined file formats (JSON, CSV, FOCUS), not tight API coupling. Each tool is independently useful. Humans can inspect and fix interchange files when needed. This is the Unix philosophy for research computing admin tools.
 
-**Sister project:** `/home/xram/Code/focus-billing/` (OpenChargeback)
+**Sister project:** OpenChargeback — the during-grant half of the ecosystem above (tracks actual usage, bills/chargebacks, exports FOCUS CSV).
 
 ### Roadmap
 
