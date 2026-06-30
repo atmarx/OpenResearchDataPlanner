@@ -286,7 +286,10 @@ function getTierColorClass(tierSlug) {
           class="rounded-lg border overflow-hidden bg-surface border-border"
         >
           <div class="overflow-x-auto">
-            <table class="w-full">
+            <!-- table-fixed: every category section divides the same full width
+                 identically, so the tier + Add columns line up down the whole
+                 page (default auto-layout sizes each section to its own content) -->
+            <table class="w-full table-fixed min-w-[640px]">
               <thead
                 class="border-b bg-surface-alt border-border"
               >
@@ -299,7 +302,7 @@ function getTierColorClass(tierSlug) {
                   <th
                     v-for="tier in tiers"
                     :key="tier.slug"
-                    class="px-3 py-3 text-center text-sm font-medium min-w-[80px]"
+                    class="px-3 py-3 text-center text-sm font-medium w-[80px]"
                     :class="getTierColorClass(tier.slug)"
                   >
                     {{ tier.short_name }}
