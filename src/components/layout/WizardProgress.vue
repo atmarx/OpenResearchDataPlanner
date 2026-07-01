@@ -55,7 +55,7 @@ function handleClick(step, index) {
 </script>
 
 <template>
-  <nav aria-label="Progress" class="mb-8">
+  <nav aria-label="Progress">
     <ol class="flex items-start justify-between">
       <li
         v-for="(step, index) in steps"

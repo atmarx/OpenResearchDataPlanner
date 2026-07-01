@@ -79,14 +79,23 @@ watch(
 
 <template>
   <div class="max-w-4xl 2xl:max-w-5xl mx-auto">
-    <!-- Progress indicator (hide on welcome and consultation) -->
-    <WizardProgress
+    <!-- Progress indicator (hide on welcome and consultation). Wrapped in its own
+         opaque panel matching the step card below — without it, the labels,
+         numbers, and connector lines sit directly on the hero background and wash
+         out; only the step circles were bg-surface, everything between them was
+         transparent. The v-if lives on the wrapper so the whole panel hides on
+         welcome/consultation (not just the inner stepper, leaving an empty box). -->
+    <div
       v-if="sessionStore.currentStep !== 'welcome' && sessionStore.currentStep !== 'consultation'"
-      :steps="wizard.activeSteps.value"
-      :current-step="sessionStore.currentStep"
-      :completed-steps="sessionStore.session.completed_steps"
-      @navigate="handleStepNavigate"
-    />
+      class="rounded-lg shadow-sm border bg-surface/95 border-border px-8 py-6 mb-8"
+    >
+      <WizardProgress
+        :steps="wizard.activeSteps.value"
+        :current-step="sessionStore.currentStep"
+        :completed-steps="sessionStore.session.completed_steps"
+        @navigate="handleStepNavigate"
+      />
+    </div>
 
     <!-- Step content -->
     <div
