@@ -220,7 +220,7 @@ acronyms:
       PHI requires HIPAA-compliant storage and handling. At Northwinds,
       this means using High-tier services with BAAs in place.
 
-      **Note:** If you've replaced names with codes but kept a linking key,
+      Note: If you've replaced names with codes but kept a linking key,
       the data is still considered identifiable PHI.
     examples:
       - "Patient medical records from a clinical study"
@@ -290,7 +290,7 @@ acronyms:
       Social Security numbers, addresses, phone numbers, and email
       addresses. PII requires appropriate security controls.
 
-      **Note:** If you've replaced identifiers with codes but kept a linking
+      Note: If you've replaced identifiers with codes but kept a linking
       key, the data is still considered identifiable PII.
     examples:
       - "Names and addresses from survey respondents"
