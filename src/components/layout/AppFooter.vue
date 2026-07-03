@@ -123,14 +123,14 @@ const aiFooterFeedback = computed(() => aiDisclosure.value?.footer?.feedback_lab
             <Bot class="w-3 h-3" />
             <span>{{ aiFooterText }}</span>
             <router-link
-              to="/about-ai"
+              to="/about"
               class="underline hover:text-text-secondary"
             >
               {{ aiFooterLearnMore }}
             </router-link>
             <span aria-hidden="true" class="opacity-50">·</span>
             <router-link
-              to="/about-ai#feedback"
+              to="/about#feedback"
               class="underline hover:text-text-secondary"
             >
               {{ aiFooterFeedback }}

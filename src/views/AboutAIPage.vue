@@ -244,7 +244,7 @@ const citationText = computed(() => {
           <!-- Quick feedback — same widget used across the app; renders only when
                meta.feedback.enabled is true -->
           <div class="mt-5 pt-5 border-t border-border">
-            <PageFeedback variant="card" page-id="/about-ai" prompt="Was this tool useful?" />
+            <PageFeedback variant="card" page-id="/about" prompt="Was this tool useful?" />
           </div>
         </section>
       </div>

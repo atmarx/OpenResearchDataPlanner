@@ -91,7 +91,7 @@ function dismiss() {
                  quieter ghost so it doesn't out-shout the primary link. -->
             <div class="mt-2 sm:mt-0 flex-shrink-0 flex flex-wrap items-center gap-2">
               <router-link
-                to="/about-ai"
+                to="/about"
                 class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400"
               >
                 {{ learnMoreLabel }}

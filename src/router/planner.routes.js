@@ -72,10 +72,15 @@ export default [
         meta: { title: 'Glossary' }
       },
       {
-        path: 'about-ai',
-        name: 'about-ai',
+        path: 'about',
+        name: 'about',
         component: AboutAIPage,
         meta: { title: 'AI in Research Data Planner' }
+      },
+      // Old path kept as a redirect so existing links/bookmarks don't 404.
+      {
+        path: 'about-ai',
+        redirect: { name: 'about' }
       }
     ]
   },
