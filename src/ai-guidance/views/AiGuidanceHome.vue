@@ -315,7 +315,7 @@ function getColorClasses(color) {
     <header
       class="border-b bg-surface border-border"
     >
-      <div class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-6">
+      <div class="max-w-4xl xl:max-w-7xl mx-auto px-4 py-6">
         <div class="flex items-center justify-between">
           <div>
             <h1
@@ -351,7 +351,13 @@ function getColorClasses(color) {
     </header>
 
     <!-- Main content -->
-    <main class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-8 space-y-8">
+    <main class="max-w-4xl xl:max-w-7xl mx-auto px-4 py-8">
+      <!-- Two-column on xl+: the primary flow (tier setup, orientation, the
+           phase applets) rides a wide column; the Clinical-track shortcut and
+           scope note move to a sticky reference rail so the shortcut stays in
+           view while you browse the phases. Single column below xl. -->
+      <div class="xl:flex xl:gap-8 xl:items-start">
+      <div class="xl:flex-1 xl:min-w-0 space-y-8">
       <!-- Tier Context Card -->
       <div
         class="p-6 rounded-lg border bg-surface border-border"
@@ -540,44 +546,6 @@ function getColorClasses(color) {
         </p>
       </div>
 
-      <!-- Clinical & Healthcare AI Track — blue is the app accent/info panel
-           here, so it maps to semantic tokens (follows skin + dark). -->
-      <div
-        class="p-6 rounded-lg border bg-surface-alt border-border"
-      >
-        <div class="flex items-start gap-4">
-          <div
-            class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-surface"
-          >
-            <ShieldAlert
-              class="w-6 h-6 text-primary"
-            />
-          </div>
-          <div class="flex-1">
-            <h2
-              class="text-lg font-semibold mb-1 text-primary"
-            >
-              Clinical & Healthcare AI Track
-            </h2>
-            <p
-              class="mb-3 text-primary"
-            >
-              {{ hasClinicalContext
-                ? "You're working with healthcare data. We have specialized guidance for HIPAA, IRB, FDA, and clinical validation requirements."
-                : "Working with clinical or healthcare AI? Specialized guidance for HIPAA de-identification, IRB amendments, and FDA validation requirements."
-              }}
-            </p>
-            <router-link
-              to="/ai/clinical"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all hover:scale-105 bg-primary text-on-primary hover:bg-primary-dark"
-            >
-              <span>Enter Clinical Track</span>
-              <ArrowRight class="w-4 h-4" />
-            </router-link>
-          </div>
-        </div>
-      </div>
-
       <!-- Phases -->
       <div v-for="phase in phases" :key="phase.id" class="space-y-4">
         <div>
@@ -641,17 +609,61 @@ function getColorClasses(color) {
         </div>
       </div>
 
-      <!-- Scope note -->
-      <div
-        class="p-4 rounded-lg border bg-surface-alt border-border"
-      >
-        <p
-          class="text-sm text-text-secondary"
+      </div><!-- /primary column -->
+
+      <!-- ===== Reference rail (sticky on xl+) ===== -->
+      <aside class="xl:flex-none xl:w-[20rem] space-y-6 mt-8 xl:mt-0 xl:sticky xl:top-24">
+        <!-- Clinical & Healthcare AI Track — restyled as a vertical rail card.
+             blue is the app accent/info panel here, so it maps to semantic
+             tokens (follows skin + dark). -->
+        <div
+          class="p-5 rounded-lg border bg-surface-alt border-border"
         >
-          <strong>Scope:</strong> This guide focuses on generative AI (LLMs, image generators).
-          For research ML (training custom models, scientific computing), consult Research Computing directly.
-        </p>
-      </div>
+          <div class="flex items-center gap-3 mb-2">
+            <div
+              class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-surface"
+            >
+              <ShieldAlert
+                class="w-5 h-5 text-primary"
+              />
+            </div>
+            <h2
+              class="text-base font-semibold text-primary"
+            >
+              Clinical & Healthcare AI Track
+            </h2>
+          </div>
+          <p
+            class="mb-3 text-sm text-primary"
+          >
+            {{ hasClinicalContext
+              ? "You're working with healthcare data. We have specialized guidance for HIPAA, IRB, FDA, and clinical validation requirements."
+              : "Working with clinical or healthcare AI? Specialized guidance for HIPAA de-identification, IRB amendments, and FDA validation requirements."
+            }}
+          </p>
+          <router-link
+            to="/ai/clinical"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all hover:scale-105 bg-primary text-on-primary hover:bg-primary-dark"
+          >
+            <span>Enter Clinical Track</span>
+            <ArrowRight class="w-4 h-4" />
+          </router-link>
+        </div>
+
+        <!-- Scope note -->
+        <div
+          class="p-4 rounded-lg border bg-surface-alt border-border"
+        >
+          <p
+            class="text-sm text-text-secondary"
+          >
+            <strong>Scope:</strong> This guide focuses on generative AI (LLMs, image generators).
+            For research ML (training custom models, scientific computing), consult Research Computing directly.
+          </p>
+        </div>
+      </aside>
+
+      </div><!-- /two-column -->
     </main>
   </div>
 </template>
