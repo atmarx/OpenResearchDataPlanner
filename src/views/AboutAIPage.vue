@@ -46,7 +46,10 @@ const citationText = computed(() => {
 </script>
 
 <template>
-  <div class="max-w-3xl mx-auto">
+  <!-- Narrow reading column on small screens; on xl+ the page opens into a
+       narrative spine (main) + a sticky reference rail (aside) so the wide
+       viewport isn't wasted on one skinny column. -->
+  <div class="max-w-3xl xl:max-w-6xl mx-auto">
     <!-- Back Link -->
     <router-link
       to="/"
@@ -56,7 +59,7 @@ const citationText = computed(() => {
       Back to home
     </router-link>
 
-    <!-- Header -->
+    <!-- Header (spans the full width above both columns) -->
     <div class="mb-8">
       <div class="flex items-center gap-3 mb-4">
         <div
@@ -68,249 +71,257 @@ const citationText = computed(() => {
           AI in Research Data Planner
         </h1>
       </div>
-      <p class="text-lg text-text-secondary">
+      <p class="text-lg text-text-secondary max-w-3xl">
         {{ pageIntro }}
       </p>
     </div>
 
-    <!-- Main Content -->
-    <div class="space-y-8">
-      <!-- Why This Page Exists -->
-      <section class="rounded-xl border p-6 bg-surface border-border">
-        <h2 class="text-lg font-semibold mb-3 text-text">
-          Why This Page Exists
-        </h2>
-        <p class="mb-4 text-text-secondary">
-          Research Data Planner includes guidance on responsible AI use for researchers. We believe
-          it's essential to practice what we teach. This page documents our own AI usage so
-          you can see how we apply the same principles we recommend to faculty.
-        </p>
-        <p class="text-text-secondary">
-          Transparency about AI involvement builds trust and helps others make informed
-          decisions about using AI-assisted tools.
-        </p>
-      </section>
+    <!-- Body: one column on narrow, spine + rail on xl+ -->
+    <div class="xl:grid xl:grid-cols-12 xl:gap-8 xl:items-start">
 
-      <!-- How AI Was Used -->
-      <section class="rounded-xl border p-6 bg-surface border-border">
-        <h2 class="text-lg font-semibold mb-4 text-text">
-          How AI Was Used
-        </h2>
+      <!-- ============ Narrative spine (main column) ============ -->
+      <div class="xl:col-span-8 space-y-8">
+        <!-- How AI Was Used -->
+        <section class="rounded-xl border p-6 bg-surface border-border">
+          <h2 class="text-lg font-semibold mb-4 text-text">
+            How AI Was Used
+          </h2>
 
-        <div class="space-y-4">
-          <!-- Code Generation -->
-          <div class="flex gap-4">
+          <div class="space-y-4">
+            <!-- Code Generation -->
+            <div class="flex gap-4">
+              <div
+                class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-surface-alt text-primary"
+              >
+                <Code class="w-5 h-5" />
+              </div>
+              <div>
+                <h3 class="font-medium text-text">
+                  Code Generation
+                </h3>
+                <p class="text-sm mt-1 text-text-muted">
+                  Vue components, JavaScript logic, and CSS styling were developed with
+                  AI coding assistance<template v-if="assistantName"> from {{ assistantName }}</template>. This accelerated
+                  development while maintaining code quality through human review.
+                </p>
+              </div>
+            </div>
+
+            <!-- Documentation -->
+            <div class="flex gap-4">
+              <div
+                class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400"
+              >
+                <FileText class="w-5 h-5" />
+              </div>
+              <div>
+                <h3 class="font-medium text-text">
+                  Documentation Drafts
+                </h3>
+                <p class="text-sm mt-1 text-text-muted">
+                  Initial drafts of help text, guidance content, and technical documentation
+                  were AI-assisted. All content was reviewed, edited, and verified by
+                  {{ institutionName }} staff for accuracy and institutional fit.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Human Oversight -->
+        <section class="rounded-xl border p-6 bg-surface border-border">
+          <h2 class="text-lg font-semibold mb-4 text-text">
+            Human Oversight
+          </h2>
+
+          <div class="flex gap-4 mb-4">
             <div
-              class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-surface-alt text-primary"
+              class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400"
             >
-              <Code class="w-5 h-5" />
+              <Users class="w-5 h-5" />
             </div>
-            <div>
-              <h3 class="font-medium text-text">
-                Code Generation
-              </h3>
-              <p class="text-sm mt-1 text-text-muted">
-                Vue components, JavaScript logic, and CSS styling were developed with
-                AI coding assistance<template v-if="assistantName"> from {{ assistantName }}</template>. This accelerated
-                development while maintaining code quality through human review.
-              </p>
-            </div>
+            <p class="text-sm text-text-secondary">
+              Every piece of AI-generated output was reviewed by human developers. This includes:
+            </p>
           </div>
 
-          <!-- Documentation -->
-          <div class="flex gap-4">
-            <div
-              class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400"
-            >
-              <FileText class="w-5 h-5" />
-            </div>
-            <div>
-              <h3 class="font-medium text-text">
-                Documentation Drafts
-              </h3>
-              <p class="text-sm mt-1 text-text-muted">
-                Initial drafts of help text, guidance content, and technical documentation
-                were AI-assisted. All content was reviewed, edited, and verified by
-                {{ institutionName }} staff for accuracy and institutional fit.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+          <ul class="space-y-2 ml-14 text-text-secondary">
+            <li class="flex items-start gap-2 text-sm">
+              <CheckCircle
+                class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
+              />
+              <span><strong>Architecture decisions</strong> made by humans based on project requirements</span>
+            </li>
+            <li class="flex items-start gap-2 text-sm">
+              <CheckCircle
+                class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
+              />
+              <span><strong>Code review</strong> for security, correctness, and maintainability</span>
+            </li>
+            <li class="flex items-start gap-2 text-sm">
+              <CheckCircle
+                class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
+              />
+              <span><strong>Content verification</strong> against institutional policies and best practices</span>
+            </li>
+            <li class="flex items-start gap-2 text-sm">
+              <CheckCircle
+                class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
+              />
+              <span><strong>Testing</strong> to ensure functionality works as intended</span>
+            </li>
+            <li class="flex items-start gap-2 text-sm">
+              <CheckCircle
+                class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
+              />
+              <span><strong>Domain expertise</strong> from Research IT and compliance specialists</span>
+            </li>
+          </ul>
+        </section>
 
-      <!-- Human Oversight -->
-      <section class="rounded-xl border p-6 bg-surface border-border">
-        <h2 class="text-lg font-semibold mb-4 text-text">
-          Human Oversight
-        </h2>
+        <!-- What AI Did NOT Do -->
+        <section class="rounded-xl border p-6 bg-surface border-border">
+          <h2 class="text-lg font-semibold mb-4 text-text">
+            What AI Did NOT Do
+          </h2>
 
-        <div class="flex gap-4 mb-4">
-          <div
-            class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400"
-          >
-            <Users class="w-5 h-5" />
-          </div>
-          <p class="text-sm text-text-secondary">
-            Every piece of AI-generated output was reviewed by human developers. This includes:
+          <ul class="space-y-2 text-text-secondary">
+            <li class="flex items-start gap-2 text-sm">
+              <AlertCircle
+                class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
+              />
+              <span>AI did not determine institutional policies or compliance requirements</span>
+            </li>
+            <li class="flex items-start gap-2 text-sm">
+              <AlertCircle
+                class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
+              />
+              <span>AI did not set pricing, tier classifications, or service availability</span>
+            </li>
+            <li class="flex items-start gap-2 text-sm">
+              <AlertCircle
+                class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
+              />
+              <span>AI did not have access to sensitive institutional data or user information</span>
+            </li>
+            <li class="flex items-start gap-2 text-sm">
+              <AlertCircle
+                class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
+              />
+              <span>AI did not make final decisions about content accuracy or appropriateness</span>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Report Issues / Feedback (footer "Share your feedback" links to #feedback) -->
+        <section id="feedback" class="rounded-xl border p-6 bg-surface border-border scroll-mt-24">
+          <h2 class="text-lg font-semibold mb-3 text-text">
+            Found an Issue? Tell Us What You Think
+          </h2>
+          <p class="mb-4 text-text-secondary">
+            If you notice errors, have concerns, or want to suggest improvements, please let us know.
+            Your feedback helps us improve the tool for everyone.
           </p>
-        </div>
+          <div class="flex flex-wrap gap-3">
+            <a
+              href="https://github.com/your-org/opendataplanner/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-surface-alt text-text-secondary hover:bg-border-strong"
+            >
+              Report on GitHub
+              <ExternalLink class="w-4 h-4" />
+            </a>
+            <router-link
+              to="/"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-600 text-white hover:bg-indigo-700 dark:hover:bg-indigo-500"
+            >
+              Contact Research IT
+            </router-link>
+          </div>
 
-        <ul class="space-y-2 ml-14 text-text-secondary">
-          <li class="flex items-start gap-2 text-sm">
-            <CheckCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
-            />
-            <span><strong>Architecture decisions</strong> made by humans based on project requirements</span>
-          </li>
-          <li class="flex items-start gap-2 text-sm">
-            <CheckCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
-            />
-            <span><strong>Code review</strong> for security, correctness, and maintainability</span>
-          </li>
-          <li class="flex items-start gap-2 text-sm">
-            <CheckCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
-            />
-            <span><strong>Content verification</strong> against institutional policies and best practices</span>
-          </li>
-          <li class="flex items-start gap-2 text-sm">
-            <CheckCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
-            />
-            <span><strong>Testing</strong> to ensure functionality works as intended</span>
-          </li>
-          <li class="flex items-start gap-2 text-sm">
-            <CheckCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500 dark:text-green-400"
-            />
-            <span><strong>Domain expertise</strong> from Research IT and compliance specialists</span>
-          </li>
-        </ul>
-      </section>
+          <!-- Quick feedback — same widget used across the app; renders only when
+               meta.feedback.enabled is true -->
+          <div class="mt-5 pt-5 border-t border-border">
+            <PageFeedback variant="card" page-id="/about-ai" prompt="Was this tool useful?" />
+          </div>
+        </section>
+      </div>
 
-      <!-- What AI Did NOT Do -->
-      <section class="rounded-xl border p-6 bg-surface border-border">
-        <h2 class="text-lg font-semibold mb-4 text-text">
-          What AI Did NOT Do
-        </h2>
+      <!-- ============ Reference rail (sticky on xl+) ============ -->
+      <aside class="xl:col-span-4 space-y-6 mt-8 xl:mt-0 xl:sticky xl:top-24">
+        <!-- Why This Page Exists -->
+        <section class="rounded-xl border p-6 bg-surface border-border">
+          <h2 class="text-lg font-semibold mb-3 text-text">
+            Why This Page Exists
+          </h2>
+          <p class="mb-4 text-sm text-text-secondary">
+            Research Data Planner includes guidance on responsible AI use for researchers. We believe
+            it's essential to practice what we teach. This page documents our own AI usage so
+            you can see how we apply the same principles we recommend to faculty.
+          </p>
+          <p class="text-sm text-text-secondary">
+            Transparency about AI involvement builds trust and helps others make informed
+            decisions about using AI-assisted tools.
+          </p>
+        </section>
 
-        <ul class="space-y-2 text-text-secondary">
-          <li class="flex items-start gap-2 text-sm">
-            <AlertCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
-            />
-            <span>AI did not determine institutional policies or compliance requirements</span>
-          </li>
-          <li class="flex items-start gap-2 text-sm">
-            <AlertCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
-            />
-            <span>AI did not set pricing, tier classifications, or service availability</span>
-          </li>
-          <li class="flex items-start gap-2 text-sm">
-            <AlertCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
-            />
-            <span>AI did not have access to sensitive institutional data or user information</span>
-          </li>
-          <li class="flex items-start gap-2 text-sm">
-            <AlertCircle
-              class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500 dark:text-amber-400"
-            />
-            <span>AI did not make final decisions about content accuracy or appropriateness</span>
-          </li>
-        </ul>
-      </section>
-
-      <!-- Our Principles -->
-      <section
-        class="rounded-xl border p-6 bg-indigo-50 border-indigo-200 dark:bg-indigo-900/30 dark:border-indigo-800"
-      >
-        <h2
-          class="text-lg font-semibold mb-4 text-indigo-900 dark:text-indigo-200"
+        <!-- Our Principles -->
+        <section
+          class="rounded-xl border p-6 bg-indigo-50 border-indigo-200 dark:bg-indigo-900/30 dark:border-indigo-800"
         >
-          The Same Principles We Recommend
-        </h2>
-
-        <p
-          class="mb-4 text-sm text-indigo-700 dark:text-indigo-300"
-        >
-          We followed the guidance we provide in our
-          <router-link
-            to="/ai"
-            class="underline font-medium text-indigo-800 dark:text-indigo-200"
-          >AI Guidance section</router-link>:
-        </p>
-
-        <div
-          class="grid gap-3 text-sm text-indigo-700 dark:text-indigo-300"
-        >
-          <div class="flex items-center gap-2">
-            <span class="font-semibold">1. Transparent Disclosure</span>
-            <span class="opacity-75">- You're reading it</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="font-semibold">2. Human Oversight</span>
-            <span class="opacity-75">- All outputs reviewed before use</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="font-semibold">3. Appropriate Use</span>
-            <span class="opacity-75">- AI assisted coding, not decision-making</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="font-semibold">4. Continuous Verification</span>
-            <span class="opacity-75">- Ongoing testing and user feedback</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Report Issues / Feedback (footer "Share your feedback" links to #feedback) -->
-      <section id="feedback" class="rounded-xl border p-6 bg-surface border-border scroll-mt-6">
-        <h2 class="text-lg font-semibold mb-3 text-text">
-          Found an Issue? Tell Us What You Think
-        </h2>
-        <p class="mb-4 text-text-secondary">
-          If you notice errors, have concerns, or want to suggest improvements, please let us know.
-          Your feedback helps us improve the tool for everyone.
-        </p>
-        <div class="flex flex-wrap gap-3">
-          <a
-            href="https://github.com/your-org/opendataplanner/issues"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-surface-alt text-text-secondary hover:bg-border-strong"
+          <h2
+            class="text-lg font-semibold mb-4 text-indigo-900 dark:text-indigo-200"
           >
-            Report on GitHub
-            <ExternalLink class="w-4 h-4" />
-          </a>
-          <router-link
-            to="/"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-600 text-white hover:bg-indigo-700 dark:hover:bg-indigo-500"
+            The Same Principles We Recommend
+          </h2>
+
+          <p
+            class="mb-4 text-sm text-indigo-700 dark:text-indigo-300"
           >
-            Contact Research IT
-          </router-link>
-        </div>
+            We followed the guidance we provide in our
+            <router-link
+              to="/ai"
+              class="underline font-medium text-indigo-800 dark:text-indigo-200"
+            >AI Guidance section</router-link>:
+          </p>
 
-        <!-- Quick feedback — same widget used across the app; renders only when
-             meta.feedback.enabled is true -->
-        <div class="mt-5 pt-5 border-t border-border">
-          <PageFeedback variant="card" page-id="/about-ai" prompt="Was this tool useful?" />
-        </div>
-      </section>
+          <div
+            class="grid gap-3 text-sm text-indigo-700 dark:text-indigo-300"
+          >
+            <div class="flex items-center gap-2">
+              <span class="font-semibold">1. Transparent Disclosure</span>
+              <span class="opacity-75">- You're reading it</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-semibold">2. Human Oversight</span>
+              <span class="opacity-75">- All outputs reviewed before use</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-semibold">3. Appropriate Use</span>
+              <span class="opacity-75">- AI assisted coding, not decision-making</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-semibold">4. Continuous Verification</span>
+              <span class="opacity-75">- Ongoing testing and user feedback</span>
+            </div>
+          </div>
+        </section>
 
-      <!-- Citation -->
-      <section class="rounded-xl border p-6 bg-surface border-border">
-        <h2 class="text-lg font-semibold mb-3 text-text">
-          Citation
-        </h2>
-        <p class="mb-3 text-sm text-text-muted">
-          If referencing this tool's development approach:
-        </p>
-        <div
-          class="p-3 rounded-lg font-mono text-sm whitespace-pre-line bg-canvas text-text-secondary"
-        >{{ citationText.trim() }}</div>
-      </section>
+        <!-- Citation -->
+        <section class="rounded-xl border p-6 bg-surface border-border">
+          <h2 class="text-lg font-semibold mb-3 text-text">
+            Citation
+          </h2>
+          <p class="mb-3 text-sm text-text-muted">
+            If referencing this tool's development approach:
+          </p>
+          <div
+            class="p-3 rounded-lg font-mono text-sm whitespace-pre-line bg-canvas text-text-secondary"
+          >{{ citationText.trim() }}</div>
+        </section>
+      </aside>
+
     </div>
   </div>
 </template>
