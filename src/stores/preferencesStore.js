@@ -7,6 +7,8 @@ export const usePreferencesStore = defineStore('preferences', () => {
   // User preferences
   const showWallpaper = ref(true)
   const darkMode = ref(false)
+  // AI Guidance "Getting Started" intro card — dismissed once, stays dismissed
+  const aiGettingStartedDismissed = ref(false)
 
   // Load from localStorage on init
   function loadFromStorage() {
@@ -16,6 +18,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
         const prefs = JSON.parse(saved)
         showWallpaper.value = prefs.showWallpaper ?? true
         darkMode.value = prefs.darkMode ?? false
+        aiGettingStartedDismissed.value = prefs.aiGettingStartedDismissed ?? false
       }
     } catch (e) {
       // Ignore parse errors
@@ -27,7 +30,8 @@ export const usePreferencesStore = defineStore('preferences', () => {
   function saveToStorage() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       showWallpaper: showWallpaper.value,
-      darkMode: darkMode.value
+      darkMode: darkMode.value,
+      aiGettingStartedDismissed: aiGettingStartedDismissed.value
     }))
   }
 
@@ -52,8 +56,13 @@ export const usePreferencesStore = defineStore('preferences', () => {
     saveToStorage()
   }
 
+  function dismissAiGettingStarted() {
+    aiGettingStartedDismissed.value = true
+    saveToStorage()
+  }
+
   // Watch for changes and persist
-  watch([showWallpaper, darkMode], saveToStorage)
+  watch([showWallpaper, darkMode, aiGettingStartedDismissed], saveToStorage)
 
   // Initialize on store creation
   loadFromStorage()
@@ -61,8 +70,10 @@ export const usePreferencesStore = defineStore('preferences', () => {
   return {
     showWallpaper,
     darkMode,
+    aiGettingStartedDismissed,
     toggleWallpaper,
     toggleDarkMode,
+    dismissAiGettingStarted,
     loadFromStorage
   }
 })

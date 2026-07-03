@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { useConfigStore } from '@/stores/configStore'
+import { usePreferencesStore } from '@/stores/preferencesStore'
 import {
   Gauge,
   Database,
@@ -37,6 +38,7 @@ const router = useRouter()
 const aiStore = useAiGuidanceStore()
 const sessionStore = useSessionStore()
 const configStore = useConfigStore()
+const preferencesStore = usePreferencesStore()
 
 // Tier context state
 const showTierPicker = ref(false)
@@ -358,94 +360,6 @@ function getColorClasses(color) {
            view while you browse the phases. Single column below xl. -->
       <div class="xl:flex xl:gap-8 xl:items-start">
       <div class="xl:flex-1 xl:min-w-0 space-y-8">
-      <!-- Tier Context Card -->
-      <div
-        class="p-6 rounded-lg border bg-surface border-border"
-      >
-        <!-- Has tier context -->
-        <div v-if="hasTierContext && tierConfig" class="flex items-center justify-between">
-          <div class="flex items-center gap-4">
-            <div
-              class="w-12 h-12 rounded-lg flex items-center justify-center"
-              :class="{
-                'bg-green-100 text-green-600': tierConfig.color === 'green',
-                'bg-yellow-100 text-yellow-600': tierConfig.color === 'yellow',
-                'bg-orange-100 text-orange-600': tierConfig.color === 'orange',
-                'bg-red-100 text-red-600': tierConfig.color === 'red'
-              }"
-            >
-              <component :is="getTierIcon(tierConfig.color)" class="w-6 h-6" />
-            </div>
-            <div>
-              <p class="text-sm text-text-muted">
-                {{ tierSource === 'planner' ? 'From your Data Planner session:' : 'Selected tier:' }}
-              </p>
-              <p class="font-semibold text-text">
-                {{ tierConfig.short_name }} — {{ tierConfig.name }}
-              </p>
-              <p class="text-sm mt-1 text-text-secondary">
-                AI guidance will be tailored to {{ tierConfig.short_name }} data sensitivity requirements.
-              </p>
-            </div>
-          </div>
-          <button
-            @click="showTierPicker = true"
-            class="text-sm px-3 py-1.5 rounded-lg transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
-          >
-            Change
-          </button>
-        </div>
-
-        <!-- No tier context - prompt to select -->
-        <div v-else>
-          <div class="flex items-start gap-4">
-            <div
-              class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-surface-alt"
-            >
-              <HelpCircle class="w-6 h-6 text-text-muted" />
-            </div>
-            <div class="flex-1">
-              <h3 class="font-semibold mb-1 text-text">
-                What's your data security tier?
-              </h3>
-              <p class="text-sm mb-4 text-text-secondary">
-                Knowing your tier helps tailor AI guidance to your data sensitivity.
-                You can also proceed without selecting a tier for generic guidance.
-              </p>
-
-              <!-- Quick tier selector -->
-              <div class="flex flex-wrap gap-2">
-                <button
-                  v-for="tier in availableTiers"
-                  :key="tier.slug"
-                  @click="setAiTier(tier.slug)"
-                  class="px-3 py-2 rounded-lg border-2 text-sm font-medium transition-all hover:scale-105"
-                  :class="{
-                    'bg-green-50 border-green-200 text-green-700 hover:border-green-400': tier.color === 'green',
-                    'bg-yellow-50 border-yellow-200 text-yellow-700 hover:border-yellow-400': tier.color === 'yellow',
-                    'bg-orange-50 border-orange-200 text-orange-700 hover:border-orange-400': tier.color === 'orange',
-                    'bg-red-50 border-red-200 text-red-700 hover:border-red-400': tier.color === 'red'
-                  }"
-                >
-                  {{ tier.short_name }}
-                </button>
-                <router-link
-                  to="/tier-check"
-                  class="px-3 py-2 rounded-lg border text-sm transition-colors flex items-center gap-1 border-border-strong text-text-secondary hover:text-text hover:border-border-strong"
-                >
-                  <HelpCircle class="w-4 h-4" />
-                  Help me find my tier
-                </router-link>
-              </div>
-
-              <p class="text-xs mt-3 text-text-muted">
-                Or skip this and proceed with generic guidance below.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Tier Picker Modal -->
       <div
         v-if="showTierPicker"
@@ -527,12 +441,20 @@ function getColorClasses(color) {
         </div>
       </div>
 
-      <!-- Intro -->
+      <!-- Intro — dismissable, remembered in prefs -->
       <div
-        class="p-6 rounded-lg border bg-surface border-border"
+        v-if="!preferencesStore.aiGettingStartedDismissed"
+        class="relative p-6 rounded-lg border bg-surface border-border"
       >
+        <button
+          @click="preferencesStore.dismissAiGettingStarted()"
+          class="absolute top-3 right-3 p-1.5 rounded-lg transition-colors text-text-muted hover:text-text hover:bg-surface-alt"
+          aria-label="Dismiss Getting Started"
+        >
+          <X class="w-4 h-4" />
+        </button>
         <h2
-          class="text-lg font-semibold mb-2 text-text"
+          class="text-lg font-semibold mb-2 pr-8 text-text"
         >
           Getting Started
         </h2>
@@ -613,6 +535,85 @@ function getColorClasses(color) {
 
       <!-- ===== Reference rail (sticky on xl+) ===== -->
       <aside class="xl:flex-none xl:w-[20rem] space-y-6 mt-8 xl:mt-0 xl:sticky xl:top-24">
+        <!-- Tier Context Card — top of the rail so your data tier stays in view
+             while you scroll the phases. -->
+        <div
+          class="p-5 rounded-lg border bg-surface border-border"
+        >
+          <!-- Has tier context -->
+          <div v-if="hasTierContext && tierConfig" class="flex items-start justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div
+                class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                :class="{
+                  'bg-green-100 text-green-600': tierConfig.color === 'green',
+                  'bg-yellow-100 text-yellow-600': tierConfig.color === 'yellow',
+                  'bg-orange-100 text-orange-600': tierConfig.color === 'orange',
+                  'bg-red-100 text-red-600': tierConfig.color === 'red'
+                }"
+              >
+                <component :is="getTierIcon(tierConfig.color)" class="w-5 h-5" />
+              </div>
+              <div class="min-w-0">
+                <p class="text-xs text-text-muted">
+                  {{ tierSource === 'planner' ? 'From your planner session:' : 'Selected tier:' }}
+                </p>
+                <p class="font-semibold text-sm text-text">
+                  {{ tierConfig.short_name }} — {{ tierConfig.name }}
+                </p>
+              </div>
+            </div>
+            <button
+              @click="showTierPicker = true"
+              class="text-xs px-2 py-1 rounded-lg transition-colors flex-shrink-0 text-text-muted hover:text-text hover:bg-surface-alt"
+            >
+              Change
+            </button>
+          </div>
+
+          <!-- No tier context - prompt to select -->
+          <div v-else>
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-surface-alt"
+              >
+                <HelpCircle class="w-5 h-5 text-text-muted" />
+              </div>
+              <h3 class="font-semibold text-text">
+                What's your data security tier?
+              </h3>
+            </div>
+            <p class="text-sm mb-3 text-text-secondary">
+              Knowing your tier tailors AI guidance to your data sensitivity.
+            </p>
+
+            <!-- Quick tier selector -->
+            <div class="flex flex-wrap gap-2">
+              <button
+                v-for="tier in availableTiers"
+                :key="tier.slug"
+                @click="setAiTier(tier.slug)"
+                class="px-3 py-2 rounded-lg border-2 text-sm font-medium transition-all hover:scale-105"
+                :class="{
+                  'bg-green-50 border-green-200 text-green-700 hover:border-green-400': tier.color === 'green',
+                  'bg-yellow-50 border-yellow-200 text-yellow-700 hover:border-yellow-400': tier.color === 'yellow',
+                  'bg-orange-50 border-orange-200 text-orange-700 hover:border-orange-400': tier.color === 'orange',
+                  'bg-red-50 border-red-200 text-red-700 hover:border-red-400': tier.color === 'red'
+                }"
+              >
+                {{ tier.short_name }}
+              </button>
+            </div>
+            <router-link
+              to="/tier-check"
+              class="mt-2 inline-flex items-center gap-1 text-sm transition-colors text-text-secondary hover:text-text"
+            >
+              <HelpCircle class="w-4 h-4" />
+              Help me find my tier
+            </router-link>
+          </div>
+        </div>
+
         <!-- Clinical & Healthcare AI Track — restyled as a vertical rail card.
              blue is the app accent/info panel here, so it maps to semantic
              tokens (follows skin + dark). -->
