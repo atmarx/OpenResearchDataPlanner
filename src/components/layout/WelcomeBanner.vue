@@ -70,22 +70,29 @@ function dismiss() {
             <Bot class="w-4 h-4" />
           </div>
 
-          <!-- Content -->
-          <div class="flex-1 min-w-0">
-            <h2
-              class="text-sm font-semibold text-indigo-900 dark:text-indigo-200"
-            >
-              {{ title }}
-            </h2>
-            <p
-              class="mt-1 text-sm whitespace-pre-line text-indigo-700 dark:text-indigo-300"
-            >
-              {{ message.trim() }}
-            </p>
-            <div class="mt-2 flex items-center gap-4">
+          <!-- Content + actions: stacked on mobile; message left, actions floated
+               right on sm+ so they reclaim the old fourth line and balance the
+               dead space beside the ragged copy. -->
+          <div class="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center sm:gap-4">
+            <div class="min-w-0 sm:flex-1">
+              <h2
+                class="text-sm font-semibold text-indigo-900 dark:text-indigo-200"
+              >
+                {{ title }}
+              </h2>
+              <p
+                class="mt-1 text-sm whitespace-pre-line text-indigo-700 dark:text-indigo-300"
+              >
+                {{ message.trim() }}
+              </p>
+            </div>
+
+            <!-- Actions — button-ized. Learn more leads (filled); Report stays a
+                 quieter ghost so it doesn't out-shout the primary link. -->
+            <div class="mt-2 sm:mt-0 flex-shrink-0 flex flex-wrap items-center gap-2">
               <router-link
                 to="/about-ai"
-                class="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400"
               >
                 {{ learnMoreLabel }}
                 <ExternalLink class="w-3 h-3" />
@@ -95,7 +102,7 @@ function dismiss() {
                 :href="reportIssueUrl"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-sm text-indigo-500 hover:text-indigo-600 dark:text-indigo-400/70 dark:hover:text-indigo-300"
+                class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium transition-colors text-indigo-700 hover:bg-indigo-100 dark:text-indigo-300 dark:hover:bg-indigo-900"
               >
                 {{ reportIssueLabel }}
               </a>
