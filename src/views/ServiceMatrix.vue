@@ -15,6 +15,7 @@ import {
   ShieldCheck
 } from 'lucide-vue-next'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
+import PageShell from '@/components/layout/PageShell.vue'
 
 const router = useRouter()
 
@@ -211,14 +212,8 @@ function getAvailabilityStyle(status) {
 </script>
 
 <template>
-  <div
-    class="max-w-7xl mx-auto my-6 rounded-xl border border-border bg-canvas shadow-sm overflow-hidden transition-colors"
-  >
-    <!-- Header -->
-    <div
-      class="border-b bg-surface border-border"
-    >
-      <div class="max-w-7xl mx-auto px-4 py-4">
+  <PageShell width="max-w-7xl" bare>
+    <template #header>
         <div class="mb-4">
           <h1
             class="text-2xl font-bold text-text"
@@ -280,11 +275,10 @@ function getAvailabilityStyle(status) {
             {{ tier.short_name }}
           </span>
         </div>
-      </div>
-    </div>
+    </template>
 
-    <!-- Matrix -->
-    <div class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Matrix (full-width — the table needs the room; no squeezing side rail) -->
+    <div class="px-4 py-6">
       <div
         v-for="(services, categorySlug) in filteredServices"
         :key="categorySlug"
@@ -552,11 +546,10 @@ function getAvailabilityStyle(status) {
       </div>
     </div>
 
-    <!-- Legend -->
-    <div
-      class="max-w-7xl mx-auto px-4 py-4 mb-20 text-sm text-text-muted"
-    >
-      <div class="flex flex-wrap gap-4">
+    <!-- Legend (availability key — a card under the full-width table) -->
+    <div class="px-4 pb-6">
+      <div class="rounded-lg border p-4 text-sm bg-surface border-border text-text-muted">
+        <div class="flex flex-wrap gap-4">
         <div class="flex items-center gap-2">
           <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
             <Check class="w-3 h-3" />
@@ -587,6 +580,7 @@ function getAvailabilityStyle(status) {
             BAA
           </span>
           <span>HIPAA Business Associate Agreement pre-negotiated</span>
+        </div>
         </div>
       </div>
     </div>
@@ -692,5 +686,5 @@ function getAvailabilityStyle(status) {
         </div>
       </div>
     </Teleport>
-  </div>
+  </PageShell>
 </template>

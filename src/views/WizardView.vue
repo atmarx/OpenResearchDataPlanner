@@ -3,6 +3,7 @@ import { computed, defineAsyncComponent, nextTick, watch } from 'vue'
 import { useSessionStore } from '@/stores/sessionStore'
 import { useWizard } from '@/composables/useWizard'
 import WizardProgress from '@/components/layout/WizardProgress.vue'
+import PageShell from '@/components/layout/PageShell.vue'
 
 // Lazy load step components
 const WelcomeStep = defineAsyncComponent(() =>
@@ -78,16 +79,13 @@ watch(
 </script>
 
 <template>
-  <div class="max-w-4xl 2xl:max-w-5xl mx-auto">
-    <!-- Progress indicator (hide on welcome and consultation). Wrapped in its own
-         opaque panel matching the step card below — without it, the labels,
-         numbers, and connector lines sit directly on the hero background and wash
-         out; only the step circles were bg-surface, everything between them was
-         transparent. The v-if lives on the wrapper so the whole panel hides on
-         welcome/consultation (not just the inner stepper, leaving an empty box). -->
-    <div
+  <PageShell width="max-w-4xl 2xl:max-w-5xl" bare>
+    <!-- Progress stepper rides the opaque header bar. Hidden on welcome and
+         consultation — the slot is conditionally provided (v-if on the template)
+         so PageShell shows NO empty header bar on those steps. -->
+    <template
+      #header
       v-if="sessionStore.currentStep !== 'welcome' && sessionStore.currentStep !== 'consultation'"
-      class="rounded-lg shadow-sm border bg-surface/95 border-border px-8 py-6 mb-8"
     >
       <WizardProgress
         :steps="wizard.activeSteps.value"
@@ -95,12 +93,11 @@ watch(
         :completed-steps="sessionStore.session.completed_steps"
         @navigate="handleStepNavigate"
       />
-    </div>
+    </template>
 
-    <!-- Step content -->
-    <div
-      class="rounded-lg shadow-sm border bg-surface/95 border-border"
-    >
+    <!-- Step content — rides PageShell's card body (step components self-pad;
+         the inline nav adds its own px-8). -->
+    <div>
       <component
         :is="currentComponent"
         @next="wizard.nextStep"
@@ -203,5 +200,5 @@ watch(
       </div>
     </div>
   </Teleport>
-  </div>
+  </PageShell>
 </template>
