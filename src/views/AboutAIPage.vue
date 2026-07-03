@@ -49,7 +49,7 @@ const citationText = computed(() => {
   <!-- Narrow reading column on small screens; on xl+ the page opens into a
        narrative spine (main) + a sticky reference rail (aside) so the wide
        viewport isn't wasted on one skinny column. -->
-  <div class="max-w-3xl xl:max-w-6xl mx-auto">
+  <div class="max-w-3xl xl:max-w-none xl:w-fit mx-auto">
     <!-- Back Link -->
     <router-link
       to="/"
@@ -76,11 +76,13 @@ const citationText = computed(() => {
       </p>
     </div>
 
-    <!-- Body: one column on narrow, spine + rail on xl+ -->
-    <div class="xl:grid xl:grid-cols-12 xl:gap-8 xl:items-start">
+    <!-- Body: one column on narrow, spine + rail on xl+. The spine KEEPS the
+         page's original max-w-3xl reading width — the rail is ADDED alongside
+         it (the container widens), never carved out of the main content. -->
+    <div class="xl:flex xl:gap-8 xl:items-start">
 
-      <!-- ============ Narrative spine (main column) ============ -->
-      <div class="xl:col-span-8 space-y-8">
+      <!-- ============ Narrative spine (main column, original width) ============ -->
+      <div class="space-y-8 xl:flex-none xl:w-[48rem] xl:max-w-full">
         <!-- How AI Was Used -->
         <section class="rounded-xl border p-6 bg-surface border-border">
           <h2 class="text-lg font-semibold mb-4 text-text">
@@ -248,8 +250,8 @@ const citationText = computed(() => {
         </section>
       </div>
 
-      <!-- ============ Reference rail (sticky on xl+) ============ -->
-      <aside class="xl:col-span-4 space-y-6 mt-8 xl:mt-0 xl:sticky xl:top-24">
+      <!-- ============ Reference rail (fixed sidebar width, sticky on xl+) ============ -->
+      <aside class="xl:flex-none xl:w-[24rem] space-y-6 mt-8 xl:mt-0 xl:sticky xl:top-24">
         <!-- Why This Page Exists -->
         <section class="rounded-xl border p-6 bg-surface border-border">
           <h2 class="text-lg font-semibold mb-3 text-text">
