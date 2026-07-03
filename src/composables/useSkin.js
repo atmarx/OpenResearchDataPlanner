@@ -42,10 +42,19 @@ function _lum(h) {
   return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2]
 }
 function _cr(a, b) { const l1 = _lum(a), l2 = _lum(b); return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05) }
-/* darken an accent until its text colour clears WCAG 4.5:1 */
+/* darken an accent until its text colour clears WCAG 4.5:1 (light mode:
+   bright text on a dark-enough fill) */
 function _btnFill(accent, ink) {
   let f = accent, t = 0
   while (_cr(ink, f) < 4.5 && t < 0.6) { t += 0.04; f = _mix(accent, '#000000', t) }
+  return f
+}
+/* lighten an accent until dark text on it clears WCAG 4.5:1 (dark mode runs
+   the inverse: a bright fill carrying dark on-primary ink — same guarantee as
+   _btnFill, mirrored) */
+function _btnFillLite(accent, ink) {
+  let f = accent, t = 0
+  while (_cr(ink, f) < 4.5 && t < 0.85) { t += 0.04; f = _mix(accent, '#ffffff', t) }
   return f
 }
 
@@ -87,11 +96,20 @@ function deriveSkin(tok) {
     '--radius-xl': (rd.xl != null ? rd.xl : (rd.lg != null ? rd.lg + 2 : 8)) + 'px',
     '--font-sans': `'${sans}', system-ui, -apple-system, sans-serif`
   }
+  const dCanvas = _mix(ink, '#000000', 0.25)
   const dPanel = _mix(ink, '#ffffff', 0.06)
+  /* Dark mode mirrors the hand-authored default (:root.dark in main.css): the
+     accent runs BRIGHT so links stay legible on the dark canvas, and
+     --color-on-primary flips to the dark canvas ink so buttons carry dark text
+     on that bright fill. The prior code lightened the accent but kept the
+     light-mode white on-primary — a mid-tone fill + white text (Northwinds:
+     ~3.98:1, an AA failure on every primary button). Lighten until the dark ink
+     clears 4.5:1 so a mid-tone brand accent can't strand unreadable text. */
+  const darkFill = _btnFillLite(accent, dCanvas)
   const dark = {
-    '--color-primary': _mix(accent, '#ffffff', 0.15),
-    '--color-on-primary': onAcc,
-    '--color-canvas': _mix(ink, '#000000', 0.25),
+    '--color-primary': darkFill,
+    '--color-on-primary': dCanvas,
+    '--color-canvas': dCanvas,
     '--color-surface': dPanel,
     '--color-surface-alt': _mix(ink, '#ffffff', 0.11),
     '--color-text': _mix(surface, '#ffffff', 0.20),
@@ -288,3 +306,7 @@ export function initSkin(institutionalDefault) {
 export function useSkin() {
   return { currentSkin, skinList, applySkin, applyTokens }
 }
+
+/* ---- pure exports for tests: derive the token maps + a WCAG contrast ratio.
+   Both are side-effect-free (no DOM), so they run in a node/vitest env. ---- */
+export { deriveSkin, _cr as contrastRatio, SKINS as _SKINS }
