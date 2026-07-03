@@ -550,33 +550,6 @@ function getAvailabilityStyle(status) {
         <Search class="w-12 h-12 mx-auto mb-4 opacity-50" />
         <p>No services found matching your search.</p>
       </div>
-
-      <!-- Slate status -->
-      <div
-        v-if="slateStore.hasItems"
-        class="fixed bottom-20 left-0 right-0 px-4"
-      >
-        <div
-          class="max-w-7xl mx-auto rounded-lg p-4 flex items-center justify-between shadow-lg border bg-surface border-border"
-        >
-          <div>
-            <span
-              class="font-medium text-primary"
-            >Your Slate</span>
-            <span
-              class="ml-2 text-text-secondary"
-            >
-              {{ slateStore.itemCount }} service{{ slateStore.itemCount !== 1 ? 's' : '' }}
-            </span>
-          </div>
-          <button
-            @click="router.push('/')"
-            class="px-4 py-2 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary-dark"
-          >
-            Review Slate
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- Legend -->
