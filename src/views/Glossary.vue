@@ -122,61 +122,62 @@ function getCategoryClasses(cat, type = 'bg') {
 
 <template>
   <div
-    class="max-w-4xl 2xl:max-w-5xl mx-auto my-6 rounded-xl border border-border bg-canvas shadow-sm overflow-hidden transition-colors"
+    class="max-w-4xl xl:max-w-6xl mx-auto my-6 rounded-xl border border-border bg-canvas shadow-sm overflow-hidden transition-colors"
   >
-    <!-- Header -->
-    <header
-      class="border-b bg-surface border-border"
-    >
-      <div class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-4">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
-            <BookOpen class="w-5 h-5" />
+    <!-- Filters (full-width bar on mobile, left rail on xl+) + terms list -->
+    <div class="xl:flex xl:items-stretch">
+      <aside
+        class="border-b xl:border-b-0 xl:border-r bg-surface border-border xl:w-72 xl:flex-none"
+      >
+        <div class="px-4 py-4 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
+              <BookOpen class="w-5 h-5" />
+            </div>
+            <h1
+              class="text-xl font-semibold text-text"
+            >Glossary</h1>
           </div>
-          <h1
-            class="text-xl font-semibold text-text"
-          >Glossary</h1>
-        </div>
 
-        <!-- Search -->
-        <div class="relative">
-          <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search terms..."
-            class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface border-border text-text placeholder-text-muted"
-          />
-        </div>
+          <!-- Search -->
+          <div class="relative">
+            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Search terms..."
+              class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface border-border text-text placeholder-text-muted"
+            />
+          </div>
 
-        <!-- Category filters -->
-        <div class="flex flex-wrap gap-2 mt-3">
-          <button
-            @click="selectedCategory = null"
-            class="px-3 py-1.5 text-sm rounded-full border transition-colors"
-            :class="!selectedCategory
-              ? 'bg-primary text-on-primary border-primary'
-              : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
-          >
-            All ({{ allTerms.length }})
-          </button>
-          <button
-            v-for="cat in categories"
-            :key="cat"
-            @click="selectedCategory = selectedCategory === cat ? null : cat"
-            class="px-3 py-1.5 text-sm rounded-full border transition-colors flex items-center gap-1.5"
-            :class="selectedCategory === cat
-              ? `${getCategoryClasses(cat, 'bg')} ${getCategoryClasses(cat, 'text')} ${getCategoryClasses(cat, 'border')}`
-              : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
-          >
-            <component :is="getCategoryDisplay(cat).icon" class="w-3.5 h-3.5" />
-            {{ getCategoryDisplay(cat).label }}
-          </button>
+          <!-- Category filters — wrap as pills on mobile, stack down the rail on xl -->
+          <div class="flex flex-wrap xl:flex-col xl:items-start gap-2">
+            <button
+              @click="selectedCategory = null"
+              class="px-3 py-1.5 text-sm rounded-full border transition-colors"
+              :class="!selectedCategory
+                ? 'bg-primary text-on-primary border-primary'
+                : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
+            >
+              All ({{ allTerms.length }})
+            </button>
+            <button
+              v-for="cat in categories"
+              :key="cat"
+              @click="selectedCategory = selectedCategory === cat ? null : cat"
+              class="px-3 py-1.5 text-sm rounded-full border transition-colors flex items-center gap-1.5"
+              :class="selectedCategory === cat
+                ? `${getCategoryClasses(cat, 'bg')} ${getCategoryClasses(cat, 'text')} ${getCategoryClasses(cat, 'border')}`
+                : 'bg-surface border-border text-text-secondary hover:border-border-strong'"
+            >
+              <component :is="getCategoryDisplay(cat).icon" class="w-3.5 h-3.5" />
+              {{ getCategoryDisplay(cat).label }}
+            </button>
+          </div>
         </div>
-      </div>
-    </header>
+      </aside>
 
-    <main class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-6">
+      <main class="flex-1 min-w-0 px-4 py-6">
       <!-- No results -->
       <div
         v-if="filteredTerms.length === 0"
@@ -325,6 +326,7 @@ function getCategoryClasses(cat, type = 'bg') {
           </div>
         </div>
       </div>
-    </main>
+      </main>
+    </div>
   </div>
 </template>
