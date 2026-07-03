@@ -38,6 +38,7 @@ import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
 import DataIdentificationFlow from '@/components/explore/DataIdentificationFlow.vue'
 import QuestionnairePathViewer from '@/components/explore/QuestionnairePathViewer.vue'
+import PageShell from '@/components/layout/PageShell.vue'
 import QuestionHelpDialog from '@/components/explore/QuestionHelpDialog.vue'
 
 const router = useRouter()
@@ -371,14 +372,8 @@ function dismissDeepLinkBanner() {
 </script>
 
 <template>
-  <div
-    class="max-w-3xl 2xl:max-w-6xl mx-auto my-6 rounded-xl border border-border bg-canvas shadow-sm overflow-hidden transition-colors"
-  >
-    <!-- Header -->
-    <header
-      class="border-b bg-surface border-border"
-    >
-      <div class="max-w-3xl 2xl:max-w-6xl mx-auto px-4 py-3">
+  <PageShell width="max-w-3xl 2xl:max-w-6xl" bare>
+    <template #header>
         <div class="flex items-center justify-center gap-6">
           <h1
             class="text-xl font-semibold text-text"
@@ -428,10 +423,9 @@ function dismissDeepLinkBanner() {
           </button>
           </div>
         </div>
-      </div>
-    </header>
+    </template>
 
-    <main class="max-w-3xl 2xl:max-w-6xl mx-auto px-4 py-8 flex gap-8">
+    <div class="px-4 py-8 flex gap-8">
       <!-- Main content area -->
       <div class="flex-1 min-w-0">
       <!-- Table View -->
@@ -983,7 +977,7 @@ function dismissDeepLinkBanner() {
         @go-back-to="handleGoBackTo"
         @reset="resetQuestionnaire"
       />
-    </main>
+    </div>
 
     <!-- Sticky Navigation Bar (during questions only) -->
     <div
@@ -1068,7 +1062,7 @@ function dismissDeepLinkBanner() {
       :flags="flags"
       @close="showQuestionHelp = false"
     />
-  </div>
+  </PageShell>
 </template>
 
 <style scoped>

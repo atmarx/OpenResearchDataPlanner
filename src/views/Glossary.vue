@@ -17,6 +17,7 @@ import {
   Tag
 } from 'lucide-vue-next'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
+import PageShell from '@/components/layout/PageShell.vue'
 
 const router = useRouter()
 const configStore = useConfigStore()
@@ -121,9 +122,9 @@ function getCategoryClasses(cat, type = 'bg') {
 </script>
 
 <template>
-  <div
-    class="max-w-4xl xl:max-w-6xl mx-auto my-6 rounded-xl border border-border bg-canvas shadow-sm overflow-hidden transition-colors"
-  >
+  <!-- clip: the left rail is a static full-bleed divider (no sticky), so the
+       rounded-corner clip is safe here. -->
+  <PageShell width="max-w-4xl xl:max-w-6xl" bare clip>
     <!-- Filters (full-width bar on mobile, left rail on xl+) + terms list -->
     <div class="xl:flex xl:items-stretch">
       <aside
@@ -328,5 +329,5 @@ function getCategoryClasses(cat, type = 'bg') {
       </div>
       </main>
     </div>
-  </div>
+  </PageShell>
 </template>

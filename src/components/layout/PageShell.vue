@@ -15,19 +15,24 @@
             fine, e.g. "max-w-4xl xl:max-w-6xl".
     bare  — drop the default body padding when the page owns its inner layout
             (e.g. an internal left/right rail that manages its own padding).
+    clip  — re-add overflow-hidden. ONLY for a page whose inner layout paints
+            full-bleed to the card edges (e.g. a static left-rail divider) AND
+            has NO position:sticky child — clipping traps sticky. Default off.
 -->
 <script setup>
 defineProps({
   width: { type: String, default: 'max-w-5xl' },
-  bare: { type: Boolean, default: false }
+  bare: { type: Boolean, default: false },
+  clip: { type: Boolean, default: false }
 })
 </script>
 
 <template>
-  <!-- NB: no overflow-hidden — it would trap position:sticky rails inside the
-       card. The header rounds its own top corners to sit flush instead. -->
+  <!-- NB: no overflow-hidden by default — it would trap position:sticky rails
+       inside the card. The header rounds its own top corners to sit flush
+       instead. Pass `clip` only for full-bleed, sticky-free inner layouts. -->
   <div
-    :class="['mx-auto my-6 rounded-xl border shadow-sm transition-colors border-border bg-canvas', width]"
+    :class="['mx-auto my-6 rounded-xl border shadow-sm transition-colors border-border bg-canvas', width, clip ? 'overflow-hidden' : '']"
   >
     <!-- Opaque title/controls bar — keeps the heading readable over the hero -->
     <header

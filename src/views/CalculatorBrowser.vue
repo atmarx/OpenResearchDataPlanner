@@ -24,6 +24,7 @@ import {
   DollarSign
 } from 'lucide-vue-next'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
+import PageShell from '@/components/layout/PageShell.vue'
 
 const router = useRouter()
 
@@ -145,21 +146,18 @@ function handleAdded() {
 </script>
 
 <template>
-  <div class="max-w-5xl 2xl:max-w-6xl mx-auto my-6 rounded-xl border border-border bg-canvas shadow-sm overflow-hidden transition-colors">
-    <!-- Header -->
-    <div class="border-b bg-surface border-border">
-      <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-6">
+  <PageShell width="max-w-5xl 2xl:max-w-6xl" bare>
+    <template #header>
         <div>
           <h1 class="text-2xl font-bold text-text">Estimate Your Needs</h1>
           <p class="mt-1 text-text-secondary">
             Choose a calculator to estimate storage, compute, or GPU requirements
           </p>
         </div>
-      </div>
-    </div>
+    </template>
 
     <!-- Categories -->
-    <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-8 space-y-10">
+    <div class="px-4 py-8 space-y-10">
       <div
         v-for="category in categories"
         :key="category.key"
@@ -263,5 +261,5 @@ function handleAdded() {
         </div>
       </div>
     </Teleport>
-  </div>
+  </PageShell>
 </template>
