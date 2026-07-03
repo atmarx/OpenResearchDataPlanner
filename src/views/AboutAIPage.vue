@@ -12,6 +12,7 @@ import {
   ArrowLeft
 } from 'lucide-vue-next'
 import PageFeedback from '@/components/feedback/PageFeedback.vue'
+import PageShell from '@/components/layout/PageShell.vue'
 import { fillDisclosureTokens } from '@/lib/aiDisclosure.js'
 
 const configStore = useConfigStore()
@@ -49,19 +50,18 @@ const citationText = computed(() => {
   <!-- Narrow reading column on small screens; on xl+ the page opens into a
        narrative spine (main) + a sticky reference rail (aside) so the wide
        viewport isn't wasted on one skinny column. -->
-  <div class="max-w-3xl xl:max-w-none xl:w-fit mx-auto">
-    <!-- Back Link -->
-    <router-link
-      to="/"
-      class="inline-flex items-center gap-1 text-sm mb-6 text-text-muted hover:text-text"
-    >
-      <ArrowLeft class="w-4 h-4" />
-      Back to home
-    </router-link>
-
-    <!-- Header (spans the full width above both columns) -->
-    <div class="mb-8">
-      <div class="flex items-center gap-3 mb-4">
+  <PageShell width="max-w-3xl xl:max-w-[77rem]" bare>
+    <!-- Title + intro ride the opaque header bar (the page used to sit bare on
+         the hero, so the title was unreadable). Back link lives here too. -->
+    <template #header>
+      <router-link
+        to="/"
+        class="inline-flex items-center gap-1 text-sm mb-4 text-text-muted hover:text-text"
+      >
+        <ArrowLeft class="w-4 h-4" />
+        Back to home
+      </router-link>
+      <div class="flex items-center gap-3 mb-3">
         <div
           class="w-12 h-12 rounded-xl flex items-center justify-center bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400"
         >
@@ -74,12 +74,11 @@ const citationText = computed(() => {
       <p class="text-lg text-text-secondary max-w-3xl">
         {{ pageIntro }}
       </p>
-    </div>
+    </template>
 
-    <!-- Body: one column on narrow, spine + rail on xl+. The spine KEEPS the
-         page's original max-w-3xl reading width — the rail is ADDED alongside
-         it (the container widens), never carved out of the main content. -->
-    <div class="xl:flex xl:gap-8 xl:items-start">
+    <!-- Body: single reading column on narrow, spine + rail on xl+. The spine
+         KEEPS its reading width — the rail is ADDED alongside it. -->
+    <div class="xl:flex xl:gap-8 xl:items-start px-4 py-6">
 
       <!-- ============ Narrative spine (main column, original width) ============ -->
       <div class="space-y-8 xl:flex-none xl:w-[48rem] xl:max-w-full">
@@ -325,5 +324,5 @@ const citationText = computed(() => {
       </aside>
 
     </div>
-  </div>
+  </PageShell>
 </template>

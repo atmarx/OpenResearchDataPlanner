@@ -5,6 +5,7 @@ import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { useConfigStore } from '@/stores/configStore'
 import { usePreferencesStore } from '@/stores/preferencesStore'
+import PageShell from '@/components/layout/PageShell.vue'
 import {
   Gauge,
   Database,
@@ -323,14 +324,10 @@ function getColorClasses(color) {
 </script>
 
 <template>
-  <div
-    class="min-h-screen transition-colors bg-canvas"
-  >
-    <!-- Header -->
-    <header
-      class="border-b bg-surface border-border"
-    >
-      <div class="max-w-4xl xl:max-w-7xl mx-auto px-4 py-6">
+  <PageShell width="max-w-4xl xl:max-w-7xl" bare>
+    <!-- Title + progress on the opaque header bar (was a full-bleed
+         min-h-screen canvas that painted over the hero). -->
+    <template #header>
         <div class="flex items-center justify-between">
           <div>
             <h1
@@ -362,11 +359,10 @@ function getColorClasses(color) {
             </button>
           </div>
         </div>
-      </div>
-    </header>
+    </template>
 
     <!-- Main content -->
-    <main class="max-w-4xl xl:max-w-7xl mx-auto px-4 py-8">
+    <div class="px-4 py-8">
       <!-- Two-column on xl+: the primary flow (tier setup, orientation, the
            phase applets) rides a wide column; the Clinical-track shortcut and
            scope note move to a sticky reference rail so the shortcut stays in
@@ -684,6 +680,6 @@ function getColorClasses(color) {
       </aside>
 
       </div><!-- /two-column -->
-    </main>
-  </div>
+    </div><!-- /body -->
+  </PageShell>
 </template>

@@ -24,13 +24,15 @@ defineProps({
 </script>
 
 <template>
+  <!-- NB: no overflow-hidden — it would trap position:sticky rails inside the
+       card. The header rounds its own top corners to sit flush instead. -->
   <div
-    :class="['mx-auto my-6 rounded-xl border shadow-sm overflow-hidden transition-colors border-border bg-canvas', width]"
+    :class="['mx-auto my-6 rounded-xl border shadow-sm transition-colors border-border bg-canvas', width]"
   >
     <!-- Opaque title/controls bar — keeps the heading readable over the hero -->
     <header
       v-if="$slots.header"
-      class="border-b px-4 py-4 bg-surface border-border"
+      class="rounded-t-xl border-b px-4 py-4 bg-surface border-border"
     >
       <slot name="header" />
     </header>
