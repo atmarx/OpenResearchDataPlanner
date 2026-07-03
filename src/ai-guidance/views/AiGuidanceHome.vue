@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
 import { useSessionStore } from '@/stores/sessionStore'
@@ -39,6 +39,19 @@ const aiStore = useAiGuidanceStore()
 const sessionStore = useSessionStore()
 const configStore = useConfigStore()
 const preferencesStore = usePreferencesStore()
+
+// Where the tier card lives: the sidebar rail on wide (xl) screens, teleported
+// to the top of the page on narrow ones. Single instance, moved — not two
+// copies hidden with CSS. isWide drives <Teleport :disabled> below.
+const isWide = ref(typeof window !== 'undefined' && window.matchMedia('(min-width: 1280px)').matches)
+let _tierMq = null
+function _onTierMq(e) { isWide.value = e.matches }
+onMounted(() => {
+  _tierMq = window.matchMedia('(min-width: 1280px)')
+  isWide.value = _tierMq.matches
+  _tierMq.addEventListener('change', _onTierMq)
+})
+onBeforeUnmount(() => { _tierMq?.removeEventListener('change', _onTierMq) })
 
 // Tier context state
 const showTierPicker = ref(false)
@@ -360,6 +373,9 @@ function getColorClasses(color) {
            view while you browse the phases. Single column below xl. -->
       <div class="xl:flex xl:gap-8 xl:items-start">
       <div class="xl:flex-1 xl:min-w-0 space-y-8">
+      <!-- Teleport target: the tier card lands here (top of page) on narrow
+           screens; on xl+ it stays in the sidebar rail. Empty on desktop. -->
+      <div id="ai-tier-top"></div>
       <!-- Tier Picker Modal -->
       <div
         v-if="showTierPicker"
@@ -535,8 +551,10 @@ function getColorClasses(color) {
 
       <!-- ===== Reference rail (sticky on xl+) ===== -->
       <aside class="xl:flex-none xl:w-[20rem] space-y-6 mt-8 xl:mt-0 xl:sticky xl:top-24">
-        <!-- Tier Context Card — top of the rail so your data tier stays in view
-             while you scroll the phases. -->
+        <!-- Tier Context Card — sidebar rail on xl+, teleported to the top of
+             the page on narrow screens (single instance, disabled = render in
+             place here in the rail). -->
+        <Teleport defer to="#ai-tier-top" :disabled="isWide">
         <div
           class="p-5 rounded-lg border bg-surface border-border"
         >
@@ -613,6 +631,7 @@ function getColorClasses(color) {
             </router-link>
           </div>
         </div>
+        </Teleport>
 
         <!-- Clinical & Healthcare AI Track — restyled as a vertical rail card.
              blue is the app accent/info panel here, so it maps to semantic
