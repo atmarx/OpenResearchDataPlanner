@@ -21,6 +21,7 @@ import {
   Check
 } from 'lucide-vue-next'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
+import PageShell from '@/components/layout/PageShell.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -327,10 +328,10 @@ function formatTierRestriction(software) {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto my-6 rounded-xl border border-border bg-canvas shadow-sm overflow-hidden transition-colors">
-    <!-- Header -->
-    <div class="border-b bg-surface border-border">
-      <div class="max-w-6xl mx-auto px-4 py-4">
+  <PageShell width="max-w-7xl" bare>
+    <!-- Title + search/filters ride the opaque header bar; the legend moved to
+         the reference rail beside the cards. -->
+    <template #header>
         <div class="flex items-center justify-between mb-4">
           <div>
             <h1 class="text-2xl font-bold text-text">
@@ -406,52 +407,14 @@ function formatTierRestriction(software) {
             </button>
           </div>
         </div>
+    </template>
 
-        <!-- Legend -->
-        <div class="flex flex-wrap items-center gap-4 mt-4 text-sm">
-          <span class="text-text-muted">Status:</span>
-          <button @click="openLegendModal('full')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
-            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600">
-              <CheckCircle class="w-3 h-3" />
-            </span>
-            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Available</span>
-          </button>
-          <button @click="openLegendModal('restricted')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
-            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-yellow-100 text-yellow-600">
-              <AlertCircle class="w-3 h-3" />
-            </span>
-            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Restricted</span>
-          </button>
-          <button @click="openLegendModal('byol')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
-            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-surface-alt text-text-muted">
-              <ExternalLink class="w-3 h-3" />
-            </span>
-            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">BYOL</span>
-          </button>
-          <button @click="openLegendModal('unavailable')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
-            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-100 text-red-500">
-              <XCircle class="w-3 h-3" />
-            </span>
-            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">N/A</span>
-          </button>
-
-          <span class="border-l pl-4 ml-2 border-border-strong text-text-muted">Compliance:</span>
-          <button @click="openLegendModal('tier_limit')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
-            <span class="text-xs px-1.5 py-0.5 rounded bg-purple-100 text-purple-700">≤L2</span>
-            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Tier limit</span>
-          </button>
-          <button @click="openLegendModal('export_control')" class="flex items-center gap-1 cursor-pointer rounded hover:opacity-75 transition-opacity" title="Click to learn more">
-            <span class="text-xs px-1.5 py-0.5 rounded bg-orange-100 text-orange-700">EAR</span>
-            <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Export control</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Content -->
-    <div class="max-w-7xl mx-auto px-4 py-6">
-      <!-- Software list by category -->
-      <div class="space-y-8">
+    <!-- Body: software card grid + reference rail (legend, definitions) on xl+ -->
+    <div class="xl:flex xl:gap-6 xl:items-start px-4 py-6">
+      <!-- Main: software list -->
+      <div class="xl:flex-1 xl:min-w-0">
+        <!-- Software list by category -->
+        <div class="space-y-8">
         <div v-for="group in softwareByCategory" :key="group.category.slug">
           <h2 class="text-lg font-semibold mb-4 text-text">
             {{ group.category.name }}
@@ -544,40 +507,83 @@ function formatTierRestriction(software) {
         </div>
       </div>
 
-      <!-- Empty state -->
-      <div
-        v-if="filteredSoftware.length === 0"
-        class="text-center py-16 text-text-muted"
-      >
-        <Search class="w-12 h-12 mx-auto mb-4 opacity-50" />
-        <p class="text-lg">No software found</p>
-        <p class="mt-1">Try adjusting your search or filters</p>
-        <button
-          v-if="hasActiveFilters"
-          @click="clearFilters"
-          class="mt-4 px-4 py-2 rounded-lg text-primary hover:bg-surface-alt"
+        <!-- Empty state -->
+        <div
+          v-if="filteredSoftware.length === 0"
+          class="text-center py-16 text-text-muted"
         >
-          Clear all filters
-        </button>
-      </div>
-    </div>
+          <Search class="w-12 h-12 mx-auto mb-4 opacity-50" />
+          <p class="text-lg">No software found</p>
+          <p class="mt-1">Try adjusting your search or filters</p>
+          <button
+            v-if="hasActiveFilters"
+            @click="clearFilters"
+            class="mt-4 px-4 py-2 rounded-lg text-primary hover:bg-surface-alt"
+          >
+            Clear all filters
+          </button>
+        </div>
+      </div><!-- /main column -->
 
-    <!-- Summary footer -->
-    <div class="max-w-7xl mx-auto px-4 py-6 text-sm border-t text-text-muted border-border">
-      <div class="flex flex-wrap gap-6">
-        <div>
-          <strong>BYOL</strong> = Bring Your Own License (you must purchase separately)
+      <!-- Reference rail: legend + definitions (sticky on xl+) -->
+      <aside class="mt-8 xl:mt-0 xl:w-72 xl:flex-none space-y-4 xl:sticky xl:top-24">
+        <!-- Legend -->
+        <div class="rounded-lg border p-4 bg-surface border-border">
+          <h3 class="text-sm font-semibold mb-3 text-text">Legend</h3>
+          <p class="text-xs font-medium uppercase tracking-wide mb-2 text-text-muted">Status</p>
+          <div class="flex flex-col items-start gap-2 text-sm">
+            <button @click="openLegendModal('full')" class="flex items-center gap-2 rounded hover:opacity-75 transition-opacity" title="Click to learn more">
+              <span class="inline-flex items-center justify-center w-5 h-5 rounded-full flex-shrink-0 bg-green-100 text-green-600">
+                <CheckCircle class="w-3 h-3" />
+              </span>
+              <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Available</span>
+            </button>
+            <button @click="openLegendModal('restricted')" class="flex items-center gap-2 rounded hover:opacity-75 transition-opacity" title="Click to learn more">
+              <span class="inline-flex items-center justify-center w-5 h-5 rounded-full flex-shrink-0 bg-yellow-100 text-yellow-600">
+                <AlertCircle class="w-3 h-3" />
+              </span>
+              <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Restricted</span>
+            </button>
+            <button @click="openLegendModal('byol')" class="flex items-center gap-2 rounded hover:opacity-75 transition-opacity" title="Click to learn more">
+              <span class="inline-flex items-center justify-center w-5 h-5 rounded-full flex-shrink-0 bg-surface-alt text-text-muted">
+                <ExternalLink class="w-3 h-3" />
+              </span>
+              <span class="underline decoration-dotted underline-offset-2 text-text-secondary">BYOL</span>
+            </button>
+            <button @click="openLegendModal('unavailable')" class="flex items-center gap-2 rounded hover:opacity-75 transition-opacity" title="Click to learn more">
+              <span class="inline-flex items-center justify-center w-5 h-5 rounded-full flex-shrink-0 bg-red-100 text-red-500">
+                <XCircle class="w-3 h-3" />
+              </span>
+              <span class="underline decoration-dotted underline-offset-2 text-text-secondary">N/A</span>
+            </button>
+          </div>
+          <p class="text-xs font-medium uppercase tracking-wide mt-4 mb-2 text-text-muted">Compliance</p>
+          <div class="flex flex-col items-start gap-2 text-sm">
+            <button @click="openLegendModal('tier_limit')" class="flex items-center gap-2 rounded hover:opacity-75 transition-opacity" title="Click to learn more">
+              <span class="text-xs px-1.5 py-0.5 rounded flex-shrink-0 bg-purple-100 text-purple-700">≤L2</span>
+              <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Tier limit</span>
+            </button>
+            <button @click="openLegendModal('export_control')" class="flex items-center gap-2 rounded hover:opacity-75 transition-opacity" title="Click to learn more">
+              <span class="text-xs px-1.5 py-0.5 rounded flex-shrink-0 bg-orange-100 text-orange-700">EAR</span>
+              <span class="underline decoration-dotted underline-offset-2 text-text-secondary">Export control</span>
+            </button>
+          </div>
         </div>
-        <div>
-          <strong>Restricted</strong> = License limits apply (e.g., core count, group access)
+
+        <!-- Definitions -->
+        <div class="rounded-lg border p-4 text-sm bg-surface border-border">
+          <div class="space-y-2 text-text-muted">
+            <p><strong class="text-text-secondary">BYOL</strong> = Bring Your Own License (you must purchase separately)</p>
+            <p><strong class="text-text-secondary">Restricted</strong> = License limits apply (e.g., core count, group access)</p>
+          </div>
+          <p class="mt-3 text-text-muted">
+            Need software that's not listed?
+            <a :href="getPrimaryContactHref()" class="text-primary">Contact us</a>
+            to discuss options.
+          </p>
         </div>
-      </div>
-      <p class="mt-2">
-        Need software that's not listed?
-        <a :href="getPrimaryContactHref()" class="text-primary">Contact us</a>
-        to discuss options.
-      </p>
-    </div>
+      </aside>
+    </div><!-- /body two-column -->
 
   <!-- Modals nested inside the root <div> (not siblings) so this view keeps a
        SINGLE root element — the layout's <Transition mode="out-in"> boundary
@@ -866,5 +872,5 @@ function formatTierRestriction(software) {
       </div>
     </div>
   </Teleport>
-  </div>
+  </PageShell>
 </template>
