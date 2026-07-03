@@ -60,8 +60,17 @@ function deriveSkin(tok) {
   const onAcc = c['on-primary'] || '#ffffff'
   const sans = (ty.body && ty.body.fontFamily) || (ty.h1 && ty.h1.fontFamily) || 'Inter'
 
+  /* --color-primary is a FILL (main.css: on-primary = "text/icon on a primary
+     fill"), and 94 bg-primary surfaces pair it with on-primary text. A raw
+     accent from a dropped design.md can be too pale to carry white text, so
+     darken it until it clears WCAG 4.5:1 against its own ink. No-op when the
+     accent already passes (t=0) — the built-in skins are untouched; this only
+     rescues a light "bring-your-own" brand accent. Darkening also lifts link
+     contrast on the light canvas, so it's strictly a gain here. */
+  const accentFill = _btnFill(accent, onAcc)
+
   const light = {
-    '--color-primary': accent,
+    '--color-primary': accentFill,
     '--color-on-primary': onAcc,
     '--color-canvas': canvas,
     '--color-surface': surface,
@@ -91,7 +100,7 @@ function deriveSkin(tok) {
     '--color-border': _mix(ink, '#ffffff', 0.17),
     '--color-border-strong': _mix(ink, '#ffffff', 0.24)
   }
-  return { light, dark, fonts: [sans], _btnFill: _btnFill(accent, onAcc) }
+  return { light, dark, fonts: [sans] }
 }
 
 /* ---- registry: the built-in skins are themselves design.md token blocks ----
