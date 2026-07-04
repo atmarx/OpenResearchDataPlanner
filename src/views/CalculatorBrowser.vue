@@ -184,10 +184,11 @@ function handleAdded() {
         <!-- Calculator Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <button
-            v-for="calc in category.calculators"
+            v-for="(calc, i) in category.calculators"
             :key="calc.id"
             @click="openCalculator(calc.id)"
-            class="text-left rounded-lg border p-4 transition-all group bg-surface border-border hover:border-primary hover:bg-surface-alt hover:shadow-md"
+            class="ux-rise text-left rounded-lg border p-4 transition-all group bg-surface border-border hover:border-primary hover:bg-surface-alt hover:shadow-md"
+            :style="{ '--ux-delay': Math.min(i, 8) * 40 + 'ms' }"
           >
             <div class="flex items-start gap-3">
               <div

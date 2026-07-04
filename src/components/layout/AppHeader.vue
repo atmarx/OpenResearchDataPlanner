@@ -203,6 +203,30 @@ function handleReset() {
                   {{ preferencesStore.darkMode ? 'On' : 'Off' }}
                 </span>
               </button>
+
+              <!-- UX Enhancements — the motion + flourish layer. On by default;
+                   off gives a plainer, calmer interface. OS reduced-motion is
+                   honored separately, so this is the user's explicit choice. -->
+              <button
+                @click="preferencesStore.toggleUxEnhancements"
+                class="w-full flex items-start justify-between gap-2 px-2 py-1.5 rounded-md text-sm text-text-secondary hover:bg-surface-alt transition-colors"
+                role="menuitemcheckbox"
+                :aria-checked="preferencesStore.uxEnhancements"
+              >
+                <span class="flex items-start gap-2 text-left">
+                  <Sparkles class="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>
+                    UX enhancements
+                    <span class="block text-xs text-text-muted">Subtle motion &amp; visual polish</span>
+                  </span>
+                </span>
+                <span
+                  class="text-xs font-medium mt-0.5 flex-shrink-0"
+                  :class="preferencesStore.uxEnhancements ? 'text-primary' : 'text-text-muted'"
+                >
+                  {{ preferencesStore.uxEnhancements ? 'On' : 'Off' }}
+                </span>
+              </button>
             </div>
           </div>
 

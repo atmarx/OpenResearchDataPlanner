@@ -425,10 +425,11 @@ function formatTierRestriction(software) {
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <button
-              v-for="software in group.software"
+              v-for="(software, i) in group.software"
               :key="software.slug"
               @click="openSoftware(software.slug)"
-              class="rounded-lg border transition-all text-left p-3 hover:shadow-md border-border bg-surface hover:border-border-strong"
+              class="ux-rise rounded-lg border transition-all text-left p-3 hover:shadow-md border-border bg-surface hover:border-border-strong"
+              :style="{ '--ux-delay': Math.min(i, 8) * 40 + 'ms' }"
             >
               <!-- Header row -->
               <div class="flex items-center gap-2">

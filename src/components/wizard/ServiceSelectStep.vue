@@ -216,12 +216,13 @@ function handleCompareSelect(service) {
 
         <div class="grid gap-4 md:grid-cols-2">
           <div
-            v-for="service in category.services"
+            v-for="(service, i) in category.services"
             :key="service.slug"
-            class="relative p-4 rounded-lg border-2 transition-all"
+            class="ux-rise relative p-4 rounded-lg border-2 transition-all"
+            :style="{ '--ux-delay': Math.min(i, 8) * 40 + 'ms' }"
             :class="
               isServiceSelected(service.slug)
-                ? 'border-primary bg-surface-alt'
+                ? 'border-primary bg-surface-alt ux-selected-glow'
                 : 'border-border bg-surface'
             "
           >

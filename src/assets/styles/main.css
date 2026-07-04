@@ -129,6 +129,67 @@ body {
    wizard steps stay within '/' and don't retrigger it.
    =================================================================== */
 .page-enter-active,
-.page-leave-active { transition: opacity .2s ease, transform .2s ease; }
-.page-enter-from { opacity: 0; transform: translateY(4px); }
-.page-leave-to   { opacity: 0; transform: translateY(-4px); }
+.page-leave-active { transition: opacity .24s ease, transform .24s ease; }
+.page-enter-from { opacity: 0; transform: translateY(8px); }
+.page-leave-to   { opacity: 0; transform: translateY(-8px); }
+
+/* ===================================================================
+   UX Enhancements gate.
+   Motion + visual-flourish layer. Runs by default; suppressed when the
+   user sets html.ux-plain (preferences toggle) OR the OS asks for
+   reduced motion. Both paths collapse every flourish below to its
+   plain, static end-state — no flash, no partial animation.
+   =================================================================== */
+
+/* --- Plain mode: neutralize the route transition (instant swap) --- */
+html.ux-plain .page-enter-active,
+html.ux-plain .page-leave-active { transition: none; }
+html.ux-plain .page-enter-from,
+html.ux-plain .page-leave-to { opacity: 1; transform: none; }
+
+/* --- Staggered card entrance ---
+   Grid items get .ux-rise plus an inline `--ux-delay`. The keyframe's
+   `both` fill holds them hidden until their delay elapses, so they
+   rise in sequence. In plain / reduced-motion mode the animation is
+   removed and they render at rest immediately. */
+@keyframes ux-rise-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+html:not(.ux-plain) .ux-rise {
+  animation: ux-rise-in .4s ease both;
+  animation-delay: var(--ux-delay, 0ms);
+}
+
+/* --- Accent hairline ---
+   A thin skin-accent rule that fades out at both ends. Sits at the top
+   of a PageShell header to give each page a branded edge. Static (not
+   motion), so it's gated on the user toggle only, not reduced-motion. */
+html:not(.ux-plain) .ux-accent-hairline {
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-primary) 20%,
+    var(--color-primary) 80%,
+    transparent
+  );
+  opacity: 0.7;
+}
+
+/* --- Selected-card accent glow ---
+   Soft accent halo on a chosen card. Applied alongside the existing
+   selected border; gated on the user toggle only. */
+html:not(.ux-plain) .ux-selected-glow {
+  box-shadow: 0 0 0 1px var(--color-primary),
+              0 4px 20px -4px color-mix(in srgb, var(--color-primary) 45%, transparent);
+}
+
+/* --- OS reduced-motion: force every motion flourish to rest --- */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter-active,
+  .page-leave-active { transition: none; }
+  .page-enter-from,
+  .page-leave-to { opacity: 1; transform: none; }
+  html:not(.ux-plain) .ux-rise { animation: none; }
+}

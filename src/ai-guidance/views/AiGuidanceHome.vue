@@ -5,6 +5,8 @@ import { useAiGuidanceStore } from '../stores/aiGuidanceStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { useConfigStore } from '@/stores/configStore'
 import { usePreferencesStore } from '@/stores/preferencesStore'
+import { useScrollSpy } from '@/composables/useScrollSpy'
+import { useMotion } from '@/composables/useMotion'
 import PageShell from '@/components/layout/PageShell.vue'
 import {
   Gauge,
@@ -279,6 +281,22 @@ const allApplets = computed(() => {
   return phases.flatMap(p => p.applets)
 })
 
+// "On this page" rail nav — scroll-spy the phase sections so the rail shows
+// which phase you're reading. Section ids match the :id on each phase block.
+const { motionEnabled } = useMotion()
+const phaseNav = phases.map(p => ({ id: 'ai-phase-' + p.id, title: p.title }))
+const { activeId } = useScrollSpy(() => phaseNav.map(p => p.id))
+
+function goToSection(id) {
+  const el = document.getElementById(id)
+  if (el) {
+    el.scrollIntoView({
+      behavior: motionEnabled.value ? 'smooth' : 'auto',
+      block: 'start'
+    })
+  }
+}
+
 // Count completed
 const completedCount = computed(() => {
   return allApplets.value.filter(a => aiStore.isAppletComplete(a.id)).length
@@ -482,7 +500,7 @@ function getColorClasses(color) {
 
       <!-- Phases -->
       <div v-for="phase in phases" :key="phase.id" class="space-y-4">
-        <div>
+        <div :id="'ai-phase-' + phase.id" class="scroll-mt-24">
           <h2
             class="text-xl font-bold text-text"
           >
@@ -498,10 +516,11 @@ function getColorClasses(color) {
         <!-- Applet Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <button
-            v-for="applet in phase.applets"
+            v-for="(applet, i) in phase.applets"
             :key="applet.id"
             @click="goToApplet(applet.id)"
-            class="relative p-4 rounded-lg border text-left transition-all hover:shadow-md group"
+            class="ux-rise relative p-4 rounded-lg border text-left transition-all hover:shadow-md group"
+            :style="{ '--ux-delay': Math.min(i, 8) * 40 + 'ms' }"
             :class="[
               getColorClasses(applet.color),
               'hover:scale-[1.02]'
@@ -628,6 +647,32 @@ function getColorClasses(color) {
           </div>
         </div>
         </Teleport>
+
+        <!-- On this page — scroll-spy nav for the phase sections. Rail-only
+             affordance (single column below xl has no rail), so hidden on
+             mobile. The active phase is highlighted as you scroll. -->
+        <nav
+          v-if="phaseNav.length > 1"
+          class="hidden xl:block p-4 rounded-lg border bg-surface border-border"
+          aria-label="On this page"
+        >
+          <p class="text-xs font-semibold uppercase tracking-wide mb-2 text-text-muted">
+            On this page
+          </p>
+          <ul class="space-y-1">
+            <li v-for="item in phaseNav" :key="item.id">
+              <button
+                @click="goToSection(item.id)"
+                class="w-full text-left text-sm px-2 py-1.5 rounded-md border-l-2 transition-colors"
+                :class="activeId === item.id
+                  ? 'border-primary text-primary font-medium bg-surface-alt'
+                  : 'border-transparent text-text-secondary hover:text-text hover:bg-surface-alt'"
+              >
+                {{ item.title }}
+              </button>
+            </li>
+          </ul>
+        </nav>
 
         <!-- Clinical & Healthcare AI Track — restyled as a vertical rail card.
              blue is the app accent/info panel here, so it maps to semantic

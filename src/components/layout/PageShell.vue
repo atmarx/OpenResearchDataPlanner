@@ -37,8 +37,13 @@ defineProps({
     <!-- Opaque title/controls bar — keeps the heading readable over the hero -->
     <header
       v-if="$slots.header"
-      class="rounded-t-xl border-b px-4 py-4 bg-surface border-border"
+      class="relative overflow-hidden rounded-t-xl border-b px-4 py-4 bg-surface border-border"
     >
+      <!-- Skin-accent hairline along the top edge. Rendered only when UX
+           enhancements are on (see .ux-accent-hairline in main.css); otherwise
+           this empty div collapses to nothing. overflow-hidden clips it to the
+           rounded top corners. -->
+      <div class="ux-accent-hairline absolute inset-x-0 top-0" aria-hidden="true"></div>
       <slot name="header" />
     </header>
 

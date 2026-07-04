@@ -6,6 +6,7 @@ import { useSessionStore } from '@/stores/sessionStore'
 import { useWizard } from '@/composables/useWizard'
 import { useDMPGenerator } from '@/composables/useDMPGenerator'
 import { computeEstimate } from '@/lib/pricing.js'
+import { useCountUp } from '@/composables/useCountUp'
 import { Download, FileText, RefreshCw, ExternalLink, CheckCircle, FileCode, Copy, Check } from 'lucide-vue-next'
 import PageFeedback from '@/components/feedback/PageFeedback.vue'
 
@@ -47,6 +48,14 @@ function formatCurrency(value) {
     maximumFractionDigits: 0
   }).format(value)
 }
+
+// Count-up figures — the estimate payoff ticks up when it lands. Each snaps to
+// the target when motion is off (opt-out or OS reduced-motion). The grand total
+// leads; the three summary cards animate alongside.
+const { display: grandDisplay } = useCountUp(() => costBreakdown.value.grandTotal)
+const { display: monthlyDisplay } = useCountUp(() => costBreakdown.value.monthlyTotal)
+const { display: grantDisplay } = useCountUp(() => costBreakdown.value.grantTotal)
+const { display: archiveDisplay } = useCountUp(() => costBreakdown.value.archiveTotal)
 
 // Export session as JSON
 function exportJSON() {
@@ -179,33 +188,34 @@ function startOver() {
       <div class="grid gap-4 md:grid-cols-3 mb-8">
         <div class="rounded-lg p-4 bg-surface-alt">
           <p class="text-sm text-primary font-medium">Monthly Cost</p>
-          <p class="text-2xl font-bold text-text">
-            {{ formatCurrency(costBreakdown.monthlyTotal) }}
+          <p class="text-2xl font-bold text-text tabular-nums">
+            {{ formatCurrency(monthlyDisplay) }}
           </p>
         </div>
         <div class="rounded-lg p-4 bg-green-50 dark:bg-green-900/30">
           <p class="text-sm text-green-500 font-medium">Grant Period ({{ costBreakdown.grantMonths }} mo)</p>
-          <p class="text-2xl font-bold text-green-900 dark:text-green-200">
-            {{ formatCurrency(costBreakdown.grantTotal) }}
+          <p class="text-2xl font-bold text-green-900 dark:text-green-200 tabular-nums">
+            {{ formatCurrency(grantDisplay) }}
           </p>
         </div>
         <div class="rounded-lg p-4 bg-purple-50 dark:bg-purple-900/30">
           <p class="text-sm text-purple-500 font-medium">
             Archive ({{ costBreakdown.archiveYears.toFixed(1) }} yr)
           </p>
-          <p class="text-2xl font-bold text-purple-900 dark:text-purple-200">
-            {{ formatCurrency(costBreakdown.archiveTotal) }}
+          <p class="text-2xl font-bold text-purple-900 dark:text-purple-200 tabular-nums">
+            {{ formatCurrency(archiveDisplay) }}
           </p>
         </div>
       </div>
 
-      <!-- Grand total -->
+      <!-- Grand total — the payoff. Larger, accent-colored, tabular so the
+           count-up digits don't jitter the layout as they tick. -->
       <div class="bg-canvas text-text rounded-lg p-6 mb-8">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-text-muted">Grand Total (Grant + Archive)</p>
-            <p class="text-3xl font-bold">
-              {{ formatCurrency(costBreakdown.grandTotal) }}
+            <p class="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
+              {{ formatCurrency(grandDisplay) }}
             </p>
           </div>
           <div class="text-right text-sm text-text-muted">
