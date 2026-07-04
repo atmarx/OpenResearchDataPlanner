@@ -11,9 +11,20 @@ site:
 
 # Visual branding
 branding:
-  # Hero background for welcome/landing page
-  # Set to null to disable (plain white background)
-  hero_background: "/images/college.png"
+  # Hero backgrounds for the welcome/landing page. Offer one or several —
+  # with 2+, users get a picker in the gear menu (thumbnail grid) and can opt
+  # into a fresh one each visit ("Surprise me"). With one, it's a simple
+  # on/off toggle. Each entry: image (required), thumb (modal preview; falls
+  # back to image), caption + credit (shown in the picker only).
+  #
+  # Optimize sources with `npm run optimize:images` — drop originals in
+  # images/backgrounds/, it emits the webp + thumbs referenced below.
+  # A single legacy `hero_background: "/path.png"` string still works.
+  hero_backgrounds:
+    - image: "/images/backgrounds/college.webp"
+      thumb: "/images/backgrounds/thumbs/college.webp"
+      caption: "Northwinds University"   # set your real caption
+      credit: "Northwinds University"    # set your real photo credit
   # Overlay darkness (0 = none, 1 = fully dark). Keeps text readable.
   hero_overlay: 0.4
 
