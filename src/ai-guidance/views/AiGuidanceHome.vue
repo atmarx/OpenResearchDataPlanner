@@ -380,7 +380,7 @@ function getColorClasses(color) {
     </template>
 
     <!-- Main content -->
-    <div class="px-4 py-8">
+    <div class="px-4 py-6">
       <!-- Two-column on xl+: the primary flow (tier setup, orientation, the
            phase applets) rides a wide column; the Clinical-track shortcut and
            scope note move to a sticky reference rail so the shortcut stays in
@@ -388,8 +388,12 @@ function getColorClasses(color) {
       <div class="xl:flex xl:gap-8 xl:items-start">
       <div class="xl:flex-1 xl:min-w-0 space-y-8">
       <!-- Teleport target: the tier card lands here (top of page) on narrow
-           screens; on xl+ it stays in the sidebar rail. Empty on desktop. -->
-      <div id="ai-tier-top"></div>
+           screens; on xl+ it stays in the sidebar rail. Rendered only on
+           narrow screens — on desktop the teleport is disabled (card lives in
+           the rail), so an empty div here would just add a phantom first child
+           that space-y-8 pushes the real content down by, opening a double gap
+           below the header. -->
+      <div v-if="!isWide" id="ai-tier-top"></div>
       <!-- Tier Picker Modal -->
       <div
         v-if="showTierPicker"
