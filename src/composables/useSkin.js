@@ -57,6 +57,19 @@ function _btnFillLite(accent, ink) {
   while (_cr(ink, f) < 4.5 && t < 0.85) { t += 0.04; f = _mix(accent, '#ffffff', t) }
   return f
 }
+/* lift a body/caption colour toward `toward` (#fff in dark, #000 in light)
+   until it clears WCAG 4.5:1 against `bg`. `secondary` from a design.md is
+   picked to read muted on a LIGHT surface; used raw on the dark canvas it
+   collapses (Northwinds muted #64748b landed at 2.17:1 on the inset layer).
+   Guard against the mode's WORST-CASE surface — the lightest dark panel /
+   darkest light panel — so muted + secondary clear AA on every layer at once.
+   No-op when the colour already passes (t=0), so high-contrast skins are
+   untouched. */
+function _textGuard(base, bg, toward) {
+  let f = base, t = 0
+  while (_cr(f, bg) < 4.5 && t < 0.9) { t += 0.04; f = _mix(base, toward, t) }
+  return f
+}
 
 /* ---- map a design.md token block -> ODP semantic vars (light + dark) ---- */
 function deriveSkin(tok) {
@@ -78,15 +91,16 @@ function deriveSkin(tok) {
      contrast on the light canvas, so it's strictly a gain here. */
   const accentFill = _btnFill(accent, onAcc)
 
+  const lSurfAlt = _mix(canvas, ink, 0.05)   // darkest light surface — worst case for dark text
   const light = {
     '--color-primary': accentFill,
     '--color-on-primary': onAcc,
     '--color-canvas': canvas,
     '--color-surface': surface,
-    '--color-surface-alt': _mix(canvas, ink, 0.05),
+    '--color-surface-alt': lSurfAlt,
     '--color-text': ink,
     '--color-text-secondary': _mix(ink, surface, 0.25),
-    '--color-text-muted': secondary,
+    '--color-text-muted': _textGuard(secondary, lSurfAlt, '#000000'),
     '--color-border': _mix(secondary, surface, 0.55),
     '--color-border-strong': _mix(secondary, surface, 0.35),
     // radius + font ride in the base (light) block so they apply in both themes
@@ -105,16 +119,24 @@ function deriveSkin(tok) {
      light-mode white on-primary — a mid-tone fill + white text (Northwinds:
      ~3.98:1, an AA failure on every primary button). Lighten until the dark ink
      clears 4.5:1 so a mid-tone brand accent can't strand unreadable text. */
-  const darkFill = _btnFillLite(accent, dCanvas)
+  const dSurfAlt = _mix(ink, '#ffffff', 0.11)   // lightest dark surface — worst case for light text
+  /* Primary is dual-role: a button FILL (dark on-primary ink rides on it) AND
+     link/accent TEXT on the dark canvas. _btnFillLite only guarantees the
+     button; a mid-tone accent (Northwinds #2563eb) then strands links at
+     3.35:1 on a card. Lift further until it also clears 4.5:1 as text on the
+     surface — the same bar the hand-authored base skin meets (#60a5fa). The
+     on-primary ink is dark, so a brighter fill only widens button contrast:
+     strictly a gain for both roles. */
+  const darkFill = _textGuard(_btnFillLite(accent, dCanvas), dPanel, '#ffffff')
   const dark = {
     '--color-primary': darkFill,
     '--color-on-primary': dCanvas,
     '--color-canvas': dCanvas,
     '--color-surface': dPanel,
-    '--color-surface-alt': _mix(ink, '#ffffff', 0.11),
+    '--color-surface-alt': dSurfAlt,
     '--color-text': _mix(surface, '#ffffff', 0.20),
-    '--color-text-secondary': _mix(secondary, surface, 0.20),
-    '--color-text-muted': secondary,
+    '--color-text-secondary': _textGuard(_mix(secondary, surface, 0.20), dSurfAlt, '#ffffff'),
+    '--color-text-muted': _textGuard(secondary, dSurfAlt, '#ffffff'),
     '--color-border': _mix(ink, '#ffffff', 0.17),
     '--color-border-strong': _mix(ink, '#ffffff', 0.24)
   }

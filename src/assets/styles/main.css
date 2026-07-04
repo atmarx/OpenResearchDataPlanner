@@ -81,7 +81,10 @@
 
   --color-canvas: #0b1220;           /* page background */
   --color-surface: #1f2937;          /* cards / panels  (gray-800) */
-  --color-surface-alt: #374151;      /* insets / hover  (gray-700) */
+  --color-surface-alt: #2b3444;      /* insets / hover  — darkened from gray-700 so
+                                        muted text (4.06→4.93), links, and coloured
+                                        labels clear WCAG AA on this layer; also
+                                        separates it from --color-border below. */
 
   --color-text: #f9fafb;
   --color-text-secondary: #d1d5db;   /* gray-300 */
