@@ -16,7 +16,8 @@ import {
   Award,
   Tag
 } from 'lucide-vue-next'
-import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
+import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
+import { renderMarkdown, renderMarkdownInline } from '@/lib/markdown'
 import PageShell from '@/components/layout/PageShell.vue'
 
 const router = useRouter()
@@ -237,11 +238,10 @@ function getCategoryClasses(cat, type = 'bg') {
                       ({{ term.expansion }})
                     </span>
                   </div>
-                  <p
+                  <AnnotatedHtml
                     class="text-sm mt-1 text-text-secondary"
-                  >
-                    <AnnotatedText :text="term.short_def" />
-                  </p>
+                    :html="renderMarkdownInline(term.short_def)"
+                  />
                 </div>
                 <component
                   :is="expandedTerms.has(term.term) ? ChevronUp : ChevronDown"
@@ -254,13 +254,13 @@ function getCategoryClasses(cat, type = 'bg') {
                 v-if="expandedTerms.has(term.term)"
                 class="px-4 pb-4 border-t border-border bg-surface-alt"
               >
-                <!-- Long definition -->
+                <!-- Long definition — markdown (bold, lists, links) rendered
+                     via the shared helper, then acronyms annotated. -->
                 <div v-if="term.long_def" class="mt-3">
-                  <p
-                    class="text-sm whitespace-pre-line text-text-secondary"
-                  >
-                    <AnnotatedText :text="term.long_def" />
-                  </p>
+                  <AnnotatedHtml
+                    class="prose prose-sm max-w-none dark:prose-invert text-text-secondary"
+                    :html="renderMarkdown(term.long_def)"
+                  />
                 </div>
 
                 <!-- Examples -->

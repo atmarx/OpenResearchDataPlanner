@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, nextTick, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { marked } from 'marked'
+import { renderMarkdown } from '@/lib/markdown'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { useQuestionnaireHistory } from '@/composables/useQuestionnaireHistory'
@@ -79,12 +79,6 @@ const selectedDiscipline = ref(null)
 const showDataIdentificationModal = ref(false)
 const showQuestionHelp = ref(false)
 const deepLinkBanner = ref(null)
-
-// Render markdown content
-function renderMarkdown(content) {
-  if (!content) return ''
-  return marked.parse(content, { breaks: true })
-}
 
 // Sorted tiers for table view
 const sortedTiers = computed(() => {

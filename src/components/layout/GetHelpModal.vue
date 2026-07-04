@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
+import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
+import { renderMarkdown } from '@/lib/markdown'
 import {
   X,
   Mail,
@@ -226,10 +228,10 @@ function handleClose() {
                     class="w-4 h-4 flex-shrink-0 ml-2 text-text-muted"
                   />
                 </button>
-                <div
+                <AnnotatedHtml
                   v-if="expandedFaq === index"
-                  class="px-4 pb-3 text-sm leading-relaxed border-t text-text-secondary border-border bg-canvas"
-                  v-html="item.answer.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')"
+                  class="px-4 pb-3 text-sm leading-relaxed border-t border-border bg-canvas prose prose-sm max-w-none dark:prose-invert"
+                  :html="renderMarkdown(item.answer)"
                 />
               </div>
             </div>

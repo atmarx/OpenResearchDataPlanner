@@ -3,6 +3,8 @@ import { ref, computed, watch } from 'vue'
 import { useAiGuidanceStore } from '../../stores/aiGuidanceStore'
 import { useConfigStore } from '@/stores/configStore'
 import AppletFrame from '../../components/AppletFrame.vue'
+import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
+import { renderMarkdown } from '@/lib/markdown'
 import {
   FileCheck,
   CheckCircle,
@@ -349,9 +351,10 @@ function getSectionProgress(section) {
                     <Info class="w-3 h-3" />
                     Details
                   </summary>
-                  <p class="mt-2 text-sm whitespace-pre-wrap text-text-secondary">
-                    {{ item.details }}
-                  </p>
+                  <AnnotatedHtml
+                    class="mt-2 text-sm prose prose-sm max-w-none dark:prose-invert text-text-secondary"
+                    :html="renderMarkdown(item.details)"
+                  />
                 </details>
               </div>
             </label>
