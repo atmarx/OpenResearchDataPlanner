@@ -86,10 +86,10 @@ describe('tier questionnaire — priority paths (V1.0 regression guards)', () =>
 })
 
 describe('tier questionnaire — health data paths', () => {
-  it('De-identified health data (Safe Harbor) → medium, flags cleared', () => {
+  it('De-identified health data (Safe Harbor) → medium, HIPAA/PHI cleared, needs_review (steward confirms)', () => {
     // health_data="Yes" sets hipaa+phi flags but no tier (removed sets_tier:high per xram).
-    // identifiable="deidentified" then sets_tier: medium + clears_flags: [hipaa, phi].
-    // Net: tier=medium, no flags — honors the YAML's intent for Safe Harbor de-identification.
+    // identifiable="deidentified" then sets_tier: medium, clears_flags: [hipaa, phi], and
+    // sets needs_review — de-identification is the steward/expert's call, never self-certified.
     const { tier, flags } = run({
       human_subjects: true,
       health_data: true,
@@ -102,6 +102,7 @@ describe('tier questionnaire — health data paths', () => {
     expect(tier).toBe('medium')
     expect(flags).not.toContain('phi')
     expect(flags).not.toContain('hipaa')
+    expect(flags).toContain('needs_review')
   })
 
   it('Encoded health data (linking key exists) → high', () => {
@@ -133,18 +134,52 @@ describe('tier questionnaire — health data paths', () => {
 })
 
 describe('tier questionnaire — biological samples paths', () => {
-  it('Human participant genomic samples → high with human_genomic flag', () => {
+  it('Human participant genomic samples (identifiable) → high with human_genomic flag', () => {
     const { tier, flags } = run({
       human_subjects: false,
       biological_samples: true,
       organism_source: 'human',
       human_samples_detail: 'participant_samples',
+      genomic_identifiability: 'identifiable',
       government_data: false,
       export_control: false,
       proprietary_check: false,
     })
     expect(tier).toBe('high')
     expect(flags).toContain('human_genomic')
+  })
+
+  it('Genomic data, Expert Determination de-identified → medium, needs_review, keeps human_genomic (NIH GDS)', () => {
+    // Genomic ≠ Safe-Harbor de-identifiable: only Expert Determination applies, and even
+    // then NIH Genomic Data Sharing controlled-access persists, so human_genomic stays.
+    const { tier, flags } = run({
+      human_subjects: false,
+      biological_samples: true,
+      organism_source: 'human',
+      human_samples_detail: 'participant_samples',
+      genomic_identifiability: 'expert_deidentified',
+      government_data: false,
+      export_control: false,
+      proprietary_check: false,
+    })
+    expect(tier).toBe('medium')
+    expect(flags).toContain('needs_review')
+    expect(flags).toContain('human_genomic')
+  })
+
+  it('Genomic data, identifiability unsure → high, needs_review', () => {
+    const { tier, flags } = run({
+      human_subjects: false,
+      biological_samples: true,
+      organism_source: 'human',
+      human_samples_detail: 'participant_samples',
+      genomic_identifiability: 'unsure',
+      government_data: false,
+      export_control: false,
+      proprietary_check: false,
+    })
+    expect(tier).toBe('high')
+    expect(flags).toContain('needs_review')
   })
 
   it('Immortalized cell lines (HeLa) → low', () => {
@@ -186,8 +221,8 @@ describe('tier questionnaire — biological samples paths', () => {
     expect(tier).toBe('medium')
   })
 
-  it('De-identified biobank with broad consent → low', () => {
-    const { tier } = run({
+  it('De-identified biobank with broad consent → low, needs_review (steward confirms)', () => {
+    const { tier, flags } = run({
       human_subjects: false,
       biological_samples: true,
       organism_source: 'human',
@@ -198,6 +233,7 @@ describe('tier questionnaire — biological samples paths', () => {
       proprietary_check: false,
     })
     expect(tier).toBe('low')
+    expect(flags).toContain('needs_review')
   })
 
   it('Wildlife with location sensitivity → medium with location_sensitive flag', () => {
