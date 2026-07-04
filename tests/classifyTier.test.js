@@ -254,26 +254,35 @@ describe('tier questionnaire — government / export / proprietary paths', () =>
     expect(flags).toContain('cui_possible')
   })
 
-  it('ITAR export control → restricted', () => {
+  // Export control no longer hard-routes to restricted: a "Yes" answer now enters
+  // the Fundamental Research Exclusion (FRE) sub-branch (fre_gate → fre_restrictions
+  // → fre_inputs). Only the genuinely-controlled outcomes reach restricted. See the
+  // dedicated FRE describe block below for the full matrix.
+  it('ITAR + not fundamental research → restricted (the strict path still exists)', () => {
     const { tier, flags } = run({
       human_subjects: false,
       biological_samples: false,
       government_data: false,
       export_control: 'itar',
+      fre_gate: false, // "no / not sure" — restricted stands
     })
     expect(tier).toBe('restricted')
     expect(flags).toContain('itar')
+    expect(flags).toContain('needs_review')
   })
 
-  it('EAR export control → restricted', () => {
+  it('EAR + publication/participation restricted → restricted', () => {
     const { tier, flags } = run({
       human_subjects: false,
       biological_samples: false,
       government_data: false,
       export_control: 'ear',
+      fre_gate: true,
+      fre_restrictions: true, // a defeater fired — FRE destroyed
     })
     expect(tier).toBe('restricted')
     expect(flags).toContain('ear')
+    expect(flags).toContain('needs_review')
   })
 
   it('Proprietary / NDA-protected (no other sensitivity) → medium', () => {
@@ -310,8 +319,88 @@ describe('tier questionnaire — tier max-rank invariant (V1.0 bug fix regressio
       biological_samples: false,
       government_data: false,
       export_control: 'itar',
-      // proprietary_check unreachable — export_control:itar goes straight to 'complete'
+      fre_gate: false, // not fundamental → restricted, straight to 'complete'
     })
     expect(tier).toBe('restricted')
+  })
+})
+
+describe('tier questionnaire — Fundamental Research Exclusion (FRE) branch', () => {
+  // The whole point: publishable fundamental research on a controlled topic should
+  // land at "high / consultation" (route to the Export Control Officer), NOT the
+  // restricted enclave. The researcher cannot self-certify FRE (E1), so we flag it
+  // for review rather than decontrol on their say-so.
+  const itarBase = {
+    human_subjects: false,
+    biological_samples: false,
+    government_data: false,
+    export_control: 'itar',
+  }
+
+  it('FRE preserved (fundamental, no restrictions, no controlled inputs) → high, fre + needs_review, NOT restricted', () => {
+    const { tier, flags } = run({
+      ...itarBase,
+      fre_gate: true,
+      fre_restrictions: false,
+      fre_inputs: false,
+      proprietary_check: false,
+    })
+    expect(tier).toBe('high') // consultation with the ECO, not the enclave
+    expect(tier).not.toBe('restricted')
+    expect(flags).toContain('fre')
+    expect(flags).toContain('needs_review')
+    expect(flags).toContain('itar') // still export-flagged until the ECO confirms
+  })
+
+  it('FRE preserved but controlled INPUTS / physical export → restricted (inputs stay controlled), fre flag retained', () => {
+    const { tier, flags } = run({
+      ...itarBase,
+      fre_gate: true,
+      fre_restrictions: false,
+      fre_inputs: true, // controlled inputs or physical export
+    })
+    expect(tier).toBe('restricted')
+    expect(flags).toContain('fre')
+    expect(flags).toContain('needs_review')
+  })
+
+  it('FRE destroyed by a publication/participation restriction → restricted', () => {
+    const { tier, flags } = run({
+      ...itarBase,
+      fre_gate: true,
+      fre_restrictions: true,
+    })
+    expect(tier).toBe('restricted')
+    expect(flags).toContain('needs_review')
+  })
+
+  it('FRE preserved path still picks up proprietary/NDA downstream, without downgrading', () => {
+    // fre_inputs:false routes to proprietary_check; answering Yes (medium) must not
+    // drop the high tier the FRE-pending path set.
+    const { tier } = run({
+      ...itarBase,
+      fre_gate: true,
+      fre_restrictions: false,
+      fre_inputs: false,
+      proprietary_check: true,
+    })
+    expect(tier).toBe('high')
+  })
+})
+
+describe('tier questionnaire — FERPA de-identification exit', () => {
+  it('De-identified education records → low, needs_review (Registrar confirms), no FERPA flag', () => {
+    const { tier, flags } = run({
+      human_subjects: true,
+      health_data: false,
+      student_data: true,
+      student_data_content: 'deidentified',
+      government_data: false,
+      export_control: false,
+      proprietary_check: false,
+    })
+    expect(tier).toBe('low')
+    expect(flags).toContain('needs_review')
+    expect(flags).not.toContain('ferpa')
   })
 })
