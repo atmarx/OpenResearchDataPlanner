@@ -237,7 +237,16 @@ function handleWipeSlate() {
             <Shield class="w-3 h-3" />
             {{ selectedTierConfig.short_name || selectedTierConfig.name }}
           </span>
-          <span class="text-sm">Start building your slate by exploring services or calculators</span>
+          <span class="text-sm">Start building your slate by exploring
+            <router-link
+              :to="{ name: 'services' }"
+              class="underline underline-offset-2 font-medium rounded-sm hover:opacity-80 focus-visible:opacity-80 transition-opacity"
+            >services</router-link>
+            or
+            <router-link
+              :to="{ name: 'calculators' }"
+              class="underline underline-offset-2 font-medium rounded-sm hover:opacity-80 focus-visible:opacity-80 transition-opacity"
+            >calculators</router-link></span>
         </div>
 
         <!-- Has Items State -->
