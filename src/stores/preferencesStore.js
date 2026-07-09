@@ -6,6 +6,14 @@ const STORAGE_KEY = 'odp-preferences'
 export const usePreferencesStore = defineStore('preferences', () => {
   // User preferences
   const showWallpaper = ref(true)
+  // Which hero background the user picked (its image path), when the
+  // institution offers several. null = fall back to the first configured one.
+  // Ignored while wallpaperRandom is on.
+  const wallpaperChoice = ref(null)
+  // "Surprise me" — pick a different configured background each visit. The pick
+  // itself is made once per session in App.vue (stable across navigation, fresh
+  // on the next visit), so it never reshuffles mid-session.
+  const wallpaperRandom = ref(false)
   const darkMode = ref(false)
   // AI Guidance "Getting Started" intro card — dismissed once, stays dismissed
   const aiGettingStartedDismissed = ref(false)
@@ -23,6 +31,8 @@ export const usePreferencesStore = defineStore('preferences', () => {
       if (saved) {
         const prefs = JSON.parse(saved)
         showWallpaper.value = prefs.showWallpaper ?? true
+        wallpaperChoice.value = prefs.wallpaperChoice ?? null
+        wallpaperRandom.value = prefs.wallpaperRandom ?? false
         darkMode.value = prefs.darkMode ?? false
         aiGettingStartedDismissed.value = prefs.aiGettingStartedDismissed ?? false
         uxEnhancements.value = prefs.uxEnhancements ?? true
@@ -38,6 +48,8 @@ export const usePreferencesStore = defineStore('preferences', () => {
   function saveToStorage() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       showWallpaper: showWallpaper.value,
+      wallpaperChoice: wallpaperChoice.value,
+      wallpaperRandom: wallpaperRandom.value,
       darkMode: darkMode.value,
       aiGettingStartedDismissed: aiGettingStartedDismissed.value,
       uxEnhancements: uxEnhancements.value
@@ -70,6 +82,22 @@ export const usePreferencesStore = defineStore('preferences', () => {
     saveToStorage()
   }
 
+  // Pick a specific background. Turns the wallpaper on and drops "Surprise me",
+  // since an explicit choice and random-each-visit are mutually exclusive.
+  function setWallpaperChoice(image) {
+    wallpaperChoice.value = image
+    wallpaperRandom.value = false
+    showWallpaper.value = true
+    saveToStorage()
+  }
+
+  // "Surprise me each visit". Turning it on implies the wallpaper is on.
+  function setWallpaperRandom(on) {
+    wallpaperRandom.value = on
+    if (on) showWallpaper.value = true
+    saveToStorage()
+  }
+
   function toggleDarkMode() {
     darkMode.value = !darkMode.value
     applyDarkMode()
@@ -88,17 +116,21 @@ export const usePreferencesStore = defineStore('preferences', () => {
   }
 
   // Watch for changes and persist
-  watch([showWallpaper, darkMode, aiGettingStartedDismissed, uxEnhancements], saveToStorage)
+  watch([showWallpaper, wallpaperChoice, wallpaperRandom, darkMode, aiGettingStartedDismissed, uxEnhancements], saveToStorage)
 
   // Initialize on store creation
   loadFromStorage()
 
   return {
     showWallpaper,
+    wallpaperChoice,
+    wallpaperRandom,
     darkMode,
     aiGettingStartedDismissed,
     uxEnhancements,
     toggleWallpaper,
+    setWallpaperChoice,
+    setWallpaperRandom,
     toggleDarkMode,
     dismissAiGettingStarted,
     toggleUxEnhancements,

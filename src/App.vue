@@ -4,6 +4,7 @@ import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { useSlateStore } from '@/stores/slateStore'
 import { usePreferencesStore } from '@/stores/preferencesStore'
+import { useHeroBackgrounds } from '@/composables/useHeroBackgrounds'
 import { initSkin } from '@/composables/useSkin'
 
 import GetHelpModal from '@/components/layout/GetHelpModal.vue'
@@ -20,10 +21,36 @@ const helpEnabled = computed(() => {
   return g?.show_help_cta && g?.floating_button?.enabled
 })
 
-// Background image from config
-const heroBackgroundUrl = computed(() => configStore.config?.meta?.branding?.hero_background)
-const heroOverlay = computed(() => configStore.config?.meta?.branding?.hero_overlay ?? 0.4)
-const showBackground = computed(() => heroBackgroundUrl.value && preferencesStore.showWallpaper)
+// Hero backgrounds: normalized list from config + overlay darkness.
+const { backgrounds, overlay: heroOverlay } = useHeroBackgrounds()
+
+// "Surprise me" pick — chosen ONCE per session so it stays put across
+// navigation (a re-pick on every route change would be jarring) and comes up
+// fresh on the next visit. Seeded the first time the config yields a list.
+const sessionRandom = ref(null)
+watch(
+  backgrounds,
+  (list) => {
+    if (!sessionRandom.value && list.length) {
+      sessionRandom.value = list[Math.floor(Math.random() * list.length)]
+    }
+  },
+  { immediate: true }
+)
+
+// Resolve which background is actually showing: off > random > explicit
+// choice > first configured. Falls back gracefully if a saved choice no
+// longer exists in the config (image removed / renamed).
+const activeBackground = computed(() => {
+  if (!preferencesStore.showWallpaper || !backgrounds.value.length) return null
+  if (preferencesStore.wallpaperRandom) return sessionRandom.value || backgrounds.value[0]
+  return (
+    backgrounds.value.find((b) => b.image === preferencesStore.wallpaperChoice) ||
+    backgrounds.value[0]
+  )
+})
+const heroBackgroundUrl = computed(() => activeBackground.value?.image)
+const showBackground = computed(() => !!activeBackground.value)
 
 // Inject custom CSS from config
 function injectCustomStyles() {

@@ -2,14 +2,17 @@
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { usePreferencesStore } from '@/stores/preferencesStore'
+import { useHeroBackgrounds } from '@/composables/useHeroBackgrounds'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import SkinPicker from '@/components/layout/SkinPicker.vue'
+import BackgroundPickerModal from '@/components/layout/BackgroundPickerModal.vue'
 import {
   Sun,
   Moon,
   Image,
   ImageOff,
+  Images,
   Settings,
   Compass,
   Calculator,
@@ -24,6 +27,7 @@ const route = useRoute()
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
 const preferencesStore = usePreferencesStore()
+const { backgrounds } = useHeroBackgrounds()
 
 // Navigation tabs
 const navTabs = computed(() => {
@@ -88,9 +92,24 @@ const siteTitle = computed(() =>
   configStore.config?.meta?.site?.title || 'Research Data Planner'
 )
 
-const hasHeroBackground = computed(() =>
-  !!configStore.config?.meta?.branding?.hero_background
-)
+// Any background configured at all → show the control. More than one → the
+// control opens the picker modal instead of being a plain on/off toggle.
+const hasHeroBackground = computed(() => backgrounds.value.length >= 1)
+const hasMultipleBackgrounds = computed(() => backgrounds.value.length > 1)
+const backgroundModalOpen = ref(false)
+
+function openBackgroundPicker() {
+  settingsOpen.value = false
+  backgroundModalOpen.value = true
+}
+
+// Right-side status label for the "Background" row when it opens the picker.
+const backgroundStatusLabel = computed(() => {
+  if (!preferencesStore.showWallpaper) return 'Off'
+  if (preferencesStore.wallpaperRandom) return 'Surprise me'
+  const chosen = backgrounds.value.find((b) => b.image === preferencesStore.wallpaperChoice)
+  return chosen?.caption || (backgrounds.value[0]?.caption ?? 'On')
+})
 
 function handleReset() {
   if (sessionStore.hasUnsavedChanges) {
@@ -165,9 +184,25 @@ function handleReset() {
                 <SkinPicker />
               </div>
 
-              <!-- Background photo (only if a hero background is configured) -->
+              <!-- Background: with several to choose from, this opens the
+                   picker modal; with one, it's a plain on/off toggle (no modal
+                   for a single photo). Hidden entirely when none configured. -->
               <button
-                v-if="hasHeroBackground"
+                v-if="hasMultipleBackgrounds"
+                @click="openBackgroundPicker"
+                class="w-full flex items-center justify-between gap-2 px-2 py-1.5 rounded-md text-sm text-text-secondary hover:bg-surface-alt transition-colors"
+                role="menuitem"
+              >
+                <span class="flex items-center gap-2">
+                  <Images class="w-4 h-4" />
+                  Background
+                </span>
+                <span class="text-xs font-medium max-w-[7rem] truncate" :class="preferencesStore.showWallpaper ? 'text-primary' : 'text-text-muted'">
+                  {{ backgroundStatusLabel }}
+                </span>
+              </button>
+              <button
+                v-else-if="hasHeroBackground"
                 @click="preferencesStore.toggleWallpaper"
                 class="w-full flex items-center justify-between gap-2 px-2 py-1.5 rounded-md text-sm text-text-secondary hover:bg-surface-alt transition-colors"
                 role="menuitemcheckbox"
@@ -259,5 +294,10 @@ function handleReset() {
         </router-link>
       </div>
     </nav>
+
+    <BackgroundPickerModal
+      v-if="backgroundModalOpen"
+      @close="backgroundModalOpen = false"
+    />
   </header>
 </template>
