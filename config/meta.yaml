@@ -96,6 +96,12 @@ links:
   - label: "Acceptable Use Policy"
     url: "https://rcd.northwinds.edu/policies/acceptable-use"
 
+# Governance corpus base URL — where the statute-grounded "full guide" pages
+# live (the research-data-governance docs site). config/explainers.yaml
+# full_guide.corpus_path values resolve against this base. Set to null to hide
+# the "read the full guide" links until your corpus is published.
+governance_corpus_url: "https://rcd.northwinds.edu"
+
 # Cost-estimate disclaimer — shown wherever dollar figures appear (slate, wizard
 # results, exported budget + DMP). These are PLANNING estimates, never a quote.
 # Fork-and-own: customize the wording for your institution.

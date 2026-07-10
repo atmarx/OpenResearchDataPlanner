@@ -16,6 +16,7 @@ import {
 } from 'lucide-vue-next'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 import PageShell from '@/components/layout/PageShell.vue'
+import ExplainerJit from '@/components/explainers/ExplainerJit.vue'
 
 const router = useRouter()
 
@@ -631,6 +632,10 @@ function getAvailabilityStyle(status) {
               </button>
               to estimate your needs.
             </p>
+            <!-- JIT explainer nudge (config/explainers.yaml — jit.anchors: cost-column) -->
+            <div class="mt-2">
+              <ExplainerJit anchor="cost-column" />
+            </div>
           </div>
 
           <!-- Compliance Status -->

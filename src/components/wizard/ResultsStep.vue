@@ -9,6 +9,7 @@ import { computeEstimate } from '@/lib/pricing.js'
 import { useCountUp } from '@/composables/useCountUp'
 import { Download, FileText, RefreshCw, ExternalLink, CheckCircle, FileCode, Copy, Check } from 'lucide-vue-next'
 import PageFeedback from '@/components/feedback/PageFeedback.vue'
+import ExplainerJit from '@/components/explainers/ExplainerJit.vue'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
@@ -223,6 +224,10 @@ function startOver() {
             <p>{{ sessionStore.grantMonths }} month grant</p>
             <p>{{ sessionStore.session.retention.longest_years }} year retention</p>
           </div>
+        </div>
+        <!-- JIT explainer nudge (config/explainers.yaml — jit.anchors: tier-cost) -->
+        <div class="mt-3">
+          <ExplainerJit anchor="tier-cost" />
         </div>
       </div>
 

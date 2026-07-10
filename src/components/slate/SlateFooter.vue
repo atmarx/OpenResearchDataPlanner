@@ -8,6 +8,7 @@ import { useWizard } from '@/composables/useWizard'
 import { ChevronUp, ChevronDown, ArrowRight, FileText, Trash2, CheckCircle, Shield, MessageSquare } from 'lucide-vue-next'
 import ExportModal from './ExportModal.vue'
 import CostDisclaimer from '@/components/CostDisclaimer.vue'
+import ExplainerJit from '@/components/explainers/ExplainerJit.vue'
 
 const slateStore = useSlateStore()
 const configStore = useConfigStore()
@@ -449,6 +450,11 @@ function handleWipeSlate() {
 
         <!-- Estimate-not-a-quote disclaimer (config-driven, shown wherever costs appear) -->
         <CostDisclaimer variant="short" class="mt-3" />
+
+        <!-- JIT explainer nudge (config/explainers.yaml — jit.anchors: direct-charge) -->
+        <div class="mt-1.5">
+          <ExplainerJit anchor="direct-charge" />
+        </div>
 
         <!-- Actions (placeholder for full review modal) -->
         <div class="mt-6 flex justify-end gap-3">
