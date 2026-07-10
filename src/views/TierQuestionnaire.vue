@@ -15,8 +15,21 @@ import {
   GraduationCap,
   Landmark,
   FileLock,
+  FileCheck,
+  FileX,
   Globe,
+  GlobeLock,
   Lock,
+  Book,
+  BookOpenCheck,
+  PackageX,
+  Dna,
+  Atom,
+  Bird,
+  Cog,
+  Microscope,
+  Wheat,
+  ScanFace,
   Info,
   CheckCircle,
   AlertTriangle,
@@ -85,16 +98,30 @@ const sortedTiers = computed(() => {
   return [...(configStore.tiers || [])].sort((a, b) => a.sort_order - b.sort_order)
 })
 
-// Icon mapping
+// Icon mapping — every icon name the questionnaire YAML references.
+// Unmapped names silently fall back to Info (see getIcon), so keep this in
+// sync with config/tier-questionnaire.yaml when questions add new icons.
 const iconMap = {
   'users': Users,
   'heart-pulse': HeartPulse,
   'user-check': UserCheck,
+  'user-scan': ScanFace,  // lucide@0.469 has no UserScan; ScanFace is the closest glyph
   'graduation-cap': GraduationCap,
   'landmark': Landmark,
   'file-lock': FileLock,
-  'globe-lock': Globe,
-  'lock': Lock
+  'file-check': FileCheck,
+  'file-x': FileX,
+  'globe-lock': GlobeLock,
+  'lock': Lock,
+  'book': Book,
+  'book-open-check': BookOpenCheck,
+  'package-x': PackageX,
+  'dna': Dna,
+  'atom': Atom,
+  'bird': Bird,
+  'cog': Cog,
+  'microscope': Microscope,
+  'wheat': Wheat
 }
 
 // Current question
