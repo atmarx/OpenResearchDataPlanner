@@ -2,6 +2,8 @@
 
 Allow researchers to explore infrastructure options, estimate needs, and understand the landscape **before** committing to the planning wizard.
 
+> **Note:** Rates shown in this document's mock-ups are illustrative sketches from the design phase — `config/services.yaml` is the source of truth for current prices and free allocations.
+
 ---
 
 ## Key Insight: Two Paths, One Slate
@@ -318,7 +320,7 @@ Show what services are available at each data classification tier, so researcher
 │  STORAGE                                                        │
 │  ───────────────────────────────────────────────────────────────│
 │  Research Storage   ✓           ✓           ⚠           ✗      │
-│  ├ 1 TB free, then $5/TB/month                                 │
+│  ├ 500 GB free, then $3.50/TB/month                            │
 │  └ [Details]                                                    │
 │                                                                 │
 │  Cloud Storage      ✓           ✓           ✓           ⚠      │

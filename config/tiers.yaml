@@ -76,7 +76,7 @@ tiers:
     examples:
       - "Clinical trial data"
       - "Student educational records"
-      - "Export-controlled defense research"
+      - "Identifiable human-subjects research data"
     requirements:
       - "HIPAA-compliant infrastructure"
       - "Business Associate Agreement (BAA)"

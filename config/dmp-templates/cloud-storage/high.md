@@ -13,7 +13,7 @@ storage infrastructure with enhanced security controls for sensitive data.
 - Private endpoints only (no public internet access)
 - Access logging enabled and retained for audit
 - Versioning enabled with deletion protection
-- Network access restricted to approved VPCs/VNets
+- Network access restricted to approved private cloud networks
 
 {{#if service.notes}}
 **Notes:**
