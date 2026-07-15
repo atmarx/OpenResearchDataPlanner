@@ -24,6 +24,11 @@ regulatory requirements including:
 - Access logging and audit trails
 - Regular security assessments
 
+If this project involves export-controlled (ITAR/EAR) technology or CUI, the Export
+Control Officer / Research Compliance will be engaged before deployment. Publishable
+fundamental research on a controlled topic is generally excluded from export control
+(EAR 15 CFR 734.8) and does not by itself require a restricted enclave.
+
 {{#if service.notes}}
 **Special Considerations:**
 {{service.notes}}

@@ -106,7 +106,8 @@ concepts:
       - L1 (Low): "Published data, public datasets, teaching materials"
       - L2 (Medium): "Unpublished research, pre-publication, NDAs, instructional coursework records (FERPA)"
       - L3 (High): "HIPAA, patient data, sensitive or research student records (FERPA)"
-      - L4 (Restricted): "Defense contracts, export-controlled, classified"
+      - L4 (Restricted): "Defense contracts with security or publication restrictions, controlled inputs, classified"
+      - Export-control nuance: "Working on a controlled topic but publishing openly? That's usually fundamental research — often L3/High, not L4. The Export Control Officer confirms."
       - Decision tree: "If you're not sure, answer these 3 questions..."
       - Reassurance: "You can always start at L2 and upgrade later if needed."
 
@@ -178,11 +179,13 @@ concepts:
       - term: "export control"
       - term: "classified"
     script_notes: |
-      - "Export-controlled research requires dedicated infrastructure - but we support it"
+      - Lead with the off-ramp: "Most university research on a controlled topic is publishable 'fundamental research,' and the Fundamental Research Exclusion removes the published results from control (EAR 734.8 / ITAR 120.34(a)(8)). If you'll publish openly with no sponsor approval/delay clause and no personnel restriction, your project is usually High tier, not L4 — but the Export Control Officer confirms this; you can't self-certify."
+      - When L4 applies: "The enclave is for controlled inputs handed to you, physical exports, or projects under a publication or personnel restriction."
+      - "Genuinely controlled research requires dedicated infrastructure - but we support it"
       - Be honest about timeline: "This takes 3-6 weeks. Plan ahead."
       - Step by step: Planner → IT consultation → Export control review → Security assessment → Enclave setup → Certification → Training
       - What to prepare: "Contract details, data classification letter, personnel list"
-      - Personnel restrictions: "Only US persons can access L4 data"
+      - Personnel restrictions: "For genuinely controlled L4 data, only US persons can access it"
       - Success story: "We currently support 12 defense research projects..."
 
   - slug: ferpa-workflow
@@ -632,7 +635,7 @@ disciplines:
     script_notes: |
       - Common needs: HPC for simulation, GPU for ML, EDA tools
       - Software: "ANSYS, COMSOL, Cadence, MATLAB included"
-      - Defense research: "L4 available for ITAR/EAR projects"
+      - Defense research: "L4 for genuinely controlled work; publishable fundamental research on ITAR/EAR topics is usually L3/High — the Export Control Officer confirms"
       - Typical project: "100K SU + 25TB storage + GPU access"
 
   - slug: guide-ml-ai

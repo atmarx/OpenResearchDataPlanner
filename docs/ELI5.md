@@ -98,6 +98,7 @@ The modal should include inline definitions (tooltips or expandable text) for th
 | **CUI** | Controlled Unclassified Information | Sensitive government data (not classified) |
 | **ITAR** | International Traffic in Arms Regulations | Export control for defense-related data |
 | **EAR** | Export Administration Regulations | Export control for dual-use technology |
+| **FRE** | Fundamental Research Exclusion | Publishable university research is excluded from export control — the Export Control Officer confirms it |
 | **BAA** | Business Associate Agreement | HIPAA contract with a vendor |
 | **FDA 21 CFR Part 11** | FDA Electronic Records Rule | FDA requirements for clinical trials data |
 
@@ -115,8 +116,8 @@ Beyond acronyms, some concepts need concrete analogies.
 > **Medium tier**: Internal data, pre-publication research, proprietary methods
 > *Example: "Your lab's unpublished experimental results"*
 >
-> **High tier**: PHI, student records, export-controlled, legally protected
-> *Example: "Patient medical records, defense research data"*
+> **High tier**: PHI, student records, publishable export-controlled research, legally protected
+> *Example: "Patient medical records; defense-topic research you'll publish openly"*
 
 ### Archive vs Active Storage
 

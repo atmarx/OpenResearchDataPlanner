@@ -95,15 +95,15 @@ We provide a **two-tier approach** to meet different needs:
 
 **HIPAA Integration**:
 
-### L3 Tier (Sensitive Data)
-- **May involve PHI**: Decision tree determines whether HIPAA applies
-- **If PHI**: Links to HIPAA Quick Reference, de-identification guidance
-- **If not PHI**: Institutional policies apply (not HIPAA)
-
-### L4 Tier (PHI/Highly Sensitive)
-- **Confirmed PHI**: Full HIPAA compliance required
+### L3 Tier (High Risk — the HIPAA/PHI tier)
+- **Confirmed PHI**: identifiable health data → full HIPAA compliance required (BAA, HIPAA-compliant infrastructure, IRB)
+- **De-identified**: de-identified health data (Safe Harbor / Expert Determination, no linking key) is not PHI and maps lower (L2)
 - **DMP Generation**: Auto-generates HIPAA-compliant data management plan text
 - **Checklist**: Pre-submission checklist for HIPAA requirements (IRB, BAAs, safeguards)
+
+### L4 Tier (Restricted — NOT a HIPAA/PHI tier)
+- **Export-controlled (EAR/ITAR), CUI, or classified** work in a dedicated enclave — distinct from PHI
+- PHI belongs at **L3**, not here; routing PHI to L4 would misplace it in an export-control enclave
 
 ### AI Guidance (Track 2: Clinical & Healthcare AI)
 - **HIPAA De-identification Decision Tree**: Interactive applet guiding de-identification choices

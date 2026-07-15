@@ -28,9 +28,15 @@ period. Archive tiers maintain equivalent security posture.
 {{/if}}
 
 **Compliance:**
-This storage configuration supports compliance with common research data
-requirements including HIPAA, CUI, and export control regulations. Contact
-the security team to verify specific compliance requirements.
+This storage configuration provides the encryption, access-logging, and
+network-isolation controls commonly required for HIPAA and CUI data; specific
+compliance must be confirmed with the security team before regulated data is placed
+here. Export-controlled (ITAR/EAR) data is handled separately: most university
+research on a controlled topic is publishable fundamental research (the Fundamental
+Research Exclusion, EAR 15 CFR 734.8 / ITAR 22 CFR 120.34(a)(8)) and is not itself
+controlled — but the exclusion is destroyed by any publication or personnel
+restriction or controlled physical inputs, and it cannot be self-certified. Contact
+the Export Control Officer before placing any export-controlled inputs here.
 
 **Data Transfer:**
 Data transfer must occur through approved channels:

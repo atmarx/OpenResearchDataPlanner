@@ -121,6 +121,13 @@ tiers:
       This tier requires a dedicated secure enclave with custom
       security controls. Pricing and services are determined through
       consultation with the security team.
+
+      Note: an export-controlled *topic* is not automatically Restricted.
+      Publishable fundamental research is excluded from control (the
+      Fundamental Research Exclusion) and is handled at High tier with an
+      export-control consultation. This tier is for genuinely restricted
+      export-controlled data — controlled inputs, physical exports, or
+      publication/personnel restrictions — plus CUI and classified work.
     consultation_required: true
     consultation_message: |
       Projects at this tier require a consultation with the
