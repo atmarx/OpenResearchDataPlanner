@@ -23,8 +23,11 @@ const props = defineProps({
     type: String,
     required: true
   },
+  // lucide-vue-next icons are functional components (functions), not objects —
+  // typing this Object-only warned "Expected Object, got Function" on every
+  // applet mount. Accept both component shapes.
   icon: {
-    type: Object,
+    type: [Object, Function],
     default: null
   },
   // Optional: where to go next
