@@ -48,10 +48,23 @@ const navTabs = computed(() => {
 
 const currentPath = computed(() => route.path)
 
+// Shrink-on-scroll with HYSTERESIS. A single threshold is a feedback trap: the
+// header collapses (logo h-16→h-10, py-4→py-2 — ~24px shorter) when scrollY
+// crosses it, which shortens the document and drags scrollY back across the
+// SAME line — an endless sub-pixel wobble whenever the resting scroll sits near
+// it. The wizard's tier step lands right there, which is the "jiggle" (and the
+// Playwright "element is not stable" 30s timeout the reshoot hit). Two
+// thresholds with a dead-band far wider than the header's own height change
+// mean the collapse can never re-trigger its own inverse: engage past 64px,
+// release under 8px, hold state in the 56px band between.
 const isScrolled = ref(false)
+const ENGAGE_AT = 64
+const RELEASE_AT = 8
 
 function handleScroll() {
-  isScrolled.value = window.scrollY > 20
+  const y = window.scrollY
+  if (!isScrolled.value && y > ENGAGE_AT) isScrolled.value = true
+  else if (isScrolled.value && y < RELEASE_AT) isScrolled.value = false
 }
 
 // Settings dropdown (gear) — collapses skin + wallpaper + dark mode into one
