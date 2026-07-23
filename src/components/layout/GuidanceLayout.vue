@@ -10,7 +10,6 @@
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import WelcomeBanner from '@/components/layout/WelcomeBanner.vue'
-import RouteSkeleton from '@/components/layout/RouteSkeleton.vue'
 </script>
 
 <template>
@@ -19,13 +18,14 @@ import RouteSkeleton from '@/components/layout/RouteSkeleton.vue'
 
   <main id="main-content" class="flex-1 relative z-10">
     <router-view v-slot="{ Component, route }">
+      <!-- No <Suspense>, and the dynamic component is wrapped in a stable keyed
+           <div> so <Transition mode="out-in"> has one concrete root to track —
+           without it, clicking an applet card (/ai → /ai/:applet client nav) left
+           a blank <main>. See PlannerLayout for the full note on both. -->
       <Transition name="page" mode="out-in">
-        <Suspense>
-          <component :is="Component" :key="route.path" />
-          <template #fallback>
-            <RouteSkeleton />
-          </template>
-        </Suspense>
+        <div :key="route.path">
+          <component :is="Component" />
+        </div>
       </Transition>
     </router-view>
   </main>
