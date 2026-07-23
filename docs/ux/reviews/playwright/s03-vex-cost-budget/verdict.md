@@ -6,6 +6,16 @@
 **Run:** 2026-07-09 — live exploratory walk on the merged build (`cb5948c` + in-flight column work), fresh Playwright contexts, state traces archived
 **Analyst:** piper-nakamoto
 
+## Correction (2026-07-22) — added after the fixes landed
+
+Reconciled against live re-probes on the fixed build (`20fa893`, `5b49196` on `feat/fre-exception-branch`). Two of this run's three defects were real and are fixed; the third was **not a real bug**.
+
+- **Stall #1 / empty handoff — CONFIRMED, FIXED.** The blank `<main>` was a layout-shell bug: a per-route `<Suspense>` around views that have no async setup, plus `<Transition mode="out-in">` with no stable root element to track, dropped the enter on *every* same-layout client nav (the reshoot only caught two seams because it navigates via full reloads). Every client-side nav renders now, transition kept. `20fa893`.
+- **Stall #2 / "the grant Continue that eats your answer" — WITHDRAWN (probe artifact).** Under a *normal* click the inline Continue advances and preserves the tier, and the wiring has no Continue→backward path at all. My Jul 9 trace used **forced coordinate clicks**, which punched through the sticky slate bar (`z-40`) overlapping the inline button and landed on its **Back** → `previousStep`. Not user-reachable. The real thing underneath was the tier-step *jiggle* (below), which made the button genuinely hard to hit — a better explanation for the operator's Jun 22 "stuck between risk tiers" than a wiring fault.
+- **The jiggle — CONFIRMED, FIXED.** The header collapsed on a single scroll threshold and the collapse dragged the scroll back across it — an endless wobble on the tier step (Reg's "element is not stable"). Hysteresis fixes it; geometry now settles. `5b49196`.
+
+The cost-audit findings (stall #3 — invisible banding, the "from $0.04/SU" catalog card) **stand unchanged** and remain board task **#1458**. The scoring below is the Jul 9 record as written; read stall #2 through this correction.
+
 ## Success criteria
 
 - [x] Produces a credible total cost estimate (compute + storage) for the alloy project that he'd put in a grant budget
