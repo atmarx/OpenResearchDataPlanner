@@ -393,7 +393,7 @@ function dismissDeepLinkBanner() {
 </script>
 
 <template>
-  <PageShell width="max-w-3xl 2xl:max-w-6xl" bare>
+  <PageShell width="max-w-5xl" bare>
     <template #header>
         <div class="flex items-center justify-center gap-6">
           <h1
@@ -1008,7 +1008,7 @@ function dismissDeepLinkBanner() {
       v-if="showStickyNav"
       class="fixed bottom-0 left-0 right-0 z-30 border-t shadow-lg bg-surface border-border"
     >
-      <div class="max-w-3xl 2xl:max-w-6xl mx-auto px-4 py-3">
+      <div class="max-w-5xl mx-auto px-4 py-3">
         <div class="flex items-center justify-between">
           <!-- Left: Navigation buttons -->
           <div class="flex items-center gap-3">
