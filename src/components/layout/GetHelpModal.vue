@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
@@ -51,37 +51,37 @@ function getIcon(iconName) {
   return iconMap[iconName] || Mail
 }
 
-function buildStateContext() {
-  const tier = sessionStore.selectedTier
-  const step = sessionStore.currentStep
-  const services = sessionStore.selectedServiceSlugs || []
-  const tierObj = tier ? configStore.tiersBySlug?.[tier] : null
+// This planner ships as an institution-agnostic template, so the contact
+// buttons are placeholders — no live mailto / service-desk links. Clicking one
+// flashes a transient notice describing what a real deployment would wire up,
+// derived from the button's own config so each button explains itself.
+const demoNotice = ref('')
+let demoNoticeTimer = null
 
-  const lines = []
-  lines.push(`Current Step: ${step || 'Not started'}`)
-  if (tierObj) lines.push(`Data Tier: ${tierObj.name} (${tierObj.slug})`)
-  else if (tier) lines.push(`Data Tier: ${tier}`)
-  if (services.length) lines.push(`Selected Services: ${services.join(', ')}`)
-  return lines.join('\n')
+function flashDemoNotice(message) {
+  demoNotice.value = message
+  if (demoNoticeTimer) clearTimeout(demoNoticeTimer)
+  demoNoticeTimer = setTimeout(() => { demoNotice.value = '' }, 4500)
+}
+
+onBeforeUnmount(() => {
+  if (demoNoticeTimer) clearTimeout(demoNoticeTimer)
+})
+
+function demoDestination(option) {
+  const type = option.action?.type
+  if (type === 'email') return 'email your research computing team with your progress attached'
+  if (type === 'save_state') return 'save your progress and send you a link to resume later'
+  // external_link — differentiate by the button's icon
+  if (option.icon === 'calendar') return 'open your scheduling tool to book a consultation'
+  if (option.icon === 'ticket') return 'take you to your IT service desk to open a ticket'
+  return 'take you to its configured help page'
 }
 
 function handleAction(option) {
-  const action = option.action
-  if (!action) return
-
-  if (action.type === 'email') {
-    const subject = encodeURIComponent(action.subject_template || 'Data Planner Help Request')
-    let body = 'Please describe your question below:\n\n\n'
-    if (action.include_state) {
-      body += '--- Current Progress ---\n' + buildStateContext() + '\n'
-    }
-    window.location.href = `mailto:${action.address}?subject=${subject}&body=${encodeURIComponent(body)}`
-  } else if (action.type === 'external_link') {
-    window.open(action.url, '_blank', 'noopener noreferrer')
-  } else if (action.type === 'save_state') {
-    emit('save-state')
-    emit('close')
-  }
+  flashDemoNotice(
+    `This planner is a demo. In your institution's deployment, "${option.label}" would ${demoDestination(option)}.`
+  )
 }
 
 function handleClose() {
@@ -187,14 +187,7 @@ function handleClose() {
                   <div>{{ slot.time }}</div>
                   <div class="flex items-center gap-1 text-xs mt-0.5 text-text-muted">
                     <MapPin class="w-3 h-3" />
-                    <a
-                      v-if="slot.link"
-                      :href="slot.link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="underline text-primary hover:text-primary-dark"
-                    >{{ slot.location }}</a>
-                    <span v-else>{{ slot.location }}</span>
+                    <span>{{ slot.location }}</span>
                   </div>
                 </div>
               </div>
@@ -246,15 +239,35 @@ function handleClose() {
             <div>
               <span class="font-medium">{{ urgentContact.title }}:</span>
               {{ urgentContact.description }}
-              <a
-                :href="`mailto:${urgentContact.contact}`"
-                class="underline ml-1"
-              >{{ urgentContact.contact }}</a>
+              <span class="block mt-1 text-xs opacity-80">
+                Your institution would list its emergency contact here.
+              </span>
             </div>
           </div>
 
         </div>
       </div>
     </div>
+
+    <!-- Demo notice — clicking a placeholder contact button flashes this, then it fades out -->
+    <Transition
+      enter-active-class="transition-opacity duration-200 ease-out"
+      enter-from-class="opacity-0"
+      leave-active-class="transition-opacity duration-500 ease-in"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="demoNotice"
+        class="fixed inset-x-0 bottom-6 z-[60] flex justify-center px-4 pointer-events-none"
+      >
+        <div
+          class="pointer-events-auto max-w-sm rounded-lg px-4 py-3 text-sm font-medium text-center shadow-xl bg-primary text-on-primary"
+          role="status"
+          aria-live="polite"
+        >
+          {{ demoNotice }}
+        </div>
+      </div>
+    </Transition>
   </Teleport>
 </template>
