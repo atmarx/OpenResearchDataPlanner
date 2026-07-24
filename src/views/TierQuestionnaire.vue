@@ -512,55 +512,58 @@ function dismissDeepLinkBanner() {
                   <AnnotatedText :text="tier.description" />
                 </p>
 
-                <!-- Types of Data -->
-                <div v-if="tier.types_of_data?.length" class="mb-3">
-                  <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
-                    Types of Data:
-                  </p>
-                  <ul class="text-sm text-text-secondary space-y-0.5">
-                    <li
-                      v-for="dataType in tier.types_of_data"
-                      :key="dataType"
-                      class="flex items-start gap-2"
-                    >
-                      <span class="text-text-muted">•</span>
-                      <span>{{ dataType }}</span>
-                    </li>
-                  </ul>
-                </div>
+                <!-- Types of Data · Examples · Requirements — three columns so the card uses its full width instead of stacking (collapses to one column below md) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-3 mb-3">
+                  <!-- Types of Data -->
+                  <div v-if="tier.types_of_data?.length">
+                    <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
+                      Types of Data:
+                    </p>
+                    <ul class="text-sm text-text-secondary space-y-0.5">
+                      <li
+                        v-for="dataType in tier.types_of_data"
+                        :key="dataType"
+                        class="flex items-start gap-2"
+                      >
+                        <span class="text-text-muted">•</span>
+                        <span>{{ dataType }}</span>
+                      </li>
+                    </ul>
+                  </div>
 
-                <!-- Examples -->
-                <div v-if="tier.examples?.length" class="mb-3">
-                  <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
-                    Examples:
-                  </p>
-                  <ul class="text-sm text-text-secondary space-y-0.5">
-                    <li
-                      v-for="example in tier.examples"
-                      :key="example"
-                      class="flex items-start gap-2"
-                    >
-                      <span class="text-text-muted">•</span>
-                      <span>{{ example }}</span>
-                    </li>
-                  </ul>
-                </div>
+                  <!-- Examples -->
+                  <div v-if="tier.examples?.length">
+                    <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
+                      Examples:
+                    </p>
+                    <ul class="text-sm text-text-secondary space-y-0.5">
+                      <li
+                        v-for="example in tier.examples"
+                        :key="example"
+                        class="flex items-start gap-2"
+                      >
+                        <span class="text-text-muted">•</span>
+                        <span>{{ example }}</span>
+                      </li>
+                    </ul>
+                  </div>
 
-                <!-- Requirements -->
-                <div v-if="tier.requirements?.length" class="mb-3">
-                  <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
-                    Requirements:
-                  </p>
-                  <ul class="text-sm text-text-secondary space-y-0.5">
-                    <li
-                      v-for="req in tier.requirements"
-                      :key="req"
-                      class="flex items-start gap-2"
-                    >
-                      <span class="text-text-muted">•</span>
-                      <span>{{ req }}</span>
-                    </li>
-                  </ul>
+                  <!-- Requirements -->
+                  <div v-if="tier.requirements?.length">
+                    <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
+                      Requirements:
+                    </p>
+                    <ul class="text-sm text-text-secondary space-y-0.5">
+                      <li
+                        v-for="req in tier.requirements"
+                        :key="req"
+                        class="flex items-start gap-2"
+                      >
+                        <span class="text-text-muted">•</span>
+                        <span>{{ req }}</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
 
                 <!-- Badges -->
