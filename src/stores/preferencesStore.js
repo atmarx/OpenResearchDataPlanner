@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 
 const STORAGE_KEY = 'odp-preferences'
+const SPACING_LEVELS = ['tight', 'default', 'loose']
 
 export const usePreferencesStore = defineStore('preferences', () => {
   // User preferences
@@ -23,6 +24,12 @@ export const usePreferencesStore = defineStore('preferences', () => {
   // XP" crowd). OS-level prefers-reduced-motion is honored independently in
   // useMotion.js and CSS — this toggle is the *user's explicit* choice on top.
   const uxEnhancements = ref(true)
+  // Text spacing density — vertical rhythm below paragraphs and list items,
+  // applied as a single html.spacing-* class (see main.css). 'tight' is the
+  // original spacing; 'default' (shipped default) adds a little room below
+  // every p and li; 'loose' adds more. Default is intentionally looser than
+  // the old base so the reading surface breathes without any opt-in.
+  const spacing = ref('default')
 
   // Load from localStorage on init
   function loadFromStorage() {
@@ -36,12 +43,14 @@ export const usePreferencesStore = defineStore('preferences', () => {
         darkMode.value = prefs.darkMode ?? false
         aiGettingStartedDismissed.value = prefs.aiGettingStartedDismissed ?? false
         uxEnhancements.value = prefs.uxEnhancements ?? true
+        spacing.value = SPACING_LEVELS.includes(prefs.spacing) ? prefs.spacing : 'default'
       }
     } catch (e) {
       // Ignore parse errors
     }
     applyDarkMode()
     applyUxClass()
+    applySpacing()
   }
 
   // Save to localStorage
@@ -52,7 +61,8 @@ export const usePreferencesStore = defineStore('preferences', () => {
       wallpaperRandom: wallpaperRandom.value,
       darkMode: darkMode.value,
       aiGettingStartedDismissed: aiGettingStartedDismissed.value,
-      uxEnhancements: uxEnhancements.value
+      uxEnhancements: uxEnhancements.value,
+      spacing: spacing.value
     }))
   }
 
@@ -74,6 +84,15 @@ export const usePreferencesStore = defineStore('preferences', () => {
     } else {
       document.documentElement.classList.add('ux-plain')
     }
+  }
+
+  // Apply the text-spacing level as a single html.spacing-* class. Exactly one
+  // of spacing-tight / spacing-default / spacing-loose is present at a time.
+  function applySpacing() {
+    const level = SPACING_LEVELS.includes(spacing.value) ? spacing.value : 'default'
+    const el = document.documentElement
+    el.classList.remove('spacing-tight', 'spacing-default', 'spacing-loose')
+    el.classList.add(`spacing-${level}`)
   }
 
   // Toggle functions
@@ -115,8 +134,16 @@ export const usePreferencesStore = defineStore('preferences', () => {
     saveToStorage()
   }
 
+  // Set text-spacing level (one of SPACING_LEVELS). Applies immediately + saves.
+  function setSpacing(level) {
+    if (!SPACING_LEVELS.includes(level)) return
+    spacing.value = level
+    applySpacing()
+    saveToStorage()
+  }
+
   // Watch for changes and persist
-  watch([showWallpaper, wallpaperChoice, wallpaperRandom, darkMode, aiGettingStartedDismissed, uxEnhancements], saveToStorage)
+  watch([showWallpaper, wallpaperChoice, wallpaperRandom, darkMode, aiGettingStartedDismissed, uxEnhancements, spacing], saveToStorage)
 
   // Initialize on store creation
   loadFromStorage()
@@ -128,12 +155,14 @@ export const usePreferencesStore = defineStore('preferences', () => {
     darkMode,
     aiGettingStartedDismissed,
     uxEnhancements,
+    spacing,
     toggleWallpaper,
     setWallpaperChoice,
     setWallpaperRandom,
     toggleDarkMode,
     dismissAiGettingStarted,
     toggleUxEnhancements,
+    setSpacing,
     loadFromStorage
   }
 })

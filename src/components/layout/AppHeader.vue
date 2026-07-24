@@ -133,6 +133,14 @@ function handleReset() {
     sessionStore.reset()
   }
 }
+
+// Text-spacing levels for the settings segmented control. Default ships looser
+// than the old 'tight' base (see preferencesStore).
+const spacingLevels = [
+  { value: 'tight', label: 'Tight' },
+  { value: 'default', label: 'Default' },
+  { value: 'loose', label: 'Loose' }
+]
 </script>
 
 <template>
@@ -251,6 +259,30 @@ function handleReset() {
                   {{ preferencesStore.darkMode ? 'On' : 'Off' }}
                 </span>
               </button>
+
+              <!-- Text spacing — vertical rhythm below paragraphs & list items.
+                   Three levels; 'Default' (shipped) is looser than 'Tight'. -->
+              <div>
+                <label class="block text-xs font-medium mb-1 text-text-muted">Text spacing</label>
+                <div
+                  class="flex rounded-md border border-border divide-x divide-border overflow-hidden"
+                  role="group"
+                  aria-label="Text spacing"
+                >
+                  <button
+                    v-for="level in spacingLevels"
+                    :key="level.value"
+                    @click="preferencesStore.setSpacing(level.value)"
+                    class="flex-1 px-2 py-1.5 text-xs font-medium transition-colors"
+                    :class="preferencesStore.spacing === level.value
+                      ? 'bg-primary text-on-primary'
+                      : 'bg-surface text-text-secondary hover:bg-surface-alt'"
+                    :aria-pressed="preferencesStore.spacing === level.value"
+                  >
+                    {{ level.label }}
+                  </button>
+                </div>
+              </div>
 
               <!-- UX Enhancements — the motion + flourish layer. On by default;
                    off gives a plainer, calmer interface. OS reduced-motion is

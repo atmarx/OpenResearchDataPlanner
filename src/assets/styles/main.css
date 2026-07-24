@@ -196,3 +196,21 @@ html:not(.ux-plain) .ux-selected-glow {
   .page-leave-to { opacity: 1; transform: none; }
   html:not(.ux-plain) .ux-rise { animation: none; }
 }
+
+/* ===================================================================
+   Text spacing density (gear menu → "Text spacing").
+   Adds vertical breathing room below block text. Applied as ONE class on
+   <html>: spacing-tight | spacing-default | spacing-loose (exactly one).
+   'tight' is the original rhythm (no rule below); 'default' — the shipped
+   default — adds ~0.25em under every paragraph and list item; 'loose' adds
+   more. We use padding-bottom, not margin, so it COMPOSES with existing
+   mb-* / space-y-* utilities instead of out-specifying and replacing them.
+   =================================================================== */
+html.spacing-default p,
+html.spacing-default li {
+  padding-bottom: 0.25em;
+}
+html.spacing-loose p,
+html.spacing-loose li {
+  padding-bottom: 0.6em;
+}
