@@ -106,7 +106,7 @@ function emailSupport() {
             id="qhelp-title"
             class="text-lg font-semibold text-text"
           >
-            Get help with this question
+            Ask about this question
           </h2>
           <button
             @click="emit('close')"
@@ -122,9 +122,11 @@ function emailSupport() {
           <p
             class="text-sm text-text-secondary"
           >
-            Most of this is policy you may not have seen before, so questions are normal.
-            Copy the support ticket text below into an email or ticket — it includes a link
-            back to this exact question and the path you took to reach it.
+            Have a question about this one? These classification rules carry a lot of
+            institutional context, so wanting a closer look is completely reasonable. Copy
+            the support ticket text below into an email or ticket — it includes a link back
+            to this exact question and the path you took to reach it, so whoever helps can
+            pick up right where you are.
           </p>
 
           <!-- Question echo -->

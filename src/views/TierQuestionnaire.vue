@@ -831,12 +831,12 @@ function dismissDeepLinkBanner() {
             <button
               @click="showQuestionHelp = true"
               class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border transition-colors border-border-strong text-text-secondary hover:bg-surface-alt hover:border-border-strong"
-              aria-label="I don't understand this question — get help"
-              title="I don't understand this — get a copy-pasteable link to share with support"
+              aria-label="Ask about this question — get help framing it for support"
+              title="Ask about this — get a copy-pasteable link and ticket text to share with support"
             >
               <HelpCircle class="w-3.5 h-3.5" />
-              <span class="hidden sm:inline">I don't understand this</span>
-              <span class="sm:hidden">Help</span>
+              <span class="hidden sm:inline">Ask about this</span>
+              <span class="sm:hidden">Ask</span>
             </button>
           </div>
 
