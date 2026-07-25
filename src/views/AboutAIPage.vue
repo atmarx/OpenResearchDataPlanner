@@ -14,6 +14,7 @@ import {
 import PageFeedback from '@/components/feedback/PageFeedback.vue'
 import PageShell from '@/components/layout/PageShell.vue'
 import { fillDisclosureTokens } from '@/lib/aiDisclosure.js'
+import { renderMarkdown } from '@/lib/markdown'
 
 const configStore = useConfigStore()
 
@@ -240,7 +241,9 @@ const legalSections = computed(() => {
               <h3 class="font-medium mb-1 text-text">
                 {{ section.heading }}
               </h3>
-              <p class="text-sm whitespace-pre-line text-text-secondary">{{ section.body.trim() }}</p>
+              <div class="text-sm md-body text-text-secondary"
+                v-html="renderMarkdown(section.body.trim())"
+              ></div>
             </div>
           </div>
         </section>

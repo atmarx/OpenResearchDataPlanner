@@ -3,7 +3,8 @@ import { computed } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { Shield, ShieldCheck, ShieldAlert, Lock, Check, HelpCircle, ArrowRight } from 'lucide-vue-next'
-import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
+import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
+import { renderMarkdown } from '@/lib/markdown'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
@@ -141,9 +142,9 @@ function getIcon(color) {
         </div>
 
         <!-- Description -->
-        <p class="text-sm text-text-secondary mb-3 whitespace-pre-line">
-          <AnnotatedText :text="tier.description" />
-        </p>
+        <div class="text-sm text-text-secondary mb-3 md-body">
+          <AnnotatedHtml :html="renderMarkdown(tier.description)" />
+        </div>
 
         <!-- Examples -->
         <div class="mb-3">
@@ -179,9 +180,9 @@ function getIcon(color) {
         <HelpCircle class="w-4 h-4 text-text-muted" />
         About {{ configStore.tiersBySlug[sessionStore.selectedTier]?.name }}
       </h3>
-      <p class="text-sm whitespace-pre-line text-text-secondary">
-        <AnnotatedText :text="configStore.tiersBySlug[sessionStore.selectedTier]?.help_text || ''" />
-      </p>
+      <div class="text-sm md-body text-text-secondary">
+        <AnnotatedHtml :html="renderMarkdown(configStore.tiersBySlug[sessionStore.selectedTier]?.help_text || '')" />
+      </div>
     </div>
   </div>
 </template>

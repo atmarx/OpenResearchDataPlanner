@@ -47,7 +47,6 @@ import {
   HelpCircle
 } from 'lucide-vue-next'
 import { applyAnswerToState } from '@/lib/classifyTier'
-import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
 import DataIdentificationFlow from '@/components/explore/DataIdentificationFlow.vue'
 import QuestionnairePathViewer from '@/components/explore/QuestionnairePathViewer.vue'
@@ -508,9 +507,9 @@ function dismissDeepLinkBanner() {
                 </div>
 
                 <!-- Description -->
-                <p class="text-sm text-text-secondary mb-3 whitespace-pre-line">
-                  <AnnotatedText :text="tier.description" />
-                </p>
+                <div class="text-sm text-text-secondary mb-3 md-body">
+                  <AnnotatedHtml :html="renderMarkdown(tier.description)" />
+                </div>
 
                 <!-- Types of Data · Examples · Requirements — three columns so the card uses its full width instead of stacking (collapses to one column below md) -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-3 mb-3">
@@ -721,11 +720,11 @@ function dismissDeepLinkBanner() {
           >
             {{ intro.title || "What type of data will you be working with?" }}
           </h2>
-          <p
-            class="whitespace-pre-line text-text-secondary"
-          >
-            {{ intro.description }}
-          </p>
+          <div
+            class="md-body text-text-secondary"
+          
+            v-html="renderMarkdown(intro.description)"
+          ></div>
         </div>
 
         <!-- Audience Note - Who needs this questionnaire? -->

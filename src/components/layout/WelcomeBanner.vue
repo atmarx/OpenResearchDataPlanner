@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { Bot, X, ExternalLink } from 'lucide-vue-next'
 import { fillDisclosureTokens } from '@/lib/aiDisclosure.js'
+import { renderMarkdown } from '@/lib/markdown'
 
 const STORAGE_KEY = 'odp-welcome-dismissed'
 
@@ -80,11 +81,11 @@ function dismiss() {
               >
                 {{ title }}
               </h2>
-              <p
-                class="mt-1 text-sm whitespace-pre-line text-indigo-700 dark:text-indigo-300"
-              >
-                {{ message.trim() }}
-              </p>
+              <div
+                class="mt-1 text-sm md-body text-indigo-700 dark:text-indigo-300"
+              
+                v-html="renderMarkdown(message.trim())"
+              ></div>
             </div>
 
             <!-- Actions — button-ized. Learn more leads (filled); Report stays a

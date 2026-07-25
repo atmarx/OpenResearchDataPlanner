@@ -22,6 +22,8 @@ import {
 } from 'lucide-vue-next'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 import PageShell from '@/components/layout/PageShell.vue'
+import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
+import { renderMarkdown } from '@/lib/markdown'
 
 const router = useRouter()
 const route = useRoute()
@@ -677,9 +679,9 @@ function formatTierRestriction(software) {
         <!-- Content -->
         <div class="p-4 space-y-5">
           <!-- Description (prefer long description if available) -->
-          <p class="text-sm whitespace-pre-line text-text-secondary">
-            <AnnotatedText :text="selectedSoftware.description_long || selectedSoftware.description" />
-          </p>
+          <div class="text-sm md-body text-text-secondary">
+            <AnnotatedHtml :html="renderMarkdown(selectedSoftware.description_long || selectedSoftware.description)" />
+          </div>
 
           <!-- Platform Availability -->
           <div>

@@ -7,6 +7,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-vue-next'
+import { renderMarkdown } from '@/lib/markdown'
 
 const props = defineProps({
   // Array of questions with options
@@ -167,10 +168,10 @@ watch(answers, (val) => {
         </button>
         <div
           v-if="showLearnMore"
-          class="mt-3 p-4 rounded-lg text-sm whitespace-pre-line bg-primary text-on-primary"
-        >
-          {{ currentQuestion.learnMore.content }}
-        </div>
+          class="mt-3 p-4 rounded-lg text-sm md-body bg-primary text-on-primary"
+        
+          v-html="renderMarkdown(currentQuestion.learnMore.content)"
+        ></div>
       </div>
 
       <!-- Options -->

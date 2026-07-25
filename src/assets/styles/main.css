@@ -214,3 +214,29 @@ html.spacing-loose p,
 html.spacing-loose li {
   padding-bottom: 0.6em;
 }
+
+/* ===================================================================
+   .md-body — config prose rendered through renderMarkdown().
+   Preflight strips paragraph margins and list markers, so v-html output
+   needs them back. Deliberately lighter than @tailwindcss/typography's
+   `prose`: it restores structure only and inherits its color and size
+   from whatever it sits in, so it can drop into a red callout or a
+   filled primary panel without fighting them.
+   Replaces `whitespace-pre-line`, which broke on every soft wrap in the
+   source YAML — see src/lib/markdown.js.
+   =================================================================== */
+.md-body > :first-child { margin-top: 0; }
+.md-body > :last-child { margin-bottom: 0; }
+.md-body p,
+.md-body ul,
+.md-body ol { margin: 0.65em 0; }
+.md-body ul { list-style: disc; padding-left: 1.25em; }
+.md-body ol { list-style: decimal; padding-left: 1.25em; }
+.md-body li { margin: 0.2em 0; }
+.md-body strong { font-weight: 600; }
+.md-body em { font-style: italic; }
+.md-body a { text-decoration: underline; }
+.md-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+}

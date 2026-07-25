@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { Shield, Mail, ExternalLink, ArrowLeft } from 'lucide-vue-next'
+import { renderMarkdown } from '@/lib/markdown'
 
 const emit = defineEmits(['back'])
 
@@ -51,11 +52,11 @@ const fallbackContact = computed(() => {
         >
           {{ tier?.name }} Data Classification
         </h3>
-        <p
-          class="whitespace-pre-line text-red-800 dark:text-red-200"
-        >
-          {{ tier?.consultation_message }}
-        </p>
+        <div
+          class="md-body text-red-800 dark:text-red-200"
+        
+          v-html="renderMarkdown(tier?.consultation_message)"
+        ></div>
       </div>
 
       <p class="mb-8 text-text-secondary">

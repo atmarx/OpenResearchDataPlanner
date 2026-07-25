@@ -5,6 +5,8 @@ import { useSessionStore } from '@/stores/sessionStore'
 import { Check, Plus, Minus, Info, AlertTriangle, Cpu, HardDrive, Cloud, Box, LifeBuoy, Scale } from 'lucide-vue-next'
 import CompareModal from './CompareModal.vue'
 import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
+import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
+import { renderMarkdown } from '@/lib/markdown'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
@@ -325,12 +327,12 @@ function handleCompareSelect(service) {
                 Not available for this tier
               </span>
             </div>
-            <p
-              class="text-sm mt-1 whitespace-pre-line"
+            <div
+              class="text-sm mt-1 md-body"
               :class="getBundleSuitability(bundle) === 'recommended' ? 'text-green-800 dark:text-green-300' : 'text-text-secondary'"
             >
-              <AnnotatedText :text="bundle.description" />
-            </p>
+              <AnnotatedHtml :html="renderMarkdown(bundle.description)" />
+            </div>
 
             <div class="mt-3">
               <p
@@ -412,9 +414,9 @@ function handleCompareSelect(service) {
           <h3 class="text-lg font-semibold mb-4 text-text">
             {{ activeNotes.title }}
           </h3>
-          <div class="text-sm whitespace-pre-line mb-6 prose prose-sm max-w-none text-text-secondary">
-            {{ activeNotes.content }}
-          </div>
+          <div class="text-sm md-body mb-6 prose prose-sm max-w-none text-text-secondary"
+            v-html="renderMarkdown(activeNotes.content)"
+          ></div>
           <div class="flex justify-end">
             <button
               @click="showNotesModal = false"

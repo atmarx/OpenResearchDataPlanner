@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { Info, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-vue-next'
+import { renderMarkdown } from '@/lib/markdown'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
@@ -327,9 +328,11 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
               v-if="service.mapping?.notes"
               class="mt-3 p-3 rounded-md bg-yellow-50 dark:bg-yellow-900/30"
             >
-              <p
-                class="text-sm whitespace-pre-line text-yellow-800 dark:text-yellow-200"
-              >{{ service.mapping.notes }}</p>
+              <div
+                class="text-sm md-body text-yellow-800 dark:text-yellow-200"
+              
+                v-html="renderMarkdown(service.mapping.notes)"
+              ></div>
             </div>
           </div>
         </div>

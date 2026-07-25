@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { ExternalLink, X } from 'lucide-vue-next'
 import { useConfigStore } from '@/stores/configStore'
+import { renderMarkdown } from '@/lib/markdown'
 
 // Renders one explainer from config/explainers.yaml (content-as-YAML — the
 // institution edits strings, never this component): the short answer, the
@@ -59,9 +60,9 @@ const fullGuideUrl = computed(() => {
         <div class="px-5 py-4 space-y-5">
 
           <!-- The short answer -->
-          <p class="text-sm whitespace-pre-line text-text-secondary">
-            {{ explainer.short }}
-          </p>
+          <div class="text-sm md-body text-text-secondary"
+            v-html="renderMarkdown(explainer.short)"
+          ></div>
 
           <!-- Worked example — pure config data (columns/rows straight from YAML) -->
           <div
