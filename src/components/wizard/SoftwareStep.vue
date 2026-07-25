@@ -14,9 +14,7 @@ import {
   Server,
   Monitor,
   Cloud,
-  Laptop,
-  ChevronDown,
-  ChevronUp
+  Laptop
 } from 'lucide-vue-next'
 
 const configStore = useConfigStore()
@@ -27,7 +25,6 @@ const searchQuery = ref('')
 const categoryFilter = ref('all')
 const statusFilter = ref('all')
 const platformFilter = ref('all')
-const expandedSoftware = ref(null)
 
 // Get software config
 const softwareConfig = computed(() => configStore.config?.software || {})
@@ -183,10 +180,10 @@ function toggleSoftware(software) {
   sessionStore.toggleSoftware(software.slug, selectedPlatforms.value)
 }
 
-// Toggle expanded state
-function toggleExpanded(slug) {
-  expandedSoftware.value = expandedSoftware.value === slug ? null : slug
-}
+// Details are all-or-nothing. Per-card chevrons meant hunting for the one row
+// you cared about and expanding it alone; comparing two packages took two
+// clicks and a scroll. One switch up top opens every card at once.
+const showDetails = ref(false)
 
 // Format BYOL pricing
 function formatByolPricing(software) {
@@ -312,6 +309,29 @@ function clearFilters() {
         >
           Clear filters
         </button>
+
+        <!-- Details: one switch for every card, replacing the per-row chevrons -->
+        <button
+          type="button"
+          role="switch"
+          :aria-checked="showDetails"
+          @click="showDetails = !showDetails"
+          class="ml-auto inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium transition-colors"
+          :class="showDetails
+            ? 'bg-primary/10 border-primary text-primary'
+            : 'bg-surface border-border-strong text-text-secondary hover:border-primary hover:text-primary'"
+        >
+          Details
+          <span
+            class="relative w-9 h-5 rounded-full transition-colors"
+            :class="showDetails ? 'bg-primary' : 'bg-border-strong'"
+          >
+            <span
+              class="absolute top-0.5 w-4 h-4 rounded-full bg-surface shadow transition-all"
+              :class="showDetails ? 'left-[1.125rem]' : 'left-0.5'"
+            />
+          </span>
+        </button>
       </div>
     </div>
 
@@ -374,14 +394,6 @@ function clearFilters() {
 
                 <!-- Actions -->
                 <div class="flex items-center gap-1 flex-shrink-0">
-                  <!-- Expand button -->
-                  <button
-                    @click="toggleExpanded(software.slug)"
-                    class="p-1.5 rounded-md text-text-muted hover:text-text-secondary hover:bg-surface-alt"
-                  >
-                    <component :is="expandedSoftware === software.slug ? ChevronUp : ChevronDown" class="w-4 h-4" />
-                  </button>
-
                   <!-- Select button -->
                   <button
                     @click="toggleSoftware(software)"
@@ -452,9 +464,9 @@ function clearFilters() {
               </div>
             </div>
 
-            <!-- Expanded details -->
+            <!-- Expanded details — driven by the one Details switch up top -->
             <div
-              v-if="expandedSoftware === software.slug"
+              v-if="showDetails"
               class="px-4 pb-4 pt-0 border-t border-border"
             >
               <div class="mt-4 space-y-4">
