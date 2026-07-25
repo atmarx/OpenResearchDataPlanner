@@ -7,7 +7,7 @@
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto" aria-hidden="true">
+  <div class="max-w-5xl mx-auto" aria-hidden="true">
     <div class="space-y-4">
       <div class="h-8 w-1/3 rounded-md animate-pulse bg-surface-alt"></div>
       <div class="h-40 rounded-lg animate-pulse bg-surface-alt"></div>

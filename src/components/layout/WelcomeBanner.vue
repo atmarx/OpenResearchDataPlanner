@@ -61,7 +61,7 @@ function dismiss() {
       v-if="isVisible"
       class="border-b bg-indigo-50 border-indigo-100 dark:bg-indigo-950/50 dark:border-indigo-900"
     >
-      <div class="max-w-5xl mx-auto px-4 py-3">
+      <div class="max-w-7xl mx-auto px-4 py-3">
         <div class="flex items-start gap-3">
           <!-- Icon -->
           <div

@@ -79,7 +79,7 @@ watch(
 </script>
 
 <template>
-  <PageShell width="max-w-4xl 2xl:max-w-5xl" bare>
+  <PageShell width="max-w-6xl" bare>
     <!-- Progress stepper rides the opaque header bar. Hidden on welcome and
          consultation — the slot is conditionally provided (v-if on the template)
          so PageShell shows NO empty header bar on those steps. -->

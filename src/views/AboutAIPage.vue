@@ -61,7 +61,7 @@ const legalSections = computed(() => {
   <!-- Narrow reading column on small screens; on xl+ the page opens into a
        narrative spine (main) + a sticky reference rail (aside) so the wide
        viewport isn't wasted on one skinny column. -->
-  <PageShell width="max-w-3xl xl:max-w-[77rem]" bare>
+  <PageShell width="max-w-5xl xl:max-w-[77rem]" bare>
     <!-- Title + intro ride the opaque header bar (the page used to sit bare on
          the hero, so the title was unreadable). Back link lives here too. -->
     <template #header>

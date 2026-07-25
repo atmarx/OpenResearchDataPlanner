@@ -146,7 +146,7 @@ function handleAdded() {
 </script>
 
 <template>
-  <PageShell width="max-w-5xl 2xl:max-w-6xl" bare>
+  <PageShell width="max-w-6xl" bare>
     <template #header>
         <div>
           <h1 class="text-2xl font-bold text-text">Estimate Your Needs</h1>

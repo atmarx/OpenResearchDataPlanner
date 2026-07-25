@@ -147,11 +147,11 @@ const spacingLevels = [
   <!-- Header is a raised surface; bg-surface + border-border flip themselves
        under .dark and under any institution skin. No darkMode ternaries.
        The bar (bg + borders) is full-bleed like the footer; the content is
-       capped at max-w-5xl mx-auto so it lines up with the footer column. -->
+       capped at max-w-7xl mx-auto so it lines up with the footer column. -->
   <header class="sticky top-0 z-50 transition-all duration-200 bg-surface">
     <!-- Top row: Logo, Title, Controls -->
     <div class="border-b border-border px-4 sm:px-6">
-      <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
         <!-- Logo -->
         <div class="flex-shrink-0">
           <router-link to="/">
@@ -324,7 +324,7 @@ const spacingLevels = [
 
     <!-- Navigation tabs -->
     <nav class="border-b border-border overflow-x-auto px-4 sm:px-6">
-      <div class="max-w-5xl mx-auto flex justify-center">
+      <div class="max-w-7xl mx-auto flex justify-center">
         <router-link
           v-for="tab in navTabs"
           :key="tab.path"

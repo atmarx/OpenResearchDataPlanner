@@ -191,7 +191,7 @@ function handleWipeSlate() {
       class="bg-primary text-on-primary shadow-lg border-t border-primary"
       :class="{ 'rounded-t-lg': isExpanded }"
     >
-      <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-3">
+      <div class="max-w-7xl mx-auto px-4 py-3">
         <!-- Wizard mode: slate context on the left, teleported Back/Continue on
              the right. One bottom bar replaces the old sticky wizard nav. -->
         <div v-if="wizardMode" class="flex items-center justify-between gap-4">
@@ -322,7 +322,7 @@ function handleWipeSlate() {
       class="border-x overflow-y-auto bg-surface border-border"
       :style="{ height: 'calc(40vh - 56px)' }"
     >
-      <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-4">
+      <div class="max-w-7xl mx-auto px-4 py-4">
         <!-- Services Section -->
         <div v-if="slateStore.itemCount > 0" class="mb-6">
           <h3 class="text-sm font-semibold uppercase tracking-wide mb-3 text-text-muted">
