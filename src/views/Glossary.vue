@@ -294,7 +294,7 @@ function getCategoryClasses(cat, type = 'bg') {
                       v-for="related in term.related"
                       :key="related"
                       @click="searchQuery = related; selectedCategory = null"
-                      class="px-2 py-1 text-xs rounded bg-surface-alt text-text-secondary hover:bg-border"
+                      class="px-2 py-1 text-xs rounded bg-primary/10 text-primary hover:bg-primary/20"
                     >
                       {{ related }}
                     </button>

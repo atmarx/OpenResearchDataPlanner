@@ -459,7 +459,7 @@ function handleWipeSlate() {
         <!-- Actions (placeholder for full review modal) -->
         <div class="mt-6 flex justify-end gap-3">
           <button
-            class="px-4 py-2 rounded-lg transition-colors text-text-secondary bg-surface-alt hover:bg-border"
+            class="px-4 py-2 rounded-lg transition-colors text-primary bg-primary/10 hover:bg-primary/20"
             @click="isExpanded = false"
           >
             Collapse

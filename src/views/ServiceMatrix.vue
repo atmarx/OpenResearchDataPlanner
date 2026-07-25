@@ -677,7 +677,7 @@ function getAvailabilityStyle(status) {
           <div class="flex gap-3">
             <button
               @click="showQuickAdd = false"
-              class="flex-1 px-4 py-2 rounded-lg bg-surface-alt text-text-secondary hover:bg-border-strong"
+              class="flex-1 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20"
             >
               Cancel
             </button>

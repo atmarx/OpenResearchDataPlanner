@@ -56,7 +56,7 @@ function toggleInfo() {
         <!-- Shared header - single toggle -->
         <button
           @click="toggleInfo"
-          class="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-colors bg-surface-alt text-text-secondary hover:bg-border"
+          class="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-colors bg-primary/10 text-primary hover:bg-primary/20"
         >
           <component :is="infoCollapsed ? ChevronRight : ChevronDown" class="w-4 h-4" />
           {{ infoCollapsed ? 'Show quick start info' : 'Hide quick start info' }}

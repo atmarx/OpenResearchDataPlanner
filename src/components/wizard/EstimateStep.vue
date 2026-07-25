@@ -154,7 +154,7 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
                   :class="[
                     service.estimate === preset.value
                       ? 'bg-primary text-on-primary'
-                      : 'bg-surface-alt text-text-secondary hover:bg-border-strong'
+                      : 'bg-primary/10 text-primary hover:bg-primary/20'
                   ]"
                   :title="preset.description"
                 >

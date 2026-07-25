@@ -154,7 +154,7 @@ function sendToSupport() {
               >Direct link to this question</label>
               <button
                 @click="copyText(shareableUrl, 'link')"
-                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors bg-surface-alt hover:bg-border-strong text-text-secondary"
+                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors bg-primary/10 hover:bg-primary/20 text-primary"
               >
                 <Check v-if="copiedLink" class="w-3.5 h-3.5 text-green-500" />
                 <Copy v-else class="w-3.5 h-3.5" />
@@ -176,7 +176,7 @@ function sendToSupport() {
               >Support ticket text</label>
               <button
                 @click="copyText(ticketString, 'ticket')"
-                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors bg-surface-alt hover:bg-border-strong text-text-secondary"
+                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors bg-primary/10 hover:bg-primary/20 text-primary"
               >
                 <Check v-if="copiedTicket" class="w-3.5 h-3.5 text-green-500" />
                 <Copy v-else class="w-3.5 h-3.5" />

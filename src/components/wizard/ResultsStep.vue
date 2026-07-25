@@ -326,7 +326,7 @@ function startOver() {
         </button>
         <button
           @click="exportJSON"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-surface-alt text-text-secondary rounded-md hover:bg-border-strong"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-md hover:bg-primary/20"
         >
           <FileText class="w-4 h-4" />
           Export Session (JSON)

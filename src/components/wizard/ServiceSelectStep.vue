@@ -177,7 +177,7 @@ function handleCompareSelect(service) {
         :class="
           viewMode === 'services'
             ? 'bg-primary text-on-primary'
-            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'
+            : 'bg-primary/10 text-primary hover:bg-primary/20'
         "
       >
         Browse Services
@@ -188,7 +188,7 @@ function handleCompareSelect(service) {
         :class="
           viewMode === 'bundles'
             ? 'bg-primary text-on-primary'
-            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'
+            : 'bg-primary/10 text-primary hover:bg-primary/20'
         "
       >
         Use Bundles
@@ -418,7 +418,7 @@ function handleCompareSelect(service) {
           <div class="flex justify-end">
             <button
               @click="showNotesModal = false"
-              class="px-4 py-2 rounded-md bg-surface-alt text-text-secondary hover:bg-border-strong"
+              class="px-4 py-2 rounded-md bg-primary/10 text-primary hover:bg-primary/20"
             >
               Close
             </button>

@@ -186,7 +186,7 @@ const spacingLevels = [
             <button
               @click="settingsOpen = !settingsOpen"
               class="p-2 rounded-lg transition-colors hover:bg-surface-alt"
-              :class="settingsOpen ? 'bg-surface-alt text-text' : 'text-text-muted hover:text-text'"
+              :class="settingsOpen ? 'bg-primary/10 hover:bg-primary/20 text-text' : 'text-primary hover:text-text'"
               :aria-expanded="settingsOpen"
               aria-haspopup="true"
               title="Display settings"
