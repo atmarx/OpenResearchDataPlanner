@@ -9,8 +9,10 @@ import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
 
-// View mode: 'services' or 'bundles' - default to bundles
-const viewMode = ref('bundles')
+// View mode: 'services' or 'bundles' - default to services. The full catalog
+// reads more clearly as a landing view; bundles-first confused people who
+// didn't realize the individual services were one tab away.
+const viewMode = ref('services')
 
 // Notes modal state
 const showNotesModal = ref(false)
