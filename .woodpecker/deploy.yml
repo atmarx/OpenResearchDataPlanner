@@ -22,7 +22,21 @@ steps:
           git clone ${CI_REPO_CLONE_URL} /projects/${CI_REPO_NAME}
         fi
       - cd /projects/${CI_REPO_NAME}
-      - git fetch origin && git checkout ${CI_COMMIT_BRANCH} && git pull origin ${CI_COMMIT_BRANCH}
+      - git fetch origin
+      # Fleet deploy standard (2026-08-10): never converge over a hot-patched
+      # host tree.  Clean -> sync as before; dirty -> refuse with the diff in
+      # the log so the edit is committed or discarded deliberately.  Untracked
+      # files never block.  Precedent: mydoulapage 00c6072.
+      - |
+        if ! git diff --quiet || ! git diff --cached --quiet; then
+          echo "DEPLOY REFUSED: tracked files in $(pwd) were edited on the host."
+          echo "Commit the change (or git checkout -- <file> to discard) and re-run."
+          git status --short
+          git diff HEAD
+          exit 1
+        fi
+      - git checkout ${CI_COMMIT_BRANCH}
+      - git reset --hard origin/${CI_COMMIT_BRANCH}
       - echo "$GITEA_TOKEN" | docker login -u ${CI_REPO_OWNER} --password-stdin git.dev.xram.net
       - cd deploy && docker compose pull && docker compose up -d
     volumes:
