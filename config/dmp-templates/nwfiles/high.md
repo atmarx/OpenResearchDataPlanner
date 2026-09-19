@@ -18,10 +18,9 @@ Given the {{tier.name}} classification of this data:
 - No shared folders with other projects
 
 **Data Protection:**
-- Nightly backups retained for 90 days
-- Weekly backups retained for 1 year
+- Automatic backups on the university's standard schedule for regulated data
 - Snapshots available for self-service recovery
-- Backup data encrypted with same controls as source
+- Backup data protected with the same controls as the source data
 
 {{#if service.notes}}
 **Special Considerations:**

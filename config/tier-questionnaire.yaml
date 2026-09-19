@@ -124,10 +124,9 @@ questions:
     options:
       - label: "Research participant samples (with consent/IRB)"
         value: "participant_samples"
-        sets_tier: high
         sets_flags:
           - human_genomic
-        next: government_data
+        next: genomic_identifiability
       - label: "Biobank samples (commercial or repository)"
         value: "biobank"
         next: biobank_consent
@@ -138,6 +137,46 @@ questions:
       - label: "Ancient DNA or archaeological samples"
         value: "ancient_dna"
         sets_tier: low
+        next: government_data
+
+  - id: genomic_identifiability
+    question: "Has a qualified expert determined your genomic data to be de-identified?"
+    help_text: "Genomic data is special: removing names is NOT enough. A genome is itself an identifier, so Safe Harbor de-identification does not apply — only a qualified expert's formal Expert Determination can establish it, and even then re-identification risk remains."
+    icon: "dna"
+    learn_more:
+      title: "Why genomic data resists de-identification"
+      content: |
+        For most data, the HIPAA Safe Harbor method — strip the 18 identifiers —
+        is enough to de-identify. **Genomic data is the exception.** A DNA sequence
+        uniquely identifies the individual (and partially their relatives), so
+        removing names does not de-identify it.
+
+        - **Expert Determination** (45 CFR 164.514(b)(1)) is the only route: a
+          qualified statistician or scientist formally determines the
+          re-identification risk is very small, and documents it. The **Privacy
+          Officer / qualified expert** makes this call — never the researcher.
+        - Even with an Expert Determination, controlled-access deposition (e.g.
+          dbGaP) and consent-consistent use typically still apply under the NIH
+          Genomic Data Sharing Policy.
+
+        When in doubt, treat genomic data as identifiable — it's easier to
+        reclassify down than to contain a breach.
+    options:
+      - label: "Yes — a qualified expert formally determined it de-identified"
+        value: "expert_deidentified"
+        sets_tier: medium
+        sets_flags:
+          - needs_review
+        next: government_data
+      - label: "No — identifiable or linked to participants"
+        value: "identifiable"
+        sets_tier: high
+        next: government_data
+      - label: "Not sure"
+        value: "unsure"
+        sets_tier: high
+        sets_flags:
+          - needs_review
         next: government_data
 
   - id: biobank_consent
@@ -164,6 +203,8 @@ questions:
       - label: "Fully de-identified with broad consent"
         value: "deidentified_broad"
         sets_tier: low
+        sets_flags:
+          - needs_review
         next: government_data
       - label: "Coded samples (key held by biobank)"
         value: "coded"
@@ -280,6 +321,8 @@ questions:
         clears_flags:
           - hipaa
           - phi
+        sets_flags:
+          - needs_review
         next: government_data
       - label: "Encoded (codes with a linking key somewhere)"
         value: "encoded"
@@ -329,10 +372,22 @@ questions:
 
         Peer R1 universities escalate by content, not by use: sensitive records
         stay High even in routine handling.
+
+        **De-identified education records** fall *outside* FERPA entirely
+        (34 CFR 99.31(b)) — the same carve-out as HIPAA de-identification. But
+        "de-identified" means no direct *or* indirect identifiers and no linking key,
+        with reasonable certainty a student can't be re-identified — and it is the
+        **Registrar / Institutional Research** who confirms it, never the researcher.
     options:
       - label: "Directory information only (name, enrollment status, dates of attendance)"
         value: "directory"
         sets_tier: low
+        next: government_data
+      - label: "De-identified — no direct or indirect identifiers, no linking key"
+        value: "deidentified"
+        sets_tier: low
+        sets_flags:
+          - needs_review
         next: government_data
       - label: "Routine coursework / instructional records (incl. classroom LLM use)"
         value: "instructional"
@@ -442,6 +497,17 @@ questions:
         - Covers dual-use commercial items
         - Less restrictive but still requires compliance
 
+        **Before you assume the strictest tier:** most university research on a
+        controlled *topic* is still publishable fundamental research, and the
+        **Fundamental Research Exclusion** removes those results from control. The
+        next few questions check whether it applies to you — answer honestly and
+        we'll route you to the Export Control Officer, not straight to the enclave.
+
+        The goal here isn't a verdict — it's a **shared starting point.** Your
+        answers give you and the Export Control Officer the same understanding of
+        the situation *before* the consultation, so nobody walks in blind and the
+        conversation begins from common ground.
+
         Contact our Export Control office if you're unsure.
     options:
       - label: "No / Not sure"
@@ -449,22 +515,124 @@ questions:
         next: proprietary_check
       - label: "Yes - ITAR (defense articles, military technology)"
         value: "itar"
-        sets_tier: restricted
         sets_flags:
           - itar
-        next: complete
+        next: fre_gate
       - label: "Yes - EAR (dual-use commercial technology)"
         value: "ear"
-        sets_tier: restricted
         sets_flags:
           - ear
-        next: complete
+        next: fre_gate
       - label: "Yes - both ITAR and EAR apply"
         value: "itar_ear"
-        sets_tier: restricted
         sets_flags:
           - itar
           - ear
+        next: fre_gate
+
+  - id: fre_gate
+    question: "Is this fundamental research — work you intend to publish openly, with no restrictions on what you can share?"
+    help_text: "The Fundamental Research Exclusion (FRE) removes results you're free to publish from export control. It protects your RESULTS, not controlled INPUTS a sponsor hands you — and it's destroyed the moment a publication or personnel restriction attaches."
+    icon: "book-open-check"
+    learn_more:
+      title: "What the Fundamental Research Exclusion actually covers"
+      content: |
+        Export control (ITAR/EAR) restricts sharing controlled technology with
+        non-US persons. But there is a large, often-missed carve-out: the
+        **Fundamental Research Exclusion (FRE)** — EAR 15 CFR 734.8; ITAR 22 CFR
+        120.34(a)(8).
+
+        **What it covers:** basic and applied research in science and engineering
+        where the resulting information is *ordinarily published and shared broadly.*
+        If your work is genuinely fundamental research, the RESULTS you publish are
+        not export-controlled — even on a controlled topic.
+
+        **The three ways to lose it:**
+        - **Publication restrictions** — any clause letting a sponsor approve, delay
+          (beyond a brief patent/proprietary courtesy review), or block publication.
+        - **Personnel restrictions** — any limit on who may participate (e.g. foreign
+          nationals excluded), or a side agreement imposing controls.
+        - **Controlled inputs & physical exports** — controlled technical data or
+          hardware provided as an INPUT stays controlled, and physically shipping or
+          carrying a controlled item abroad is never fundamental research.
+
+        **This is the Export Control Officer's determination to confirm — you cannot
+        self-certify it.** Answering honestly here routes you to that conversation
+        instead of the strictest default.
+    options:
+      - label: "Yes — fundamental research I intend to publish openly"
+        value: true
+        next: fre_restrictions
+      - label: "No, or not sure — there may be limits on publishing or sharing"
+        value: false
+        sets_tier: restricted
+        sets_flags:
+          - needs_review
+        next: complete
+
+  - id: fre_restrictions
+    question: "Does any award term or agreement restrict publication or who can participate?"
+    help_text: "Publication-approval clauses, pre-publication review beyond a brief patent courtesy, exclusion of foreign nationals, or any side agreement imposing controls. Any ONE of these destroys the exclusion."
+    icon: "file-x"
+    learn_more:
+      title: "The clauses that destroy the exclusion"
+      content: |
+        Any ONE of these means the Fundamental Research Exclusion does not apply and
+        the work is export-controlled:
+
+        - **Publication approval / restriction** — the sponsor may review to block or
+          delay publication. (A short courtesy review to remove the sponsor's *own*
+          proprietary data or to file a patent does NOT destroy the exclusion;
+          approval rights over YOUR results do.)
+        - **Personnel / access restriction** — the agreement limits participation,
+          e.g. "no foreign nationals," or requires citizenship-based access controls.
+        - **Side agreement** — any separate understanding imposing controls the main
+          award doesn't state (this is usually a policy problem too — flag it).
+
+        If none of these apply, your published results are likely fundamental research.
+    options:
+      - label: "No — I'm free to publish, and anyone may participate"
+        value: false
+        next: fre_inputs
+      - label: "Yes — publication or participation is restricted"
+        value: true
+        sets_tier: restricted
+        sets_flags:
+          - needs_review
+        next: complete
+
+  - id: fre_inputs
+    question: "Apart from your publishable results, will you receive controlled inputs or export anything physically?"
+    help_text: "Controlled technical data or hardware a sponsor provides as an INPUT stays controlled even when your results are publishable. Shipping or hand-carrying a controlled item abroad is never covered."
+    icon: "package-x"
+    learn_more:
+      title: "Results are free; inputs and physical exports are not"
+      content: |
+        The exclusion covers the research RESULTS you publish. It does not decontrol:
+
+        - **Controlled inputs** — technical data, drawings, software, or hardware a
+          sponsor hands you under an export-controlled designation. Those stay
+          controlled and belong in an approved environment, even while your published
+          findings do not.
+        - **Physical exports** — actually shipping or carrying a controlled item or
+          medium across a border is an export in its own right, outside the exclusion.
+
+        If neither applies, your work is publishable fundamental research and the
+        Export Control Officer can confirm the exclusion.
+    options:
+      - label: "No — my controlled work is the research results I'll publish"
+        value: false
+        sets_tier: high
+        sets_flags:
+          - fre
+          - needs_review
+        next: proprietary_check
+      - label: "Yes — I'll handle controlled inputs or export items physically"
+        value: true
+        sets_tier: restricted
+        sets_flags:
+          - fre
+          - needs_review
         next: complete
 
   - id: proprietary_check

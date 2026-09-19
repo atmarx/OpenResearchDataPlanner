@@ -415,7 +415,7 @@ function getNextApplet() {
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
           :class="copiedLanguage
             ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
-            : 'bg-surface-alt text-text-secondary hover:bg-border'"
+            : 'bg-primary/10 text-primary hover:bg-primary/20'"
         >
           <component :is="copiedLanguage ? CheckCircle : Copy" class="w-4 h-4" />
           {{ copiedLanguage ? 'Copied!' : 'Copy' }}

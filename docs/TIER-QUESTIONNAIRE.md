@@ -325,10 +325,46 @@ Does your research involve export-controlled technology?
 (ITAR — defense articles; EAR — dual-use; tech not shareable with non-US persons)
 
 ( ) No / Not sure                                 → Proprietary Check
-( ) Yes - ITAR (defense articles, military tech)  → Restricted tier · flags: itar → summary
-( ) Yes - EAR (dual-use commercial technology)    → Restricted tier · flags: ear → summary
-( ) Yes - both ITAR and EAR apply                 → Restricted tier · flags: itar, ear → summary
+( ) Yes - ITAR (defense articles, military tech)  → flags: itar → Fundamental Research Check
+( ) Yes - EAR (dual-use commercial technology)    → flags: ear → Fundamental Research Check
+( ) Yes - both ITAR and EAR apply                 → flags: itar, ear → Fundamental Research Check
 ```
+
+Most university research on a controlled *topic* is still publishable fundamental
+research, and the **Fundamental Research Exclusion** (EAR 15 CFR 734.8; ITAR 22 CFR
+120.34(a)(8)) removes the published results from control. So a "Yes" above doesn't jump
+to Restricted — it opens this short sub-branch, which routes publishable work to
+**High / consultation** with an `fre` flag for the Export Control Officer to confirm.
+
+### Fundamental Research Check  *(export-control sub-branch)*
+
+```
+Is this fundamental research — work you intend to publish openly, with no
+restrictions on what you can share?
+
+( ) Yes — I intend to publish openly        → Restriction Check
+( ) No / not sure — there may be limits     → Restricted tier · flags: needs_review → summary
+```
+
+```
+Does any award term restrict publication or who can participate?
+(publication-approval clauses, exclusion of foreign nationals, side agreements)
+
+( ) No — free to publish, anyone may take part   → Controlled-Input Check
+( ) Yes — publication or participation restricted → Restricted tier · flags: needs_review → summary
+```
+
+```
+Apart from your publishable results, will you receive controlled inputs or
+export anything physically?
+
+( ) No — my controlled work is the results I publish → High tier · flags: fre, needs_review → Proprietary Check
+( ) Yes — controlled inputs or physical export       → Restricted tier · flags: fre, needs_review → summary
+```
+
+The exclusion cannot be self-certified — the preserved path lands at **High /
+consultation** with an `fre` flag for the Export Control Officer to confirm; it is not
+decontrolled on the researcher's say-so.
 
 ---
 

@@ -21,7 +21,7 @@ function handleLogout() {
       v-if="isAuthenticated"
       class="border-b bg-surface border-border"
     >
-      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <h1 class="text-lg font-semibold text-text">
             Support Workbench

@@ -158,7 +158,11 @@ workflows:
     summary: |
       Regulated data (HIPAA, FERPA, PII) requires verification of
       compliance infrastructure. We've streamlined this process and
-      have pre-approved options available.
+      have pre-approved options available. Export-controlled research
+      that qualifies as publishable fundamental research also lands here:
+      the Export Control Officer confirms the Fundamental Research
+      Exclusion, and the project stays on standard secured infrastructure —
+      no enclave, no personnel restriction.
 
   restricted:
     name: "Restricted"
@@ -243,7 +247,7 @@ workflows:
     typical_time: "3-6 weeks"
 
     warnings:
-      - text: "Only US persons may access this data"
+      - text: "Only US persons may access genuinely controlled data — publishable fundamental research is not restricted this way"
         icon: "alert-triangle"
         severity: "high"
       - text: "Dedicated infrastructure required - no shared resources"
@@ -254,9 +258,15 @@ workflows:
         severity: "medium"
 
     summary: |
-      Export-controlled data requires dedicated isolated infrastructure
-      and export control review. While the process is thorough, we have
-      established pathways and experienced staff to guide you.
+      This path is for genuinely controlled work — controlled inputs or
+      hardware, physical exports, or projects under a publication or
+      personnel restriction — which requires dedicated isolated
+      infrastructure and export control review. Most university research on
+      a controlled topic is publishable fundamental research: its results
+      are excluded from control (EAR 15 CFR 734.8 / ITAR 22 CFR 120.34(a)(8))
+      and are handled at High tier with an Export Control Officer review, not
+      here. While this process is thorough, we have established pathways and
+      experienced staff to guide you.
 
 # FAQ shown in workflow modal
 faq:
@@ -265,7 +275,9 @@ faq:
       Regulated and export-controlled data requires verification of
       compliance infrastructure. This protects both the data subjects
       and the institution. We've streamlined this process as much as
-      possible while maintaining required safeguards.
+      possible while maintaining required safeguards. (Publishable
+      fundamental research on a controlled topic is confirmed by the
+      Export Control Officer and handled at High tier — no enclave build.)
     icon: "clock"
 
   - question: "Can I start working while waiting for approval?"
@@ -273,9 +285,13 @@ faq:
       **For L3 (HIPAA/PHI):** Yes, you can often begin with de-identified
       or synthetic data while BAA verification completes.
 
-      **For L4 (export-controlled):** No, you must wait for full approval
-      before any data access. However, you can prepare analysis code on
-      non-sensitive test data.
+      **For genuinely controlled L4 data:** No, you must wait for full
+      approval before any data access. However, you can prepare analysis
+      code on non-sensitive test data.
+
+      **For publishable fundamental research on a controlled topic:** This
+      is High tier once the Export Control Officer confirms the exclusion —
+      you're not gated behind an enclave build.
     icon: "play"
 
   - question: "What if I'm not sure about my data tier?"

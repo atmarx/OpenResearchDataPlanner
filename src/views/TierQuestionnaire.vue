@@ -15,8 +15,21 @@ import {
   GraduationCap,
   Landmark,
   FileLock,
+  FileCheck,
+  FileX,
   Globe,
+  GlobeLock,
   Lock,
+  Book,
+  BookOpenCheck,
+  PackageX,
+  Dna,
+  Atom,
+  Bird,
+  Cog,
+  Microscope,
+  Wheat,
+  ScanFace,
   Info,
   CheckCircle,
   AlertTriangle,
@@ -34,7 +47,6 @@ import {
   HelpCircle
 } from 'lucide-vue-next'
 import { applyAnswerToState } from '@/lib/classifyTier'
-import AnnotatedText from '@/components/acronyms/AnnotatedText.vue'
 import AnnotatedHtml from '@/components/acronyms/AnnotatedHtml.vue'
 import DataIdentificationFlow from '@/components/explore/DataIdentificationFlow.vue'
 import QuestionnairePathViewer from '@/components/explore/QuestionnairePathViewer.vue'
@@ -85,16 +97,30 @@ const sortedTiers = computed(() => {
   return [...(configStore.tiers || [])].sort((a, b) => a.sort_order - b.sort_order)
 })
 
-// Icon mapping
+// Icon mapping — every icon name the questionnaire YAML references.
+// Unmapped names silently fall back to Info (see getIcon), so keep this in
+// sync with config/tier-questionnaire.yaml when questions add new icons.
 const iconMap = {
   'users': Users,
   'heart-pulse': HeartPulse,
   'user-check': UserCheck,
+  'user-scan': ScanFace,  // lucide@0.469 has no UserScan; ScanFace is the closest glyph
   'graduation-cap': GraduationCap,
   'landmark': Landmark,
   'file-lock': FileLock,
-  'globe-lock': Globe,
-  'lock': Lock
+  'file-check': FileCheck,
+  'file-x': FileX,
+  'globe-lock': GlobeLock,
+  'lock': Lock,
+  'book': Book,
+  'book-open-check': BookOpenCheck,
+  'package-x': PackageX,
+  'dna': Dna,
+  'atom': Atom,
+  'bird': Bird,
+  'cog': Cog,
+  'microscope': Microscope,
+  'wheat': Wheat
 }
 
 // Current question
@@ -366,7 +392,7 @@ function dismissDeepLinkBanner() {
 </script>
 
 <template>
-  <PageShell width="max-w-3xl 2xl:max-w-6xl" bare>
+  <PageShell width="max-w-5xl" bare>
     <template #header>
         <div class="flex items-center justify-center gap-6">
           <h1
@@ -481,59 +507,62 @@ function dismissDeepLinkBanner() {
                 </div>
 
                 <!-- Description -->
-                <p class="text-sm text-text-secondary mb-3 whitespace-pre-line">
-                  <AnnotatedText :text="tier.description" />
-                </p>
-
-                <!-- Types of Data -->
-                <div v-if="tier.types_of_data?.length" class="mb-3">
-                  <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
-                    Types of Data:
-                  </p>
-                  <ul class="text-sm text-text-secondary space-y-0.5">
-                    <li
-                      v-for="dataType in tier.types_of_data"
-                      :key="dataType"
-                      class="flex items-start gap-2"
-                    >
-                      <span class="text-text-muted">•</span>
-                      <span>{{ dataType }}</span>
-                    </li>
-                  </ul>
+                <div class="text-sm text-text-secondary mb-3 md-body">
+                  <AnnotatedHtml :html="renderMarkdown(tier.description)" />
                 </div>
 
-                <!-- Examples -->
-                <div v-if="tier.examples?.length" class="mb-3">
-                  <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
-                    Examples:
-                  </p>
-                  <ul class="text-sm text-text-secondary space-y-0.5">
-                    <li
-                      v-for="example in tier.examples"
-                      :key="example"
-                      class="flex items-start gap-2"
-                    >
-                      <span class="text-text-muted">•</span>
-                      <span>{{ example }}</span>
-                    </li>
-                  </ul>
-                </div>
+                <!-- Types of Data · Examples · Requirements — three columns so the card uses its full width instead of stacking (collapses to one column below md) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-3 mb-3">
+                  <!-- Types of Data -->
+                  <div v-if="tier.types_of_data?.length">
+                    <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
+                      Types of Data:
+                    </p>
+                    <ul class="text-sm text-text-secondary space-y-0.5">
+                      <li
+                        v-for="dataType in tier.types_of_data"
+                        :key="dataType"
+                        class="flex items-start gap-2"
+                      >
+                        <span class="text-text-muted">•</span>
+                        <span>{{ dataType }}</span>
+                      </li>
+                    </ul>
+                  </div>
 
-                <!-- Requirements -->
-                <div v-if="tier.requirements?.length" class="mb-3">
-                  <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
-                    Requirements:
-                  </p>
-                  <ul class="text-sm text-text-secondary space-y-0.5">
-                    <li
-                      v-for="req in tier.requirements"
-                      :key="req"
-                      class="flex items-start gap-2"
-                    >
-                      <span class="text-text-muted">•</span>
-                      <span>{{ req }}</span>
-                    </li>
-                  </ul>
+                  <!-- Examples -->
+                  <div v-if="tier.examples?.length">
+                    <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
+                      Examples:
+                    </p>
+                    <ul class="text-sm text-text-secondary space-y-0.5">
+                      <li
+                        v-for="example in tier.examples"
+                        :key="example"
+                        class="flex items-start gap-2"
+                      >
+                        <span class="text-text-muted">•</span>
+                        <span>{{ example }}</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Requirements -->
+                  <div v-if="tier.requirements?.length">
+                    <p class="text-xs font-medium text-text-muted uppercase tracking-wide mb-1">
+                      Requirements:
+                    </p>
+                    <ul class="text-sm text-text-secondary space-y-0.5">
+                      <li
+                        v-for="req in tier.requirements"
+                        :key="req"
+                        class="flex items-start gap-2"
+                      >
+                        <span class="text-text-muted">•</span>
+                        <span>{{ req }}</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
 
                 <!-- Badges -->
@@ -691,11 +720,11 @@ function dismissDeepLinkBanner() {
           >
             {{ intro.title || "What type of data will you be working with?" }}
           </h2>
-          <p
-            class="whitespace-pre-line text-text-secondary"
-          >
-            {{ intro.description }}
-          </p>
+          <div
+            class="md-body text-text-secondary"
+          
+            v-html="renderMarkdown(intro.description)"
+          ></div>
         </div>
 
         <!-- Audience Note - Who needs this questionnaire? -->
@@ -801,12 +830,12 @@ function dismissDeepLinkBanner() {
             <button
               @click="showQuestionHelp = true"
               class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border transition-colors border-border-strong text-text-secondary hover:bg-surface-alt hover:border-border-strong"
-              aria-label="I don't understand this question — get help"
-              title="I don't understand this — get a copy-pasteable link to share with support"
+              aria-label="Ask about this question — get help framing it for support"
+              title="Ask about this — get a copy-pasteable link and ticket text to share with support"
             >
               <HelpCircle class="w-3.5 h-3.5" />
-              <span class="hidden sm:inline">I don't understand this</span>
-              <span class="sm:hidden">Help</span>
+              <span class="hidden sm:inline">Ask about this</span>
+              <span class="sm:hidden">Ask</span>
             </button>
           </div>
 
@@ -978,7 +1007,7 @@ function dismissDeepLinkBanner() {
       v-if="showStickyNav"
       class="fixed bottom-0 left-0 right-0 z-30 border-t shadow-lg bg-surface border-border"
     >
-      <div class="max-w-3xl 2xl:max-w-6xl mx-auto px-4 py-3">
+      <div class="max-w-5xl mx-auto px-4 py-3">
         <div class="flex items-center justify-between">
           <!-- Left: Navigation buttons -->
           <div class="flex items-center gap-3">

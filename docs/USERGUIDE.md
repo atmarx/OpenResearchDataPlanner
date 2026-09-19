@@ -211,8 +211,8 @@ Your data security tier determines which services you can use.
 |------|------|----------|
 | L1 | Low Risk | Public datasets, published results, open-source code, model organism data |
 | L2 | Medium Risk | Pre-publication data, proprietary methods, NDA-protected work, coded biobank samples |
-| L3 | High Risk | Patient data (PHI), student records (FERPA), human genomic data, identifiable research participants |
-| L4 | Restricted | Export-controlled (ITAR/EAR), CUI, defense research, USDA Select Agents |
+| L3 | High Risk | Patient data (PHI), student records (FERPA), human genomic data, identifiable research participants, export-controlled *topics* that qualify as publishable fundamental research (FRE, ECO-confirmed) |
+| L4 | Restricted | Genuinely restricted export-controlled work (controlled inputs, physical exports, or a publication/personnel restriction), CUI, defense research, USDA Select Agents |
 
 ### Choosing Your Tier
 
@@ -378,7 +378,11 @@ Most HIPAA/FERPA projects:
 
 ### Restricted (L4) Timeline
 
-Export-controlled projects:
+This timeline applies to *genuinely* restricted work — controlled inputs, physical
+exports, or projects under a publication or personnel restriction. If the export-control
+review confirms your work is publishable fundamental research (the Fundamental Research
+Exclusion), your project is handled at **High (L3)**, not Restricted, and the enclave
+steps below don't apply.
 
 1. **Complete planner** (~10 min)
 2. **Consultation** (1-3 days)

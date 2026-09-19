@@ -51,7 +51,7 @@
 - ✅ Genomic data linked to medical record → PHI
 
 **Connection to L2/L3/L4 Tiers**:
-- **L2 (Medium Risk)**: Fully de-identified health data (Safe Harbor, no linking key) maps here — not PHI
+- **L2 (Medium Risk)**: Fully de-identified health data (Safe Harbor, no linking key) maps here — not PHI. (Exception: a genome cannot be Safe-Harbor de-identified — only Expert Determination — so genomic data stays higher; see genomic guidance.)
 - **L3 (High Risk)**: Identifiable PHI — confirmed PHI, full HIPAA compliance required (BAA, HIPAA-compliant infrastructure)
 - **L4 (Restricted)**: Export-controlled / CUI / classified — not a HIPAA tier
 
@@ -431,7 +431,7 @@ Data Sharing Approach?
          ↓
 Coordinator aggregates data, analyzes, returns results to hospitals
          ↓
-Publication (suppress cells <11)
+Publication (suppress cells <11 — a CMS small-cell convention, not a HIPAA de-identification requirement)
          ↓
 END
 ```

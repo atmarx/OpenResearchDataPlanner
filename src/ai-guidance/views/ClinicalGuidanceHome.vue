@@ -91,7 +91,7 @@ function getColorClasses(color) {
   <div class="min-h-screen transition-colors bg-canvas">
     <!-- Header -->
     <header class="border-b bg-surface border-border">
-      <div class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-6">
+      <div class="max-w-7xl mx-auto px-4 py-6">
         <div class="flex items-center justify-between">
           <div>
             <div class="flex items-center gap-2 mb-1">
@@ -120,7 +120,7 @@ function getColorClasses(color) {
     </header>
 
     <!-- Main content -->
-    <main class="max-w-4xl 2xl:max-w-5xl mx-auto px-4 py-8 space-y-8">
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
       <!-- Tier Context (if applicable) -->
       <div
         v-if="hasClinicalContext && tierConfig"

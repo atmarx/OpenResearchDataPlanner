@@ -23,8 +23,11 @@ const props = defineProps({
     type: String,
     required: true
   },
+  // lucide-vue-next icons are functional components (functions), not objects —
+  // typing this Object-only warned "Expected Object, got Function" on every
+  // applet mount. Accept both component shapes.
   icon: {
-    type: Object,
+    type: [Object, Function],
     default: null
   },
   // Optional: where to go next
@@ -78,7 +81,7 @@ function goToNext() {
   <div class="min-h-screen transition-colors bg-canvas">
     <!-- Header -->
     <header class="border-b sticky top-0 z-10 bg-surface border-border">
-      <div class="max-w-3xl 2xl:max-w-4xl mx-auto px-4 py-4">
+      <div class="max-w-5xl mx-auto px-4 py-4">
         <div class="flex items-center justify-between">
           <!-- Back / Home -->
           <div class="flex items-center gap-2">
@@ -122,7 +125,7 @@ function goToNext() {
     </header>
 
     <!-- Main content -->
-    <main class="max-w-3xl 2xl:max-w-4xl mx-auto px-4 py-8">
+    <main class="max-w-5xl mx-auto px-4 py-8">
       <!-- Core Question -->
       <div
         class="mb-8 p-4 rounded-lg border-l-4 bg-surface-alt border-primary text-primary"

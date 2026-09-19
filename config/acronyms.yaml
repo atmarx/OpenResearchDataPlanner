@@ -328,11 +328,14 @@ acronyms:
     expansion: "International Traffic in Arms Regulations"
     short_def: "Export control for defense-related data"
     long_def: |
-      ITAR controls the export of defense-related articles, services,
-      and technical data. Research involving ITAR-controlled information
-      cannot be accessed by non-US persons and requires specific
-      safeguards and dedicated infrastructure.
-    related: ["EAR", "CUI", "export control"]
+      ITAR controls the export of defense-related articles, services, and
+      technical data — including sharing technical data with non-US persons
+      ("deemed exports"). But most university research on a controlled topic
+      is publishable fundamental research, which the Fundamental Research
+      Exclusion removes from control; your Export Control Officer confirms it.
+      It's genuinely restricted results — or controlled inputs and hardware —
+      that require US-persons-only access and dedicated infrastructure.
+    related: ["EAR", "FRE", "CUI", "export control"]
     category: "compliance"
 
   - term: "EAR"
@@ -341,8 +344,35 @@ acronyms:
     long_def: |
       EAR controls exports of commercial and dual-use items, software,
       and technology. Less restrictive than ITAR but still requires
-      compliance for certain research areas.
-    related: ["ITAR", "export control"]
+      compliance for certain research areas. As with ITAR, publishable
+      fundamental research is excluded from control (the Fundamental
+      Research Exclusion) — it's controlled inputs, or work under
+      publication or personnel restrictions, that trigger EAR obligations.
+    related: ["ITAR", "FRE", "export control"]
+    category: "compliance"
+
+  - term: "FRE"
+    display: "Fundamental Research Exclusion (FRE)"
+    expansion: "Fundamental Research Exclusion"
+    short_def: "Publishable university research is excluded from export control"
+    long_def: |
+      The Fundamental Research Exclusion (FRE) is the carve-out most
+      export-controlled university research actually falls under. Basic and
+      applied research in science and engineering whose results are ordinarily
+      published and shared broadly is NOT export-controlled — even on an
+      ITAR/EAR-controlled topic (EAR 15 CFR 734.8; ITAR 22 CFR 120.34(a)(8)).
+
+      It protects your published RESULTS, not controlled INPUTS a sponsor
+      hands you, and it is destroyed the moment a restriction attaches:
+      a publication restriction (the sponsor may approve, delay, or block
+      publication — a brief patent/proprietary courtesy review is fine),
+      a personnel restriction (e.g. "no foreign nationals" may participate),
+      or controlled inputs / physically exporting a controlled item.
+
+      You cannot self-certify the FRE — the Export Control Officer confirms it.
+      So genuinely fundamental research on a controlled topic routes to a
+      consultation (High tier), not automatically to a restricted enclave.
+    related: ["ITAR", "EAR", "export control", "CUI"]
     category: "compliance"
 
   - term: "NIST 800-171"

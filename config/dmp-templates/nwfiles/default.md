@@ -9,10 +9,8 @@ a centrally-managed storage service with automatic backups and campus-wide acces
 - Grant period cost: {{currency service.total_cost}}
 
 **Data Protection:**
-- Nightly backups retained for 30 days
-- Weekly backups retained for 90 days
+- Automatic backups on the university's standard schedule
 - Snapshots available for self-service recovery
-- Encryption at rest enabled
 
 {{#if service.notes}}
 **Additional Notes:**

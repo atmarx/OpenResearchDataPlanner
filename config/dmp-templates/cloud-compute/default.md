@@ -21,9 +21,11 @@ to scalable compute resources.
 
 **Data Handling:**
 Data processed in the cloud environment will be stored in
-institution-managed cloud storage with appropriate access controls.
-Researchers are responsible for following data classification
-guidelines when configuring cloud resources.
+institution-managed cloud storage with access controls matched to
+this project's data classification tier. Cloud resources for this
+project will be configured to meet the classification requirements
+established in this plan, following the university's approved
+configuration baselines.
 
 **Access Control:**
 Access to cloud resources is managed through the university's

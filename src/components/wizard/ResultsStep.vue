@@ -9,6 +9,7 @@ import { computeEstimate } from '@/lib/pricing.js'
 import { useCountUp } from '@/composables/useCountUp'
 import { Download, FileText, RefreshCw, ExternalLink, CheckCircle, FileCode, Copy, Check } from 'lucide-vue-next'
 import PageFeedback from '@/components/feedback/PageFeedback.vue'
+import ExplainerJit from '@/components/explainers/ExplainerJit.vue'
 
 const configStore = useConfigStore()
 const sessionStore = useSessionStore()
@@ -224,6 +225,10 @@ function startOver() {
             <p>{{ sessionStore.session.retention.longest_years }} year retention</p>
           </div>
         </div>
+        <!-- JIT explainer nudge (config/explainers.yaml — jit.anchors: tier-cost) -->
+        <div class="mt-3">
+          <ExplainerJit anchor="tier-cost" />
+        </div>
       </div>
 
       <!-- Cost breakdown table -->
@@ -321,7 +326,7 @@ function startOver() {
         </button>
         <button
           @click="exportJSON"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-surface-alt text-text-secondary rounded-md hover:bg-border-strong"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-md hover:bg-primary/20"
         >
           <FileText class="w-4 h-4" />
           Export Session (JSON)

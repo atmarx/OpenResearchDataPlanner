@@ -286,7 +286,7 @@ function getNextApplet() {
               class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
               :class="copiedContent === 'template'
                 ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
-                : 'bg-surface-alt text-text-secondary hover:bg-border'"
+                : 'bg-primary/10 text-primary hover:bg-primary/20'"
             >
               <component :is="copiedContent === 'template' ? CheckCircle : Copy" class="w-4 h-4" />
               {{ copiedContent === 'template' ? 'Copied!' : 'Copy' }}
@@ -362,7 +362,7 @@ function getNextApplet() {
             class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
             :class="selectedTemplate === template.id
               ? 'bg-primary text-on-primary'
-              : 'bg-surface-alt text-text-secondary hover:bg-border'"
+              : 'bg-primary/10 text-primary hover:bg-primary/20'"
           >
             {{ template.name }}
           </button>

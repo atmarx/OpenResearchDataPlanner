@@ -14,6 +14,7 @@ import {
 import PageFeedback from '@/components/feedback/PageFeedback.vue'
 import PageShell from '@/components/layout/PageShell.vue'
 import { fillDisclosureTokens } from '@/lib/aiDisclosure.js'
+import { renderMarkdown } from '@/lib/markdown'
 
 const configStore = useConfigStore()
 
@@ -44,13 +45,24 @@ const citationText = computed(() => {
     assistant: assistantName.value
   })
 })
+
+// Terms & responsibilities (config/legal.yaml) — the full term bodies surface
+// here, per the config's own surface notes ("modals, About page, exported
+// artifacts"); the footer carries only the no_warranty short line.
+const legalSections = computed(() => {
+  const legal = configStore.config?.legal
+  if (!legal) return []
+  return ['terms_of_use', 'acceptable_use', 'data_responsibility', 'no_warranty']
+    .map((key) => legal[key])
+    .filter((section) => section?.heading && section?.body)
+})
 </script>
 
 <template>
   <!-- Narrow reading column on small screens; on xl+ the page opens into a
        narrative spine (main) + a sticky reference rail (aside) so the wide
        viewport isn't wasted on one skinny column. -->
-  <PageShell width="max-w-3xl xl:max-w-[77rem]" bare>
+  <PageShell width="max-w-5xl xl:max-w-[77rem]" bare>
     <!-- Title + intro ride the opaque header bar (the page used to sit bare on
          the hero, so the title was unreadable). Back link lives here too. -->
     <template #header>
@@ -212,6 +224,28 @@ const citationText = computed(() => {
               <span>AI did not make final decisions about content accuracy or appropriateness</span>
             </li>
           </ul>
+        </section>
+
+        <!-- Terms & Responsibilities — the full term bodies from config/legal.yaml
+             (the footer shows only the short no-warranty line; this is where the
+             fuller notices live, per the config's own surface notes) -->
+        <section
+          v-if="legalSections.length"
+          class="rounded-xl border p-6 bg-surface border-border"
+        >
+          <h2 class="text-lg font-semibold mb-4 text-text">
+            Terms &amp; Responsibilities
+          </h2>
+          <div class="space-y-5">
+            <div v-for="section in legalSections" :key="section.heading">
+              <h3 class="font-medium mb-1 text-text">
+                {{ section.heading }}
+              </h3>
+              <div class="text-sm md-body text-text-secondary"
+                v-html="renderMarkdown(section.body.trim())"
+              ></div>
+            </div>
+          </div>
         </section>
 
         <!-- Report Issues / Feedback (footer "Share your feedback" links to #feedback) -->

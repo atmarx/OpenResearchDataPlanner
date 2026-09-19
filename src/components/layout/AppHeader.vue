@@ -48,10 +48,23 @@ const navTabs = computed(() => {
 
 const currentPath = computed(() => route.path)
 
+// Shrink-on-scroll with HYSTERESIS. A single threshold is a feedback trap: the
+// header collapses (logo h-16→h-10, py-4→py-2 — ~24px shorter) when scrollY
+// crosses it, which shortens the document and drags scrollY back across the
+// SAME line — an endless sub-pixel wobble whenever the resting scroll sits near
+// it. The wizard's tier step lands right there, which is the "jiggle" (and the
+// Playwright "element is not stable" 30s timeout the reshoot hit). Two
+// thresholds with a dead-band far wider than the header's own height change
+// mean the collapse can never re-trigger its own inverse: engage past 64px,
+// release under 8px, hold state in the 56px band between.
 const isScrolled = ref(false)
+const ENGAGE_AT = 64
+const RELEASE_AT = 8
 
 function handleScroll() {
-  isScrolled.value = window.scrollY > 20
+  const y = window.scrollY
+  if (!isScrolled.value && y > ENGAGE_AT) isScrolled.value = true
+  else if (isScrolled.value && y < RELEASE_AT) isScrolled.value = false
 }
 
 // Settings dropdown (gear) — collapses skin + wallpaper + dark mode into one
@@ -120,17 +133,25 @@ function handleReset() {
     sessionStore.reset()
   }
 }
+
+// Text-spacing levels for the settings segmented control. Default ships looser
+// than the old 'tight' base (see preferencesStore).
+const spacingLevels = [
+  { value: 'tight', label: 'Tight' },
+  { value: 'default', label: 'Default' },
+  { value: 'loose', label: 'Loose' }
+]
 </script>
 
 <template>
   <!-- Header is a raised surface; bg-surface + border-border flip themselves
        under .dark and under any institution skin. No darkMode ternaries.
        The bar (bg + borders) is full-bleed like the footer; the content is
-       capped at max-w-5xl mx-auto so it lines up with the footer column. -->
+       capped at max-w-7xl mx-auto so it lines up with the footer column. -->
   <header class="sticky top-0 z-50 transition-all duration-200 bg-surface">
     <!-- Top row: Logo, Title, Controls -->
     <div class="border-b border-border px-4 sm:px-6">
-      <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
         <!-- Logo -->
         <div class="flex-shrink-0">
           <router-link to="/">
@@ -165,7 +186,7 @@ function handleReset() {
             <button
               @click="settingsOpen = !settingsOpen"
               class="p-2 rounded-lg transition-colors hover:bg-surface-alt"
-              :class="settingsOpen ? 'bg-surface-alt text-text' : 'text-text-muted hover:text-text'"
+              :class="settingsOpen ? 'bg-primary/10 hover:bg-primary/20 text-text' : 'text-primary hover:text-text'"
               :aria-expanded="settingsOpen"
               aria-haspopup="true"
               title="Display settings"
@@ -239,6 +260,30 @@ function handleReset() {
                 </span>
               </button>
 
+              <!-- Text spacing — vertical rhythm below paragraphs & list items.
+                   Three levels; 'Default' (shipped) is looser than 'Tight'. -->
+              <div>
+                <label class="block text-xs font-medium mb-1 text-text-muted">Text spacing</label>
+                <div
+                  class="flex rounded-md border border-border divide-x divide-border overflow-hidden"
+                  role="group"
+                  aria-label="Text spacing"
+                >
+                  <button
+                    v-for="level in spacingLevels"
+                    :key="level.value"
+                    @click="preferencesStore.setSpacing(level.value)"
+                    class="flex-1 px-2 py-1.5 text-xs font-medium transition-colors"
+                    :class="preferencesStore.spacing === level.value
+                      ? 'bg-primary text-on-primary'
+                      : 'bg-surface text-text-secondary hover:bg-surface-alt'"
+                    :aria-pressed="preferencesStore.spacing === level.value"
+                  >
+                    {{ level.label }}
+                  </button>
+                </div>
+              </div>
+
               <!-- UX Enhancements — the motion + flourish layer. On by default;
                    off gives a plainer, calmer interface. OS reduced-motion is
                    honored separately, so this is the user's explicit choice. -->
@@ -279,7 +324,7 @@ function handleReset() {
 
     <!-- Navigation tabs -->
     <nav class="border-b border-border overflow-x-auto px-4 sm:px-6">
-      <div class="max-w-5xl mx-auto flex justify-center">
+      <div class="max-w-7xl mx-auto flex justify-center">
         <router-link
           v-for="tab in navTabs"
           :key="tab.path"

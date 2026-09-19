@@ -342,7 +342,7 @@ function getColorClasses(color) {
 </script>
 
 <template>
-  <PageShell width="max-w-4xl xl:max-w-7xl" bare>
+  <PageShell width="max-w-5xl xl:max-w-7xl" bare>
     <!-- Title + progress on the opaque header bar (was a full-bleed
          min-h-screen canvas that painted over the hero). -->
     <template #header>

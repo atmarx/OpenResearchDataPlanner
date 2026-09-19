@@ -1199,10 +1199,11 @@ Must remove:
 **2. All geographic subdivisions smaller than a state**
 - Street addresses, city, county, precinct, ZIP code (see exception below)
 - **EXCEPTION**: May retain first 3 digits of ZIP code if geographic unit formed by combining all ZIP codes with same 3 initial digits contains more than 20,000 people
-- **Change all elements of dates (except year)** for dates that are directly related to an individual (birth, admission, discharge, death, dates of service)
-   - May retain year
-   - May retain age if not over 89 years
-   - **For individuals over 89**: Aggregate into single category "90 or older"
+
+**3. All elements of dates (except year)** directly related to an individual (birth, admission, discharge, death, dates of service)
+- May retain year
+- May retain age if not over 89 years
+- **For individuals over 89**: Aggregate into single category "90 or older"
 
 **4. Telephone numbers**
 - Mobile, home, work numbers

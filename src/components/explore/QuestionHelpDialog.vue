@@ -1,6 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { useConfigStore } from '@/stores/configStore'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import { X, Copy, Check, Mail, Link as LinkIcon } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -13,16 +12,8 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-const configStore = useConfigStore()
-
 const copiedLink = ref(false)
 const copiedTicket = ref(false)
-
-const supportEmail = computed(() => {
-  const contacts = configStore.config?.help?.contact_options || []
-  const email = contacts.find(c => c.action?.type === 'email')
-  return email?.action?.address || configStore.config?.meta?.contact?.email || 'research-computing@northwinds.edu'
-})
 
 const shareableUrl = computed(() => {
   if (typeof window === 'undefined') return ''
@@ -79,10 +70,26 @@ async function copyText(text, target) {
   }
 }
 
-function emailSupport() {
-  const subject = encodeURIComponent(`Tier Questionnaire help: ${props.questionId}`)
-  const body = encodeURIComponent(ticketString.value)
-  window.location.href = `mailto:${supportEmail.value}?subject=${subject}&body=${body}`
+// This planner is a demo, so the send button is a placeholder — no live mailto.
+// Clicking it flashes a transient notice describing what a real deployment would
+// wire up. Same pattern as GetHelpModal's contact buttons.
+const demoNotice = ref('')
+let demoNoticeTimer = null
+
+function flashDemoNotice(message) {
+  demoNotice.value = message
+  if (demoNoticeTimer) clearTimeout(demoNoticeTimer)
+  demoNoticeTimer = setTimeout(() => { demoNotice.value = '' }, 4500)
+}
+
+onBeforeUnmount(() => {
+  if (demoNoticeTimer) clearTimeout(demoNoticeTimer)
+})
+
+function sendToSupport() {
+  flashDemoNotice(
+    'This planner is a demo. In your institution\'s deployment, this would send the ticket text above to your research computing team — real people who answer these every day.'
+  )
 }
 </script>
 
@@ -106,7 +113,7 @@ function emailSupport() {
             id="qhelp-title"
             class="text-lg font-semibold text-text"
           >
-            Get help with this question
+            Ask about this question
           </h2>
           <button
             @click="emit('close')"
@@ -122,9 +129,11 @@ function emailSupport() {
           <p
             class="text-sm text-text-secondary"
           >
-            Most of this is policy you may not have seen before, so questions are normal.
-            Copy the support ticket text below into an email or ticket — it includes a link
-            back to this exact question and the path you took to reach it.
+            Have a question about this one? These classification rules carry a lot of
+            institutional context, so wanting a closer look is completely reasonable. Copy
+            the support ticket text below into an email or ticket — it includes a link back
+            to this exact question and the path you took to reach it, so whoever on the
+            team picks it up starts right where you are.
           </p>
 
           <!-- Question echo -->
@@ -145,7 +154,7 @@ function emailSupport() {
               >Direct link to this question</label>
               <button
                 @click="copyText(shareableUrl, 'link')"
-                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors bg-surface-alt hover:bg-border-strong text-text-secondary"
+                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors bg-primary/10 hover:bg-primary/20 text-primary"
               >
                 <Check v-if="copiedLink" class="w-3.5 h-3.5 text-green-500" />
                 <Copy v-else class="w-3.5 h-3.5" />
@@ -167,7 +176,7 @@ function emailSupport() {
               >Support ticket text</label>
               <button
                 @click="copyText(ticketString, 'ticket')"
-                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors bg-surface-alt hover:bg-border-strong text-text-secondary"
+                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors bg-primary/10 hover:bg-primary/20 text-primary"
               >
                 <Check v-if="copiedTicket" class="w-3.5 h-3.5 text-green-500" />
                 <Copy v-else class="w-3.5 h-3.5" />
@@ -179,17 +188,38 @@ function emailSupport() {
             >{{ ticketString }}</pre>
           </div>
 
-          <!-- Email action -->
+          <!-- Send action — placeholder in this demo, see sendToSupport() -->
           <button
-            @click="emailSupport"
+            @click="sendToSupport"
             class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors bg-primary hover:bg-primary-dark text-on-primary"
           >
             <Mail class="w-4 h-4" />
-            Email this to {{ supportEmail }}
+            Send this to your support team
           </button>
 
         </div>
       </div>
     </div>
+
+    <!-- Demo notice — clicking the placeholder send button flashes this, then it fades out -->
+    <Transition
+      enter-active-class="transition-opacity duration-200 ease-out"
+      enter-from-class="opacity-0"
+      leave-active-class="transition-opacity duration-500 ease-in"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="demoNotice"
+        class="fixed inset-x-0 bottom-6 z-[60] flex justify-center px-4 pointer-events-none"
+      >
+        <div
+          class="pointer-events-auto max-w-sm rounded-lg px-4 py-3 text-sm font-medium text-center shadow-xl bg-primary text-on-primary"
+          role="status"
+          aria-live="polite"
+        >
+          {{ demoNotice }}
+        </div>
+      </div>
+    </Transition>
   </Teleport>
 </template>

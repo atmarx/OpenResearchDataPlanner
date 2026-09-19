@@ -165,7 +165,7 @@ questions:
         18. **Any other unique identifying number, characteristic, or code**
 
         **Plus special rules (§ 164.514(b)(2)(i)(B)-(C)):**
-        - ZIP codes: keep the first 3 digits only if that 3-digit area has more than 20,000 people; otherwise change to "000" (OCR's guidance lists the restricted prefixes)
+        - ZIP codes: keep the first 3 digits only if that 3-digit area has more than 20,000 people; otherwise use "000". In practice only ~17 sparsely-populated 3-digit prefixes fall below the threshold and must be zeroed (OCR publishes the list).
         - Dates: ONLY the year may be kept — remove admission, discharge, birth, and death day/month
         - Ages 90+: aggregate into a single "90 or older" category
 

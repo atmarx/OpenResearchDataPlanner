@@ -61,7 +61,7 @@ const aiFooterFeedback = computed(() => aiDisclosure.value?.footer?.feedback_lab
   <footer
     class="border-t px-6 py-6 pb-20 transition-colors duration-200 bg-surface border-border"
   >
-    <div class="max-w-5xl mx-auto">
+    <div class="max-w-7xl mx-auto">
       <!-- Stack on mobile so the crest drops below the text instead of
            fighting it for width (was a fixed two-column row → 65px overflow) -->
       <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">

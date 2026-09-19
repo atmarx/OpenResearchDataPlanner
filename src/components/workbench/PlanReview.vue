@@ -404,7 +404,7 @@ function getStatusClasses(status) {
                 :class="[
                   getItemStatus(item) === option.value
                     ? getStatusClasses(option.value)
-                    : 'bg-surface-alt text-text-muted hover:bg-border-strong'
+                    : 'bg-primary/10 text-primary hover:bg-primary/20'
                 ]"
               >
                 <component :is="option.icon" class="w-4 h-4" />
@@ -523,7 +523,7 @@ function getStatusClasses(status) {
           class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           :class="plan.status === 'pending_review'
             ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300'
-            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'"
+            : 'bg-primary/10 text-primary hover:bg-primary/20'"
         >
           Pending Review
         </button>
@@ -532,7 +532,7 @@ function getStatusClasses(status) {
           class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           :class="plan.status === 'needs_revision'
             ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300'
-            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'"
+            : 'bg-primary/10 text-primary hover:bg-primary/20'"
         >
           Needs Revision
         </button>
@@ -541,7 +541,7 @@ function getStatusClasses(status) {
           class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           :class="plan.status === 'approved'
             ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
-            : 'bg-surface-alt text-text-secondary hover:bg-border-strong'"
+            : 'bg-primary/10 text-primary hover:bg-primary/20'"
         >
           Approved
         </button>
@@ -653,7 +653,7 @@ function getStatusClasses(status) {
             <div class="flex gap-3 pt-2">
               <button
                 @click="showExportModal = false"
-                class="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-surface-alt text-text-secondary hover:bg-border-strong"
+                class="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-primary/10 text-primary hover:bg-primary/20"
               >
                 Cancel
               </button>

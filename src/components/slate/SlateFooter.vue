@@ -8,6 +8,7 @@ import { useWizard } from '@/composables/useWizard'
 import { ChevronUp, ChevronDown, ArrowRight, FileText, Trash2, CheckCircle, Shield, MessageSquare } from 'lucide-vue-next'
 import ExportModal from './ExportModal.vue'
 import CostDisclaimer from '@/components/CostDisclaimer.vue'
+import ExplainerJit from '@/components/explainers/ExplainerJit.vue'
 
 const slateStore = useSlateStore()
 const configStore = useConfigStore()
@@ -190,7 +191,7 @@ function handleWipeSlate() {
       class="bg-primary text-on-primary shadow-lg border-t border-primary"
       :class="{ 'rounded-t-lg': isExpanded }"
     >
-      <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-3">
+      <div class="max-w-7xl mx-auto px-4 py-3">
         <!-- Wizard mode: slate context on the left, teleported Back/Continue on
              the right. One bottom bar replaces the old sticky wizard nav. -->
         <div v-if="wizardMode" class="flex items-center justify-between gap-4">
@@ -321,7 +322,7 @@ function handleWipeSlate() {
       class="border-x overflow-y-auto bg-surface border-border"
       :style="{ height: 'calc(40vh - 56px)' }"
     >
-      <div class="max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-4">
+      <div class="max-w-7xl mx-auto px-4 py-4">
         <!-- Services Section -->
         <div v-if="slateStore.itemCount > 0" class="mb-6">
           <h3 class="text-sm font-semibold uppercase tracking-wide mb-3 text-text-muted">
@@ -450,10 +451,15 @@ function handleWipeSlate() {
         <!-- Estimate-not-a-quote disclaimer (config-driven, shown wherever costs appear) -->
         <CostDisclaimer variant="short" class="mt-3" />
 
+        <!-- JIT explainer nudge (config/explainers.yaml — jit.anchors: direct-charge) -->
+        <div class="mt-1.5">
+          <ExplainerJit anchor="direct-charge" />
+        </div>
+
         <!-- Actions (placeholder for full review modal) -->
         <div class="mt-6 flex justify-end gap-3">
           <button
-            class="px-4 py-2 rounded-lg transition-colors text-text-secondary bg-surface-alt hover:bg-border"
+            class="px-4 py-2 rounded-lg transition-colors text-primary bg-primary/10 hover:bg-primary/20"
             @click="isExpanded = false"
           >
             Collapse
