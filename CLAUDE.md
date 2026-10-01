@@ -214,8 +214,10 @@ See `docs/ADMIN-GUIDE/VALIDATION.md` for common errors and fixes.
 - Post-wizard onboarding (`docs/POST-WIZARD-ONBOARDING.md`)
 - Policy concept graph (`docs/CONCEPT-GRAPH.md`) — V1.3
 
-### Infrastructure gaps
-- No automated tests
+### Tests
+- Vitest unit suite in `tests/` (`npm test`) — tier classification, classification flags, cost math, config validation, skin contrast, AI disclosure, persona-session harness
+- CI does **not** run the suite yet — the Woodpecker pipeline only builds and pushes images; run `npm test` before pushing
+- No end-to-end/browser tests
 
 ### Config
 18 config files + 3 subdirectories in `config/` with example data for "Northwinds University".
