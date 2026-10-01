@@ -104,7 +104,7 @@ This document specifies **17 decision-support applets** to help faculty and stud
    - Data under NDA or industry agreement → Medium-High sensitivity
    - Student records (FERPA) → High sensitivity → Branch to FERPA considerations
    - Health information (HIPAA/PHI) → High sensitivity → Branch to HIPAA considerations
-   - Export controlled (ITAR/EAR/CUI) → Restricted — *unless* it's publishable fundamental research (FRE-excluded, EAR 734.8 / ITAR 120.34(a)(8), ECO-confirmed) → High; controlled inputs or a publication/personnel restriction keep it Restricted  *(target behavior — DataCheck.vue routing update still pending)*
+   - Export controlled (ITAR/EAR/CUI) → Restricted — *unless* it's publishable fundamental research (FRE-excluded, EAR 734.8 / ITAR 120.34(a)(8), ECO-confirmed) → High (`fre` flag); controlled inputs, a publication/personnel restriction, CUI, or "not sure" keep it Restricted (`export-control` flag). Flow data lives in `src/lib/dataCheckQuestions.js`
    - Human subjects research data → Branch to IRB/Human Subjects Workflow
 
 3. **Is the data de-identified?** (For health/education data)
@@ -138,7 +138,7 @@ For health or education data, additional questions:
 ### Outputs
 
 - Data sensitivity level: `public` | `internal` | `confidential` | `high` | `restricted` (plus `variable` when IRB-dependent)
-- Flags: `hipaa` | `ferpa` | `export_control` | `nda` | `irb` | `ip_sensitive`
+- Flags: `hipaa` | `ferpa` | `export-control` | `fre` | `nda` | `irb` | `ip-sensitive`
 - Recommendation: Proceed / Proceed with caution / Consult before proceeding / Do not use cloud AI
 - If `irb` flag → Link to IRB/Human Subjects Workflow
 

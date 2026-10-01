@@ -89,6 +89,7 @@ workflows:
       - hipaa
       - ferpa
       - pii
+      - fre
 
     steps:
       - step: "Complete planner"
@@ -108,11 +109,34 @@ workflows:
           and identify any additional requirements. Usually a 15-30
           minute call.
 
+      # Export-controlled fundamental research lands here (questionnaire sets
+      # the `fre` flag). It needs the ECO, not a BAA. Gates are resolved by
+      # src/lib/workflowSteps.js: show_if / skip_if take a flag or list (any-of).
+      # A project that is both PHI and FRE is sorted out at consultation.
+      - step: "Export Control Officer review"
+        description: "ECO confirms the Fundamental Research Exclusion applies"
+        time: "3-5 business days"
+        self_service: false
+        show_if: "fre"
+        contact: "export-control@northwinds.edu"
+        icon: "shield-alert"
+        details: |
+          You've asserted the Fundamental Research Exclusion (EAR 15 CFR 734.8;
+          ITAR 22 CFR 120.34(a)(8)) — results intended for open publication,
+          with no publication or personnel restrictions. The Export Control
+          Officer reviews your award terms and confirms it. If confirmed, your
+          published results are not export-controlled and the project stays on
+          standard secured infrastructure — no enclave, no US-persons-only
+          access. Any controlled inputs or hardware still need an approved
+          environment, and the ECO will route those to the Restricted path.
+
       - step: "BAA verification"
         description: "Confirm institutional agreement covers your use case"
         time: "Same day to 1 week"
         self_service: false
-        skip_if: "using_preapproved_service"
+        skip_if:
+          - "using_preapproved_service"
+          - "fre"
         icon: "file-check"
         details: |
           For cloud services (AWS, Azure, GCP), we verify our existing
@@ -134,6 +158,7 @@ workflows:
         time: "~30 min"
         self_service: true
         training_url: "https://training.northwinds.edu/hipaa"
+        skip_if: "fre"
         icon: "book-open"
         details: |
           Annual HIPAA training is required for all users handling

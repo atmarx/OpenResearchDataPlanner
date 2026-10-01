@@ -240,6 +240,19 @@ function getNextApplet() {
     </div>
 
     <div
+      v-if="allFlags.includes('fre') && !allFlags.includes('export-control')"
+      class="mt-6 p-4 rounded-lg border bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800"
+    >
+      <p class="font-medium text-amber-800 dark:text-amber-300">
+        📘 Fundamental Research — ECO to confirm
+      </p>
+      <p class="text-sm mt-1 text-amber-700 dark:text-amber-400">
+        Institutionally hosted or local tools until your Export Control Officer confirms the exclusion.
+        Keep any sponsor-provided controlled inputs out of AI tools entirely.
+      </p>
+    </div>
+
+    <div
       v-if="allFlags.includes('cloud-prohibited') || allFlags.includes('irb-prohibits-ai')"
       class="mt-6 p-4 rounded-lg border bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800"
     >
