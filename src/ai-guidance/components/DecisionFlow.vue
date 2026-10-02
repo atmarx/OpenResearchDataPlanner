@@ -35,6 +35,19 @@ const props = defineProps({
         ]
       }
     ]
+
+    Semantics (see selectOption):
+      setsOutput  — shallow-merged into one output object; a later answer
+                    overwrites the same key, so the last question to set e.g.
+                    `status` wins.
+      setsFlags   — unioned into the flag list (never removed by later sets).
+      clearsFlags — applied after setsFlags, so it can retract a flag an
+                    earlier answer raised.
+      next        — a question id, or 'complete' to emit `complete` and show
+                    the #complete slot. Omitted = stay on this question; an
+                    unknown id renders nothing (currentQuestion is null).
+    learnMore.content is markdown, rendered via v-html (trusted app content —
+    see lib/markdown.js).
     */
   },
   // Initial question ID (defaults to first)
@@ -103,7 +116,10 @@ function selectOption(option) {
 function goBack() {
   if (history.value.length > 0) {
     const prevId = history.value.pop()
-    // Remove the answer for the current question
+    // Remove the answer for the current question (normally unset — we're
+    // leaving it unanswered). NB: the previous answer's setsOutput/setsFlags are
+    // NOT rolled back; re-answering overwrites output keys, but a flag the
+    // abandoned option raised stays in `flags`.
     delete answers.value[currentQuestionId.value]
     currentQuestionId.value = prevId
     isComplete.value = false
@@ -122,10 +138,10 @@ function reset() {
   showLearnMore.value = false
 }
 
-// Expose reset method
+// Expose reset method (no applet calls it yet; they don't hold a template ref)
 defineExpose({ reset })
 
-// Emit answers on change
+// Emit answers on change (no applet listens yet)
 watch(answers, (val) => {
   emit('update:answers', val)
 }, { deep: true })

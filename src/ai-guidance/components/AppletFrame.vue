@@ -35,7 +35,10 @@ const props = defineProps({
     type: String,
     default: null
   },
-  // Optional: conditional next based on output
+  // Optional: conditional next based on output. Wins over nextApplet. Called
+  // with this applet's entry from the AI guidance store (what it passed to
+  // completeApplet, plus completedAt) — not DecisionFlow's raw emit — and
+  // returns a path under /ai/, e.g. 'tool-picker' (falsy = stay put).
   getNextApplet: {
     type: Function,
     default: null
@@ -47,11 +50,14 @@ const props = defineProps({
   }
 })
 
+// Declared but never emitted — applets record completion in the store directly.
 const emit = defineEmits(['complete'])
 
 const router = useRouter()
 const aiStore = useAiGuidanceStore()
 
+// PageFeedback already POSTs to the feedback API; this just mirrors the vote
+// into the in-memory store.
 function handleFeedbackEvent(event) {
   aiStore.setFeedback(props.appletId, event.sentiment)
 }

@@ -6,6 +6,8 @@ import { Workflow } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// SU (1 SU = 1 core-hour) = pipeline.su_per_sample × sample_count; per-pipeline
+// costs live in calculators.yaml → genomics-pipelines.pipelines.
 const {
   config,
   inputs,
@@ -51,7 +53,8 @@ function handleAddToSlate() {
   }
 }
 
-// Create presets from pipelines
+// Create presets from pipelines. These carry only label + description, so
+// applyPreset() copies nothing — a chip click just selects that option and recalcs.
 const presets = computed(() => {
   return config.value?.pipelines?.map(p => ({
     label: p.label,

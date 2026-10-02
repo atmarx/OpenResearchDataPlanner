@@ -101,7 +101,9 @@ const useCases = {
   ]
 }
 
-// State
+// State. "Viewed" = the pointer entered a section (@mouseenter in the
+// template); 3 is all three sections, so hovering each one completes the
+// applet. Keyboard-only users never trigger it.
 const viewedSections = ref(new Set())
 const isComplete = computed(() => viewedSections.value.size >= 3)
 

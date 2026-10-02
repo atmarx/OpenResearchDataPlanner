@@ -19,7 +19,8 @@ const aiStore = useAiGuidanceStore()
 
 const APPLET_ID = 'documentation-guide'
 
-// Get context from previous applets
+// Get context from previous applets (not yet used by the template — the
+// context picker below doesn't pre-select from stakes or task type)
 const stakesLevel = computed(() => aiStore.stakesLevel)
 const taskOutput = computed(() => aiStore.getAppletOutput('task-fit'))
 
@@ -163,7 +164,7 @@ function toggleElement(elementId) {
   } else {
     checkedElements.value.add(elementId)
   }
-  checkedElements.value = new Set(checkedElements.value) // trigger reactivity
+  checkedElements.value = new Set(checkedElements.value) // belt-and-braces: Vue 3 already tracks Set mutations on a ref
 }
 
 function isElementRequired(elementId) {

@@ -29,7 +29,10 @@ const sessionStore = useSessionStore()
 const preferencesStore = usePreferencesStore()
 const { backgrounds } = useHeroBackgrounds()
 
-// Navigation tabs
+// Navigation tabs. The AI Guide tab rides on meta.ai_disclosure.enabled (aca92da:
+// one flag hides banner, footer link and tab while AI content is under review;
+// /ai stays reachable by direct URL). NB this checks truthiness, so an absent
+// key hides the tab — whereas banner/footer treat absent as enabled.
 const navTabs = computed(() => {
   const tabs = [
     { path: '/', name: 'Planner', icon: Compass },
@@ -82,7 +85,7 @@ function closeSettingsOnEsc(e) {
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
-  handleScroll()
+  handleScroll() // seed state when the page loads already scrolled (reload, back-nav)
   document.addEventListener('click', closeSettingsOnOutside)
   document.addEventListener('keydown', closeSettingsOnEsc)
 })

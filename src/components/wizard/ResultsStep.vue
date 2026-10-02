@@ -35,7 +35,10 @@ const costBreakdown = computed(() => computeEstimate(
   }
 ))
 
-// Rendered DMP HTML
+// Rendered DMP HTML for the v-html preview — not sanitized. Service sections
+// are Handlebars output (its {{ }} HTML-escapes session values); the header
+// useDMPGenerator builds around them interpolates grant dates and flag labels
+// raw, which only matters for a hand-edited imported session.
 const dmpHtml = computed(() => {
   return marked(dmpGenerator.dmpContent.value)
 })
@@ -436,6 +439,9 @@ function startOver() {
 </template>
 
 <style scoped>
+/* Tailwind v4 compiles each scoped <style> in isolation; @reference pulls in the
+   app's @theme tokens (text-text, border-border, ...) so @apply can resolve them
+   without re-emitting the whole stylesheet. */
 @reference "../../assets/styles/main.css";
 
 /* Prose styling for markdown content */

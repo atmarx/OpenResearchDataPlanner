@@ -6,6 +6,8 @@ import { Video } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// TB = preset.gb_per_hour × hours. The "Video Type" select *is* the preset
+// list (calculators.yaml → video.presets), matched by label.
 const {
   config,
   inputs,

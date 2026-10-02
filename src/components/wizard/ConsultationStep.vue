@@ -23,6 +23,8 @@ const consultationUrl = computed(() =>
   configStore.config?.meta?.contact?.consultation_url
 )
 
+// Last resort when neither a tier/security email nor a consultation URL is
+// configured: meta.contact.primary ({ type: 'email' | 'url', value, label }).
 const fallbackContact = computed(() => {
   if (consultationEmail.value || consultationUrl.value) return null
   const primary = configStore.config?.meta?.contact?.primary
@@ -52,6 +54,7 @@ const fallbackContact = computed(() => {
         >
           {{ tier?.name }} Data Classification
         </h3>
+        <!-- tiers.yaml consultation_message — trusted config, rendered unsanitized -->
         <div
           class="md-body text-red-800 dark:text-red-200"
         

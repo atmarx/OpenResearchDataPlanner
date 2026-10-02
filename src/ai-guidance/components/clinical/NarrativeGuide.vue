@@ -4,7 +4,10 @@ import { BookOpen, Check } from 'lucide-vue-next'
 
 const props = defineProps({
   /**
-   * Array of section objects with id, title, and content
+   * TOC entries: [{ id, title }]. This component renders only the sidebar —
+   * the sections themselves come through the default slot, and each `id` must
+   * match the DOM id of a slotted element (looked up by document.getElementById
+   * on mount, so it must be in the DOM by then, not behind a v-if).
    */
   sections: {
     type: Array,
@@ -35,6 +38,8 @@ onMounted(() => {
       }
     })
   }, {
+    // "Read" = half the section on screen at once. A section taller than two
+    // viewports can never reach 0.5, so it would never tick off.
     threshold: 0.5
   })
 
@@ -46,7 +51,8 @@ onMounted(() => {
     }
   })
 
-  // Clean up
+  // Clean up. Registering a hook inside onMounted is legal — Vue sets the
+  // current instance while running lifecycle hooks — and keeps `observer` local.
   onUnmounted(() => {
     observer.disconnect()
   })

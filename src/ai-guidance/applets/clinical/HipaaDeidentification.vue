@@ -50,6 +50,9 @@ const intro = computed(() => appletConfig.value.intro || {})
 const result = ref(null)
 const isComplete = computed(() => result.value !== null)
 
+// Outcome keys must match `outcomes` in config/clinical/hipaa-deidentification.yaml.
+// First match wins: a confirmed-compliant method beats the genomic special
+// case, and anything unmatched falls through to not-compliant.
 function handleComplete({ output, flags }) {
   let outcome = 'not-compliant'
 
@@ -81,6 +84,9 @@ function handleComplete({ output, flags }) {
   })
 }
 
+// Unlike the other applets, the template calls this with DecisionFlow's raw
+// `output` (result.output), not the store entry — so there is no `flags` key
+// on it. Targets are general /ai applets, not clinical ones.
 function getNextApplet(output) {
   // If compliant, suggest tool picker
   if (output?.compliant) {
@@ -123,7 +129,8 @@ function getLevelColorClasses(color) {
     :is-complete="isComplete"
     :get-next-applet="() => getNextApplet(result?.output)"
   >
-    <!-- Intro -->
+    <!-- Intro. v-html, unsanitized: the YAML carries <strong> markup and is
+         app-authored config (trusted), not user input. -->
     <div
       v-if="intro.text"
       class="p-4 rounded-lg border mb-6 bg-surface border-border"

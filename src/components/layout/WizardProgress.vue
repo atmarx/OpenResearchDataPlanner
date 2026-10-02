@@ -62,7 +62,9 @@ function handleClick(step, index) {
         :key="step.id"
         class="relative flex-1 flex flex-col items-center"
       >
-        <!-- Connector line -->
+        <!-- Connector line. The inline style overrides left-1/2/right-0: start at
+             this circle's right edge (1rem = half of w-8) and run to the next
+             step's center, where its opaque z-10 circle hides the overshoot. -->
         <div
           v-if="index < steps.length - 1"
           class="absolute top-4 left-1/2 right-0 h-0.5 -translate-y-1/2"

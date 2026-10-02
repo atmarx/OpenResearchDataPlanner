@@ -6,6 +6,8 @@ import { Camera } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// TB = size_mb × file_count (binary MB→TB). No dropdown: presets in
+// calculators.yaml carry only size_mb, so a preset click keeps the file count.
 const {
   config,
   inputs,

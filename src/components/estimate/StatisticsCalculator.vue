@@ -6,6 +6,8 @@ import { BarChart } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// SU = workload.su_estimate (per run) × runs; estimates live in
+// calculators.yaml → statistics.workloads.
 const {
   config,
   inputs,
@@ -51,7 +53,8 @@ function handleAddToSlate() {
   }
 }
 
-// Create presets from workloads
+// Create presets from workloads. These carry only label + description, so
+// applyPreset() copies nothing — a chip click just selects that option and recalcs.
 const presets = computed(() => {
   return config.value?.workloads?.map(w => ({
     label: w.label,

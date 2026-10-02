@@ -128,6 +128,10 @@ const selectedDiscipline = ref(null)
 const checkedFlags = ref(new Set())
 const isComplete = ref(false)
 
+// Fires once from the mount timer below, so it snapshots whatever was picked
+// in the first 2s (usually nothing) — later picks aren't saved. The red-flag
+// list is stored as `flagsChecked`, not `flags`: a `flags` key would be merged
+// into the store's session-wide flags that ToolPicker reads.
 function markComplete() {
   isComplete.value = true
   aiStore.completeApplet(APPLET_ID, {

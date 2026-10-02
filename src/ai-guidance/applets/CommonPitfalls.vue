@@ -23,7 +23,8 @@ const APPLET_ID = 'common-pitfalls'
 const taskOutput = computed(() => aiStore.getAppletOutput('task-fit'))
 const taskType = computed(() => taskOutput.value?.taskType)
 
-// Pitfall checklists by task type
+// Pitfall checklists by task type. Keys mirror TaskFit's category ids so its
+// stored taskType can pre-select a checklist.
 const pitfallChecklists = {
   'brainstorming': {
     name: 'Brainstorming & Ideation',
@@ -193,7 +194,9 @@ const pipelinePitfalls = {
   ]
 }
 
-// State
+// State. Seeded once from Task Fit (not reactive to later changes). A seeded
+// selection shows the applet as complete here, but nothing is written to the
+// store until the user picks a task themselves via selectTask().
 const selectedTask = ref(taskType.value || null)
 const showPipeline = ref(false)
 const checkedItems = ref(new Set())

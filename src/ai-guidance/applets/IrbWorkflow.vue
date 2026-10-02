@@ -217,6 +217,10 @@ const statusInfo = {
   }
 }
 
+// `status` comes from setsOutput, last write wins (DecisionFlow merges outputs
+// in answer order — e.g. explicit-yes's 'covered' is downgraded by 'broad').
+// Every current path sets one; consult_irb is the conservative fallback if a
+// new path forgets. No option currently produces amendment_needed.
 function handleComplete({ output, flags }) {
   const status = output.status || 'consult_irb'
   const info = statusInfo[status]

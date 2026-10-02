@@ -201,7 +201,8 @@ function markComplete() {
   })
 }
 
-// Auto-complete on mount (informational applet)
+// Auto-complete on mount (informational applet — viewing it is the task). The
+// timer isn't cleared on unmount, so a quick click-through still counts.
 import { onMounted } from 'vue'
 onMounted(() => {
   setTimeout(markComplete, 2000)

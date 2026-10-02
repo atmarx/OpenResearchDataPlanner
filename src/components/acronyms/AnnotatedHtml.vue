@@ -55,7 +55,7 @@ const termPattern = computed(() => {
     }
   }
 
-  // Sort by length (longest first)
+  // Sort by length (longest first) — alternation is first-match, not longest
   searchTerms.sort((a, b) => b.length - a.length)
 
   const wordBoundary = annotationConfig.value.word_boundary !== false
@@ -70,7 +70,9 @@ function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-// Process text nodes in the container
+// Post-process the v-html DOM in place: wrap matched terms in spans that carry
+// a CSS-only tooltip. Done on the live DOM (not by regex over the HTML string)
+// so terms inside tag names/attributes are never touched.
 function annotateTextNodes() {
   if (!containerRef.value || !termPattern.value || !isEnabled.value) return
 
@@ -86,6 +88,7 @@ function annotateTextNodes() {
     false
   )
 
+  // Collect first, mutate after — replacing nodes mid-walk derails the walker.
   const textNodes = []
   let node
   while ((node = walker.nextNode())) {
@@ -161,7 +164,9 @@ function annotateTextNodes() {
   }
 }
 
-// Run annotation after mount and when html changes
+// Run annotation after mount and when html changes. nextTick: the watcher fires
+// before the re-render, and v-html then replaces the container's DOM (dropping
+// prior spans) — so wait for the patched DOM before walking it.
 onMounted(() => {
   nextTick(annotateTextNodes)
 })
@@ -172,6 +177,8 @@ watch(() => props.html, () => {
 </script>
 
 <template>
+  <!-- v-html: no sanitizer. Callers pass renderMarkdown() of admin-authored
+       config (trusted — see src/lib/markdown.js); never pass user input. -->
   <div ref="containerRef" class="annotated-html" v-html="html"></div>
 </template>
 

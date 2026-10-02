@@ -42,7 +42,8 @@ function isSelected(slug) {
   return sessionStore.selectedServiceSlugs.includes(slug)
 }
 
-// Get feature value for a service
+// comparison_features entries are either a bare level ('full' | 'partial' |
+// 'none') or { value, detail }. Normalize both; a missing key reads as 'none'.
 function getFeatureValue(service, featureKey) {
   const feature = service.comparison_features?.[featureKey]
   if (!feature) return { value: 'none', detail: null }
@@ -104,7 +105,9 @@ function selectService(service) {
         </button>
       </div>
 
-      <!-- Table container -->
+      <!-- Table container. min-w-max keeps columns at natural width so wide
+           categories scroll sideways; the sticky Feature column needs its opaque
+           bg + z-10 so scrolled cells don't show through. -->
       <div class="flex-1 overflow-auto p-6">
         <div class="min-w-max">
           <table class="w-full text-sm">

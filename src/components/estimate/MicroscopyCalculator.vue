@@ -6,6 +6,9 @@ import { Microscope } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// TB = pixels × bytes_per_pixel × channels × z_slices × image_count. Unlike
+// the other calculators, resolution is matched by `key` and bit depth by
+// `value` (calculators.yaml → microscopy.resolutions / bit_depths), not label.
 const {
   config,
   inputs,
@@ -31,7 +34,10 @@ if (config.value) {
   inputs.image_count = 100
 }
 
-// Watch for config to load
+// Watch for config to load. Defensive: App.vue doesn't render routes until
+// configStore finishes loading, so the block above normally wins and this is a
+// no-op. If it ever does fire, only the two selects are backfilled — the
+// number fields stay blank and useCalculator treats blanks as 1.
 watch(() => config.value, (newConfig) => {
   if (newConfig && !inputs.resolution) {
     inputs.resolution = newConfig.default_resolution || '4k'

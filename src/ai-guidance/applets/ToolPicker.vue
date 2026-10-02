@@ -17,7 +17,11 @@ const aiStore = useAiGuidanceStore()
 
 const APPLET_ID = 'tool-picker'
 
-// Get context from previous applets
+// Get context from previous applets. Sensitivity comes from DataCheck's stored
+// output (skipped Data Check = 'internal'); flags are the union of every
+// completed applet's flags — 'export-control'/'fre' from DataCheck,
+// 'cloud-prohibited'/'irb-prohibits-ai' from IrbWorkflow — and drive the
+// special-case banners at the bottom of the template.
 const dataSensitivity = computed(() => aiStore.dataSensitivity || 'internal')
 const allFlags = computed(() => aiStore.allFlags)
 
@@ -77,6 +81,9 @@ const availableTools = computed(() => {
   }))
 })
 
+// prohibited beats available; a sensitivity in neither list is 'caution'. That
+// includes DataCheck's 'variable' (IRB-determined), which lands every category
+// on caution. FRE arrives as 'high', so it inherits High's gating.
 function getToolStatus(category) {
   const sensitivity = dataSensitivity.value
 
@@ -118,7 +125,9 @@ function markComplete() {
   })
 }
 
-// Auto-complete on mount (informational applet)
+// Auto-complete on mount (informational applet — viewing it is the task). The
+// timer isn't cleared on unmount, so even a sub-second click-through still
+// marks it complete; the delay only postpones the check mark.
 import { onMounted } from 'vue'
 onMounted(() => {
   setTimeout(markComplete, 1000)

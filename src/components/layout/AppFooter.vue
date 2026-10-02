@@ -58,6 +58,9 @@ const aiFooterFeedback = computed(() => aiDisclosure.value?.footer?.feedback_lab
 </script>
 
 <template>
+  <!-- pb-20 originally cleared the slate bar when it was position:fixed
+       (ff19c6b). SlateFooter is now sticky and in flow above this footer, so
+       today it's vestigial extra bottom padding. -->
   <footer
     class="border-t px-6 py-6 pb-20 transition-colors duration-200 bg-surface border-border"
   >

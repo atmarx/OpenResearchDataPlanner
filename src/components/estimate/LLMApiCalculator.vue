@@ -6,6 +6,9 @@ import { MessageSquareText, Info, AlertTriangle } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// $ = requests_per_day × days × (input_tokens × input_per_million +
+// output_tokens × output_per_million) / 1e6. Prices are per million tokens in
+// calculators.yaml → llm-api-costs.models; the global safety_multiplier applies too.
 const {
   config,
   inputs,
@@ -43,7 +46,9 @@ const selectedUseCase = computed(() => {
   return config.value.use_cases.find(u => u.label === inputs.use_case)
 })
 
-// Time period multiplier
+// Time period multiplier (days). multiplier: 0 in calculators.yaml is the
+// sentinel for "Grant period (custom)" → use custom_days. Mirrors
+// useCalculator's math; currently unused in this component.
 const timePeriodMultiplier = computed(() => {
   if (!inputs.time_period || !config.value?.time_periods) return 1
   const period = config.value.time_periods.find(p => p.label === inputs.time_period)
@@ -68,7 +73,8 @@ const modelsByProvider = computed(() => {
   }, {})
 })
 
-// When use case changes, update token estimates
+// When use case changes, update token estimates. avg_input_tokens: 0 marks
+// "Custom (manual entry)", which leaves whatever the user typed in place.
 watch(() => inputs.use_case, (newUseCase) => {
   const useCase = config.value?.use_cases?.find(u => u.label === newUseCase)
   if (useCase && useCase.avg_input_tokens > 0) {
@@ -77,6 +83,9 @@ watch(() => inputs.use_case, (newUseCase) => {
   }
 })
 
+// Presets are use cases, whose fields (avg_*_tokens) don't match the input
+// names, so applyPreset() would be useless here — map them by hand. No explicit
+// calculate(): the input changes trip useCalculator's debounced auto-recalc.
 function handleApplyPreset(preset) {
   const useCase = config.value?.use_cases?.find(u => u.label === preset.label)
   if (useCase) {
@@ -113,7 +122,7 @@ function handleAddToSlate() {
   }
 }
 
-// Create presets from use cases
+// Create presets from use cases (minus the zero-token "Custom" entry)
 const presets = computed(() => {
   return config.value?.use_cases?.filter(u => u.avg_input_tokens > 0).map(u => ({
     label: u.label,
@@ -121,7 +130,7 @@ const presets = computed(() => {
   })) || []
 })
 
-// Format currency
+// Format currency — only used by the #result-display slot below, which never renders
 function formatCurrency(amount) {
   if (amount < 0.01) return `$${amount.toFixed(4)}`
   if (amount < 1) return `$${amount.toFixed(3)}`
@@ -289,7 +298,7 @@ function statusLabel(status) {
           </p>
         </div>
 
-        <!-- Tips -->
+        <!-- Tips (first three only — order in calculators.yaml matters) -->
         <div v-if="config?.tips" class="bg-surface-alt rounded-lg p-3 text-sm">
           <div class="flex items-start gap-2">
             <Info class="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
@@ -302,7 +311,7 @@ function statusLabel(status) {
           </div>
         </div>
 
-        <!-- Pricing Warning -->
+        <!-- Pricing Warning (date is hardcoded; keep in sync with the "Pricing as of" note in calculators.yaml) -->
         <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3 text-sm">
           <div class="flex items-start gap-2">
             <AlertTriangle class="w-4 h-4 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
@@ -316,7 +325,9 @@ function statusLabel(status) {
       </div>
     </template>
 
-    <!-- Custom result display for currency -->
+    <!-- Custom result display for currency. Dead: BaseCalculator has no
+         result-display slot, so the result renders through its generic
+         formatter (e.g. "12.3 $"). -->
     <template #result-display="{ result: r }">
       <div class="text-center">
         <p class="text-3xl font-bold text-green-600 dark:text-green-400">

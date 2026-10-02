@@ -6,6 +6,8 @@ import { Layers } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// SU = template.su_per_file × file_count; per-file costs live in
+// calculators.yaml → batch-processing.templates.
 const {
   config,
   inputs,
@@ -51,7 +53,8 @@ function handleAddToSlate() {
   }
 }
 
-// Create presets from templates
+// Create presets from templates. These carry only label + description, so
+// applyPreset() copies nothing — a chip click just selects that option and recalcs.
 const presets = computed(() => {
   return config.value?.templates?.map(t => ({
     label: t.label,

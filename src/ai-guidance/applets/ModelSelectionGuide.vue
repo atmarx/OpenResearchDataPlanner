@@ -84,7 +84,9 @@ const modelFamilies = [
   }
 ]
 
-// Task type recommendations
+// Task type recommendations. `recommended` lists modelFamilies ids; cards
+// render in modelFamilies order (recommendedModels filters, doesn't sort), and
+// an id with no matching family is silently dropped.
 const taskRecommendations = {
   'general-purpose': {
     label: 'General Purpose',

@@ -6,6 +6,8 @@ import { Zap } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// GPU-hours = item_count ÷ throughput, where throughput is the workload's
+// items_per_gpu_hour or tokens_per_gpu_hour (calculators.yaml → ml-inference).
 const {
   config,
   inputs,
@@ -26,7 +28,9 @@ const justAdded = ref(false)
 inputs.workload = null
 inputs.item_count = 100000
 
-// Track if workload uses tokens or items
+// Track if workload uses tokens or items. Only relabels the shared item_count
+// input; useCalculator checks items_per_gpu_hour first, so a workload should
+// define exactly one of the two rates.
 const usesTokens = computed(() => {
   if (!inputs.workload || !config.value?.workloads) return false
   const workload = config.value.workloads.find(w => w.label === inputs.workload)
@@ -58,7 +62,8 @@ function handleAddToSlate() {
   }
 }
 
-// Create presets from workloads
+// Create presets from workloads. These carry only label + description, so
+// applyPreset() copies nothing — a chip click just selects that option and recalcs.
 const presets = computed(() => {
   return config.value?.workloads?.map(w => ({
     label: w.label,

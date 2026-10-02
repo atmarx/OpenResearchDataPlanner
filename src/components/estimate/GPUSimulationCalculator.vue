@@ -6,6 +6,8 @@ import { Cpu } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// GPU-hours = package.gpu_hours_per_ns × nanoseconds; rates live in
+// calculators.yaml → gpu-simulation.packages.
 const {
   config,
   inputs,
@@ -51,7 +53,8 @@ function handleAddToSlate() {
   }
 }
 
-// Create presets from packages
+// Create presets from packages. These carry only label + description, so
+// applyPreset() copies nothing — a chip click just selects that option and recalcs.
 const presets = computed(() => {
   return config.value?.packages?.map(p => ({
     label: p.label,

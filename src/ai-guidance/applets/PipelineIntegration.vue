@@ -94,6 +94,9 @@ const totalItems = computed(() => {
 
 const checkedCount = computed(() => checkedItems.value.size)
 
+// Readiness is a flat share of all items (no weighting by category):
+// ≥80% ready, ≥50% partial. The applet counts as complete at half the
+// checklist, i.e. as soon as it reaches 'partial'.
 const readinessLevel = computed(() => {
   const percentage = (checkedCount.value / totalItems.value) * 100
   if (percentage >= 80) return 'ready'

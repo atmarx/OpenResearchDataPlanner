@@ -6,6 +6,8 @@ import { Dna } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// TB = data_type.size_gb × sample_count; per-sample sizes live in
+// calculators.yaml → genomics.data_types.
 const {
   config,
   inputs,
@@ -52,7 +54,8 @@ function handleAddToSlate() {
   }
 }
 
-// Create presets from data types
+// Create presets from data types. These carry only label + description, so
+// applyPreset() copies nothing — a chip click just selects that option and recalcs.
 const presets = computed(() => {
   return config.value?.data_types?.map(dt => ({
     label: dt.label,

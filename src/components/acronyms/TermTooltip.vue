@@ -27,7 +27,9 @@ const tooltipDelay = computed(() => {
   return configStore.config?.acronyms?.annotation_config?.tooltip_delay || 300
 })
 
-// Build tooltip content
+// Build tooltip content. Rendered by floating-vue with html: true, which sets
+// innerHTML unsanitized — safe only because expansion/short_def come from
+// admin-authored config/acronyms.yaml, never from user input.
 const tooltipContent = computed(() => {
   if (!props.term) return ''
 

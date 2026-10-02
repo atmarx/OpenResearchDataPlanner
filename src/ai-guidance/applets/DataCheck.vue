@@ -84,7 +84,9 @@ function handleComplete({ output, flags }) {
   })
 }
 
-// Get next applet based on result
+// Get next applet based on result. `output` is the object saved via
+// completeApplet above (AppletFrame reads it back from the store), which is why
+// `flags` is stored alongside the answers — routing depends on it.
 function getNextApplet(output) {
   // If IRB flagged, go to IRB workflow
   if (output?.flags?.includes('irb') || output?.flags?.includes('irb-amendment-needed')) {

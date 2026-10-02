@@ -110,6 +110,9 @@ const criticalComplete = computed(() => {
   return criticalItems.value.every(item => checkedItems.value.has(item.id))
 })
 
+// full = every item checked; partial = all critical, or at least half of them;
+// otherwise insufficient. Note isComplete below counts ANY checked items
+// against the number of critical ones, not the critical items themselves.
 const readinessLevel = computed(() => {
   const criticalCount = criticalItems.value.filter(i => checkedItems.value.has(i.id)).length
   const totalCritical = criticalItems.value.length

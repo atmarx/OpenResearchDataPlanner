@@ -46,7 +46,9 @@ function applyPreset(serviceSlug, value) {
   sessionStore.updateServiceEstimate(serviceSlug, value)
 }
 
-// Toggle subsidy
+// Toggle subsidy. use_subsidy holds a single slug, so the opt-in subsidy
+// checkboxes behave like a deselectable radio group — picking one replaces any
+// other. auto_apply subsidies are never stored here; the cost engine applies them.
 function toggleSubsidy(serviceSlug, subsidySlug) {
   const current = sessionStore.session.selected_services.find(
     s => s.service_slug === serviceSlug
@@ -65,7 +67,10 @@ function getArchiveService(service) {
   return configStore.servicesBySlug[service.config.archive_option.service_slug]
 }
 
-// Calculate default archive estimate
+// Suggested archive size (active estimate × retention archive_ratio). Display
+// only: it's shown in the input while archive_estimate is null, but pricing.js
+// deliberately ignores it — nothing is costed until the user types a value or
+// hits Reset, which commits it via updateArchiveEstimate.
 function getDefaultArchiveEstimate(service) {
   const ratio = sessionStore.session.retention.archive_ratio
   return (service.estimate || 0) * ratio
@@ -323,7 +328,7 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
               </ul>
             </div>
 
-            <!-- Service notes -->
+            <!-- Service notes (tier mapping notes from mappings.yaml — trusted config, rendered unsanitized) -->
             <div
               v-if="service.mapping?.notes"
               class="mt-3 p-3 rounded-md bg-yellow-50 dark:bg-yellow-900/30"
@@ -339,7 +344,7 @@ function toggleAcknowledgment(serviceSlug, acknowledged) {
       </div>
     </div>
 
-    <!-- Validation messages -->
+    <!-- Validation messages — mirror the 'estimate' gate in useWizard.canProceed -->
     <div
       v-if="selectedServices.some(s => !s.estimate || s.estimate <= 0)"
       class="mt-6 p-4 rounded-lg flex items-start gap-3 bg-yellow-50 dark:bg-yellow-900/30"

@@ -6,6 +6,8 @@ import { FileText } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// TB = preset.size_mb × file_count. The "Document Type" select *is* the
+// preset list (calculators.yaml → documents.presets), matched by label.
 const {
   config,
   inputs,

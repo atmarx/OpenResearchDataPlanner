@@ -7,6 +7,16 @@ import { ref, computed } from 'vue'
  *
  * Design: Fully decoupled from Research Data Planner stores
  * Can be extracted to separate project later
+ *
+ * In-memory only — nothing here is persisted, so progress resets on reload.
+ * exportSession/importSession exist for a future save/share path but nothing
+ * calls them yet.
+ *
+ * completedApplets is keyed by each applet's APPLET_ID (plus the 'tier-context'
+ * pseudo-entry written by AiGuidanceHome). Its values are whatever object the
+ * applet passed to completeApplet(); the derived getters below depend on those
+ * shapes (stakes-assessment → .level, data-check → .sensitivity,
+ * irb-workflow → .status), so renaming an output key there breaks them here.
  */
 export const useAiGuidanceStore = defineStore('aiGuidance', () => {
   // Completed applets with their outputs
@@ -15,18 +25,18 @@ export const useAiGuidanceStore = defineStore('aiGuidance', () => {
   // Current applet being viewed
   const currentApplet = ref(null)
 
-  // Feedback given (applet -> 'up' | 'down' | null)
+  // Feedback given (applet -> 'up' | 'down'), mirrored from PageFeedback via AppletFrame
   const feedback = ref({})
 
   // Session flags accumulated from applets
   const flags = ref([])
 
-  // Computed: Get output from a specific applet
+  // Getter: output from a specific applet
   function getAppletOutput(appletId) {
     return completedApplets.value[appletId] || null
   }
 
-  // Computed: Check if applet is complete
+  // Getter: is applet complete
   function isAppletComplete(appletId) {
     return appletId in completedApplets.value
   }

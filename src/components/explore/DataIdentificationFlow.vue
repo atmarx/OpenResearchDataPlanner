@@ -15,6 +15,11 @@ import {
   HelpCircle
 } from 'lucide-vue-next'
 
+// Self-contained identified / encoded / de-identified check (no config, no
+// store writes). 'complete' emits the `result` object below — note result.tier is
+// advisory prose, not a tier slug, and the TierQuestionnaire host currently
+// ignores the payload beyond returning the user to the questionnaire.
+// 'back' fires when the user backs out of the intro screen.
 const emit = defineEmits(['complete', 'back'])
 
 // Flow state
@@ -51,7 +56,10 @@ const keyLocationOptions = [
   { id: 'multiple', label: 'Multiple locations', risk: 'high' }
 ]
 
-// Computed result
+// Computed result. Check order IS the precedence: any direct identifier makes the
+// data identified regardless of later answers; then no-codes; then key status.
+// Answers from abandoned branches aren't cleared, so this order also decides
+// which stale answer wins when the user backtracks.
 const result = computed(() => {
   // If direct identifiers in data → IDENTIFIED
   if (directIdentifiers.value.length > 0) {
@@ -230,6 +238,7 @@ function back() {
       step.value = 'uses-codes'
     }
   } else {
+    // 'start' — leave the flow entirely
     emit('back')
   }
 }

@@ -113,6 +113,9 @@ const copiedLanguage = ref(false)
 
 const isComplete = computed(() => selectedApproach.value !== null)
 
+// Majority vote over the approach id each answered question suggests. On a
+// tie the first approach to reach the top count (in answer order) wins, since
+// only a strictly greater count replaces it.
 const suggestedApproach = computed(() => {
   const suggestions = Object.values(answers.value)
   if (suggestions.length === 0) return null
@@ -145,6 +148,8 @@ function selectApproach(approachId) {
   })
 }
 
+// Stores the option's suggested approach id, not its value — `answers` is a
+// tally sheet for suggestedApproach, so `value` goes unused.
 function selectAnswer(questionId, value, suggests) {
   answers.value = { ...answers.value, [questionId]: suggests }
 }

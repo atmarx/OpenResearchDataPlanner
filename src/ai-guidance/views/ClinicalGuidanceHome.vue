@@ -64,7 +64,8 @@ const hasClinicalContext = computed(() => {
   return sessionStore.tier === 'l3-high' || aiStore.allFlags.includes('hipaa')
 })
 
-// Count completed
+// Count completed. `id` here is the route segment under /ai/clinical/; the
+// store key is the applet's APPLET_ID, assumed to be `clinical-` + that id.
 const completedCount = computed(() => {
   return clinicalApplets.filter(a => aiStore.isAppletComplete(`clinical-${a.id}`)).length
 })

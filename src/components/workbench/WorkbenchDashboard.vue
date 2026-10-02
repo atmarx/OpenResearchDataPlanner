@@ -52,7 +52,9 @@ async function handleFiles(files) {
       const text = await file.text()
       const data = JSON.parse(text)
 
-      // Validate it's a plan export
+      // Validate it's a plan export: schema_version marks the full plan export
+      // (useExport.js); export_version marks the older slate/session-only
+      // exports (slateStore / sessionStore). Shape is not checked beyond this.
       if (!data.schema_version && !data.export_version) {
         importError.value = 'This file does not appear to be a valid plan export'
         continue

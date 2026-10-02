@@ -46,6 +46,8 @@ const preferencesStore = usePreferencesStore()
 // Where the tier card lives: the sidebar rail on wide (xl) screens, teleported
 // to the top of the page on narrow ones. Single instance, moved — not two
 // copies hidden with CSS. isWide drives <Teleport :disabled> below.
+// 1280px is Tailwind's `xl` breakpoint — keep it in step with the xl: classes
+// that build the two-column layout, or the card lands in a rail that isn't there.
 const isWide = ref(typeof window !== 'undefined' && window.matchMedia('(min-width: 1280px)').matches)
 let _tierMq = null
 function _onTierMq(e) { isWide.value = e.matches }
@@ -91,7 +93,9 @@ const tierSource = computed(() => {
 function setAiTier(tierSlug) {
   selectedTier.value = tierSlug
   showTierPicker.value = false
-  // Also store in AI guidance store for applets to use
+  // 'tier-context' is a pseudo-applet entry: it rides the store's completed map
+  // but isn't in `phases`, so it never counts toward completedCount. Nothing
+  // reads it back yet — the card renders from selectedTier/plannerTier.
   aiStore.completeApplet('tier-context', {
     tier: tierSlug,
     source: 'manual-selection'
@@ -572,7 +576,10 @@ function getColorClasses(color) {
       <aside class="xl:flex-none xl:w-[20rem] space-y-6 mt-8 xl:mt-0 xl:sticky xl:top-24">
         <!-- Tier Context Card — sidebar rail on xl+, teleported to the top of
              the page on narrow screens (single instance, disabled = render in
-             place here in the rail). -->
+             place here in the rail). `defer` is required: #ai-tier-top is
+             rendered by this same component, so without it the mobile teleport
+             resolves its target before that div exists and the card silently
+             vanishes (prod builds swallow the warning). -->
         <Teleport defer to="#ai-tier-top" :disabled="isWide">
         <div
           class="p-5 rounded-lg border bg-surface border-border"

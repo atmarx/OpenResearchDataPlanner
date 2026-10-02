@@ -46,6 +46,8 @@ onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 </script>
 
 <template>
+  <!-- z-[60]: clears the sticky z-50 AppHeader (and its z-50 settings popover)
+       this modal is launched from, rather than relying on DOM order to win the tie. -->
   <Teleport to="body">
     <div
       class="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-[60] p-0 sm:p-4"

@@ -104,6 +104,8 @@ const relevanceInfo = {
   'lower': { label: 'Lower Relevance', color: 'green', description: 'Demographic bias may not be primary concern' }
 }
 
+// Snapshots `strategies` at selection time only; strategies ticked afterwards
+// aren't written back to the store.
 function selectRelevance(relevance) {
   selectedRelevance.value = relevance
 

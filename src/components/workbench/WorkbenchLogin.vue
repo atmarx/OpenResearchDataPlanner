@@ -30,6 +30,8 @@ async function handleSubmit() {
   // Small delay for UX
   await new Promise(resolve => setTimeout(resolve, 300))
 
+  // Client-side gate only (VITE_WORKBENCH_PASSWORD baked into the bundle) —
+  // keeps researchers out of staff UI, not a security boundary.
   const success = workbenchStore.authenticate(password.value, staffName.value)
 
   if (success) {

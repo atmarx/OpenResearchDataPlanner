@@ -15,6 +15,8 @@ const emit = defineEmits(['close'])
 const copiedLink = ref(false)
 const copiedTicket = ref(false)
 
+// Deep link to this node: TierQuestionnaire reads #q-<id> on mount and jumps
+// there (and keeps the hash in sync as the user moves) — keep the formats aligned.
 const shareableUrl = computed(() => {
   if (typeof window === 'undefined') return ''
   const { origin, pathname, search } = window.location
@@ -54,7 +56,8 @@ async function copyText(text, target) {
       setTimeout(() => (copiedTicket.value = false), 2000)
     }
   } catch (e) {
-    // Fallback: select text in a temp textarea
+    // Fallback: select text in a temp textarea. navigator.clipboard rejects in
+    // non-secure contexts (plain-http intranet hosts) and when permission is denied.
     const ta = document.createElement('textarea')
     ta.value = text
     document.body.appendChild(ta)
@@ -201,7 +204,8 @@ function sendToSupport() {
       </div>
     </div>
 
-    <!-- Demo notice — clicking the placeholder send button flashes this, then it fades out -->
+    <!-- Demo notice — clicking the placeholder send button flashes this, then it fades out.
+         z-[60] so it floats above this dialog's own z-50 backdrop. -->
     <Transition
       enter-active-class="transition-opacity duration-200 ease-out"
       enter-from-class="opacity-0"

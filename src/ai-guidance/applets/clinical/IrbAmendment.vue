@@ -113,6 +113,10 @@ function getLevelColorClasses(color) {
 }
 
 // Download amendment draft
+// Positional picks into config/clinical/irb-amendment.yaml sample_language:
+// sections[0] is "Data Analysis Methods", variants[1] is the "Detailed
+// Disclosure" consent wording (not [0], "Minimal Addition"). Reordering the
+// YAML silently changes what lands in the draft.
 function downloadAmendmentDraft() {
   const protocol = sampleLanguage.value.protocol_amendment?.sections?.[0]?.content || ''
   const consent = sampleLanguage.value.consent_form_additions?.variants?.[1]?.content || ''
@@ -163,7 +167,8 @@ ${consent}
     :is-complete="isComplete"
     :get-next-applet="getNextApplet"
   >
-    <!-- Intro -->
+    <!-- Intro. v-html, unsanitized: trusted app-authored YAML that may carry
+         inline markup (HipaaDeidentification's does). -->
     <div
       v-if="intro.text"
       class="p-4 rounded-lg border mb-6 bg-surface border-border"

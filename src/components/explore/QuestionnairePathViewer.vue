@@ -38,6 +38,9 @@ const props = defineProps({
   }
 })
 
+// go-back-to carries a history index for useQuestionnaireHistory.goBackTo(),
+// which keeps entries 0..index and resumes at the last kept entry's next
+// question. currentQuestionId 'complete' is the parent's finished sentinel.
 const emit = defineEmits(['go-back-to', 'reset'])
 
 // Mobile panel state
@@ -47,6 +50,8 @@ function togglePanel() {
   isOpen.value = !isOpen.value
 }
 
+// Templates pass idx - 1 for a clicked entry: truncate to just BEFORE it so the
+// user lands back on that question to re-answer it (idx 0 → -1 → intro screen).
 function handleGoBack(index) {
   emit('go-back-to', index)
 }
@@ -81,8 +86,6 @@ const tierBgColors = {
 function getTierIcon(tier) {
   return tierIcons[tier] || Shield
 }
-
-// No longer truncating - show full question text
 
 const hasHistory = computed(() => props.path.length > 0)
 </script>

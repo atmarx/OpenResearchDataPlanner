@@ -33,6 +33,8 @@ const contactInfo = computed(() => {
   }
 })
 
+// Filename preview. The placeholders hand-mirror useExport.generateFilename's
+// `<slug>-<YYYY-MM-DD>.share.json` / `.draft.md` pattern — keep them in sync.
 const jsonFilename = computed(() =>
   projectName.value.trim()
     ? generateFilename(projectName.value.trim(), 'json')

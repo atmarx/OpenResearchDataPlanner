@@ -17,7 +17,9 @@ const isEnabled = computed(() => aiDisclosure.value?.enabled !== false)
 const banner = computed(() => aiDisclosure.value?.banner || {})
 
 const institutionName = computed(() => configStore.config?.meta?.institution?.name || 'Research IT')
-// AI vendor name — single config knob (meta.ai_disclosure.assistant); see src/lib/aiDisclosure.js
+// AI vendor name — single config knob (meta.ai_disclosure.assistant); see src/lib/aiDisclosure.js.
+// Only an ABSENT key falls back to the default; an explicit "" is honored so a
+// fork can strip the vendor name (fillDisclosureTokens then fixes the grammar).
 const assistantName = computed(() => {
   const a = aiDisclosure.value?.assistant
   return a === undefined ? 'Claude (Anthropic)' : a
@@ -62,6 +64,7 @@ function dismiss() {
       v-if="isVisible"
       class="border-b bg-indigo-50 border-indigo-100 dark:bg-indigo-950/50 dark:border-indigo-900"
     >
+      <!-- max-w-7xl: the chrome column shared with AppHeader / SlateFooter / AppFooter -->
       <div class="max-w-7xl mx-auto px-4 py-3">
         <div class="flex items-start gap-3">
           <!-- Icon -->
@@ -81,6 +84,7 @@ function dismiss() {
               >
                 {{ title }}
               </h2>
+              <!-- v-html of admin-authored config copy (trusted; see lib/markdown.js) -->
               <div
                 class="mt-1 text-sm md-body text-indigo-700 dark:text-indigo-300"
               

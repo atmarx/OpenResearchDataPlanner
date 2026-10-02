@@ -61,7 +61,10 @@ function formatDate(iso) {
   })
 }
 
-// Item status management
+// Item status management. Items are mutated in place: they're the store's own
+// reactive objects (activePlan → plans[]), so edits render live and
+// savePlans() persists the whole plan list to localStorage. The it* fields ride
+// along in the round-trip export back to the researcher.
 function getItemStatus(item) {
   return item.itStatus || 'pending'
 }
@@ -158,6 +161,8 @@ const reviewProgress = computed(() => {
   }
 })
 
+// PER-ITEM review states. Distinct from the plan-level status vocabulary
+// (pending_review / needs_revision / approved) set by the Plan Status buttons.
 const statusOptions = [
   { value: 'pending', label: 'Pending', icon: Clock, color: 'gray' },
   { value: 'approved', label: 'Approved', icon: Check, color: 'green' },

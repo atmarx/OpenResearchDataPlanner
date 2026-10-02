@@ -32,16 +32,18 @@ const softwareList = computed(() => softwareConfig.value.software || [])
 const softwareCategories = computed(() => softwareConfig.value.categories || [])
 const licenseStatuses = computed(() => softwareConfig.value.license_statuses || {})
 
-// Get user's selected platforms based on their service selections
+// Infer software platforms (the software.yaml `availability` keys: hpc / cloud /
+// vdi) from the user's selected services. services.yaml has no platform field,
+// so this keys off category + slug substrings — renaming a service slug (or
+// adding a non-matching one, e.g. secure-enclave) silently drops it from the
+// mapping. The result also rides along into the session via toggleSoftware.
 const selectedPlatforms = computed(() => {
   const platforms = new Set()
   for (const selection of sessionStore.session.selected_services) {
     const service = configStore.servicesBySlug[selection.service_slug]
     if (!service) continue
 
-    // Map service categories to software platforms
     if (service.category === 'compute') {
-      // Check if it's HPC or cloud
       if (service.slug.includes('hpc') || service.slug.includes('k8s')) {
         platforms.add('hpc')
       } else if (service.slug.includes('aws') || service.slug.includes('azure')) {
@@ -56,7 +58,8 @@ const selectedPlatforms = computed(() => {
   return Array.from(platforms)
 })
 
-// Check if software is available on any of user's selected platforms
+// 'restricted' counts as available (licensed, just gated). With no platforms
+// inferred, everything counts so the sort below is a plain alphabetical one.
 function isAvailableOnSelectedPlatforms(software) {
   if (selectedPlatforms.value.length === 0) return true
 
@@ -100,7 +103,9 @@ const filteredSoftware = computed(() => {
   // Status filter
   if (statusFilter.value !== 'all') {
     result = result.filter(sw => {
-      // Check the dominant status across platforms
+      // Status buckets across platforms: 'full' = fully licensed somewhere;
+      // 'restricted' = gated somewhere, full nowhere; 'byol' = no institutional
+      // license on any platform.
       const statuses = Object.values(sw.availability || {}).map(a => a.status)
       if (statusFilter.value === 'full') {
         return statuses.includes('full')

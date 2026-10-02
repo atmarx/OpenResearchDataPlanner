@@ -59,7 +59,7 @@ const fullGuideUrl = computed(() => {
 
         <div class="px-5 py-4 space-y-5">
 
-          <!-- The short answer -->
+          <!-- The short answer (v-html of admin-authored YAML; see lib/markdown.js) -->
           <div class="text-sm md-body text-text-secondary"
             v-html="renderMarkdown(explainer.short)"
           ></div>

@@ -248,6 +248,9 @@ const result = ref(null)
 const isComplete = computed(() => result.value !== null)
 const copiedLanguage = ref(false)
 
+// Keyed by the `requirement` value each terminal option's setsOutput writes
+// above — add a key here whenever a new requirement value is introduced, or
+// the result falls back to 'recommended'.
 const disclosureGuidance = {
   prohibited: {
     label: 'AI Use Not Permitted',

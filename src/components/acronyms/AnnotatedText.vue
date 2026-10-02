@@ -60,7 +60,8 @@ const termPattern = computed(() => {
     }
   }
 
-  // Sort by length (longest first) to match longer terms first
+  // Sort by length (longest first): regex alternation takes the FIRST branch
+  // that matches, so a multi-word term would otherwise lose to its own prefix.
   searchTerms.sort((a, b) => b.length - a.length)
 
   // Build pattern with word boundaries if configured
@@ -90,7 +91,8 @@ const segments = computed(() => {
   let lastIndex = 0
   let match
 
-  // Reset pattern lastIndex
+  // The /g regex is cached in a computed and shared across renders; exec() is
+  // stateful via lastIndex, so start each scan from 0.
   pattern.lastIndex = 0
 
   while ((match = pattern.exec(text)) !== null) {
@@ -98,7 +100,8 @@ const segments = computed(() => {
     const termKey = matchedText.toLowerCase()
     const termData = termsMap.value.get(termKey)
 
-    // Check max_per_term limit
+    // Check max_per_term limit. Skipping doesn't advance lastIndex, so the
+    // over-limit occurrence is swept into the next plain-text segment.
     const count = termCounts.get(termKey) || 0
     if (count >= maxPerTerm) {
       continue

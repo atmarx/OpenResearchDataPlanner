@@ -22,11 +22,14 @@ const selectedSchedules = ref(
   sessionStore.session.retention.schedules || []
 )
 
-// Archive ratio
+// Archive ratio — archived data as a fraction of active storage. 0.7 mirrors the
+// sessionStore default (and retention.yaml typical_archive_ratio, which isn't read).
 const archiveRatio = ref(sessionStore.session.retention.archive_ratio || 0.7)
 const useCustomRatio = ref(sessionStore.session.retention.custom_ratio || false)
 
-// Calculate longest retention period
+// Longest selected schedule wins. Floored at 3 years — the 2 CFR 200.334
+// federal-grant minimum (federal-grant-standard in retention.yaml) — so an empty
+// or shorter selection never under-counts retention.
 const longestYears = computed(() => {
   if (selectedSchedules.value.length === 0) return 3 // Default
 
@@ -64,7 +67,8 @@ watch([selectedSchedules, archiveRatio, useCustomRatio], () => {
   sessionStore.setArchiveRatio(archiveRatio.value, useCustomRatio.value)
 }, { deep: true })
 
-// Initialize defaults
+// Initialize defaults. Must stay below the watch: the push is what triggers it,
+// so the preselected default schedule is also written through to the store.
 if (selectedSchedules.value.length === 0) {
   const defaultSchedule = applicableSchedules.value.find(s => s.is_default)
   if (defaultSchedule) {

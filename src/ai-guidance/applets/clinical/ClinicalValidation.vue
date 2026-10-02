@@ -32,7 +32,7 @@ const intro = computed(() => appletConfig.value.intro || {})
 const checkedItems = ref(new Set())
 
 // Track expanded sections
-const expandedSections = ref(new Set(['technical'])) // Start with first section expanded
+const expandedSections = ref(new Set(['technical'])) // Start with first section expanded (id from clinical-validation.yaml)
 
 function toggleSection(sectionId) {
   if (expandedSections.value.has(sectionId)) {
@@ -78,7 +78,11 @@ const progress = computed(() => {
 
 const isComplete = computed(() => progress.value.allComplete)
 
-// Save to store when checklist changes
+// Save to store when checklist changes. Unlike the DecisionFlow applets this
+// writes on every tick, so the store marks the applet "complete" (it only
+// checks for an entry) as soon as one box is checked; `progress.allComplete`
+// is the real done signal. The completedAt passed here is overwritten by
+// completeApplet's own timestamp.
 watch([checkedItems, progress], () => {
   aiStore.completeApplet(APPLET_ID, {
     checkedItems: Array.from(checkedItems.value),
@@ -163,7 +167,7 @@ function getSectionProgress(section) {
     :icon="FileCheck"
     :is-complete="isComplete"
   >
-    <!-- Intro -->
+    <!-- Intro. v-html, unsanitized: trusted app-authored YAML. -->
     <div
       v-if="intro.text"
       class="p-4 rounded-lg border mb-6 bg-surface border-border"
@@ -184,7 +188,9 @@ function getSectionProgress(section) {
       ]"
     >
       <div class="flex items-center gap-6">
-        <!-- Progress Ring -->
+        <!-- Progress Ring. 251 ≈ 2π·40 (the circumference for r=40), so
+             percent × 2.51 is the drawn arc length; -rotate-90 starts it at
+             12 o'clock. Change r and both numbers must follow. -->
         <div class="relative w-24 h-24 flex-shrink-0">
           <svg class="w-full h-full transform -rotate-90">
             <circle

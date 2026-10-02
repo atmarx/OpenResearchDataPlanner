@@ -38,7 +38,9 @@ const availableServices = computed(() => {
   if (!tier) return []
 
   return configStore.getServicesForTier(tier)
-    .filter(s => !s.is_archive_tier) // Exclude archive tiers from direct selection
+    // Archive tiers aren't picked directly — they're priced through the parent
+    // service's archive_option on the Estimate step.
+    .filter(s => !s.is_archive_tier)
 })
 
 // Group services by category
@@ -244,6 +246,7 @@ function handleCompareSelect(service) {
                   <span v-if="service.cost_model.type === 'unit'">
                     ${{ service.cost_model.price }}/{{ service.cost_model.unit }}/mo
                   </span>
+                  <!-- "from" = last tier's price: tiers are volume discounts, cheapest last -->
                   <span v-else-if="service.cost_model.type === 'tiered'">
                     Tiered pricing from ${{ service.cost_model.tiers[service.cost_model.tiers.length - 1].price }}/{{ service.cost_model.unit }}
                   </span>
@@ -399,7 +402,7 @@ function handleCompareSelect(service) {
       </ul>
     </div>
 
-    <!-- Requirements modal -->
+    <!-- Requirements modal (mapping notes — trusted config, rendered unsanitized) -->
     <Teleport to="body">
       <div
         v-if="showNotesModal"

@@ -11,6 +11,18 @@ import {
 } from 'lucide-vue-next'
 import PageFeedback from '@/components/feedback/PageFeedback.vue'
 
+// Presentational shell shared by every "Help Me Estimate" calculator. It does
+// no math: each wrapper (e.g. GenomicsStorageCalculator) owns its inputs via
+// useCalculator(id), which holds the formulas and reads the rule-of-thumb
+// constants from config/calculators.yaml. `result` already includes the global
+// safety_multiplier (1.5× in the example config). The only slot is `inputs`.
+//
+// Wrapper conventions: dropdowns store an option's *label*, and useCalculator
+// finds the option by label, so labels must be unique within a list in the
+// YAML. Wrappers seed defaults right after calling useCalculator(), which trips
+// its debounced (200 ms) input watcher — results auto-compute without the
+// Calculate button, which is just an immediate recalc.
+
 const props = defineProps({
   /**
    * Calculator title
@@ -37,7 +49,8 @@ const props = defineProps({
   },
 
   /**
-   * Category label (Storage, Compute, GPU)
+   * Category badge (Storage, Compute, GPU, API). Also load-bearing: exactly
+   * 'Storage' switches sub-1 TB results to GB display (see showAsGB).
    */
   categoryLabel: {
     type: String,
@@ -61,7 +74,7 @@ const props = defineProps({
   },
 
   /**
-   * Unit for result (TB, SU, GPU-hours)
+   * Unit for result (TB, SU, GPU-hour, $) — usually useCalculator's outputUnit.label
    */
   resultUnit: {
     type: String,
@@ -93,7 +106,8 @@ const props = defineProps({
   },
 
   /**
-   * Whether the result was just added to slate
+   * Whether the result was just added to slate. Owned by the wrapper, which
+   * clears it on preset/calculate/reset but not on the debounced auto-recalc.
    */
   justAdded: {
     type: Boolean,
@@ -119,7 +133,8 @@ const showAsGB = computed(() => {
 const formattedResult = computed(() => {
   if (props.result === null) return '—'
 
-  // For storage < 1 TB, show as GB
+  // For storage < 1 TB, show as GB. ×1024 because useCalculator's TB is binary
+  // (bytes / 1024^4), so this stays consistent with its breakdown rows.
   if (showAsGB.value) {
     const gb = Math.round(props.result * 1024)
     return gb.toLocaleString()

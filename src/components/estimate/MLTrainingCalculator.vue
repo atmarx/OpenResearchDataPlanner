@@ -6,6 +6,8 @@ import { Brain } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// GPU-hours = model_size.typical_hours (per training run) × training_runs;
+// typical hours live in calculators.yaml → ml-training.model_sizes.
 const {
   config,
   inputs,
@@ -51,7 +53,8 @@ function handleAddToSlate() {
   }
 }
 
-// Create presets from model sizes
+// Create presets from model sizes. These carry only label + description, so
+// applyPreset() copies nothing — a chip click just selects that option and recalcs.
 const presets = computed(() => {
   return config.value?.model_sizes?.map(m => ({
     label: m.label,

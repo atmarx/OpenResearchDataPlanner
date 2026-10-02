@@ -51,7 +51,9 @@ async function vote(value) {
 
   emit('feedback', { sentiment: value })
 
-  // Fire-and-forget initial sentiment POST
+  // Fire-and-forget initial sentiment POST (submitFeedback swallows errors and
+  // no-ops when feedback is disabled). A later comment is a SECOND insert that
+  // repeats the sentiment — the API doesn't merge them into one row.
   await submitFeedback({
     page: resolvedPageId.value,
     sentiment: value,

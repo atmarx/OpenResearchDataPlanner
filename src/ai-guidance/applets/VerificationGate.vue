@@ -235,6 +235,10 @@ const outcomes = {
   }
 }
 
+// Precedence: blocked > accepted_risk > conditional > pass. canVerify is
+// last-write-wins across answers — "no expertise" sets it false, but the
+// expert-review branch continues to `plan`, which sets it back to true, so
+// arranging review rescues the user from `blocked`.
 function handleComplete({ output, flags }) {
   let outcome = 'pass'
 

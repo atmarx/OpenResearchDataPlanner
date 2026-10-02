@@ -29,6 +29,8 @@ const contactOptions = computed(() => helpConfig.value?.contact_options || [])
 const faqItems = computed(() => helpConfig.value?.faq || [])
 const officeHours = computed(() => helpConfig.value?.office_hours)
 const urgentContact = computed(() => helpConfig.value?.urgent)
+// help.contextual_help is keyed by wizard step id (useWizard.js: 'tier-select',
+// 'estimate', ...) — the session's current step picks the message.
 const contextualHelp = computed(() => {
   const step = sessionStore.currentStep
   return helpConfig.value?.contextual_help?.[step] || null
@@ -249,7 +251,8 @@ function handleClose() {
       </div>
     </div>
 
-    <!-- Demo notice — clicking a placeholder contact button flashes this, then it fades out -->
+    <!-- Demo notice — clicking a placeholder contact button flashes this, then it fades out.
+         z-[60] so it floats above this modal's own z-50 backdrop. -->
     <Transition
       enter-active-class="transition-opacity duration-200 ease-out"
       enter-from-class="opacity-0"

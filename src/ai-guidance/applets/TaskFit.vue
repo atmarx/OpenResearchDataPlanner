@@ -14,7 +14,9 @@ const aiStore = useAiGuidanceStore()
 
 const APPLET_ID = 'task-fit'
 
-// Task categories with fit assessments
+// Task categories with fit assessments. The stored `taskType` is a category id,
+// read back by CommonPitfalls (to pick task-specific pitfalls) and shown by
+// VerificationGate — keep ids stable.
 const taskCategories = [
   {
     id: 'brainstorming',

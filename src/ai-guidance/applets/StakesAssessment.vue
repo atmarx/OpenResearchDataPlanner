@@ -49,6 +49,11 @@ const result = ref(null)
 const isComplete = computed(() => result.value !== null)
 
 // Calculate stakes level from outputs (LOGIC STAYS IN VUE)
+// Worst dimension wins: each question's sets_output writes a 1–4 *_level, and
+// the single highest one sets the overall stakes (one "affects patients" answer
+// can't be averaged away by low answers elsewhere). An unanswered dimension
+// counts as 1. The returned level keys config `outcomes` and is exposed to
+// later applets as aiStore.stakesLevel.
 function calculateStakesLevel(output) {
   const maxLevel = Math.max(
     output.audience_level || 1,
@@ -118,7 +123,8 @@ function getLevelColorClasses(color) {
     :is-complete="isComplete"
     :get-next-applet="getNextApplet"
   >
-    <!-- Why First explanation -->
+    <!-- Why First explanation. v-html, unsanitized: the YAML carries inline
+         <em>/<a> markup and is app-authored config (trusted), not user input. -->
     <div
       v-if="intro.why_first_content"
       class="p-4 rounded-lg border mb-6 bg-surface border-border"

@@ -180,7 +180,8 @@ function handleWipeSlate() {
   <!-- Slate Footer - Only show when config is loaded.
        Sticky (not fixed): the bar rides the bottom of the viewport while there's
        content below it, then comes to rest on top of the site footer at the end
-       of the page instead of floating over it. -->
+       of the page instead of floating over it. z-40 keeps it under the z-50
+       modals (ExportModal, CompareModal) that open from or over it. -->
   <div
     v-if="configStore.config"
     class="sticky bottom-0 z-40 transition-all duration-300 ease-in-out"
@@ -315,7 +316,8 @@ function handleWipeSlate() {
       </div>
     </div>
 
-    <!-- Expanded Panel -->
+    <!-- Expanded Panel. Height hand-mirrors the outer h-[40vh] minus ~56px for
+         the collapsed bar above it; note the outer box drops to 35vh at md+. -->
     <div
       v-if="showExpandedPanel"
       id="slate-expanded"
@@ -456,7 +458,8 @@ function handleWipeSlate() {
           <ExplainerJit anchor="direct-charge" />
         </div>
 
-        <!-- Actions (placeholder for full review modal) -->
+        <!-- Actions (placeholder for full review modal — "Submit to Research IT"
+             is not wired up yet) -->
         <div class="mt-6 flex justify-end gap-3">
           <button
             class="px-4 py-2 rounded-lg transition-colors text-primary bg-primary/10 hover:bg-primary/20"

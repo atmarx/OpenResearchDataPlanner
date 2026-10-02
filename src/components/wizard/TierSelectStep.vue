@@ -111,7 +111,7 @@ function getIcon(color) {
           `focus:${getColors(tier.color).ring}`
         ]"
       >
-        <!-- Selected indicator -->
+        <!-- Selected indicator (badge fill derived from the icon's text-* class) -->
         <div
           v-if="isSelected(tier.slug)"
           class="absolute top-4 right-4"

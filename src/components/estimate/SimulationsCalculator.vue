@@ -6,6 +6,9 @@ import { Atom } from 'lucide-vue-next'
 
 const emit = defineEmits(['added'])
 
+// SU depends on which rate field the package defines (calculators.yaml →
+// simulations.packages): MD su_per_ns_per_million_atoms × ns × atoms/1e6,
+// CFD su_per_hour_simulated × sim_hours, QC su_per_calculation × calculations.
 const {
   config,
   inputs,
@@ -29,7 +32,9 @@ inputs.atoms = 1000000
 inputs.sim_hours = 10
 inputs.calculations = 100
 
-// Track which input type is needed for the selected package
+// Track which input type is needed for the selected package. Precedence
+// (MD → CFD → QC) must match useCalculator's simulations branch, or the
+// fields shown won't be the ones the formula reads.
 const inputType = computed(() => {
   if (!inputs.package || !config.value?.packages) return null
   const pkg = config.value.packages.find(p => p.label === inputs.package)
@@ -67,7 +72,8 @@ function handleAddToSlate() {
   }
 }
 
-// Create presets from packages
+// Create presets from packages. These carry only label + description, so
+// applyPreset() copies nothing — a chip click just selects that option and recalcs.
 const presets = computed(() => {
   return config.value?.packages?.map(p => ({
     label: p.label,

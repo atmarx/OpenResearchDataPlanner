@@ -1,5 +1,6 @@
 <script setup>
-// Lightweight placeholder shown by each layout's <Suspense> fallback. NOTE:
+// Lightweight placeholder shown by BareLayout's <Suspense> fallback (Planner and
+// Guidance layouts dropped <Suspense> in 20fa893 — see PlannerLayout). NOTE:
 // vue-router resolves a lazy route chunk DURING navigation (the old page stays
 // visible), so this does NOT cover the chunk-download gap. It shows only when an
 // incoming routed component has an async setup() that suspends — bridging that
