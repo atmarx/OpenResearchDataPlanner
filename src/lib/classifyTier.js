@@ -2,8 +2,9 @@
 // Walks the tier-questionnaire.yaml decision tree given a map of answers and
 // returns the resulting tier, flags, and the question path that was traversed.
 //
-// The Vue component inlines this logic inside selectAnswer(); extracting it here
-// makes it testable without mounting the component.
+// The Vue component applies one answer at a time via applyAnswerToState() (its
+// selectAnswer()); classifyTier() replays a whole answer set through that same
+// function so the tree is testable without mounting the component.
 
 const TIER_RANK = { low: 1, medium: 2, high: 3, restricted: 4 }
 
@@ -41,11 +42,14 @@ export function applyAnswerToState(state, option) {
  * @param {object} answers - map of { question_id: option.value } for each question encountered
  * @returns {{ tier: string|null, flags: string[], path: string[] }}
  *
- * Semantics copied from TierQuestionnaire.vue::selectAnswer:
+ * Semantics shared with TierQuestionnaire.vue::selectAnswer:
  * - sets_tier only upgrades, never downgrades (max by TIER_RANK)
  * - sets_flags unions into the flags set
  * - clears_flags removes from the flags set
  * - next='complete' or next=undefined ends the walk
+ *
+ * One divergence: a path that never sets a tier returns tier null here, while
+ * the UI shows 'low' on completion (selectAnswer defaults it).
  *
  * Throws if an expected answer is missing for a question reached during the walk.
  */

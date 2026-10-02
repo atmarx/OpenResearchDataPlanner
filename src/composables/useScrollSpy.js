@@ -37,6 +37,8 @@ export function useScrollSpy(source, { rootMargin = '-25% 0px -65% 0px' } = {}) 
     observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
+          // Tops are snapshots from the last crossing, not live positions —
+          // good enough to order sections that are all inside the band.
           if (entry.isIntersecting) {
             topByeId.set(entry.target.id, entry.boundingClientRect.top)
           } else {
@@ -44,7 +46,8 @@ export function useScrollSpy(source, { rootMargin = '-25% 0px -65% 0px' } = {}) 
           }
         }
         if (topByeId.size) {
-          // Highest section still in the active band wins.
+          // Highest section still in the active band wins. When the band is
+          // empty (between sections) the last active id stays lit.
           activeId.value = [...topByeId.entries()].sort((a, b) => a[1] - b[1])[0][0]
         }
       },

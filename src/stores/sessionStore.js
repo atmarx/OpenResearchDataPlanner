@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 
+// localStorage key. The stored value is the raw session object below — there
+// is no schema version; loadFromLocalStorage shallow-merges it over
+// createEmptySession() so newly added TOP-LEVEL keys get defaults.
 const STORAGE_KEY = 'odp-session'
 
 /**
@@ -52,18 +55,23 @@ export const useSessionStore = defineStore('session', () => {
       retention: {
         schedules: [],
         longest_years: 3,
+        // Pre-fills each archive estimate as active estimate × ratio in the
+        // EstimateStep UI. Never used by the pricing engine — only the archive
+        // estimate the user commits is priced (see lib/pricing.js).
         archive_ratio: 0.7,
         custom_ratio: false
       },
 
       selected_services: [],
-      // Each service entry: { service_slug, estimate, use_subsidy, notes, archive_estimate }
+      // Each service entry: { service_slug, estimate, use_subsidy, notes, archive_estimate, acknowledged }
+      // use_subsidy = slug of an opt-in (non-auto_apply) subsidy, or null
 
       selected_software: [],
       // Each software entry: { software_slug, note, platforms }
       // platforms = which of their selected services will use this software
 
-      // Calculated costs (populated by cost calculator)
+      // Reserved: nothing currently writes this (setCostSummary has no callers);
+      // totals are computed live from lib/pricing.js. Still cleared on back-nav.
       cost_summary: null
     }
   }
@@ -83,7 +91,8 @@ export const useSessionStore = defineStore('session', () => {
   )
 
   const hasUnsavedChanges = computed(() => {
-    // Check if session has meaningful data
+    // Misnomer kept for callers: the session autosaves, so this really means
+    // "has selections worth warning about before a destructive back-nav".
     return session.value.tier !== null ||
            session.value.selected_services.length > 0 ||
            session.value.selected_software.length > 0
@@ -127,7 +136,11 @@ export const useSessionStore = defineStore('session', () => {
       return idx < stepIndex
     })
 
-    // Clear downstream data based on which step we're clearing from
+    // Clear downstream data based on which step we're clearing from. Each
+    // branch catches any step AT OR BEFORE its anchor, so the cascade is
+    // positional: going back to grant-period or retention (which sit between
+    // tier-select and service-select) also wipes services + software.
+    // The grant period is never reset here; retention schedules only from tier-select.
     if (stepId === 'tier-select' || allSteps.indexOf(stepId) <= allSteps.indexOf('tier-select')) {
       session.value.tier = null
       session.value.classification_flags = []
@@ -176,6 +189,10 @@ export const useSessionStore = defineStore('session', () => {
     session.value.grant_period.end_date = endDate
 
     if (startDate && endDate) {
+      // Counts calendar-month boundaries crossed, ignoring the day of month
+      // (Jan 15 -> Feb 14 and Jan 15 -> Feb 16 are both 1). Date-only strings
+      // parse as UTC but getMonth() reads local time, so a 1st-of-month date
+      // can count as the prior month in US timezones.
       const start = new Date(startDate)
       const end = new Date(endDate)
       const months = (end.getFullYear() - start.getFullYear()) * 12 +
@@ -378,7 +395,9 @@ export const useSessionStore = defineStore('session', () => {
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved) {
         const parsed = JSON.parse(saved)
-        // Merge with defaults to handle schema changes
+        // Merge with defaults to handle schema changes. Shallow: a saved
+        // grant_period/retention object replaces the default wholesale, so a
+        // key added inside one of those stays undefined for old sessions.
         session.value = { ...createEmptySession(), ...parsed }
         return true
       }
@@ -389,7 +408,8 @@ export const useSessionStore = defineStore('session', () => {
   }
 
   /**
-   * Export session as JSON string
+   * Export session as JSON string. Note export_version here is a separate
+   * format from the slate's schema_version '1.2' file (useExport.exportJSON).
    */
   function exportSession(templateVersion, institutionName) {
     return JSON.stringify({

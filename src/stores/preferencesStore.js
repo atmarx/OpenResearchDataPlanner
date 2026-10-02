@@ -142,7 +142,9 @@ export const usePreferencesStore = defineStore('preferences', () => {
     saveToStorage()
   }
 
-  // Watch for changes and persist
+  // Watch for changes and persist. This only saves — the <html> classes
+  // (dark / ux-plain / spacing-*) are applied by the toggle/set functions, so
+  // writing these refs directly persists the value without updating the page.
   watch([showWallpaper, wallpaperChoice, wallpaperRandom, darkMode, aiGettingStartedDismissed, uxEnhancements, spacing], saveToStorage)
 
   // Initialize on store creation

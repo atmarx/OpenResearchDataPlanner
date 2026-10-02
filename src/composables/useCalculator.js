@@ -14,8 +14,10 @@ function debounce(fn, delay = 150) {
 }
 
 /**
- * Default service mappings for calculator results
- * These can be overridden in calculators.yaml
+ * Default service mappings for calculator results, keyed by calculator category
+ * (enabled_calculators in calculators.yaml). A calculator overrides this with
+ * calculator_config.<id>.target_services.default. Slugs must exist in
+ * config/services.yaml — an unknown slug still lands in the slate, priced at $0.
  */
 const DEFAULT_TARGET_SERVICES = {
   storage: 'hpc-storage',
@@ -312,7 +314,9 @@ export function useCalculator(calculatorId) {
         return
     }
 
-    // Convert to TB (no rounding yet - that happens after safety multiplier)
+    // Convert to TB (no rounding yet - that happens after safety multiplier).
+    // "TB" throughout the calculators is binary (1024^4 bytes), as are the
+    // GB/MB inputs above.
     result.value = totalBytes / (1024 * 1024 * 1024 * 1024)
 
     breakdown.value.push({
@@ -555,7 +559,8 @@ export function useCalculator(calculatorId) {
         const timePeriod = cfg.time_periods?.find(p => p.label === inputs.time_period)
         let days = timePeriod?.multiplier || 1
         if (days === 0) {
-          // Custom grant period
+          // multiplier: 0 is the calculators.yaml sentinel for "Grant period
+          // (custom)" — the user supplies the day count.
           days = inputs.custom_days || 365
         }
 
@@ -623,6 +628,10 @@ export function useCalculator(calculatorId) {
   /**
    * Get a relatable comparison for the result
    * @returns {string|null} A human-friendly comparison
+   *
+   * Deliberately rough rules of thumb for flavour text only (≈200 h of HD video
+   * per TB, ≈0.7 TB per whole human genome, a laptop ≈ 4 SU/hour) — none of
+   * these feed any cost math.
    */
   const relatableComparison = computed(() => {
     if (!result.value) return null

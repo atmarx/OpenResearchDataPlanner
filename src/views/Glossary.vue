@@ -107,7 +107,9 @@ function getCategoryDisplay(cat) {
   return categoryInfo[cat] || { label: cat, icon: Tag, color: 'gray' }
 }
 
-// Get color classes for category
+// Get color classes for category. Full literal class names on purpose:
+// Tailwind only generates classes it finds verbatim in source, so building
+// them as `bg-${color}-100` would ship unstyled.
 function getCategoryClasses(cat, type = 'bg') {
   const info = getCategoryDisplay(cat)
   const colorMap = {

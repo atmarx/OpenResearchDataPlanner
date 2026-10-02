@@ -27,6 +27,14 @@ function generateUUID() {
  * Users add services via calculators or direct selection, then submit to IT.
  *
  * Persists to sessionStorage (cleared on tab close, unlike localStorage).
+ * The wizard's share is rebuilt from the localStorage session on load
+ * (WizardView's immediate watcher -> useWizard.syncToSlate), but items added
+ * from explore pages/calculators don't survive closing the tab.
+ *
+ * Item shape: { id, service, quantity, unit, monthlyEstimate, annualEstimate,
+ * fromCalculator, calculatorInputs, notes, addedAt }. fromCalculator is the
+ * source tag: a calculator id, 'wizard' / 'wizard-archive', or null (added
+ * directly from the service matrix).
  */
 export const useSlateStore = defineStore('slate', () => {
   const configStore = useConfigStore()
@@ -128,7 +136,9 @@ export const useSlateStore = defineStore('slate', () => {
    * Calculate costs for a service at a given quantity.
    * Delegates to the shared pricing engine (src/lib/pricing.js) so the slate
    * reads the real services.yaml schema (`price`, tiered bands, subsidies[]).
-   * Returns { monthly, annual, breakdown }
+   * Auto-apply subsidies only — the wizard's opt-in subsidy (use_subsidy) is
+   * not applied here, unlike the Results/DMP figures.
+   * Returns { monthly, annual, breakdown, freeUnits, billable, unitLabel }
    */
   function calculateItemCosts(serviceSlug, quantity) {
     const service = configStore.servicesBySlug[serviceSlug]
@@ -143,8 +153,9 @@ export const useSlateStore = defineStore('slate', () => {
   // ============================================================
 
   /**
-   * Add an item to the slate
-   * If the same service already exists, prompts to merge or add separately
+   * Add an item to the slate. If an item for the same service already exists,
+   * the quantity is merged into it (no prompt) and the existing item keeps
+   * its original fromCalculator tag — addItemSeparate is the non-merging path.
    */
   function addItem(item) {
     // Find existing item for same service

@@ -149,6 +149,8 @@ function runScripted(sessionId, args) {
 function main() {
   const args = parseArgs(process.argv.slice(2))
   if (args.help) {
+    // --help prints this file's header comment (lines 2-23, `// ` stripped),
+    // so keep the usage block there and adjust the slice if it grows.
     console.log(fs.readFileSync(new URL(import.meta.url)).toString().split('\n').slice(1, 23).join('\n').replace(/^\/\/ ?/gm, ''))
     return
   }

@@ -149,7 +149,8 @@ export function usePdfExport() {
           margin: [0, 0, 0, 15]
         }] : []),
 
-        // Divider
+        // Divider. x2 is in points and should match the content width:
+        // LETTER 612pt − 2×50pt margins = 512 (515 is the A4 figure).
         {
           canvas: [{
             type: 'line',

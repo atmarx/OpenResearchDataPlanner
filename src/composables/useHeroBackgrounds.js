@@ -32,6 +32,8 @@ export function useHeroBackgrounds() {
       }))
   })
 
+  // Opacity of the canvas-coloured wash App.vue lays over the photo so text
+  // stays legible: 0 = raw photo, 1 = photo hidden.
   const overlay = computed(() =>
     configStore.config?.meta?.branding?.hero_overlay ?? 0.4
   )

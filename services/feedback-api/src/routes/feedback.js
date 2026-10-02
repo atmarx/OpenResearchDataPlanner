@@ -80,6 +80,10 @@ export default async function feedbackRoutes(fastify) {
 
   // GET /api/v1/feedback/stats — aggregate stats (admin key)
   fastify.get('/feedback/stats', { preHandler: requireAdminKey }, async (request) => {
+    // created_at is SQLite datetime('now'): UTC text 'YYYY-MM-DD HH:MM:SS',
+    // compared as a string. Pass `since` as a bare date or in that same
+    // space-separated form — an ISO 'T' timestamp sorts after every row from
+    // its own day and silently drops them.
     const { since } = request.query
     const sinceClause = since ? 'WHERE created_at >= ?' : ''
     const sinceParams = since ? [since] : []

@@ -48,7 +48,9 @@ export const useConfigStore = defineStore('config', () => {
     )
   })
 
-  // Services available for each tier
+  // Services available for each tier. Availability IS the existence of a
+  // mappings.yaml row for that service+tier — there is no "available: false";
+  // an absent row means the service isn't offered at that tier.
   const servicesForTier = computed(() => {
     if (!config.value?.mappings) return {}
     const result = {}
@@ -89,6 +91,7 @@ export const useConfigStore = defineStore('config', () => {
       loading.value = true
       error.value = null
 
+      // Built from config/*.yaml by scripts/build-config.js (npm run build:config).
       const response = await fetch('/config.json')
       if (!response.ok) {
         throw new Error(`Failed to load config: ${response.status} ${response.statusText}`)

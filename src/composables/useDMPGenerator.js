@@ -60,7 +60,9 @@ function registerHelpers() {
   })
 }
 
-// Register helpers once
+// Registered on Handlebars' global instance as an import side effect.
+// useExport.js's slate-export template relies on these too, without importing
+// this module.
 registerHelpers()
 
 /**
@@ -86,11 +88,13 @@ export function useDMPGenerator() {
     const grantMonths = sessionStore.grantMonths
     const retentionYears = sessionStore.session.retention.longest_years
 
-    // Cost via the shared pricing engine (src/lib/pricing.js): one line-item
-    // builder shared by the DMP, the slate, and the wizard, so the exported
-    // grant doc agrees with the slate the researcher just saw. It folds in the
-    // auto subsidies, the opt-in (user-selected) subsidy, and the archive tail
-    // — which honours free floors because it prices through the same engine.
+    // Cost via the shared pricing engine (src/lib/pricing.js): the same
+    // line-item builder ResultsStep's computeEstimate uses, so the exported
+    // grant doc agrees with the Results budget. It folds in the auto
+    // subsidies, the opt-in (user-selected) subsidy, and the archive tail —
+    // which honours free floors because it prices through the same engine.
+    // (The slate prices via computeServiceCost WITHOUT the opt-in subsidy, so
+    // its monthly figure can differ when one is chosen.)
     const li = computeServiceLineItem(serviceConfig, service, {
       grantMonths,
       retentionYears,
@@ -181,6 +185,8 @@ export function useDMPGenerator() {
     const mapping = configStore.getMapping(serviceSlug, sessionStore.selectedTier)
     if (!mapping?.dmp_template) return null
 
+    // Keys are dmp-templates/ paths minus .md (scripts/build-config.js
+    // loadDmpTemplates); mappings may name the file with or without it.
     const templateKey = mapping.dmp_template.replace(/\.md$/, '')
     const templateSource = configStore.config?.dmpTemplates?.[templateKey]
     if (!templateSource) {

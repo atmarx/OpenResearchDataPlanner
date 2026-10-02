@@ -37,7 +37,8 @@ const ConsultationStep = defineAsyncComponent(() =>
 const sessionStore = useSessionStore()
 const wizard = useWizard()
 
-// Map step IDs to components
+// Map step IDs to components. Keys are the step ids in useWizard.js ALL_STEPS
+// (+ CONSULTATION_STEP); an id missing here silently renders WelcomeStep.
 const stepComponents = {
   'welcome': WelcomeStep,
   'tier-select': TierSelectStep,
@@ -153,8 +154,8 @@ watch(
       </button>
     </Teleport>
 
-  <!-- Navigation warning modal. Nested inside the root <div> (not a sibling) so
-       this view keeps a SINGLE root element — the layout's <Transition
+  <!-- Navigation warning modal. Nested inside <PageShell> (not a sibling of it)
+       so this view keeps a SINGLE root element — the layout's <Transition
        mode="out-in"> boundary requires it. A root-level sibling Teleport makes
        the view multi-root, which prevents the leave transition from completing
        and blanks <main> on navigate-away. Teleport still renders to <body>

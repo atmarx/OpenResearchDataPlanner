@@ -3,8 +3,11 @@ import { useSlateStore } from '@/stores/slateStore'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 
-// Register additional helpers for export templates
-// (currency, number, eq, gt, lt, date, pluralize already registered by useDMPGenerator)
+// Register additional helpers for export templates.
+// currency, number, eq, gt, lt, date and pluralize are registered as an import
+// side effect of useDMPGenerator.js — this module does NOT import it, so the
+// slate-export template (which uses {{currency}}/{{number}}) only renders once
+// something else has loaded that module.
 if (!Handlebars.helpers.formatDate) {
   Handlebars.registerHelper('formatDate', function(value, format) {
     if (!value) return ''
@@ -12,7 +15,7 @@ if (!Handlebars.helpers.formatDate) {
 
     // Simple format support
     if (format === 'YYYY-MM-DD') {
-      return date.toISOString().slice(0, 10)
+      return date.toISOString().slice(0, 10) // UTC calendar date
     } else if (format === 'h:mm A') {
       return date.toLocaleTimeString('en-US', {
         hour: 'numeric',
@@ -30,6 +33,10 @@ if (!Handlebars.helpers.formatDate) {
   })
 }
 
+// Slate totals plus F&A ("fanda" = Facilities & Administrative, i.e. indirect
+// costs) at meta.indirect_costs.default_rate. The rate is applied to the whole
+// direct total; rate_basis (e.g. MTDC) is only echoed as a label, no exclusions
+// are computed. sponsor_rates in meta.yaml are not read here.
 function buildTotals(slateStore, configStore) {
   const ic = configStore.config?.meta?.indirect_costs
   const rate = ic?.default_rate ?? 0
@@ -102,6 +109,10 @@ export function useExport() {
   function exportJSON(projectName, finalNotes, contact = null) {
     const context = buildExportContext(projectName, finalNotes, contact)
 
+    // Researcher -> Support Workbench interchange file. schema_version must
+    // match what workbenchStore.exportPlanJSON writes back ('1.2');
+    // WorkbenchDashboard only accepts files carrying schema_version (or the
+    // export_version that sessionStore/slateStore exports use).
     const data = {
       schema_version: '1.2',
       exported_at: context.exportedAt,

@@ -45,8 +45,9 @@ export const useWorkbenchStore = defineStore('workbench', () => {
    * @returns {boolean} Whether authentication succeeded
    */
   function authenticate(password, name) {
-    // Password is stored in config - check against it
-    // For now, use a simple comparison (config will provide the hash/password)
+    // Client-side gate only, not security: VITE_WORKBENCH_PASSWORD is baked
+    // into the static bundle at build time (anyone can read it from the JS),
+    // and 'support2024' is the fallback when it's unset. See docs/IT-WORKBENCH.md.
     const configPassword = import.meta.env.VITE_WORKBENCH_PASSWORD || 'support2024'
 
     if (password === configPassword && name.trim()) {
@@ -77,7 +78,9 @@ export const useWorkbenchStore = defineStore('workbench', () => {
    * @returns {Object} The imported plan with workbench metadata
    */
   function importPlan(data) {
-    // Generate a workbench ID based on project name + timestamp
+    // Workbench ID = project slug + export DATE (not time). Re-importing the same
+    // project exported on the same day replaces `data` on the existing plan
+    // but keeps its status and reviews.
     const projectName = data.project_name || 'Untitled'
     const timestamp = data.exported_at || new Date().toISOString()
     const id = `${slugify(projectName)}-${timestamp.slice(0, 10)}`
@@ -183,7 +186,8 @@ export const useWorkbenchStore = defineStore('workbench', () => {
     const history = data.slate_history || []
     history.push(historyEntry)
 
-    // Build export data
+    // Build export data. schema_version must stay in step with
+    // useExport.exportJSON, which writes the researcher's original file.
     const exportData = {
       ...data,
       schema_version: '1.2',

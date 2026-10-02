@@ -31,7 +31,10 @@ const router = useRouter()
 const configStore = useConfigStore()
 const slateStore = useSlateStore()
 
-// Calculator components
+// Calculator components, keyed by calculator id. Keys must match the ids in
+// config/calculators.yaml (enabled_calculators / calculator_config) and the
+// per-id switch cases in useCalculator.js; a config id with no entry here
+// gets a card but no calculator UI.
 const calculatorComponents = {
   microscopy: defineAsyncComponent(() => import('@/components/estimate/MicroscopyCalculator.vue')),
   photography: defineAsyncComponent(() => import('@/components/estimate/PhotographyCalculator.vue')),

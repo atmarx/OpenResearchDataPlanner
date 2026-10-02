@@ -197,6 +197,8 @@ function selectAnswer(option) {
 
   // Navigate to next question
   if (option.next === 'complete') {
+    // A path that never raised the tier found nothing sensitive: Low.
+    // (lib/classifyTier.js returns null for the same path.)
     if (!determinedTier.value) determinedTier.value = 'low'
     currentQuestionId.value = 'complete'
   } else if (option.next) {
@@ -261,7 +263,10 @@ function selectTierFromTable(tierSlug) {
   navigateToWizardWithTier()
 }
 
-// Navigate to wizard at grant-period step (skip welcome and tier-select)
+// Navigate to wizard at grant-period step (skip welcome and tier-select).
+// Writes sessionStore directly rather than going through useWizard.navigateTo,
+// so no back-nav clearing runs — the session's existing services/software
+// survive a tier change made here.
 function navigateToWizardWithTier() {
   // Mark prerequisite steps as completed
   sessionStore.completeStep('welcome')

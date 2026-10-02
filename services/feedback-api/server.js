@@ -20,7 +20,8 @@ fastify.addHook('onClose', () => {
   db.close()
 })
 
-// Routes
+// Routes. The prefix must match meta.feedback.api_url in config/meta.yaml
+// ("/api/v1") and the Caddyfile's `handle /api/*` proxy rule.
 fastify.register(feedbackRoutes, { prefix: '/api/v1' })
 
 // Health check

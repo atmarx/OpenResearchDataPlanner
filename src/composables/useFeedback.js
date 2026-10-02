@@ -11,6 +11,9 @@ export function useFeedback() {
     return {
       enabled: meta?.enabled === true,
       apiUrl: meta?.api_url || '',
+      // The WRITE key (services/feedback-api API_KEY_WRITE). It ships to every
+      // browser in public/config.json, so it only deters drive-by spam — the
+      // ADMIN key that reads feedback back must never go in config.
       apiKey: meta?.api_key || ''
     }
   })

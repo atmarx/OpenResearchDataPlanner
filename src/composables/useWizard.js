@@ -4,7 +4,10 @@ import { useSessionStore } from '@/stores/sessionStore'
 import { useSlateStore } from '@/stores/slateStore'
 
 /**
- * Wizard step definitions
+ * Wizard step definitions, in flow order. Order matters beyond display:
+ * sessionStore.clearStepsFrom decides what to wipe on back-navigation by
+ * comparing positions in this list. `id` is also the key into WizardView's
+ * stepComponents map and the value persisted as session.current_step.
  */
 const ALL_STEPS = [
   {
@@ -221,7 +224,8 @@ export function useWizard() {
   }
 
   /**
-   * Check if navigating to a step would clear data
+   * Check if navigating to a step would clear data. hasUnsavedChanges really
+   * means "the session holds selections" — nothing is unsaved (it autosaves).
    */
   function wouldClearData(targetStepId) {
     const affectedSteps = getAffectedSteps(targetStepId)
@@ -275,8 +279,8 @@ export function useWizard() {
   }
 
   /**
-   * Sync wizard estimates to slate store
-   * Called when moving from estimate to results step
+   * Sync wizard selections to the slate store. Called by WizardView's deep
+   * watcher on every selection change, and again on the estimate -> results hop.
    */
   function syncToSlate() {
     // Idempotent mirror of the wizard's selections into the slate, so the slate

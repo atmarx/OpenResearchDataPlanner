@@ -5,7 +5,9 @@ import { ref, computed } from 'vue'
  * Enables back-stepping through the decision tree
  */
 export function useQuestionnaireHistory(questions, getQuestionById) {
-  // History stack: array of { questionId, answer, optionLabel }
+  // History stack: one entry per answered question —
+  // { questionId, answerValue, answerLabel, nextQuestionId, setsTier, setsFlags, clearsFlags }.
+  // The option's effects are copied in so tier/flags can be replayed on back-step.
   const history = ref([])
 
   // Current position in history (for viewing past states)
@@ -35,8 +37,9 @@ export function useQuestionnaireHistory(questions, getQuestionById) {
   }
 
   /**
-   * Go back to a specific point in history
-   * Returns the state to restore (tier, flags)
+   * Go back to a specific point in history. Entries 0..historyIndex are KEPT,
+   * so the user lands on the question that entry's answer led to.
+   * Returns the state to restore ({ questionId, tier, flags, answers })
    */
   function goBackTo(historyIndex) {
     if (historyIndex < 0) {
@@ -115,7 +118,8 @@ export function useQuestionnaireHistory(questions, getQuestionById) {
 
   /**
    * Get the path for visualization
-   * Returns array of { questionId, question, answer, isCurrent, tier, options }
+   * Returns array of { index, questionId, questionText, answerLabel, answerValue,
+   * tier, icon, nextQuestionId }
    */
   const pathForDisplay = computed(() => {
     return history.value.map((entry, idx) => {

@@ -26,7 +26,10 @@ const OUTPUT_FILE = path.join(OUTPUT_DIR, 'config.json')
 
 const VALIDATE_ONLY = process.argv.includes('--validate-only')
 
-// Config files to load (order matters for validation)
+// Config files to load. Order only sets load/log order and key order in
+// config.json — validation runs after everything is loaded. Each file becomes
+// config.<basename with - -> _> (tier-questionnaire.yaml -> tier_questionnaire),
+// which is the key the app reads.
 const CONFIG_FILES = [
   'meta.yaml',
   'categories.yaml',
@@ -306,6 +309,9 @@ function buildConfig() {
       // Exception: some YAML files have multiple root keys that need to be preserved
       // - software.yaml: software, categories, license_statuses
       // - acronyms.yaml: acronyms, annotation_config
+      // Files with no root key named after the file (meta, retention, help, ...)
+      // fall through to the whole document. A file that HAS a same-named key
+      // plus siblings must be listed above, or the siblings are silently dropped.
       if (key === 'software' || key === 'acronyms') {
         config[key] = data // Keep full structure
       } else {

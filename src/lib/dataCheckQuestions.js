@@ -4,6 +4,11 @@
  *
  * Pure data (no Vue deps) so tests can walk every path the way DecisionFlow.vue
  * does: setsOutput merges, setsFlags accumulates, `next` routes.
+ *
+ * setsFlags is the applet's own vocabulary, read by DataCheck.vue and
+ * ToolPicker.vue. A few slugs coincide with the questionnaire's classification
+ * flags (fre, hipaa, ferpa), but most ('export-control', 'irb-unclear', ...)
+ * exist only here and are not session classification flags.
  */
 import { flagLabel } from './classificationFlags.js'
 

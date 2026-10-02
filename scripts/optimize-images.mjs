@@ -37,6 +37,8 @@ function kb(bytes) { return (bytes / 1024).toFixed(0) + ' KB' }
 
 async function render(srcPath, outPath, { width, height, quality }) {
   await sharp(srcPath)
+    // 'attention' crops toward the most salient region (sharp's heuristic:
+    // high luminance/saturation/skin tone) instead of dead centre.
     .resize(width, height, { fit: 'cover', position: 'attention' })
     .webp({ quality })
     .toFile(outPath)

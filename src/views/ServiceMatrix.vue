@@ -156,7 +156,9 @@ function addToSlate() {
   selectedService.value = null
 }
 
-// Collect compliance data from L3/L4 mappings for a service
+// Collect compliance data from L3/L4 (high/restricted) mappings for a service.
+// Merges both tiers: a BAA in place at either counts, and when both list a
+// timeline the restricted one wins (it's last in highTiers).
 function getServiceComplianceInfo(serviceSlug) {
   const highTiers = ['high', 'restricted']
   const complianceMappings = highTiers
@@ -196,8 +198,8 @@ function getTierColorClass(tierSlug) {
 }
 
 // Mobile card availability display — icon + text colour + short label per
-// status. The desktop table inlines these branches per cell; the mobile
-// card funnels them through one helper so the two stay in sync.
+// status. Only the mobile cards use this helper; the desktop table still
+// inlines the same branches per cell, so a change here must be mirrored there.
 function getAvailabilityStyle(status) {
   switch (status) {
     case 'available':

@@ -83,7 +83,7 @@ function deriveSkin(tok) {
   const sans = (ty.body && ty.body.fontFamily) || (ty.h1 && ty.h1.fontFamily) || 'Inter'
 
   /* --color-primary is a FILL (main.css: on-primary = "text/icon on a primary
-     fill"), and 94 bg-primary surfaces pair it with on-primary text. A raw
+     fill"), and the app's many bg-primary surfaces pair it with on-primary text. A raw
      accent from a dropped design.md can be too pale to carry white text, so
      darken it until it clears WCAG 4.5:1 against its own ink. No-op when the
      accent already passes (t=0) — the built-in skins are untouched; this only
@@ -183,6 +183,8 @@ function _skinCss(name, skin) {
   if (skin.extraCss) css += '\n' + skin.extraCss
   return { css, fonts: d.fonts }
 }
+/* Fetches non-generic families from Google Fonts — the one external request
+   the skin engine makes; generic/system stacks are skipped. */
 function _loadFonts(fams) {
   fams.forEach(f => {
     if (!f || /system-ui|ui-monospace|serif|sans-serif|monospace/i.test(f)) return
@@ -284,6 +286,9 @@ function _hasFiles(e) { return e.dataTransfer && Array.prototype.indexOf.call(e.
 function _wireDrop() {
   if (_dropWired) return
   _dropWired = true
+  // dragenter/dragleave fire for every child element crossed, so a single
+  // leave doesn't mean the drag left the window. Count nesting depth and hide
+  // the overlay only when it returns to 0, or it flickers.
   let depth = 0
   const armed = document.createElement('div')
   armed.id = 'odp-drop-armed'

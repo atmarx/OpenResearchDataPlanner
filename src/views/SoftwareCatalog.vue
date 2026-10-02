@@ -64,7 +64,7 @@ const filteredSoftware = computed(() => {
     result = result.filter(sw => sw.category === categoryFilter.value)
   }
 
-  // Platform filter
+  // Platform filter — "usable there" means full or restricted; BYOL doesn't count
   if (platformFilter.value !== 'all') {
     result = result.filter(sw => {
       const availability = sw.availability?.[platformFilter.value]
@@ -72,7 +72,9 @@ const filteredSoftware = computed(() => {
     })
   }
 
-  // Status filter
+  // Status filter buckets by BEST status across platforms (same ranking as
+  // getBestStatus): 'restricted' excludes anything fully available somewhere,
+  // 'byol' means nothing is licensed on any platform.
   if (statusFilter.value !== 'all') {
     result = result.filter(sw => {
       const statuses = Object.values(sw.availability || {}).map(a => a.status)
@@ -156,7 +158,9 @@ function closeSoftware() {
   window.history.replaceState(null, '', window.location.pathname + window.location.search)
 }
 
-// Handle hash changes (back/forward navigation)
+// Handle hash changes from a pasted/edited URL or an in-page #link.
+// openSoftware/closeSoftware use replaceState, which neither fires hashchange
+// nor adds history entries — so Back leaves the page rather than closing the modal.
 function handleHashChange() {
   const hash = window.location.hash.slice(1)
   if (hash && softwareList.value.find(sw => sw.slug === hash)) {
