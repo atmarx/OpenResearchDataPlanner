@@ -209,6 +209,7 @@ const count = ref(0)
 ### Current Version
 - **Stable:** 7.3.x
 - **Node.js Required:** 20.19+ or 22.12+
+- **This project:** pinned to Vite 6.x (`"vite": "^6.0.0"`, lockfile 6.4.x) — the Vite 7 notes below apply when upgrading
 
 ### Key Changes in Vite 7
 
@@ -561,6 +562,8 @@ export const useSessionStore = defineStore('session', () => {
 
 ### Pinia Plugins
 
+> This project doesn't use a persistence plugin — `sessionStore`, `slateStore`, `preferencesStore`, and `workbenchStore` each persist themselves (deep `watch` / explicit saves). Generic example:
+
 ```javascript
 // plugins/piniaLocalStorage.js
 export function piniaLocalStoragePlugin({ store }) {
@@ -835,6 +838,7 @@ npm install @tailwindcss/typography
 
 ### Current Version
 - **lucide-vue-next:** 0.546.x (for Vue 3)
+- **This project:** pinned to 0.469.x (`"lucide-vue-next": "^0.469.0"`) — newer icon names may not exist yet
 - **Icon count:** 1,669+ icons
 
 ### Installation

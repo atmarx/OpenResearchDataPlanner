@@ -53,7 +53,8 @@ config/*.yaml  ───────►  build-config.js  ───────�
      │                  └─────────────────┘
      │
      ▼
-config/dmp-templates/  ───────►  Bundled with app  ───────►  Runtime Handlebars
+config/dmp-templates/, export-templates/  ───►  also compiled into config.json  ───►  Runtime Handlebars
+config/ai-guidance/, clinical/            ───►  also compiled into config.json
 ```
 
 ### Build Commands
@@ -74,7 +75,7 @@ All configuration lives in `config/`:
 | File | Purpose | Key Data |
 |------|---------|----------|
 | `meta.yaml` | Institution identity | Name, contacts, branding, feature flags |
-| `tiers.yaml` | Data classifications | L1-L4 tiers, requirements, workflows |
+| `tiers.yaml` | Data classifications | L1-L4 tiers, requirements, consultation/retention flags |
 | `categories.yaml` | Service categories | Compute, Storage, etc. + comparison features |
 | `services.yaml` | Service catalog | All services with pricing, tiers, features |
 | `bundles.yaml` | Pre-configured combos | Common use case packages |
@@ -88,9 +89,9 @@ All configuration lives in `config/`:
 | `software.yaml` | Software catalog | Licensed software by platform |
 | `explainers.yaml` | Concept explainers | Progressive-disclosure explanatory content |
 | `help-videos.yaml` | Help video catalog | Tutorial/walkthrough video links |
-| `legal.yaml` | Legal/policy text | Footer links, DMP boilerplate |
+| `legal.yaml` | Legal/policy text | Footer fine print, DMP legal framing |
 
-See [CUSTOMIZE.md](CUSTOMIZE.md) for complete schemas.
+See [CUSTOMIZE.md](ADMIN-GUIDE/CUSTOMIZE.md) for complete schemas.
 
 ---
 
@@ -101,7 +102,7 @@ See [CUSTOMIZE.md](CUSTOMIZE.md) for complete schemas.
 | `configStore` | Loads and provides access to config.json | No |
 | `sessionStore` | User selections + wizard progress (`current_step`, `completed_steps`) | Yes (localStorage) |
 | `preferencesStore` | UI/user preferences | Yes (localStorage) |
-| `slateStore` | Active slate/plan working state | Yes (localStorage `odp-slate`) |
+| `slateStore` | Active slate/plan working state | Yes (sessionStorage `odp-slate`, cleared on tab close) |
 | `workbenchStore` | Saved plans + auth | Yes (localStorage for plans, sessionStorage for auth) |
 
 ### Session Store Shape
@@ -191,6 +192,7 @@ src/
 │   │   ├── StatisticsCalculator.vue
 │   │   └── VideoCalculator.vue
 │   │
+│   ├── explainers/                # Concept explainer modal + just-in-time nudge
 │   ├── explore/                   # Tier questionnaire / guided exploration
 │   ├── feedback/                  # Page feedback widget
 │   ├── layout/                    # App shell: header, footer, layouts
@@ -200,7 +202,8 @@ src/
 ├── ai-guidance/                   # AI guidance surface (applets, views, stores)
 ├── assets/                        # Styles and static assets
 ├── composables/                   # Business logic
-├── lib/                           # Helpers (pricing, tier classification, AI disclosure)
+├── lib/                           # Pure helpers (pricing, tier classification, AI disclosure,
+│                                  #   /ai DataCheck flow, tier-workflow step gating)
 ├── router/                        # Vue Router route definitions
 ├── stores/                        # Pinia stores
 └── views/                         # Top-level routed views (incl. TierQuestionnaire.vue)
@@ -215,7 +218,7 @@ src/
 | 1 | `WelcomeStep` | Introduction, session restore |
 | 2 | `TierSelectStep` | Data classification (with questionnaire) |
 | 3 | `GrantPeriodStep` | Duration selection |
-| 4 | `RetentionStep` | Data retention requirements |
+| 4 | `RetentionStep` | Data retention requirements (only for tiers with `retention_questions_required`) |
 | 5 | `ServiceSelectStep` | Service/bundle selection (with comparison) |
 | 6 | `SoftwareStep` | Software selection (optional) |
 | 7 | `EstimateStep` | Usage estimates (with calculators) |
@@ -353,7 +356,7 @@ Configured in `tier-workflow.yaml`.
 Session state auto-persists to `localStorage`:
 
 ```typescript
-// Automatic via Pinia plugin
+// Automatic via a deep watch inside sessionStore (no Pinia plugin)
 const sessionStore = useSessionStore()
 
 // On page load, session is restored
@@ -377,8 +380,8 @@ sessionStore.importSession(json)
 ## Security Considerations
 
 1. **No secrets in config** — All config is public
-2. **No user data collected** — Everything stays in browser
-3. **No external requests** — Fully self-contained (except optional analytics)
+2. **No user data collected** — Everything stays in browser, except what a user types into the optional feedback widget
+3. **No external requests** — Fully self-contained (except the optional feedback API)
 4. **CSP-friendly** — No inline scripts or eval
 
 ---
@@ -397,6 +400,7 @@ Compatible with:
 - GitHub Pages, Netlify, Vercel
 - AWS S3 + CloudFront
 - Any static file host
+- Docker: the bundled image serves `dist/` via Caddy and proxies `/api/*` to the optional feedback-api sidecar (see [DOCKER.md](ADMIN-GUIDE/DOCKER.md))
 
 ### Configuration Customization
 
@@ -419,21 +423,21 @@ npm run persona-session # Browser persona/regression runs (Playwright)
 
 ### Key Test Areas
 
-- Wizard flow navigation
-- Cost calculations
-- DMP template rendering
-- Acronym annotation
-- Calculator accuracy
-- Comparison matrix
+- Tier classification + classification flags (questionnaire)
+- Cost calculations (`lib/pricing.js` against the real `services.yaml`)
+- Config validation
+- Skin contrast (WCAG)
+- AI disclosure copy
+- `/ai` DataCheck FRE flow + tier-workflow step gating
+- Persona-session harness logic
 
 ---
 
 ## Future Considerations
 
 ### V1.1
-- PDF export
+- Multi-session drafts (`draftsStore`) — see [MULTI-SESSION.md](MULTI-SESSION.md)
 - Email/share functionality
-- Archive direct input (alongside ratio)
 
 ### V2
 - User accounts with SSO
@@ -449,7 +453,7 @@ See [V2-PLANNING.md](V2-PLANNING.md) for roadmap.
 
 ## Related Documentation
 
-- [CUSTOMIZE.md](CUSTOMIZE.md) — Configuration reference
+- [CUSTOMIZE.md](ADMIN-GUIDE/CUSTOMIZE.md) — Configuration reference
 - [USERGUIDE.md](USERGUIDE.md) — End-user documentation
 - [ELI5-IMPLEMENTATION.md](ELI5-IMPLEMENTATION.md) — Help Me Estimate design
 - [COMPARISON-FEATURES.md](COMPARISON-FEATURES.md) — Service comparison design

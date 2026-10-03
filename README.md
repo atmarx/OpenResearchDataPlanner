@@ -31,6 +31,7 @@ See the [User Guide](docs/USERGUIDE.md) for a complete walkthrough.
 - **Terminology Tooltips** — Click any underlined term for a plain-English explanation
 - **Software Catalog** — Check what licensed software is available on each platform
 - **Talk to a Human** — Escape hatch to email, schedule a call, or save progress
+- **AI Guide** — Decision applets for using AI tools with research data, including a clinical track (`/ai`)
 
 ## For Administrators
 
@@ -55,9 +56,14 @@ All institution-specific content lives in YAML files under `config/`:
 | `tier-workflow.yaml` | Approval process for L3/L4 data |
 | `retention.yaml` | Data retention schedules |
 | `software.yaml` | Licensed software catalog |
+| `explainers.yaml` | Concept explainers and just-in-time nudges |
+| `help-videos.yaml` | Help video catalog (compiled, not yet shown in the UI) |
+| `legal.yaml` | Terms text: footer fine print, DMP legal framing |
 | `dmp-templates/` | Handlebars templates for DMP output |
+| `export-templates/` | Handlebars templates for slate/grant export |
+| `ai-guidance/`, `clinical/` | AI Guide applet content (general + clinical tracks) |
 
-See [Customization Guide](docs/CUSTOMIZE.md) for complete schemas and examples.
+See [Customization Guide](docs/ADMIN-GUIDE/CUSTOMIZE.md) for complete schemas and examples.
 
 ### Commands
 
@@ -66,6 +72,7 @@ npm run dev              # Start dev server (port 4000)
 npm run validate:config  # Validate YAML files
 npm run build:config     # Compile YAML → config.json
 npm run build            # Production build to dist/
+npm test                 # Vitest unit suite
 ```
 
 ### Deployment
@@ -75,14 +82,14 @@ The build output is static files. Deploy anywhere:
 - GitHub Pages, Netlify, Vercel
 - AWS S3 + CloudFront
 
-No backend required.
+No backend required. The optional feedback widget posts to a small Node.js service (`services/feedback-api/`); the bundled Docker setup runs it behind Caddy — see [Docker deployment](docs/ADMIN-GUIDE/DOCKER.md).
 
 ## Documentation
 
 | Document | Audience | Purpose |
 |----------|----------|---------|
 | [User Guide](docs/USERGUIDE.md) | Researchers | How to use the tool |
-| [Customization Guide](docs/CUSTOMIZE.md) | Admins | Configuration reference |
+| [Customization Guide](docs/ADMIN-GUIDE/CUSTOMIZE.md) | Admins | Configuration reference |
 | [Architecture](docs/ARCHITECTURE.md) | Developers | Technical overview |
 
 ### Feature Documentation

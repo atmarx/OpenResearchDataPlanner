@@ -358,7 +358,7 @@ Yes! Export as JSON and send the file. Others can import it to see your selectio
 
 ### I need help
 
-Look for the **"Talk to a human"** button or contact information in the footer. Real humans are available — this tool is here to help, not replace, our team.
+Look for the floating **"Get Help"** button (bottom-right) or contact information in the footer. Real humans are available — this tool is here to help, not replace, our team.
 
 ---
 
@@ -370,11 +370,13 @@ Most HIPAA/FERPA projects:
 
 1. **Complete planner** (~10 min)
 2. **Consultation** (1-3 days)
-3. **BAA verification** (0-5 days)
+3. **BAA verification** (same day to 1 week)
 4. **Environment setup** (1-3 days)
 5. **Training** (~30 min)
 
 **Total: 3-7 business days**
+
+Export-controlled projects that qualify as fundamental research (FRE) follow the same path, but swap BAA verification and HIPAA training for an **Export Control Officer review** (3-5 days) that confirms the exclusion applies.
 
 ### Restricted (L4) Timeline
 
@@ -420,11 +422,12 @@ Contact Research IT immediately with your deadline. We can often:
 
 - **Calculators** — Guided estimation for storage and compute
 - **Service Matrix** — Browse all services by tier
+- **AI Guide** — Decision applets for using AI tools with research data (header tab, or `/ai`). Its Data Check asks export-controlled projects about the Fundamental Research Exclusion: publishable fundamental research with only your own results going into the AI tool rates High (L3), pending Export Control Officer confirmation, rather than Restricted
 - **Slate footer** — Quick access to your selections
 
 ### Documentation
 
-- [Customization Guide](CUSTOMIZE.md) — For administrators
+- [Customization Guide](ADMIN-GUIDE/CUSTOMIZE.md) — For administrators
 - [Architecture](ARCHITECTURE.md) — Technical overview
 
 ### Contact

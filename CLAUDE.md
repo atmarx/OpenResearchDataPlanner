@@ -103,6 +103,8 @@ config/                      # YAML configuration (edit these!)
   tier-workflow.yaml         # L3/L4 approval process details
   retention.yaml             # Data retention requirements
   software.yaml              # Licensed software catalog
+  explainers.yaml            # Concept explainers (modals + just-in-time nudges)
+  legal.yaml                 # Terms text: footer fine print, DMP legal framing
   dmp-templates/             # Handlebars templates for DMP output
   export-templates/          # Handlebars templates for slate/export
   ai-guidance/               # AI stakes assessment config
@@ -115,18 +117,21 @@ src/
     stores/                  # AI guidance state management
     views/                   # AI guidance page views
   components/
-    wizard/       # Step components (10 steps: Welcome through Results)
+    wizard/       # Step components (Welcome through Results, Consultation branch) + CompareModal
     acronyms/     # Terminology tooltip/modal (AnnotatedText, AnnotatedHtml, TermTooltip)
     estimate/     # 14 Help Me Estimate calculators (genomics, ML, imaging, etc.)
-    explore/      # Browse pages (ServiceMatrix, Glossary, TierQuestionnaire, SoftwareCatalog, etc.)
+    explore/      # Questionnaire helpers (DataIdentificationFlow, QuestionnairePathViewer, QuestionHelpDialog)
+    explainers/   # Concept explainer modal + just-in-time nudge
     feedback/     # PageFeedback widget
     slate/        # Export modal + slate footer
     workbench/    # IT Workbench (login, dashboard, plan review)
-    layout/       # Header, footer, welcome banner, progress bar
+    layout/       # Header, footer, layouts (Planner/Guidance/Bare), welcome banner, Get Help modal, progress bar
   composables/    # Reusable logic (useWizard, useDMPGenerator, useExport, usePdfExport, etc.)
   stores/         # Pinia stores (configStore, sessionStore, preferencesStore, slateStore, workbenchStore)
-  router/         # Vue Router config
-  views/          # Top-level views (WizardView, WorkbenchPage, AboutAIPage)
+  lib/            # Pure logic (pricing, classifyTier, classificationFlags, dataCheckQuestions, workflowSteps, aiDisclosure)
+  router/         # Vue Router config (planner.routes.js, guidance.routes.js)
+  views/          # Routed pages (WizardView, WorkbenchPage, AboutAIPage, ServiceMatrix, Glossary,
+                  #   TierQuestionnaire, SoftwareCatalog, CalculatorBrowser)
 
 services/
   feedback-api/              # Node.js feedback collection microservice
@@ -193,15 +198,15 @@ See `docs/ADMIN-GUIDE/VALIDATION.md` for common errors and fixes.
 ## Current State (V1.0 — polishing)
 
 ### Implemented
-- **Wizard flow** — 10 steps: Welcome, TierSelect, Consultation, Estimate, GrantPeriod, ServiceSelect, Software, Retention, Results + CompareModal
+- **Wizard flow** — 8 steps: Welcome, TierSelect, GrantPeriod, Retention (only when the tier sets `retention_questions_required`), ServiceSelect, Software, Estimate, Results; restricted tiers short-circuit to Welcome → TierSelect → Consultation. Plus CompareModal
 - **Cost calculation** with subsidies and grant period support
 - **DMP generation** with Handlebars templates + export/PDF export
 - **Bundles** for quick service selection
-- **14 Help Me Estimate calculators** — genomics, ML training/inference, medical imaging, microscopy, GPU simulation, video, photography, statistics, documents, batch processing, LLM API
+- **14 Help Me Estimate calculators** — genomics storage + pipelines, simulations, ML training/inference, medical imaging, microscopy, GPU simulation, video, photography, statistics, documents, batch processing, LLM API
 - **Terminology annotation** — AnnotatedText, AnnotatedHtml, TermTooltip auto-annotate terms from `acronyms.yaml`
 - **Explore pages** — ServiceMatrix, Glossary, TierQuestionnaire, DataIdentificationFlow, SoftwareCatalog, QuestionnairePathViewer, CalculatorBrowser
 - **IT Workbench** — login, dashboard, plan review for IT staff
-- **AI guidance applets** + clinical guidance tracks (HIPAA, IRB, de-identification)
+- **AI guidance applets** + clinical guidance tracks (HIPAA, IRB, de-identification); `/ai` Data Check has an export-control FRE off-ramp (flow data in `src/lib/dataCheckQuestions.js`)
 - **Feedback collection** — PageFeedback widget + Node.js API backend
 - **Questionnaire history** tracking
 - **Docker deployment** — production and dev configs with Caddy reverse proxy
@@ -210,14 +215,15 @@ See `docs/ADMIN-GUIDE/VALIDATION.md` for common errors and fixes.
 
 ### Designed (docs exist, code pending)
 - Multi-session drafts / `draftsStore` (`docs/MULTI-SESSION.md`) — V1.1
-- Talk to a Human escape hatch (`docs/TALK-TO-HUMAN.md`)
+- Talk to a Human escape hatch (`docs/TALK-TO-HUMAN.md`) — the floating Get Help modal ships (FAQ, office hours, contextual help from `help.yaml`), but its contact buttons only show a demo notice; no live email/schedule/save actions
+- Tier workflow steps (`tier-workflow.yaml`) — compiled into config and gated by `src/lib/workflowSteps.js` (`show_if`/`skip_if`), but no UI renders them yet
 - Post-wizard onboarding (`docs/POST-WIZARD-ONBOARDING.md`)
 - Policy concept graph (`docs/CONCEPT-GRAPH.md`) — V1.3
 
 ### Tests
-- Vitest unit suite in `tests/` (`npm test`) — tier classification, classification flags, cost math, config validation, skin contrast, AI disclosure, persona-session harness
+- Vitest unit suite in `tests/` (`npm test`) — tier classification, classification flags, cost math, config validation, skin contrast, AI disclosure, DataCheck FRE flow + workflow step gating, persona-session harness
 - CI does **not** run the suite yet — the Woodpecker pipeline only builds and pushes images; run `npm test` before pushing
-- No end-to-end/browser tests
+- No end-to-end suite; Playwright persona-session specs (`tests/persona-sessions/*.spec.mjs`, driven by `npm run persona-session`) run browser sessions against a live target
 
 ### Config
-18 config files + 3 subdirectories in `config/` with example data for "Northwinds University".
+16 YAML config files + 4 subdirectories in `config/` with example data for "Northwinds University".

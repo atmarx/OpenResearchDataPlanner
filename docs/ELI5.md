@@ -455,18 +455,17 @@ Batch size: [________]
 ### Component Structure
 
 ```
-src/components/
-  estimate/
-    HelpEstimateModal.vue      # Main modal wrapper with tabs
-    StorageEstimator.vue       # Storage tab content
-    CpuEstimator.vue           # CPU compute tab content
-    GpuEstimator.vue           # GPU compute tab content
-    AccessExplainer.vue        # ACCESS credit explanation
-    calculators/
-      MicroscopyCalc.vue       # Individual calculator widgets
-      GenomicsCalc.vue
-      VideoCalc.vue
-      ...
+src/
+  views/
+    CalculatorBrowser.vue      # /calculators — category grid (storage, cpu, gpu, api)
+  components/estimate/
+    BaseCalculator.vue         # Shared shell: presets, breakdown, comparison, Add to Slate
+    MicroscopyCalculator.vue   # One component per calculator (14 total)
+    GenomicsStorageCalculator.vue
+    VideoCalculator.vue
+    ...
+  composables/
+    useCalculator.js           # Conversion math + safety multiplier + rounding
 ```
 
 ### State Flow
@@ -475,14 +474,14 @@ src/components/
 2. Calculator converts to base units (e.g., 320 GB)
 3. Safety multiplier applied (e.g., 1.5x → 480 GB)
 4. Rounded to user-friendly value (e.g., 0.5 TB)
-5. User clicks "Use this estimate" → value flows to parent form
+5. User clicks "Add to Slate" → the estimate lands in the Service Slate
 
 ### Storing Conversion Factors
 
-Conversion factors should be stored in a config file (not hardcoded) so product specialists can update them:
+Conversion factors live in config (not hardcoded) so product specialists can update them — in practice `config/calculators.yaml` under `calculator_config.<calculator>` (presets, resolutions, per-sample sizes) plus `global.safety_multiplier`. The original sketch:
 
 ```yaml
-# config/conversions.yaml
+# illustrative sketch — real schema is config/calculators.yaml
 microscopy:
   resolutions:
     2k:
@@ -594,5 +593,5 @@ Reference from UX testing - what each persona struggled with:
 
 - [UNIT-CONVERSIONS.md](./UNIT-CONVERSIONS.md) - Full conversion tables
 - [COMPARISON-FEATURES.md](./COMPARISON-FEATURES.md) - Service comparison metadata
-- [Foreign Concepts.md](./Foreign%20Concepts.md) - Raw UX feedback on confusing terms
+- [FOREIGN-CONCEPTS.md](./FOREIGN-CONCEPTS.md) - Raw UX feedback on confusing terms
 - [ACCESS Allocations](https://allocations.access-ci.org/) - Official ACCESS documentation
