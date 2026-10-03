@@ -166,12 +166,15 @@ The "Compare Options" button only appears on a category if:
 2. At least 2 services in that category have `comparison_features` data
 3. Those services are available for the user's selected tier
 
+Archive-tier services (`is_archive_tier`) are excluded from both the count and the modal. Today four categories define features — `compute`, `storage`, `environment`, `external`; `data-transfer`, `api`, and `support` have none, so they never show the button (even though `globus-transfer` carries a `comparison_features` block).
+
 ### Comparison Modal
 
 - Services are shown as columns, features as rows
-- Clicking a service column header adds it to selection
+- Clicking a service column header adds it to selection (immediately — clicking again doesn't remove it)
 - Already-selected services show a "Selected" badge
-- Feature details appear as tooltips and inline text
+- Feature details appear as tooltips and inline text; the feature `description` is a hover tooltip on an info icon
+- A feature key a service doesn't declare renders as `none`
 
 ---
 
@@ -261,6 +264,8 @@ The "Compare Options" button appears on each category card when comparison is av
 ```
 
 ### Comparison Modal
+
+> **As built:** the mockups in this section and the next three (Mobile, Feature Tooltips, Filtering) are design targets. The shipped modal has no Price row and no checkbox/"Add Selected" footer — clicking a column header adds that service right away, and you close with the X or by clicking outside. The category card shows only **Compare Options** (no "Select All"). On small screens the table scrolls sideways with a sticky Feature column; there's no card view, no "why it matters" feature panel, and no service filters.
 
 When "Compare Options" is clicked:
 
@@ -452,3 +457,5 @@ compliance:
 ```
 
 This would enable filtering services by compliance requirement and generating compliance-specific DMP language.
+
+*Partly exists already, at a different level:* `config/mappings.yaml` carries an optional per-service-per-tier `compliance:` block (`frameworks`, `baa_status`, `training_required`, `timeline`, `audit_logging`, `encryption`, …), populated on 22 mappings and summarized on the Service Matrix page. It isn't wired into the comparison modal.

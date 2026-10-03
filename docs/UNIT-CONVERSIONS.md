@@ -225,6 +225,8 @@ These conversions should be surfaced in the EstimateStep component:
 - Allow users to select their data type and get estimates
 - Include discipline-specific presets
 
+**As built:** they live in the standalone "Help Me Estimate" calculators at `/calculators` (linked from the Welcome step, header, and Service Matrix), not inside the wizard's EstimateStep. Per-type sizes and presets come from `config/calculators.yaml` (e.g. DSLR RAW 50 MB, HD video 10 GB/hour, WGS 30x 150 GB) — those config values, not the tables above, drive the math, so edit the YAML to change them. Each result also shows a one-line "relatable comparison" (hardcoded in `src/composables/useCalculator.js`), and results go to the slate via **Add to Slate**.
+
 ### Suggested UI pattern
 
 ```
@@ -249,4 +251,4 @@ All estimates are approximate. Actual storage needs depend on:
 - Metadata and derived files
 - Processing intermediates (often 2-5x raw data)
 
-Recommend users estimate **1.5-2x** their calculated raw data size to account for intermediates and growth.
+Recommend users estimate **1.5-2x** their calculated raw data size to account for intermediates and growth. The calculators apply this automatically: every result is multiplied by `global.safety_multiplier` in `config/calculators.yaml` (default 1.5×).

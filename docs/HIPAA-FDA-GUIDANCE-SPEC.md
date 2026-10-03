@@ -5,7 +5,7 @@
 ---
 
 **Date**: February 13, 2026
-**Status**: Specification / Prototype Review
+**Status**: Specification / Prototype Review — the three prototype documents exist in `docs/hipaa/` (repo only; not yet linked from the app). The in-app Clinical & Healthcare AI track at `/ai/clinical` (HIPAA De-identification, IRB Amendment, Clinical Validation applets) is built separately from this guide suite.
 **Purpose**: Develop comprehensive regulatory guidance for faculty working on AI in healthcare educational materials
 
 ---
@@ -93,7 +93,7 @@
 - Cloud/AI infrastructure (AWS, Azure, BAAs, safeguards)
 - Template documents (BAA, DUA, authorization forms)
 - Extensive FAQs from HHS guidance
-- OpenDataPlanner integration (L3/L4 tiers, AI Guidance Track 2)
+- OpenDataPlanner integration (L3 High = the HIPAA/PHI tier; L4 Restricted is export control/CUI, not a HIPAA tier; AI Guidance Track 2)
 
 **Time to Value**: Reference guide (search for specific topics), 3-4 hours to read thoroughly
 
@@ -481,8 +481,8 @@ Part 3: Research Data Workflows (3 pages)
 - Multi-Site Collaboration (flowchart)
 
 Part 4: OpenDataPlanner Connection (1 page)
-- L3 Tier (Sensitive Data)
-- L4 Tier (PHI/Highly Sensitive)
+- L3 Tier (High Risk — HIPAA/PHI)
+- L4 Tier (Restricted — export control/CUI, not a HIPAA tier)
 - AI Guidance Integration
 
 Part 5: Multi-Regulatory Red Flags & Quick Wins (2 pages)
@@ -534,7 +534,7 @@ Section 9: Research Scenarios (8 pages)
 - Cloud-First Research Infrastructure
 
 Section 10: OpenDataPlanner Integration (3 pages)
-- L3 Tier, L4 Tier
+- L3 Tier (High — HIPAA/PHI), L4 Tier (Restricted)
 - AI Guidance Track 2
 - IT Workbench FAQs
 
@@ -572,9 +572,9 @@ Appendices (15 pages)
 **For Committee Members**:
 
 1. **Review prototype documents** (located in `/docs/hipaa/`):
-   - Start with [README](../docs/hipaa/README.md) for overview
-   - Skim [Quick Reference Guide](../docs/hipaa/HIPAA-RESEARCH-QUICK-REFERENCE.md)
-   - Browse [Detailed Guide](../docs/hipaa/HIPAA-RESEARCH-DETAILED-GUIDE.md) (select relevant sections for your role)
+   - Start with [README](hipaa/README.md) for overview
+   - Skim [Quick Reference Guide](hipaa/HIPAA-RESEARCH-QUICK-REFERENCE.md)
+   - Browse [Detailed Guide](hipaa/HIPAA-RESEARCH-DETAILED-GUIDE.md) (select relevant sections for your role)
 
 2. **Consider questions** (in Committee Decision Points section above)
 
@@ -596,10 +596,10 @@ Appendices (15 pages)
 
 | Document | Pages (approx) | Lines | Size | Reading Time |
 |----------|---------------|-------|------|--------------|
-| **Quick Reference** | 18 | 881 | 33 KB | 30-60 min |
-| **Detailed Guide** | 100 | 5,035 | 223 KB | 3-4 hours (reference, not cover-to-cover) |
+| **Quick Reference** | 18 | 891 | 34 KB | 30-60 min |
+| **Detailed Guide** | 100 | 5,058 | 223 KB | 3-4 hours (reference, not cover-to-cover) |
 | **README** | 10 | 489 | 21 KB | 20 min |
-| **TOTAL** | **128** | **6,405** | **277 KB** | **4-5 hours** |
+| **TOTAL** | **128** | **6,438** | **277 KB** | **4-5 hours** |
 
 ### Source Material Synthesized
 
@@ -639,9 +639,9 @@ Appendices (15 pages)
 ## Attachments
 
 **For Committee Review**:
-1. [Quick Reference Guide Prototype](../docs/hipaa/HIPAA-RESEARCH-QUICK-REFERENCE.md)
-2. [Detailed Guide Prototype](../docs/hipaa/HIPAA-RESEARCH-DETAILED-GUIDE.md)
-3. [README/Navigation](../docs/hipaa/README.md)
+1. [Quick Reference Guide Prototype](hipaa/HIPAA-RESEARCH-QUICK-REFERENCE.md)
+2. [Detailed Guide Prototype](hipaa/HIPAA-RESEARCH-DETAILED-GUIDE.md)
+3. [README/Navigation](hipaa/README.md)
 
 **Source Materials** (for reference, not required reading):
 - `/docs/hipaa/*.pdf` (8 HHS HIPAA Privacy Components PDFs)

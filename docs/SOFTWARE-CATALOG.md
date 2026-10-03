@@ -24,14 +24,24 @@ Researchers know the software they need but don't know:
 
 A config-driven software catalog with:
 - **Stoplight license status** (green/yellow/red)
-- **Availability by platform** (HPC, JupyterHub, VDI, cloud, local)
+- **Availability by platform** (HPC, JupyterHub, VDI, cloud — there is no `local` platform in the shipped config)
 - **Access instructions** per platform
-- **License server hosting info**
+- **License server hosting info** (per software, via `license_server.we_can_host`)
 - **Searchable UI** with filtering
+
+**Status: implemented** — `/software` (`src/views/SoftwareCatalog.vue`) plus the wizard's Software step (`src/components/wizard/SoftwareStep.vue`). The sections below mix the original design with the build; "As built" notes flag where they differ.
 
 ---
 
 ## Config Schema: `config/software.yaml`
+
+> **As built:** the shipped file's top-level keys are `license_statuses`, `software`, `categories`, `platforms`, `license_hosting`, and `search`. `license_statuses`, `license_hosting`, and `search` match the sample below. Differences from the sample:
+>
+> - **`platforms`** (not shown below) defines the four platforms — `hpc`, `jupyterhub`, `vdi`, `cloud` — with `name`, `description`, `typical_use` (JupyterHub adds `url` and `features`).
+> - **`categories`** are nine: `computational-chemistry`, `molecular-dynamics`, `statistics`, `numerical-computing`, `simulation`, `bioinformatics`, `deep-learning`, `data-science`, `eda`.
+> - **Software entries** (25 today) use `slug`, `name`, `vendor`, `category`, `description`, `description_long`, `website`, `documentation_url`, `institutional_support_url` / `_label`, `tags`, and `availability.<platform>` (`status`, `versions`, `module`, `notes`, plus optional `contact`, `approval_required`, `no_setup`, `gpu_support`, `requires_own_license`, …). Optional blocks: `export_control` (`classification`, `eccn`, `restriction`, `notes`), `tier_restrictions` (`min_tier`, `max_tier`, `notes`), `license_model: byol` + `license_info` (`cost_per_seat` or `cost_estimate`, `cost_period`, `cost_notes`, `vendor_contact`, `request_quote_cta`), `license_server` (`we_can_host`, `contact`), `byol_available`, `toolboxes` / `add_ons`.
+> - There are **no** `license_details`, `license_type`, `license_expiry`, `license_status`, or `vendor_url` fields, and no `local` availability key — the entries below are the original design sample, not the shipped data.
+> - `license_hosting` is in the config but the catalog page doesn't render it; hosting is surfaced per software in the detail modal.
 
 ```yaml
 # config/software.yaml
@@ -606,6 +616,8 @@ Software entries with `no_setup: true` indicate the tool is ready to use on Jupy
 
 ### Software Catalog Page
 
+> **As built:** search box plus three filters — category, platform (HPC / VDI / Cloud; JupyterHub isn't offered as a filter option), and status (Available / Restricted / BYOL Only, bucketed by the software's best status across platforms). Results are grouped by category, A–Z. Cards open a detail modal deep-linkable as `/software#<slug>` with a share link. A status legend explains the stoplight values. There's no License Server Hosting panel and no "Request Software / Talk to a Human" footer.
+
 A dedicated `/software` page with:
 
 ```
@@ -654,6 +666,8 @@ A dedicated `/software` page with:
 
 ### Software Detail Modal
 
+> **As built:** per-platform availability (HPC / JupyterHub / VDI / Cloud), export-control and tier-restriction callouts, and — for BYOL software — an estimated cost from `license_info`, cost notes, the "We can host your license server" line, and a mailto "Request quote from us" link. No Documentation / Training / Get Help button row; links go to the entry's support, documentation, and vendor URLs.
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  Cadence Virtuoso                                          [X]  │
@@ -689,6 +703,8 @@ A dedicated `/software` page with:
 
 Software selections are added to the service slate just like storage or compute:
 
+> **As built:** the wizard's Software step stores `{ software_slug, note, platforms }` per pick in the session (`selected_software`); `useWizard.js` mirrors those into the slate as `{ id, licenseModel, costToUser, costPeriod, note }` (camelCase, `id` = display name, `licenseModel` defaulting to `campus`). There's no `installed_on` field. The interface below is the original design.
+
 ```typescript
 interface SoftwareSelection {
   id: string               // Software slug
@@ -717,7 +733,6 @@ Example config for unknown pricing:
 ```yaml
 - slug: schrodinger
   name: "Schrödinger Suite"
-  license_status: red
   license_model: byol
   license_info:
     cost_per_seat: null  # Unknown - varies by modules
@@ -755,6 +770,8 @@ Example config for unknown pricing:
 
 ## Integration with Service Selection
 
+> **Status: Planned — not built.** There is no `SoftwareChip` component and no software list on service cards. The wizard's Software step does infer which platforms (`hpc`, `cloud`, …) a researcher's selected services cover.
+
 When a user selects HPC or VDI services, show relevant software:
 
 ```vue
@@ -781,6 +798,8 @@ When a user selects HPC or VDI services, show relevant software:
 ---
 
 ## Searchability
+
+> **As built:** free-text search matches name, description, vendor, and tags (the `search.search_fields` list in config is not read — the fields are hardcoded). Category, platform, and status are dropdown filters; there is no "hide BYOL by default" toggle.
 
 The software catalog should be searchable by:
 - Software name

@@ -1,6 +1,6 @@
 # AI Guidance Applets — Specification
 
-**Status:** Revised after Round 2 expert review
+**Status:** Revised after Round 2 expert review. **All 17 applets are implemented** at `/ai/<applet-id>` (`src/ai-guidance/applets/`, routes in `src/router/guidance.routes.js`) — see [Implementation Status](#implementation-status-as-built) for where the build differs from this spec.
 **Target:** `/ai` self-service guide at Northwinds University
 **Audience:** All faculty and students using generative AI in research and teaching
 
@@ -138,9 +138,11 @@ For health or education data, additional questions:
 ### Outputs
 
 - Data sensitivity level: `public` | `internal` | `confidential` | `high` | `restricted` (plus `variable` when IRB-dependent)
-- Flags: `hipaa` | `ferpa` | `export-control` | `fre` | `nda` | `irb` | `ip-sensitive`
-- Recommendation: Proceed / Proceed with caution / Consult before proceeding / Do not use cloud AI
-- If `irb` flag → Link to IRB/Human Subjects Workflow
+- Flags: `hipaa` | `ferpa` | `export-control` | `fre` | `nda` | `irb` | `ip-sensitive`, plus sub-flow flags `deidentified`, `reident-risk`, `irb-unclear`, `irb-amendment-needed`, `irb-prohibits`
+- Recommendation: Proceed / Proceed with caution / Consult before proceeding / Do not use cloud AI (as built, this is the per-sensitivity description on the result card)
+- If `irb` or `irb-amendment-needed` flag → Continue goes to IRB/Human Subjects Workflow; otherwise Tool Picker
+
+*As built:* the de-identification sub-workflow asks method (Safe Harbor / expert / partial / none) and re-identification risk (which can lower sensitivity to `internal`/`confidential` or keep `high`); the harm-potential and data-use-agreement questions are not asked. Human-subjects data gets a single in-applet IRB question before handing off.
 
 ### Links To
 
@@ -190,7 +192,7 @@ For health or education data, additional questions:
 
 ### Outputs
 
-- IRB readiness: `covered` | `amendment_needed` | `consult_irb` | `prohibited`
+- IRB readiness: `covered` | `amendment_needed` | `consult_irb` | `local_only` | `prohibited` (as built, no answer path currently produces `amendment_needed`; protocol-silent paths land on `consult_irb`, and "no third-party sharing" lands on `local_only`)
 - Checklist of documentation needed
 - Sample protocol amendment language (if applicable)
 - Contact: [Institution IRB office link]
@@ -223,6 +225,8 @@ For health or education data, additional questions:
 | **Institutionally Hosted** | Northwinds AI Portal (if exists) | Data stays within institution; institutional policies apply | May satisfy IRB "no external sharing" | Confidential data, student work, research data |
 | **Local Models** | Llama, Mistral via Ollama | Data never leaves your machine | Full control; no external dependencies | Sensitive data, offline work, export controlled |
 | **Specialized Research** | AlphaFold, ESMFold, domain-specific | Varies by tool | Check each tool's policies | Domain-specific tasks |
+
+*As built:* the applet shows the first four categories only (Specialized Research is not rendered), each marked available / caution / prohibited for the sensitivity carried over from Data Check (`internal` if Data Check was skipped; `variable` puts every category on caution). FRE arrives as `high`, so it gets High's gating. `export-control`, `fre`, `cloud-prohibited`, and `irb-prohibits-ai` flags add warning banners.
 
 ### Decision Logic
 
@@ -317,7 +321,7 @@ For data that cannot leave its current location (multi-site studies, hospital sy
 
 ### Outputs
 
-- Fit assessment: `good` | `moderate` | `caution` | `poor`
+- Fit assessment: `good` | `moderate` | `caution` | `poor` | `regulated` (Clinical decisions)
 - Recommended approach for this task type
 - Verification requirements for this task
 - Alternative approaches if AI is poor fit
@@ -384,9 +388,10 @@ AI-generated code often looks correct, passes basic tests, and has subtle bugs t
 
 ### Outputs
 
-- Verification capability: `full` | `partial` | `none`
-- If `none`: Strong recommendation not to proceed
-- If `partial`: List of gaps; consider alternatives for those aspects
+- Verification capability: `full` | `partial` | `none` — as built, the stored outcome is `pass` | `conditional` | `accepted_risk` | `blocked`
+- If `none` (`blocked`): Strong recommendation not to proceed
+- If `partial` (`conditional`): List of gaps; consider alternatives for those aspects
+- `accepted_risk`: user chose to proceed without verification (low-stakes or acknowledged risk)
 - Verification checklist for this task type
 
 ### Links To
@@ -397,6 +402,8 @@ AI-generated code often looks correct, passes basic tests, and has subtle bugs t
 ---
 
 ## Applet 7: Pitfall Checklist
+
+*Built as **Common Pitfalls** (`/ai/common-pitfalls`).*
 
 **Core Question:** "What should I watch for with [task type]?"
 
@@ -633,6 +640,8 @@ You're building or using:
 
 ## Applet 11: Disclosure Wizard
 
+*Built as **Disclosure Framework** (`/ai/disclosure-framework`).*
+
 **Core Question:** "Do I need to disclose AI use? How?"
 
 **Why Important:** Norms and requirements for AI disclosure vary by context. Some venues require it; others prohibit AI use entirely.
@@ -676,7 +685,7 @@ You're building or using:
 
 ### Outputs
 
-- Disclosure requirement: `required` | `recommended` | `optional` | `not_applicable`
+- Disclosure requirement: `required` | `recommended` | `optional` | `not_applicable` — as built: `prohibited` | `required` | `recommended` | `optional` | `ask` | `per-policy` | `per-sponsor` | `advisor` | `check` | `emerging` (no `not_applicable`)
 - Suggested disclosure format for this context
 - Template language
 
@@ -1072,7 +1081,7 @@ Before using AI, ask yourself:
 
 ### Outputs
 
-- Bias relevance: `high` | `medium` | `low` | `not_primary_concern`
+- Bias relevance: `high` | `medium` | `low` | `not_primary_concern` — as built: `very-high` | `high` | `medium` | `low-medium` | `domain-dependent` | `lower`
 - Relevant bias concerns for this use case
 - Mitigation strategies
 - Documentation recommendations
@@ -1113,6 +1122,18 @@ Aggregate feedback informs future revisions and identifies applets needing impro
 
 - **Glossary** → AI terms in acronyms.yaml (if shared config)
 - **Standalone deployment** → No dependencies on other applications
+
+### Implementation Status (as built)
+
+All 17 applets ship, grouped on the `/ai` home into the three phases below (the home page uses the built names: Common Pitfalls, Disclosure Framework). Where the build differs from the plan above:
+
+- **Routes:** standalone routes exist for every applet (`/ai/<APPLET_ID>`). No query-param pre-fill — applets read earlier results from the shared Pinia store (`src/ai-guidance/stores/aiGuidanceStore.js`) instead.
+- **Config-driven:** only Stakes Assessment reads YAML (`config/ai-guidance/stakes-assessment.yaml`); Data Check's flow is a JS module (`src/lib/dataCheckQuestions.js`); the rest define questions inline in their `.vue` files.
+- **State:** in-memory only. `completedApplets` (keyed by APPLET_ID), `flags` (union of every applet's flags), and `feedback` reset on reload. `exportSession`/`importSession` exist but nothing calls them — no save/resume and no PDF/markdown export of the session yet.
+- **Feedback:** implemented — each applet's completion area shows the shared `PageFeedback` widget (thumbs up/down + optional comment, POSTed to the feedback API).
+- **Continue chain** (AppletFrame's Continue button): Stakes → Data Check → IRB Workflow (if `irb`/`irb-amendment-needed`) → Tool Picker → Task Fit → Verification Gate (end — no Continue). Common Pitfalls → Disclosure Framework → Reproducibility → Model Selection → Prompt Engineering → AI Ethics → Bias Assessment (end). Documentation Guide and Pipeline Integration → Reproducibility; Teaching Policy Builder → Student Guidance → Bias Assessment. The "Links To" lists above are broader than these single Continue targets.
+- **Not fully decoupled:** the `/ai` home reads the planner's `sessionStore.tier` and `configStore.tiers` to show a tier-context card.
+- **Clinical track:** three Health-section applets are built at `/ai/clinical/*` — see the Generative AI for Health section below.
 
 ### Phase 1 (Core Flow)
 
@@ -1314,7 +1335,7 @@ Recommended approach:
 
 # Companion Section: Generative AI for Health
 
-**Status:** Planning
+**Status:** Partially built. A Clinical & Healthcare AI track ships at `/ai/clinical` with three config-driven applets (`config/clinical/*.yaml`): **HIPAA De-identification** (`/ai/clinical/hipaa-deident`, covers H2), **IRB Amendment Guide** (`/ai/clinical/irb-amendment`, covers H3), and **Clinical Validation** checklist (`/ai/clinical/clinical-validation`, covers H5). H1, H4, H6, and H7 remain planned. See [AI-GUIDANCE-EXPANSION.md](AI-GUIDANCE-EXPANSION.md).
 **Scope:** Using generative AI in healthcare, clinical research, and FDA-regulated contexts
 **Primary audience:** Medical informatics, clinical researchers, health sciences faculty
 
@@ -1566,7 +1587,7 @@ The FDA regulates software as a medical device (SaMD) when it:
 
 ## Implementation Notes
 
-This section is **planned but not yet specified in detail**. Development priority depends on institutional needs.
+Apart from the three clinical applets above, this section is **planned but not yet specified in detail**. Development priority depends on institutional needs.
 
 Recommended approach:
 1. Build core Generative AI applets first

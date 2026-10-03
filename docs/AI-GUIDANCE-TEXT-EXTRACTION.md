@@ -1,6 +1,8 @@
 # AI Guidance Text Extraction Plan
 
 > Extract text content from Vue components to YAML configs for fork-ability, following i18n-style pattern.
+>
+> **Status:** In progress — 1 of 4 Tier 1 applets done. StakesAssessment reads `config/ai-guidance/stakes-assessment.yaml` and `loadAiGuidance()` is in `scripts/build-config.js`. TaskFit, VerificationGate, DocumentationGuide, and all Tier 2 applets still define their text inline in `.vue` files.
 
 ---
 
@@ -21,12 +23,12 @@
 
 ## Migration Tiers
 
-### Tier 1: Clean Extraction (DO NOW)
+### Tier 1: Clean Extraction (StakesAssessment done; 3 remaining)
 **These are pure data, minimal logic. Extract to YAML immediately.**
 
 | Applet | YAML File | Extractable | Stays in Vue |
 |--------|-----------|-------------|--------------|
-| **StakesAssessment** | `stakes-assessment.yaml` | Questions, outcomes, descriptions | `calculateStakesLevel()` (max function) |
+| **StakesAssessment** ✅ | `stakes-assessment.yaml` | Questions, outcomes, descriptions | `calculateStakesLevel()` (max function) |
 | **TaskFit** | `task-fit.yaml` | 13 task categories, verification requirements | Selection state (trivial) |
 | **VerificationGate** | `verification-gate.yaml` | Questions, options, guidance | Outcome determination logic |
 | **DocumentationGuide** | `documentation-guide.yaml` | Principles, checklist items | Checklist state |
@@ -67,8 +69,8 @@
 ```
 config/
 ├── ai-guidance/              # General AI applet content
-│   ├── stakes-assessment.yaml
-│   ├── task-fit.yaml
+│   ├── stakes-assessment.yaml  # exists
+│   ├── task-fit.yaml           # planned (rest of this list too)
 │   ├── verification-gate.yaml
 │   ├── documentation-guide.yaml
 │   ├── tool-picker.yaml      # Tier 2
@@ -166,9 +168,7 @@ function calculateStakesLevel(output) {
 
 ## Build Script Addition
 
-Already implemented! `loadClinicalGuidance()` pattern extends to general applets.
-
-Add to `scripts/build-config.js`:
+Implemented — `loadAiGuidance()` sits alongside `loadClinicalGuidance()` in `scripts/build-config.js` and loads every `config/ai-guidance/*.yaml` into `config.aiGuidance`, keyed by filename:
 
 ```javascript
 function loadAiGuidance() {
@@ -285,7 +285,7 @@ For each applet being extracted:
 
 ## Tier 1 Priority Order
 
-1. **StakesAssessment** (Phase 1 entry point — most used)
+1. **StakesAssessment** (Phase 1 entry point — most used) — done
 2. **VerificationGate** (Phase 1 exit point — critical messaging)
 3. **TaskFit** (connects Stakes → Verification)
 4. **DocumentationGuide** (Phase 2 — highly customizable)
@@ -320,6 +320,8 @@ institutional:
       url: /local/ai-guidelines.pdf
 ```
 
+> **Not wired yet:** the shipped `stakes-assessment.yaml` has an `institutional:` block (`responsible_ai_contact`, `policy_url`, `escalation_guidance`), but `StakesAssessment.vue` doesn't render it. The clinical IRB Amendment applet is the only one that displays its `institutional` section today.
+
 **No Vue code touched.** Just edit YAML, rebuild config, done.
 
 ---
@@ -338,8 +340,8 @@ For each migrated applet:
 
 ## Next Steps
 
-Should I start with Tier 1 extractions? Order:
-1. StakesAssessment (most used)
+Remaining Tier 1 extractions, in order:
+1. ~~StakesAssessment (most used)~~ — done
 2. VerificationGate (critical messaging)
 3. TaskFit (connector)
 4. DocumentationGuide (customizable)

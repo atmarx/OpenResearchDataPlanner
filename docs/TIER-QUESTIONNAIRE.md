@@ -34,6 +34,8 @@ A decision-tree questionnaire that:
 
 ### Entry Point
 
+> **As built:** the wizard's Tier step (`src/components/wizard/TierSelectStep.vue`) lists all four tiers from `config/tiers.yaml` (Low, Medium, High, Restricted) and links "Not sure which tier? Try the guided questionnaire" to `/tier-check`. The mockup below is the original three-tier design sketch.
+
 When user reaches the tier selection step:
 
 ```
@@ -66,7 +68,9 @@ When user reaches the tier selection step:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Questionnaire Modal
+### Questionnaire Page
+
+> **As built:** not a modal — a full page at `/tier-check` (`src/views/TierQuestionnaire.vue`) with four tabs: **Guided Questions**, **All Tiers** (pick from a comparison table), **Examples** (by discipline), and **Data Status** (the identification helper). The intro screen offers "My data is not sensitive — use standard tier" (sets Low plus an `open_data` flag) and "I already know my data tier". A path-viewer sidebar (`QuestionnairePathViewer.vue`) lists your answers and lets you jump back to any of them; back-stepping uses `useQuestionnaireHistory.js`, and the current question is mirrored into the URL hash.
 
 When "Help me decide" is clicked:
 
@@ -93,7 +97,7 @@ When "Help me decide" is clicked:
 ## Question Flow
 
 The questionnaire is a **branching decision tree**, not a fixed-length list.
-Every question is single-select (radio buttons); the option you choose decides
+Every question is single-select (one button per option; clicking it answers and advances); the option you choose decides
 which question comes next (its `next:` pointer) and may raise the recommended
 tier and attach compliance flags. The walk starts at **Human Subjects** and
 ends at the summary (`complete`). Which questions you see — and how many —
@@ -157,7 +161,7 @@ What is the source of your biological samples or genetic data?
 What type of human-derived samples are you working with?
 
 ( ) Research participant samples (with consent/IRB)
-      → High tier · flags: human_genomic
+      → flags: human_genomic → Genomic Identifiability
 ( ) Biobank samples (commercial or repository)    → Biobank Consent
 ( ) Immortalized cell lines (HeLa, HEK293, etc.)  → Low tier
 ( ) Ancient DNA or archaeological samples         → Low tier
@@ -167,7 +171,22 @@ What type of human-derived samples are you working with?
    reclassify down than to contain a breach.
    [Check your data's identification status →] (opens the Data Identification helper)
 
-All paths except Biobank continue to **Government / Defense**.
+Cell lines and ancient DNA continue to **Government / Defense**.
+
+---
+
+### Genomic Identifiability  *(participant-samples branch)*
+
+```
+Has a qualified expert determined your genomic data to be de-identified?
+
+( ) Yes — a qualified expert formally determined it de-identified
+      → Medium tier · flags: needs_review
+( ) No — identifiable or linked to participants  → High tier
+( ) Not sure                                     → High tier · flags: needs_review
+```
+
+All paths continue to **Government / Defense**.
 
 ---
 
@@ -176,7 +195,7 @@ All paths except Biobank continue to **Government / Defense**.
 ```
 What consent and de-identification applies to your biobank samples?
 
-( ) Fully de-identified with broad consent      → Low tier
+( ) Fully de-identified with broad consent      → Low tier · flags: needs_review
 ( ) Coded samples (key held by biobank)         → Medium tier
 ( ) Identifiable or consent restrictions apply  → High tier · flags: human_genomic
 ( ) Not sure - need to check MTA/DUA            → High tier · flags: human_genomic, needs_review
@@ -236,7 +255,7 @@ Is the health data identifiable or de-identified?
 (de-identified = all 18 HIPAA identifiers removed AND no linking key exists)
 
 ( ) Fully de-identified (Safe Harbor, no linking key)
-      → Medium tier · clears flags: hipaa, phi
+      → Medium tier · clears flags: hipaa, phi · flags: needs_review
 ( ) Encoded (codes with a linking key somewhere)  → High tier
 ( ) Limited dataset (some identifiers remain)     → High tier
 ( ) Identifiable (names, SSNs, etc. in the data)  → High tier
@@ -270,6 +289,8 @@ What kind of education records — and how are they used?
 
 ( ) Directory information only (name, enrollment status, dates)
       → Low tier
+( ) De-identified — no direct or indirect identifiers, no linking key
+      → Low tier · flags: needs_review
 ( ) Routine coursework / instructional records (incl. classroom LLM use)
       → Medium tier · flags: ferpa_instructional
 ( ) Sensitive records — transcripts, disciplinary, financial aid, SSN, or health
@@ -381,6 +402,8 @@ Does your research involve proprietary or confidential data?
 ---
 
 ## Results Screen
+
+> **As built:** the summary card shows the recommended tier's name and `description` from `tiers.yaml`, the accumulated flags, and the call-to-action from `summary.cta` in `tier-questionnaire.yaml` (Low/Medium: "Continue to Service Selection"; High adds "Schedule Consultation First"; Restricted: "Schedule Consultation" / "Continue Planning (Preliminary)"), followed by a validate-with-your-compliance-office disclaimer. The primary action records the tier and flags (`sessionStore.setClassification`) and jumps the wizard to the Grant Period step. The richer mockups below — "What this means" lists, answer recap, next-steps — are design targets, not current output.
 
 ### Recommended: Low Tier
 
@@ -502,6 +525,8 @@ Does your research involve proprietary or confidential data?
 
 ## Override Flow
 
+> **Status: Planned — not implemented.** `tier-questionnaire.yaml` carries an `override:` block (`enabled`, `confirmation_required`, `confirmation_text`), but no code reads it. Today a user who disagrees simply picks a different tier on the wizard's Tier step or the All Tiers tab; no confirmation or acknowledgment is captured.
+
 If user selects a lower tier than recommended:
 
 ```
@@ -541,7 +566,7 @@ If user selects a lower tier than recommended:
 
 ## Discipline-Specific Examples
 
-Show relevant examples based on earlier discipline selection:
+> **As built:** the **Examples** tab lets the user pick a discipline (there is no earlier discipline selection to key off). Content comes from `examples_by_discipline` in `tier-questionnaire.yaml` — six disciplines (biomedical, genomics, engineering, social_science, humanities, physical_science), each listing examples per tier. The tables below are the original design sketch.
 
 ### Life Sciences / Biomedical
 
@@ -569,7 +594,7 @@ Show relevant examples based on earlier discipline selection:
 |-----------|--------------|-----|
 | Simulation outputs | Low | Computational data |
 | Sensor/instrument data | Low/Medium | Depends on source |
-| NSF-funded research | Medium | Standard federal |
+| NSF-funded research | Low/Medium | Standard federal funding alone doesn't raise the tier |
 | DoD contract data | Restricted | Likely CUI/ITAR |
 | Dual-use technology | Restricted | Export controlled |
 
@@ -664,13 +689,15 @@ set and returns `flags: string[]`. Tier escalation is driven by `sets_tier` on
 the option (upgrade-only), not by any flag. Real tokens include: `hipaa`,
 `phi`, `ferpa`, `ferpa_instructional`, `ferpa_research`, `cui`, `cui_possible`,
 `nist_800_171`, `itar`, `ear`, `human_genomic`, `location_sensitive`,
-`proprietary`, `select_agent`, `biosecurity`, `needs_review`.
+`proprietary`, `select_agent`, `biosecurity`, `fre`, `needs_review`. The intro's quick-select path adds `open_data`. Human-readable labels live in `src/lib/classificationFlags.js`.
 
 ---
 
 ## Integration Points
 
 ### With Wizard State
+
+> **As built:** the questionnaire stores only `{ tier, classification_flags }` on the session via `sessionStore.setClassification(tier, flags)`. The interface below is the target shape — `recommendedTier`/`selectedTier`/`overridden`/`overrideReason`/`answers`/`requirements` are not stored today.
 
 ```typescript
 // The pure classifier (src/lib/classifyTier.js) returns
@@ -695,6 +722,8 @@ interface TierQuestionnaireResult {
 
 ### With Service Filtering
 
+> **As built:** availability comes from `config/mappings.yaml` — a service is offered for a tier only if a `service`+`tier` row exists (`configStore.servicesForTier`). There are no `supports_*_tier` fields; the snippet below is illustrative.
+
 The selected tier filters available services:
 
 ```typescript
@@ -711,6 +740,8 @@ const availableServices = services.filter(s => {
 
 ### With Cost Estimates
 
+> **As built:** there is no tier multiplier. Higher-tier cost comes from the services themselves (each has its own pricing in `services.yaml`), so the snippet below is a design idea, not code.
+
 High tier services typically cost more:
 
 ```typescript
@@ -726,11 +757,11 @@ const tierMultiplier = {
 
 ## Accessibility
 
-- All questions work with keyboard navigation
-- Radio buttons have clear focus states
+- All questions work with keyboard navigation (options are native `<button>`s)
+- Option buttons have clear focus states
 - Help text is accessible to screen readers
-- Progress indicator announces current step
-- Override warnings are announced
+- Progress indicator announces current step — *not yet: the "Question N" counter has no live region*
+- Override warnings are announced — *n/a until the Override Flow is built*
 
 ---
 

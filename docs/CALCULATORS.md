@@ -2,6 +2,23 @@
 
 Detailed UI specifications for each "Help Me Estimate" calculator. Use these for UX testing with faculty before implementation.
 
+> **Status: design spec — the shipped calculators are simpler.** 14 calculators are built (`src/components/estimate/*Calculator.vue` on a shared `BaseCalculator.vue`, math in `src/composables/useCalculator.js`), browsable at `/calculators` with results added to the slate via **Add to Slate**. Every built calculator is a preset/dropdown × count multiplication followed by the single global `safety_multiplier` (1.5× by default); none implement the per-spec extras below — growth over the grant period, compression ratios, 20% buffers, "include processing intermediates" toggles, custom resolutions, or time-series inputs. Storage results are binary TB (1024⁴ bytes).
+>
+> | Spec section below | Built as (`enabled_calculators` id) |
+> |--------------------|-------------------------------------|
+> | Microscopy | `microscopy` — resolution (2K/4K/8K), bit depth, channels, Z-slices, image count |
+> | Genomics Storage | `genomics` — data type × sample count |
+> | Video/Audio | `video` — video preset × hours (no audio presets) |
+> | Simulation Output | *not built as a storage calculator* |
+> | General Files | `documents` — document type × file count |
+> | HPC Batch Jobs | `batch-processing` — template × file count (SU per file) |
+> | Genomics Pipelines | `genomics-pipelines` — pipeline × samples |
+> | Simulations | `simulations` (CPU SU) and `gpu-simulation` (GPU-hours) |
+> | ML Training | `ml-training` — model size × training runs |
+> | ML Inference | `ml-inference` — workload × item count |
+>
+> Built with no spec here: `photography` and `medical-imaging` (storage), `statistics` (CPU), and `llm-api-costs` (API dollars, its own `api` category).
+
 ---
 
 ## Calculator Index
@@ -863,7 +880,7 @@ global:
 
 ## Accessibility
 
-All calculators must meet these requirements:
+All calculators must meet these requirements (target — the shipped `BaseCalculator.vue` has visible field labels (not all tied to their inputs with `for`/`id`) and global focus-visible styles, but no live region for results and no focus move after calculating):
 
 | Requirement | Implementation |
 |-------------|----------------|

@@ -37,6 +37,10 @@ cloud_equivalent:
     - { name: Azure, per_unit: 0.025, basis: "Blob Cool tier + BAA" }
   as_of: "2026-06"
 ```
+- `unit` must match the service's existing `cost_model.unit`. No service uses
+  `GB-month` today — storage services price per `TB` (others: `SU`, `month`,
+  `namespace-month`, `TB transferred`, `USD`) — so the example's per-GB figures
+  would be entered per TB (×1024) for a real storage service.
 - Value scales with the researcher's **full** quantity (NOT the billable
   remainder — no institutional free tier exists in the cloud, so the whole usage
   counts).

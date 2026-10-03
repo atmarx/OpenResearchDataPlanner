@@ -4,6 +4,8 @@
 
 **Primary Entry Point:** Tier Questionnaire (when user hesitates on identification questions)
 
+> **Status: partially built** as `src/components/explore/DataIdentificationFlow.vue` — reachable from the **Data Status** tab on `/tier-check` and as a modal from three questionnaire learn-more links. It's a simpler flow than the spec below (no re-identification-risk step, no export, no handoff back to the questionnaire). See [Implementation Status](#implementation-status).
+
 ---
 
 ## Integration Context
@@ -692,6 +694,8 @@ If the user has already completed the Data ID calculator:
 
 ## Configuration
 
+> **Proposed — not in `config/calculators.yaml`.** The built flow hardcodes its questions, results, and key-location warnings in the component.
+
 ```yaml
 # config/calculators.yaml
 
@@ -764,6 +768,8 @@ data_identification:
 
 ## Export Summary
 
+> **Planned — not built.**
+
 When user completes the calculator, they can export a summary:
 
 ```markdown
@@ -814,20 +820,23 @@ can be re-identified and must be protected accordingly.
   - identified data, encoded data, de-identified data
   - linking key (crosswalk), quasi-identifier
   - HIPAA Safe Harbor, Expert Determination
-  - Added `see_also` links to calculator from PHI, PII entries
+  - Added `see_also` links to calculator from PHI, PII entries (the Glossary doesn't render these as working links yet — they have an `action`, not a `url`)
 
 - **Tier Questionnaire Integration** — Updated `config/tier-questionnaire.yaml`:
   - `identifiable` question: Added "Encoded" option, linked learn_more to calculator
   - `biobank_consent` question: Added learn_more explaining coded vs de-identified
   - `human_samples_detail` question: Added calculator link in learn_more
 
+- **UI component** — built as `src/components/explore/DataIdentificationFlow.vue` (not `DataIdentificationCalculator.vue`). Steps: start → direct identifiers (checklist) → uses codes? → key exists (yes / never / destroyed) → key location → result. Results are `identified`, `encoded`, or `deidentified`, with a key-location risk warning.
+- **Questionnaire invocation** — the **Data Status** tab on `/tier-check`, plus a modal opened by the `open_calculator` learn-more links on `human_samples_detail`, `biobank_consent`, and `identifiable`.
+
 ### Pending
 
-- [ ] UI component: `DataIdentificationCalculator.vue`
-- [ ] Integration with CalculatorBrowser
-- [ ] Modal/panel wrapper for tier questionnaire invocation
+- [ ] Integration with CalculatorBrowser (`/calculators` doesn't list it)
+- [ ] Re-identification risk step (Step 3c) and `reidentification_risk` result
 - [ ] Export summary functionality
-- [ ] Result handoff to tier questionnaire
+- [ ] Result handoff to tier questionnaire (the modal's `complete` result is discarded — it just closes)
+- [ ] `data_identification` block in `config/calculators.yaml`
 
 ---
 
