@@ -3,6 +3,13 @@
 **Date:** 2026-02-04  
 **Status:** Decisions finalized, ready to scaffold
 
+> **Status (Oct 2026):** Historical — the scaffold happened. Decisions 1–5 held.
+> Divergences: the merged config is written to `public/config.json` (not
+> `dist/config.json`) and `npm run dev` also runs `build:config` first; there is
+> no `sample-config/` directory (the shipped `config/` *is* the Northwinds
+> example); Tailwind v4 needs no `tailwind.config.js` / `postcss.config.js`.
+> Current reference: [ARCHITECTURE.md](../docs/ARCHITECTURE.md).
+
 ## Resolved Open Questions
 
 | # | Question | Resolution |

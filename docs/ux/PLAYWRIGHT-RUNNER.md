@@ -1,6 +1,11 @@
 # Persona-session runner — the code half
 
 This is the runner that drives [PLAYWRIGHT-PERSONA-SESSIONS.md](./PLAYWRIGHT-PERSONA-SESSIONS.md).
+
+> **Status (Oct 2026):** Implemented. Every file under "How it's wired" exists,
+> `@playwright/test` is a devDependency, and `npm run persona-session` /
+> `persona-session:list` are in `package.json`. The `/persona-session` skill
+> mentioned below has not been written — run the loop by hand.
 Piper's spec defines the *what* (briefs, personas, verdict schema, the
 `/persona-session` skill). This is the *how*: the tooling that loads a brief,
 opens the live app, records the run, and files the artifacts.
@@ -32,13 +37,15 @@ This scaffolds `docs/ux/reviews/playwright/s01-frindt-fda-dmp/`, writes the
 stalls), seeds `narration.md` / `verdict.md`, and prints the exact
 `@playwright/mcp` command that records video + trace into the folder. Load the
 packet as context, run the browser, pursue the goal in character, and narrate
-into `narration.md`. The `/persona-session` skill automates this loop.
+into `narration.md`. (A `/persona-session` skill to automate this loop is
+planned but doesn't exist yet.)
 
 ### Scripted — regression ("does Frindt's happy path still work?")
 
 A deterministic flow that proves the recording harness works and guards the core
 affordances each brief leans on (the questionnaire starts, the node reflects to
-`#q-<id>`, the "I don't understand this!" button is present, calculators load).
+`#q-<id>`, the question-help button — now labelled "Ask about this" — is
+present, calculators load).
 Not a think-aloud run — a guard.
 
 ```bash
@@ -57,7 +64,8 @@ node scripts/persona-session.mjs s01-... --mode scripted --headed         # watc
 ```
 
 Targets: `staging` / `dev` both resolve to the Northwinds dev site
-(`openresearchdataplanner.dev.xram.net`); `local` is `http://localhost:5173`.
+(`openresearchdataplanner.dev.xram.net`); `local` is meant to hit the Vite dev
+server from `npm run dev`.
 
 ## What lands in the review folder
 

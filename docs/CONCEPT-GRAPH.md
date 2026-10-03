@@ -2,6 +2,13 @@
 
 A framework for codifying institutional knowledge about research computing governance — making implicit policies explicit, navigable, and shareable.
 
+> **Status (Oct 2026):** Not started in the app — planned for V1.3. The schema
+> and starter content exist only as a draft in
+> `planning/concept_graph_schema_v0_2_release/` (`concept-schema-v0.2.yaml`, the
+> nine concept YAMLs below, and `generate_markdown.py`). Nothing is in `config/`,
+> `scripts/build-config.js` doesn't load concepts, and no UI or export field uses
+> them.
+
 ---
 
 ## Why This Exists
@@ -104,7 +111,7 @@ notes:
 
 ## Starter Concepts
 
-These concepts ship as starting points. Fork and customize for your institution:
+These concepts are drafted as starting points (currently in `planning/`, not yet shipped in `config/`). Fork and customize for your institution:
 
 | Concept | Summary | Anti-Pattern Prevented |
 |---------|---------|------------------------|
@@ -397,6 +404,10 @@ And researchers can:
 
 ## File Structure
 
+Planned layout. Today these files live under
+`planning/concept_graph_schema_v0_2_release/` (schema as
+`concept-schema-v0.2.yaml`), and `concept-mappings.yaml` doesn't exist yet.
+
 ```
 config/
   concepts/                        # Concept YAML files
@@ -421,6 +432,6 @@ scripts/
 
 ## Related Documentation
 
-- [CUSTOMIZE.md](CUSTOMIZE.md) — Configuration reference
+- [CUSTOMIZE.md](ADMIN-GUIDE/CUSTOMIZE.md) — Configuration reference
 - [ARCHITECTURE.md](ARCHITECTURE.md) — Technical overview
 - [V2-PLANNING.md](V2-PLANNING.md) — Roadmap including concept graph integration

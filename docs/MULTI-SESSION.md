@@ -1,5 +1,13 @@
 # Multi-Session / Drafts Feature
 
+> **Status (Oct 2026):** Not started — planned for V1.1. There is no
+> `draftsStore`, no `odp-drafts` key, and no import UI. Today the app keeps one
+> session in localStorage (`odp-session`, raw object) and the slate in
+> sessionStorage. `sessionStore` already has `exportSession()` (used by the
+> Results step's session download, `export_version: '1.0'`) and `importSession()`
+> (no caller yet) — the natural seams for this work. Folder sync (V1.2), the
+> backend (V2), and OpenChargeback (V3) sections below are further out.
+
 ## Problem
 
 Researchers often need to:
@@ -21,11 +29,16 @@ Store named **drafts** in an array, with exactly one being **active** at any tim
 ### Current (Single Session)
 
 ```typescript
-// localStorage key: 'odp-session'
+// localStorage key: 'odp-session' (snake_case, see createEmptySession() in sessionStore.js)
 {
-  tier: 'L2',
-  grantPeriod: { ... },
-  selectedServices: [ ... ],
+  id: '…uuid…',
+  current_step: 'service-select',
+  tier: 'medium',
+  classification_flags: [ ... ],
+  grant_period: { ... },
+  retention: { ... },
+  selected_services: [ ... ],
+  selected_software: [ ... ],
   // etc.
 }
 ```

@@ -2,6 +2,18 @@
 
 This document describes the help system for users who need assistance at any point in the planning process.
 
+> **Status (Oct 2026):** Partially implemented. **Shipped:** the persistent
+> floating "Get Help" button (`App.vue`) and `GetHelpModal.vue`, driven by
+> `config/help.yaml` — contact options, a step-keyed contextual message, office
+> hours, an urgent-contact block, and an FAQ. Because the repo ships the
+> fictional Northwinds config, the contact buttons are deliberate placeholders:
+> clicking one shows a notice describing what a real deployment would do, not a
+> `mailto:` or link. **Not built:** the video help system (`help-videos.yaml`
+> holds 41 scripted video definitions, none produced, nothing renders them), the
+> Email Us / Schedule flows, mid-wizard export and shareable links, the
+> auto-prompt, step analytics, and the admin view (the closest thing is the
+> [IT Workbench](./IT-WORKBENCH.md), which imports exported plan JSON).
+
 ---
 
 ## The Problem
@@ -46,6 +58,13 @@ The key insight: **Most "I need to talk to someone" requests are actually "I nee
 ---
 
 ## Video Help System
+
+> **Not built.** `config/help-videos.yaml` compiles into `config.help_videos`,
+> but no component reads it. Its real shape also differs from the sketch below:
+> top-level category lists (`concepts`, `calculators`, `wizard_steps`, `software`,
+> `disciplines`, `process`, `troubleshooting`) of entries with `duration: "1:30"`,
+> `triggers` (page / component / term), and `script_notes`, plus `settings` and
+> `production` blocks — no per-video `url` yet.
 
 ### Video Configuration
 
@@ -208,6 +227,10 @@ When a video is selected:
 ---
 
 ## Mid-Wizard Export
+
+> **Not built.** `help.yaml` has an `export_state` block, but nothing reads it.
+> What exists today: the slate's "Export for Grant" (`ExportModal.vue`, JSON or
+> Markdown, available any time) and the Results step's session JSON download.
 
 ### Export State Structure
 
@@ -459,6 +482,15 @@ Integration with Calendly, Microsoft Bookings, or similar:
 
 ### help.yaml - Contact Options (Fallback)
 
+> **As built** the file has a different shape: top-level `global`,
+> `contact_options`, `contextual_help`, `export_state`, `faq`, `office_hours`,
+> and `urgent`. `GetHelpModal.vue` reads `contact_options`, `contextual_help`
+> (keyed by wizard step id), `faq`, `office_hours`, and `urgent`; `App.vue`
+> reads `global.show_help_cta` + `global.floating_button.enabled`. The rest of
+> `global` (CTA text/link/position, `emphasized_pages`, `show_after_seconds`,
+> `pulse_animation`) and `export_state` aren't wired up. The sketch below is the
+> original design.
+
 ```yaml
 # config/help.yaml
 
@@ -516,6 +548,10 @@ videos:
 ---
 
 ## Admin View for Research IT
+
+> **Not built** as a help-request inbox. The [IT Workbench](./IT-WORKBENCH.md)
+> covers the "see their state" half: staff import a researcher's exported plan
+> JSON and review it.
 
 When Research IT receives a help request, they should have a way to view the user's state:
 

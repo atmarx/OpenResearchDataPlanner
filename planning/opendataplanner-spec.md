@@ -4,6 +4,18 @@
 **Date:** 2026-02-04  
 **Status:** Draft for review
 
+> **Status (Oct 2026):** Historical. This is the pre-scaffold spec; V1.0 has
+> been built from it and grown well past it. See
+> [ARCHITECTURE.md](../docs/ARCHITECTURE.md) and
+> [ADMIN-GUIDE/CUSTOMIZE.md](../docs/ADMIN-GUIDE/CUSTOMIZE.md) for the current
+> system. Notable divergences: cost math lives in `src/lib/pricing.js` (no
+> `useCostCalculator.js`); the wizard has 8 steps, with a Consultation step that
+> replaces the flow for Restricted (`useWizard.js`); there are 16 top-level config
+> files, not 7; Tailwind v4 is CSS-first (no `tailwind.config.js`). Beyond this
+> spec's scope, V1 added an IT Workbench (with a client-side pdfmake approval
+> receipt — the only PDF output), explore pages, calculators, AI guidance, and a
+> small feedback service. Tier "comparison mode" and analytics remain unbuilt.
+
 ## Overview
 
 OpenResearchDataPlanner is a self-service web application that helps researchers plan data infrastructure for grant proposals. It guides users through selecting appropriate services based on their data security tier, generates cost estimates (including long-term retention), and produces Data Management Plan (DMP) fragments.

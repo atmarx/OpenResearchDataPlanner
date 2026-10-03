@@ -103,7 +103,9 @@ docs/ux/personas/
 4. Document friction points and delighters
 
 ### Automated Testing
-The YAML files can be loaded programmatically:
+The Playwright persona-session harness (`tests/persona-sessions/harness.mjs`,
+see [PLAYWRIGHT-RUNNER.md](../PLAYWRIGHT-RUNNER.md)) already loads personas by
+folder name for session briefs. The YAML files can also be loaded directly:
 ```javascript
 import yaml from 'js-yaml';
 import fs from 'fs';
@@ -121,11 +123,13 @@ const persona = yaml.load(fs.readFileSync('01-vex-torben/persona.yaml'));
 
 ## Tier Distribution
 
+Counts are projects (`tier:` values across all `persona.yaml` files, Oct 2026).
+
 | Tier | Count | Example Projects |
 |------|-------|-----------------|
-| L1 Low | 32 | Open science, teaching, public data |
-| L2 Medium | 25 | Pre-publication, IP-sensitive, industry NDA |
-| L3 High | 5 | HIPAA, FERPA, export-controlled |
+| L1 Low | 34 | Open science, teaching, public data |
+| L2 Medium | 30 | Pre-publication, IP-sensitive, industry NDA |
+| L3 High | 10 | HIPAA, FERPA, export-controlled |
 | L4 Restricted | 1 | Dr. Vosker's DOD project (consultation required) |
 
 ## Shadow IT Workarounds

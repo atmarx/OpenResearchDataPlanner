@@ -2,6 +2,12 @@
 
 > Settings and keyboard shortcuts for power users like Marco and Piper.
 
+> **Status (Oct 2026):** Not started. No gear icon, settings state, keyboard
+> handler, or note templates exist yet. The status vocabulary below does match
+> what shipped in `PlanReview.vue` (item: pending / approved / needs_info /
+> flagged; plan: pending_review / needs_revision / approved), and the header
+> it targets is in `src/views/WorkbenchPage.vue`.
+
 ---
 
 ## Location

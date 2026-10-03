@@ -1,5 +1,16 @@
 # Support Workbench Specification
 
+> **Status (Oct 2026):** Partially implemented. Shipping at `/workbench`: the
+> name + password gate, a dashboard with drag-and-drop (multi-file) JSON import,
+> a plan switcher, per-item IT status + IT notes, plan-level status, reviewed-JSON
+> export (bumps `slate_version`, appends `slate_history`), an approval-receipt PDF
+> once a plan is marked approved, and a site-feedback stats panel. Researchers can
+> already attach per-item notes in the slate footer. **Not built:** re-importing
+> the reviewed JSON into the planner (so IT notes never reach the researcher
+> in-app), the version timeline, the unsaved-changes guard, post-PDF edit lock,
+> IndexedDB storage, and any `meta.yaml` workbench config. Phase-by-phase detail
+> under [Implementation Plan](#implementation-plan).
+
 ## Overview
 
 The Support Workbench is a review interface for Research IT staff to process submitted service requests. It lives within the same app at `/workbench` with simple password protection.
@@ -19,17 +30,20 @@ The Support Workbench is a review interface for Research IT staff to process sub
 
 Simple client-side gate. The password is a **build-time** environment
 variable, `VITE_WORKBENCH_PASSWORD`, read by `src/stores/workbenchStore.js`.
-When it isn't set, the store falls back to `support2024` — and it is currently
-unset in the repo, so `support2024` is the effective password until you
-override it.
+When it isn't set, the store falls back to a hardcoded default in the source —
+so set it for every build you deploy.
 
 ```bash
-# .env — consumed by the docker-compose build
+# .env in the repo root — read by Vite during `npm run build`
 VITE_WORKBENCH_PASSWORD=northwinds-it-2024
 ```
 
 Because this is a Vite variable, the value is baked into the static bundle at
 build time. Change it and rebuild the image; there is no runtime config to edit.
+Note the plumbing: `docker-compose.yml` passes no build args. A local `.env`
+only reaches the image because the Dockerfile's `COPY . .` picks it up, and
+`.env` is gitignored — so the Woodpecker CI build (clean checkout) currently
+gets **no** value and ships the fallback.
 
 There is no session-expiry or re-auth logic. On a successful login the store
 writes only `{ isAuthenticated, staffName }` to `sessionStorage` (no
@@ -122,6 +136,13 @@ itStatus:
   denied: "Cannot provision (see notes for alternatives)"
 ```
 
+**As built** the vocabulary differs. Per-item `itStatus` (set in
+`PlanReview.vue`) is `pending` / `approved` / `needs_info` / `flagged` — no
+`approved-modified` or `denied`. Separately, each imported plan carries a
+plan-level `status`: `pending_review` / `needs_revision` / `approved`, exported
+as `review_status`. (The dashboard also has a badge for `in_review`, but nothing
+sets it.)
+
 ---
 
 ## Workbench UI
@@ -147,11 +168,13 @@ itStatus:
 └────────────────────────────────────────────────────────────┘
 ```
 
-Store auth state in sessionStorage:
+As built (`WorkbenchLogin.vue`), the gate asks for the staff member's **name**
+and the password; the name is stamped on reviews and exports. Auth state goes
+to sessionStorage under `odp-workbench-session`:
 ```javascript
 {
-  workbenchAuth: true,
-  workbenchAuthAt: "2024-01-15T09:00:00Z"
+  isAuthenticated: true,
+  staffName: "J. Martinez"
 }
 ```
 
@@ -272,6 +295,8 @@ Add notes capability to the slate item cards:
 ```
 
 ### After IT Review (re-imported JSON)
+
+> **Not built.** The planner has no JSON import, so this view doesn't exist yet.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -399,6 +424,19 @@ This is the researcher-side export emitted by `exportJSON()` in
 
 ## Implementation Plan
 
+> **Where this stands (Oct 2026):** Phase 1 partly done — researcher notes
+> (`SlateFooter.vue`) and project name ship in the export; JSON import on the
+> planner side doesn't exist. Phase 2 done differently — `WorkbenchLogin.vue` +
+> `workbenchStore`, no route guard, no `meta.yaml` config. Phase 3 done, with
+> localStorage (`odp-workbench`) instead of IndexedDB and only a
+> `schema_version`/`export_version` presence check as validation. Phase 4 done
+> except save-progress (edits persist immediately) and the version timeline.
+> Phase 5: workbench-side versioning and export done; steps 3–6 (planner
+> re-import, showing IT notes, researcher response, history UI) not started.
+> Phase 6: the PDF receipt ships (`usePdfExport.downloadApprovalPdf`, offered
+> when plan status is `approved`); `approvalPdfGeneratedAt` tracking and the
+> edit lock don't.
+
 ### Phase 1: Notes in Slate (Researcher Side)
 1. Extend SlateItem schema with notes fields
 2. Add notes textarea to SlateExpandedView item cards
@@ -450,6 +488,12 @@ This is the researcher-side export emitted by `exportJSON()` in
 ## File Summary
 
 ### New Files
+
+As built: `src/stores/workbenchStore.js`, `src/views/WorkbenchPage.vue`, and
+`src/components/workbench/` — `WorkbenchLogin.vue`, `WorkbenchDashboard.vue`
+(import, switcher, plan list), `PlanReview.vue` (review + export), and
+`WorkbenchFeedback.vue`. The rest of the list below was not created.
+
 ```
 src/stores/workbenchStore.js              # Auth state, imported requests, active plan
 src/composables/useSlateVersioning.js     # Version history management
@@ -555,6 +599,11 @@ This avoids duplicating the ticketing system's ID scheme.
 
 ## Plan Switcher UI
 
+> **Partly built.** The switcher is a dropdown at the top of the dashboard's
+> left sidebar (with a status badge per plan), not in the header. There's no
+> unsaved-changes prompt — status changes save immediately, and IT notes save
+> on their own Save button.
+
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │  ← Dashboard    │ Active: Dr. Chen - Genomics Study ▼ │    [ Log Out ] │
@@ -578,6 +627,8 @@ This avoids duplicating the ticketing system's ID scheme.
 ---
 
 ## Version Timeline UI
+
+> **Not built.** `slate_history` is written on export but nothing renders it.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐

@@ -8,6 +8,15 @@
 > and what grant they want to write, let them loose, and record the whole thing
 > including their narration of what they're thinking."
 
+> **Status (Oct 2026):** Track A is built and has run. The runner exists
+> ([PLAYWRIGHT-RUNNER.md](./PLAYWRIGHT-RUNNER.md): `scripts/persona-session.mjs`,
+> `tests/persona-sessions/`, `playwright.config.js`, `npm run persona-session`),
+> and s01–s03 were run in June–July 2026 with `narration.md` + `verdict.md` filed under
+> `docs/ux/reviews/playwright/`. Not built: the `/persona-session` skill (only
+> `/persona-review` and `/persona-review-all` exist in `.claude/skills/`), any CI
+> run (Woodpecker only builds images), and track B. The open question at the
+> bottom was answered: A first.
+
 ## Why this exists
 
 We already do persona reviews. The `/persona-review` skill loads a faculty
@@ -35,7 +44,7 @@ the real app via Playwright and narrates think-aloud while a recording rolls.
 | | AI-persona session | Real-faculty session |
 |---|---|---|
 | Who narrates | The agent embodying the persona | A live human faculty member |
-| Cost | Cheap, repeatable, runs in CI | Expensive — uses real goodwill |
+| Cost | Cheap, repeatable, CI-able (not wired into CI yet) | Expensive — uses real goodwill |
 | Catches | Layout/affordance/flow bugs, dead ends, terminology | All of that **plus** ground-truth confusion we can't predict |
 | Recording | Playwright `recordVideo` + trace + narration transcript | Screen recording + mic think-aloud + Playwright trace |
 | When | **Pre-flight** — before any human sees it | **Validation** — after pre-flight is clean |
@@ -97,7 +106,8 @@ Each session emits, into `docs/ux/reviews/playwright/{session_id}/`:
   the dev server for branch testing.
 - **The stall map:** because the questionnaire now reflects to `#q-<id>` and the
   wizard step is addressable, `verdict.md` can cite the exact node a persona got
-  stuck on. The "I don't understand this!" support-string feature and this
+  stuck on. The question-help support-string feature (shipped as "Ask about
+  this") and this
   testing harness are the same idea pointed in two directions — one for
   confused humans, one for confused personas.
 

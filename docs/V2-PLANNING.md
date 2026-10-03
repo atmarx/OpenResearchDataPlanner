@@ -2,14 +2,21 @@
 
 This document captures ideas that require significant architectural changes beyond the current SPA model. These are "someday" features that should inform V1 decisions but won't be implemented until a major version bump.
 
+> **Status (Oct 2026):** Not started — V1.0 is still polishing. No plan
+> storage backend, shareable links, SSO, helpdesk integration, or collaboration
+> exists. The only server-side piece today is the optional feedback service
+> (`services/feedback-api/`). "Multiple Saved Plans" is now scoped as V1.1
+> client-side drafts ([MULTI-SESSION.md](./MULTI-SESSION.md)), and the concept
+> graph as V1.3 ([CONCEPT-GRAPH.md](./CONCEPT-GRAPH.md)); neither has started.
+
 ---
 
 ## V1 vs V2 Boundary
 
 **V1 (Current SPA):**
-- Client-side only
+- Client-side only (the optional feedback API is the one server component)
 - LocalStorage for temporary persistence
-- JSON export/import for sharing
+- JSON export for sharing (the IT Workbench imports it; the planner itself has no import UI yet)
 - Manual email integration
 - Single session at a time
 
@@ -591,7 +598,7 @@ interface ExportedPlan {
 | V1.1 | Multi-session | `draftsStore` abstraction, named drafts |
 | V1.2 | Folder sync | Sync to any folder, conflict detection |
 | V1.3 | Concept graph | Governance principles, researcher acknowledgment |
-| V1.4 | Explore first | Pre-wizard calculators, service matrix, shopping cart |
+| V1.4 | Explore first | Pre-wizard calculators, service matrix, shopping cart — *shipped early, in V1.0 (slate submit still unwired)* |
 | V2.0 | Backend API | Plan storage, SSO, shareable links |
 | V2.1 | Request Gateway | Adapter layer for Jira/ServiceNow/TeamDynamix |
 | V3.0 | **OpenChargeback** | Estimate → actual tracking |
@@ -845,6 +852,7 @@ Before starting V2 development:
 
 ## References
 
-- [TALK-TO-HUMAN.md](./TALK-TO-HUMAN.md) - Current help flow (V1)
-- [POST-WIZARD-ONBOARDING.md](./POST-WIZARD-ONBOARDING.md) - Current next steps (V1)
-- [ELI5-IMPLEMENTATION.md](./ELI5-IMPLEMENTATION.md) - Current SPA architecture
+- [TALK-TO-HUMAN.md](./TALK-TO-HUMAN.md) - V1 help flow (partly built)
+- [POST-WIZARD-ONBOARDING.md](./POST-WIZARD-ONBOARDING.md) - V1 next-steps design (mostly not built)
+- [ELI5-IMPLEMENTATION.md](./ELI5-IMPLEMENTATION.md) - Calculator + terminology design
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - Current SPA architecture

@@ -1,7 +1,7 @@
 # Request Gateway API
 
-**Status:** Future (V2.0+)
-**Dependencies:** Shopping Cart (EXPLORE-FIRST.md Feature 5)
+**Status:** Future (V2.0+). Not started as of Oct 2026 — no gateway code, `gateway.yaml`, or adapters exist.
+**Dependencies:** Service slate (EXPLORE-FIRST.md Feature 5) — the slate and its JSON export ship, but its "Submit to Research IT" button isn't wired to anything yet, so there's no submit action for a gateway to receive.
 
 ## Overview
 
@@ -543,6 +543,10 @@ OpenChargeback receives the request JSON and can:
 This closes the loop from "planning" to "tracking."
 
 ## File Locations
+
+> Proposed layout. Note the repo's precedent: the one server-side component
+> today, the feedback API, lives in `services/feedback-api/` (own Dockerfile,
+> fronted by Caddy), not under `src/`.
 
 ```
 src/

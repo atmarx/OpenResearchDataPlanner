@@ -2,6 +2,17 @@
 
 This document describes the user journey after completing the infrastructure planning wizard, including the handoff to service provisioning and ongoing support.
 
+> **Status (Oct 2026):** Mostly not started. What exists is the wizard's
+> Results step (`ResultsStep.vue`), which covers part of Steps 1–2: a cost
+> summary tab with a Markdown budget download and a session JSON download, and a
+> DMP tab with copy + Markdown download. The slate's "Export for Grant"
+> (`ExportModal.vue`) adds a JSON/Markdown plan export. **Not built:** the
+> "What's Next" page and service-specific next steps, `.docx`/`.xlsx` exports,
+> emailing the plan to Research IT, the checklist email, progress tracking,
+> `config/onboarding.yaml`, and ServiceNow integration. The only "next steps"
+> text in the app is a fixed list on the IT-generated approval PDF
+> (`usePdfExport.js`).
+
 ---
 
 ## The Problem

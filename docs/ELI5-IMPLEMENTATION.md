@@ -2,6 +2,20 @@
 
 This document describes the technical implementation of the "Help Me Estimate" feature and the automatic acronym annotation system.
 
+> **Status (Oct 2026):** Mostly implemented, with a different shape than
+> sketched here. **Shipped:** acronym annotation (Part 1) as
+> `AnnotatedText` / `AnnotatedHtml` / `TermTooltip` reading `config.acronyms`
+> from `configStore` (no provider, plugin, or `v-annotate` directive); 14
+> calculators (Parts 2, 8) on `BaseCalculator.vue` + `useCalculator.js`, registered
+> in a map in `src/views/CalculatorBrowser.vue`; the global help button (Part 4)
+> as the floating "Get Help" button in `App.vue` → `GetHelpModal.vue`; the
+> software catalog (Part 5) at `/software`; archive direct input (Known Issues).
+> **Not built:** the Help Me Estimate *modal* (Part 3) — calculators live on the
+> `/calculators` page and add results to the slate instead of flowing back into
+> wizard fields; the compliance workflow explainer (Part 6) —
+> `config/tier-workflow.yaml` compiles to `config.tier_workflow` but nothing in
+> `src/` renders it; wizard entry points and domain detection (Part 7).
+
 ---
 
 ## Design Goals
@@ -366,6 +380,12 @@ annotation_config:
 ```
 
 ### Component Architecture
+
+> **As built:** `src/components/acronyms/AnnotatedText.vue` (plain text),
+> `AnnotatedHtml.vue` (rendered Markdown/HTML), and `TermTooltip.vue` (hover +
+> click). They read `configStore.config.acronyms` directly and honor
+> `annotation_config` (`max_per_term`, `tooltip_delay`, ...). The full-term view
+> is the `/glossary` page, not a modal. The tree below is the original sketch.
 
 ```
 src/
@@ -909,6 +929,9 @@ export async function loadEnabledCalculators(
 
 ## Part 3: Help Me Estimate Modal
 
+> **Not built as a modal.** The calculators run standalone on `/calculators`
+> (grouped by category in `CalculatorBrowser.vue`) and "Add to Slate".
+
 ### Modal Structure
 
 ```vue
@@ -1079,6 +1102,11 @@ global:
 
 ### Implementation
 
+> **As built:** a floating "Get Help" button in `App.vue` (shown when
+> `help.global.show_help_cta` and `floating_button.enabled` are true) opens
+> `GetHelpModal.vue`. There is no `HelpCTA` component, and `help_cta_text`,
+> `help_cta_link`, `help_cta_position`, and `emphasized_pages` aren't read.
+
 Add a global `HelpCTA` component that appears on every wizard page:
 
 ```vue
@@ -1119,6 +1147,10 @@ Full software catalog design in [SOFTWARE-CATALOG.md](./SOFTWARE-CATALOG.md).
 ---
 
 ## Part 6: Compliance Workflow Explainer
+
+> **Config only.** `config/tier-workflow.yaml` exists (with `show_if`/`skip_if`
+> step gating resolved by `src/lib/workflowSteps.js`, unit-tested), but no
+> component renders it — no modal, no `useComplianceWorkflow`.
 
 CXO feedback: "Vosker-Lin wanted to know 'What actually happens when I select L4?' The acronym system explains what ITAR is, but not the process."
 
@@ -1625,6 +1657,10 @@ const applyEstimate = () => emit('result', result.value)
 </template>
 ```
 
+> **Resolved.** The Estimate step now takes archive TB directly: the input is
+> pre-filled from `retention.archive_ratio` × active, editable per service, with a
+> "Reset to N%" link.
+
 **Implementation note:** This is a V1.1 enhancement. For V1, document that users can enter their total storage and we'll calculate archive separately, or use "Other" option to specify directly.
 
 ---
@@ -1687,4 +1723,4 @@ const applyEstimate = () => emit('result', result.value)
 
 - [ELI5.md](./ELI5.md) - Feature concept and content
 - [UNIT-CONVERSIONS.md](./UNIT-CONVERSIONS.md) - Conversion factors
-- [Foreign Concepts.md](./Foreign%20Concepts.md) - UX research findings
+- [FOREIGN-CONCEPTS.md](./FOREIGN-CONCEPTS.md) - UX research findings

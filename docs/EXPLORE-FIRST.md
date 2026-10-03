@@ -2,6 +2,19 @@
 
 Allow researchers to explore infrastructure options, estimate needs, and understand the landscape **before** committing to the planning wizard.
 
+> **Status (Oct 2026):** Mostly implemented. Features 1–4 ship as routes —
+> `/calculators` (`CalculatorBrowser.vue`, 14 calculators), `/services`
+> (`ServiceMatrix.vue`, with a quick-add modal), `/tier-check`
+> (`TierQuestionnaire.vue`), `/glossary` — linked from the wizard's Welcome step.
+> Feature 5 (slate) ships as `slateStore` + `SlateFooter.vue` (sticky, expandable,
+> per-item notes, "Export for Grant"), but **"Submit to Research IT" is not wired
+> up**, and funding sources, the "Request Now" path, and the approval warning are
+> not built. Feature 6 ships (`/software` + the Software wizard step). Feature 7
+> ships as `ExportModal.vue` (JSON + Markdown); the no-tier submit dialog and DMP
+> gate don't exist. Not built: the `meta.yaml` feature flags / welcome config
+> below (the explore cards are hardcoded in `WelcomeStep.vue`), the separate
+> exploration state, and analytics.
+
 > **Note:** Rates shown in this document's mock-ups are illustrative sketches from the design phase — `config/services.yaml` is the source of truth for current prices and free allocations.
 
 ---
@@ -577,6 +590,9 @@ All content from `acronyms.yaml` — same source as the inline tooltips.
 
 ## Configuration
 
+> **Not built.** None of the `features:` / `welcome:` keys below exist in
+> `config/meta.yaml`; the explore cards are hardcoded in `WelcomeStep.vue`.
+
 ### Feature Flags
 
 ```yaml
@@ -639,6 +655,12 @@ welcome:
 
 ## Components
 
+> **As built:** `CalculatorBrowser.vue`, `ServiceMatrix.vue`, `Glossary.vue`,
+> `TierQuestionnaire.vue`, and `SoftwareCatalog.vue` live in `src/views/`. The
+> explore section is inline in `WelcomeStep.vue` (no `ExploreSection`/`ExploreCard`),
+> the matrix uses an inline quick-add modal (no `ServiceDetailModal`), and terms
+> use `TermTooltip`/`AnnotatedText`/`AnnotatedHtml` rather than the `Acronym*` names.
+
 ### New Components
 
 | Component | Purpose |
@@ -663,6 +685,12 @@ welcome:
 ---
 
 ## State Management
+
+> **Not built as designed.** There's no `exploration` state. The standalone
+> tier check writes its result straight into the session
+> (`sessionStore.setClassification`), marks Welcome and Tier complete, and drops
+> you into the wizard at Grant Period. Calculators and the service matrix add
+> straight to the slate.
 
 ### Pre-Wizard State
 
@@ -711,6 +739,9 @@ function startWizardFromExploration() {
 ---
 
 ## Analytics Events
+
+> **Not built.** No analytics are emitted. (The only usage signal is the
+> opt-in `PageFeedback` widget → `services/feedback-api`.)
 
 Track exploration to understand user behavior:
 
@@ -875,6 +906,9 @@ Not everyone is planning a grant. The tool serves multiple audiences:
 These users don't need DMP text or multi-year projections — they want to estimate, select, and request services now.
 
 ### Two Paths From Calculators
+
+> **Not built.** Calculators offer "Add to Slate" only; there's no
+> Plan-for-a-Grant / Request-Now chooser.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1159,6 +1193,8 @@ The slate lives in a sticky footer — always visible, never blocking content.
 
 ### Data Tier Handling
 
+> **Not built.** Adding an L3/L4-only service shows no approval warning.
+
 If user adds a service that requires L3/L4 approval:
 
 ```
@@ -1210,6 +1246,9 @@ Each calculator:
 - Can be accessed standalone (Explore First) or in wizard flow
 
 ### Configuration
+
+> **Not built.** No `service_slate` config exists; `slateStore` has a
+> `fundingSource` field and `setSubmissionDetails()`, but nothing calls it.
 
 ```yaml
 # config/meta.yaml
@@ -1415,6 +1454,10 @@ Different exports have different requirements:
 | **Full DMP draft** | **Yes** | Template language varies by tier |
 
 ### Submitting Without a Tier
+
+> **Not built.** "Submit to Research IT" exists in the expanded slate footer
+> but has no handler yet, so neither this dialog nor any submission happens.
+> "Export for Grant" (JSON / Markdown) is the working path today.
 
 If user clicks "Submit to IT" without selecting a tier:
 

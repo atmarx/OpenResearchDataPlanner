@@ -26,7 +26,8 @@ goodwill.
 
 ## Running a session
 
-Pending Marco's Playwright runner (the `@playwright/test` dependency + narration
-plumbing). Once it exists, each brief emits into
+The runner is built — see [`../PLAYWRIGHT-RUNNER.md`](../PLAYWRIGHT-RUNNER.md)
+(`node scripts/persona-session.mjs <session_id>`). Each brief emits into
 `../reviews/playwright/{session_id}/`: `video.webm`, `trace.zip`, `narration.md`,
-`verdict.md`.
+`verdict.md` (only the last two are committed). All three briefs above were run
+in June–July 2026; their narration and verdicts are in `../reviews/playwright/`.
