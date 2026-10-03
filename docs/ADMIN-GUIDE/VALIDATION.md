@@ -24,6 +24,7 @@ The build script enforces **referential integrity** between config files — it 
 
 | Check | What it catches |
 |-------|-----------------|
+| File presence | Any of the 16 top-level config files missing from `config/` |
 | YAML syntax | Indentation, missing colons, tab/space mixing |
 | Service → category | Services that reference a category slug not in `categories.yaml` |
 | Service archive_option → service | Archive links that point at a nonexistent service |
@@ -42,11 +43,31 @@ One compliance check is advisory rather than build-blocking: a `baa_status` of `
 
 ## Common Errors
 
+Load errors (missing file, bad YAML) stop the build at the first bad file. Validation errors are collected and printed together under `Validation errors:`, one `  - ` line each, after all files load.
+
+### Missing Config File
+
+**Error:**
+```
+  Error loading legal.yaml: Config file not found: /path/to/repo/config/legal.yaml
+```
+
+**Cause:** The build loads a fixed list of files (`CONFIG_FILES` in `scripts/build-config.js`): `meta`, `categories`, `tiers`, `tier-questionnaire`, `tier-workflow`, `services`, `mappings`, `bundles`, `retention`, `software`, `acronyms`, `calculators`, `help`, `help-videos`, `legal`, `explainers`. Every one must exist, even if you don't use it.
+
+**Fix:** Restore the file from upstream (or the demo config) rather than deleting it. To effectively disable one, keep a minimal valid version (e.g. `bundles: []`).
+
+---
+
 ### YAML Syntax Errors
 
 **Error:**
 ```
-YAMLException: bad indentation of a mapping entry at line 15, column 3
+  Error loading services.yaml: bad indentation of a mapping entry (3:3)
+
+ 1 | services:
+ 2 |   - slug: my-service
+ 3 |   name: "My Service"
+-------^
 ```
 
 **Cause:** Incorrect indentation or missing colons.
@@ -141,7 +162,7 @@ mkdir -p config/dmp-templates/hpc-gpu
 touch config/dmp-templates/hpc-gpu/high-risk.md
 ```
 
-Or remove the line to use whatever the service falls back to:
+Or remove the line. There's no fallback template: that service simply gets no section in the generated DMP.
 
 ```yaml
 mappings:
@@ -198,6 +219,46 @@ Retention schedule "clinical-7yr" references unknown tier: "sensitive"
 
 ---
 
+### Unknown `baa_status`
+
+**Error:**
+```
+Mapping "aws-compute-high:high" has unknown baa_status "inplace" (expected one of: in_place, available, not_available, not_applicable)
+```
+
+**Cause:** A typo in `compliance.baa_status`. The Service Matrix only shows the BAA badge on an exact `in_place`, so a misspelling would silently hide a real agreement. The build catches it instead.
+
+**Fix:** Use one of the four listed values.
+
+---
+
+### HIPAA Without an In-Place BAA
+
+**Error:**
+```
+Mapping "aws-compute-high:high" lists framework "hipaa" but baa_status is "available" — PHI needs an in-place BAA (or "not_applicable" for on-prem services with no business associate)
+```
+
+(`baa_status is "unset"` means the field is missing.)
+
+**Cause:** The mapping claims HIPAA capability, but the BAA is only offered (`available`), unavailable, or unset. PHI processed by a third party requires a signed Business Associate Agreement.
+
+**Fix:** Either set `baa_status: in_place` (and name it in `baa_reference`), use `not_applicable` for on-prem infrastructure with no business associate, or remove `hipaa` from `frameworks`. If your institution covers PHI through a different instrument, widen the allowed set in `validateConfig()` in `scripts/build-config.js` on purpose. Don't just delete the check.
+
+---
+
+### Warning: In-Place BAA Without a Reference
+
+**Output** (build still succeeds):
+```
+Validation warnings (advisory — not blocking):
+  - Mapping "aws-compute-high:high" has baa_status "in_place" but no baa_reference — name the agreement so it can be audited
+```
+
+**Fix:** Add `baa_reference: "<agreement name>"` to the mapping's `compliance` block, or ignore it if you track agreements elsewhere.
+
+---
+
 ## What the Validator *Doesn't* Catch
 
 The build enforces referential integrity plus the compliance-block invariants noted above — beyond those, these issues slip past validation and surface later:
@@ -210,7 +271,7 @@ If you write `namee:` instead of `name:`, the build still passes — you'll just
 
 ### Invalid enum values
 
-Fields like `cost_model.type` (`free`, `unit`, `tiered`, `subscription`, `consultation`, `passthrough`) and `approval` on mappings (`automatic`, `review`, `consultation`) aren't enum-validated. An unknown value won't break the build; the wizard either renders a blank state or falls through to a default.
+Fields like `cost_model.type` (supported: `unit`, `tiered`, `consultation`) and `approval` on mappings (`automatic`, `review`, `consultation`) aren't enum-validated. An unknown value won't break the build. An unrecognized `cost_model.type` prices the service at $0, and an unrecognized `approval` is treated as `automatic` in the Service Matrix.
 
 **How to notice:** Cost display looks wrong, or approval flow doesn't match what you intended.
 
@@ -222,11 +283,18 @@ Two services with the same slug won't fail validation. The second entry silently
 
 ### Comparison feature mismatches
 
-The current schema for `comparison_features` on a service expects `full` / `partial` / `none` values. Other strings don't error — they just don't render a badge.
+The current schema for `comparison_features` on a service expects `full` / `partial` / `none` values (bare, or as `{ value, detail }`). Other strings don't error. They render the same empty marker as `none`.
 
 ### Circular bundle references
 
 Bundles should only reference services, never other bundles. The validator doesn't enforce this; nesting bundles won't break the build but also isn't supported.
+
+### Tier semantics and slugs
+
+- `consultation_required: true` on a tier ends the wizard at a consultation step: researchers on that tier never reach service selection, so any mappings for it are unreachable in the wizard.
+- The tier questionnaire ranks only `low`, `medium`, `high`, and `restricted`. A `sets_tier` naming any other slug is ignored.
+- A retention schedule with no `applies_to_tiers` passes validation but breaks the retention step.
+- `legal.yaml` `tier_notices` and `help.yaml` `contextual_help` are looked up by key (tier slug / wizard step id). Wrong keys just mean nothing shows.
 
 ### Ghost fields
 

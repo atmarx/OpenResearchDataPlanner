@@ -18,11 +18,14 @@ site:
 
 # Contact information (REQUIRED)
 contact:
-  general: "research-it@contoso.edu"        # Primary support email
+  primary:                                  # Shown in the footer as "Questions? [label]"
+    type: "email"                           # "email" or "url"
+    value: "research-it@contoso.edu"
+    label: "research-it@contoso.edu"
   security: "data-security@contoso.edu"     # Security/compliance inquiries
   consultation_url: "https://contoso.edu/research-it/consult"  # Booking link
 
 # Versioning (REQUIRED for upgrades)
 version: "1.0.0"                  # Your instance version
 schema_version: "1.0"             # OpenResearchDataPlanner schema version
-last_updated: "2024-01-15"        # Last config update date
+last_updated: "2026-04-17"        # Informational only — not read by the app

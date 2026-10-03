@@ -1,0 +1,21 @@
+# =============================================================================
+# MINIMAL CONFIG: mappings.yaml
+# =============================================================================
+# Tier availability for the three services in services.yaml.
+# A service/tier pair that isn't listed here is hidden for that tier — without
+# this file, no service would appear in the wizard at all.
+# =============================================================================
+
+mappings:
+  - service: hpc-compute
+    tier: standard
+    approval: automatic                     # automatic | review | consultation
+
+  - service: research-storage
+    tier: standard
+    approval: automatic
+
+  - service: secure-storage
+    tier: sensitive
+    approval: review
+    approval_contact: "data-security@contoso.edu"

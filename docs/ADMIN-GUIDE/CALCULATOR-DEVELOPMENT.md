@@ -118,7 +118,9 @@ function handleCalculate() {
 }
 
 function handleReset() {
-  resetInputs()
+  resetInputs()          // clears ALL inputs — re-seed your defaults after it
+  inputs.sample_count = 100
+  inputs.size_per_sample = 1.5
   justAdded.value = false
 }
 
@@ -203,14 +205,16 @@ calculator_config:
     icon: "beaker"            # Must exist in iconMap (step 2)
     description: "Estimate storage for custom samples"
 
-    # Optional: presets for quick selection
+    # Optional: presets for quick selection. applyPreset() copies every key
+    # except label/description straight into `inputs`, so preset keys must be
+    # the same names your component and calculation use.
     presets:
       - label: "Small (1 GB/sample)"
-        size_gb: 1
+        size_per_sample: 1
       - label: "Medium (5 GB/sample)"
-        size_gb: 5
+        size_per_sample: 5
       - label: "Large (20 GB/sample)"
-        size_gb: 20
+        size_per_sample: 20
 ```
 
 ### 4. Implement the Calculation
@@ -246,7 +250,7 @@ All calculators should define in `calculators.yaml`:
 calculator_config:
   my-calculator:
     name: "Display Name"           # Required
-    icon: "icon-name"              # From icon set
+    icon: "icon-name"              # Key in iconMap (CalculatorBrowser.vue); unknown → file-text icon
     description: "Brief help text" # Required
 
     # Optional: quick presets
@@ -276,29 +280,26 @@ calculator_config:
         description: "Per sample, raw + counts"
 ```
 
-Access in your component via `props.config.data_types`.
+Access in your component via `config.value.data_types` (in `<script setup>`) or `config?.data_types` (in the template) — `config` is the computed ref returned by `useCalculator()`, not a prop.
 
 ---
 
 ## Global Settings
 
-These apply to all calculators:
+The `global:` block in `calculators.yaml`:
 
 ```yaml
 # config/calculators.yaml
 
 global:
-  # Multiplier for all estimates (accounts for intermediates, retries)
+  # Multiplier applied to every calculator's result, including API dollar
+  # estimates (accounts for intermediates, retries). The ONLY global key the
+  # app currently reads. A "Safety buffer (1.5×)" breakdown row is added
+  # automatically when it isn't 1.
   safety_multiplier: 1.5
-  safety_message: "Includes 1.5x buffer for processing intermediates"
-
-  # Show step-by-step calculation to user
-  show_calculation: true
-
-  # Decimal precision
-  storage_precision: 3    # 3 decimals = 1 GB precision
-  compute_precision: 0    # SU shown as 50000
 ```
+
+The shipped file also contains `safety_message`, `show_calculation`, `storage_precision`, `compute_precision`, `default_archive_ratio`, `archive_ratio_help`, `show_breakdown`, `show_cost_estimate`, and `allow_manual_adjustment`. **None of these are read by the current code** — changing them has no effect. Rounding is hardcoded in `useCalculator.js` (storage rounded up to 3 decimals of TB = 1 GB, CPU rounded up to whole SU, GPU to 0.1 GPU-hour, API to the cent), and the breakdown is always available behind a toggle in `<BaseCalculator>`.
 
 ---
 
@@ -323,11 +324,11 @@ Save users from guessing values:
 ```yaml
 presets:
   - label: "Confocal Microscope"
-    resolution: "4096x4096"
+    resolution: "4k"        # Must match a `key` in microscopy.resolutions
     bit_depth: 16
     channels: 4
   - label: "Light Sheet"
-    resolution: "2048x2048"
+    resolution: "2k"
     bit_depth: 16
     channels: 2
     z_slices: 200
@@ -349,6 +350,8 @@ Transparency builds trust. Always show the calculation breakdown:
 Storage: 1 decimal place (15.5 TB)
 Compute: Whole numbers (50,000 SU)
 
+`useCalculator.js` already rounds results (see [Global Settings](#global-settings)) and `<BaseCalculator>` formats them for display, showing storage under 1 TB as GB — you don't round in the component.
+
 ### 5. Include Safety Margin
 
 The global `safety_multiplier` (default 1.5x) accounts for:
@@ -366,10 +369,12 @@ calculator_config:
   my-custom:
     target_services:
       default: hpc-storage             # Service slug from services.yaml
-      alternatives: [archive-storage]  # Optional fallbacks
+      alternatives: [aws-storage-archive]  # Optional; exposed as alternativeServices but not yet shown in any UI
 ```
 
-Note: the built-in `cpu` category default is the slug `hpc-cpu`, but the shipped CPU service is `hpc-compute`. For CPU calculators, set `target_services.default: hpc-compute` explicitly rather than relying on the category default.
+The `api` category has **no** default mapping — see the note below.
+
+Note: the built-in `cpu` category default is the slug `hpc-cpu`, but the shipped CPU service is `hpc-compute`. For CPU calculators, set `target_services.default: hpc-compute` explicitly rather than relying on the category default. Likewise, an `api` calculator with no `target_services` falls back to `hpc-storage`, so its dollar estimate lands on the storage line — the shipped `llm-api-costs` has this problem. No shipped service is priced per dollar (`azure-openai` is per 1M tokens), so `target_services` alone doesn't fully fix it; treat the LLM API calculator's slate entry as unreliable until this is fixed in code.
 
 ---
 
@@ -388,9 +393,9 @@ Note: the built-in `cpu` category default is the slug `hpc-cpu`, but the shipped
 - [ ] Inputs accept valid values
 - [ ] Calculation updates live
 - [ ] Breakdown shows correct math
-- [ ] "Use This Estimate" populates the service field
+- [ ] "Add to Slate" adds the estimate to the slate under the expected service
 - [ ] Presets work (if configured)
-- [ ] Clear resets to defaults
+- [ ] Reset restores your defaults
 
 ---
 
@@ -401,11 +406,13 @@ Note: the built-in `cpu` category default is the slug `hpc-cpu`, but the shipped
 ```yaml
 calculator_config:
   video:
-    name: "Video & Film"
+    name: "Video Recording"
     icon: "video"
     description: "Raw footage, editing projects, final deliverables"
 
-    formats:
+    # The video calculator reads `presets` (matched by label) — the type
+    # dropdown IS the preset list
+    presets:
       - label: "4K ProRes (RAW)"
         gb_per_hour: 880
       - label: "4K H.264"
@@ -431,7 +438,7 @@ calculator_config:
       - label: "LAMMPS"
         su_per_ns_per_million_atoms: 80
       - label: "OpenFOAM (per hour simulated)"
-        su_per_hour: 500
+        su_per_hour_simulated: 500    # also supported: su_per_calculation
 ```
 
 ### GPU Calculator: ML Training
@@ -458,4 +465,4 @@ calculator_config:
 
 - [ELI5-IMPLEMENTATION.md](../ELI5-IMPLEMENTATION.md) - Full feature design
 - [CUSTOMIZE.md](./CUSTOMIZE.md) - Calculator config reference
-- [examples/minimal-config/](./examples/minimal-config/) - Minimal working example
+- [examples/minimal-config/](./examples/minimal-config/) - Minimal core config (has no `calculators.yaml`; start from `config/calculators.yaml`)

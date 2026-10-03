@@ -18,6 +18,8 @@ schema_version: "1.0"
 
 The `schema_version` field in `config/meta.yaml` is recorded for upgrade-compatibility tracking but is not currently validated by the build — the build does not warn on an outdated or unrecognized version. `npm run validate:config` checks referential integrity (services, mappings, bundles, retention, DMP templates) and compliance/BAA invariants, not the schema version.
 
+> Don't confuse this with the `schema_version: "1.2"` stamped into exported plan JSON files (`src/composables/useExport.js`, read by the IT Workbench). That versions the export interchange format, not your config.
+
 ---
 
 ## Checking for Updates
@@ -27,7 +29,7 @@ The `schema_version` field in `config/meta.yaml` is recorded for upgrade-compati
 If you haven't already:
 
 ```bash
-git remote add upstream https://github.com/ORIGINAL-ORG/OpenResearchDataPlanner.git
+git remote add upstream https://github.com/atmarx/OpenResearchDataPlanner.git
 git fetch upstream
 ```
 
@@ -113,34 +115,22 @@ git merge upgrade-to-vX.Y
 
 ## Version Migration Guide
 
-### 1.0 → 1.1
+### 1.0 (current)
 
-**New Features (optional):**
-- `schema_version` field in `meta.yaml`
-- `comparison_features` value semantics (`full`/`partial`/`none`)
-- Software catalog with license status
+`schema_version: "1.0"` is the only config schema released so far (tag `v1.0.0`). There is no 1.1 schema yet — keep `schema_version: "1.0"` in `meta.yaml`.
 
-**To adopt:**
+Notes for configs written against early 1.0 snapshots:
 
-1. Add schema version to `meta.yaml`:
+- `comparison_features` on a service accepts either a bare level or an object with an optional detail — both render in the compare modal:
    ```yaml
-   schema_version: "1.1"
-   ```
-
-2. Update comparison features to use new value format:
-   ```yaml
-   # Old (still works)
    comparison_features:
-     gpu_available: full
+     gpu_available: full            # bare level: full | partial | none
 
-   # New (recommended)
-   comparison_features:
-     gpu_available:
+     batch_jobs:                    # object form, adds a detail string
        value: full
-       detail: "NVIDIA V100"
+       detail: "SLURM batch queue"
    ```
-
-**No migration required** - 1.0 configs work with 1.1.
+- `meta.yaml` `links` is now a list of `{ label, url }`. The legacy object form (`links: { privacy: url, ... }`) still renders.
 
 ---
 
@@ -148,7 +138,7 @@ git merge upgrade-to-vX.Y
 
 This section will be updated with migration instructions for each release.
 
-Check the [GitHub Releases](https://github.com/ORIGINAL-ORG/OpenResearchDataPlanner/releases) for version-specific notes.
+Check the [GitHub Releases](https://github.com/atmarx/OpenResearchDataPlanner/releases) for version-specific notes.
 
 ---
 
@@ -188,7 +178,7 @@ Keep a list of files you've customized beyond basic configuration:
 CUSTOMIZATIONS.md
 ----------------
 - src/components/wizard/CustomStep.vue (added custom step)
-- src/assets/logo.svg (institution logo)
+- public/images/logo.svg (institution logo, referenced from meta.yaml institution.logo)
 - config/dmp-templates/custom/ (custom DMP templates)
 ```
 
@@ -245,12 +235,12 @@ If you encounter upgrade issues:
 
 ## Changelog
 
-See [GitHub Releases](https://github.com/ORIGINAL-ORG/OpenResearchDataPlanner/releases) for the full release history.
+See [GitHub Releases](https://github.com/atmarx/OpenResearchDataPlanner/releases) for the full release history.
 
 ### Recent Versions
 
 | Version | Date | Notes |
 |---------|------|-------|
-| 1.0 | 2024-01-15 | Initial release |
+| 1.0.0 | 2026-04-16 | Initial release (config `schema_version: "1.0"`) |
 
 <!-- Future versions will be added here -->

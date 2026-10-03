@@ -12,13 +12,6 @@ bundles:
   - slug: hpc-starter
     name: "HPC Starter"
     description: "Everything you need to start using HPC"
-    icon: "rocket"                          # Icon from icon set
-
-    # Who this bundle is for
-    recommended_for:
-      - "New HPC users"
-      - "Testing workflows"
-      - "Small analyses"
 
     # Compatible tiers
     recommended_tiers:
@@ -28,17 +21,9 @@ bundles:
     services:
       - service: hpc-compute                # References slug from services.yaml
         default_estimate: 10000             # Pre-filled estimate
-        required: true                      # Must include this service
 
       - service: research-storage
         default_estimate: 1
-        required: true
 
-    # Total monthly estimate (for display)
-    estimated_monthly_cost: 0               # Free tier covers this
-
-    # Next steps after selection
-    onboarding_steps:
-      - "Request cluster account"
-      - "Complete HPC orientation (30 min online)"
-      - "Transfer your first dataset"
+    # Not read by the app (safe to omit): icon, recommended_for,
+    # estimated_monthly_cost, onboarding_steps, services[].required

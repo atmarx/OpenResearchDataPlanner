@@ -15,6 +15,7 @@ This guide is the complete reference for customizing OpenResearchDataPlanner for
 | [QUICKSTART.md](./QUICKSTART.md) | First-time setup |
 | [VALIDATION.md](./VALIDATION.md) | Troubleshooting config errors |
 | [CALCULATOR-DEVELOPMENT.md](./CALCULATOR-DEVELOPMENT.md) | Building custom estimators |
+| [DOCKER.md](./DOCKER.md) | Container deployment + feedback API |
 | [UPGRADING.md](./UPGRADING.md) | Pulling upstream changes |
 | [examples/minimal-config/](./examples/minimal-config/) | Minimal working reference |
 
@@ -41,9 +42,10 @@ This guide is the complete reference for customizing OpenResearchDataPlanner for
    - [retention.yaml](#retentionyaml) - Data retention schedules
 6. [Software Catalog](#software-catalog)
    - [software.yaml](#softwareyaml) - Licensed software catalog
-7. [DMP Templates](#dmp-templates)
-8. [Validation & Deployment](#validation--deployment)
-9. [Common Customizations](#common-customizations)
+7. [Legal, Explainers & Guidance](#legal-explainers--guidance)
+8. [DMP Templates](#dmp-templates)
+9. [Validation & Deployment](#validation--deployment)
+10. [Common Customizations](#common-customizations)
 
 ---
 
@@ -86,13 +88,23 @@ config/
 ├── tier-workflow.yaml        # Compliance approval processes
 ├── retention.yaml            # Data retention schedules
 ├── software.yaml             # Licensed software catalog
-└── dmp-templates/            # Handlebars templates for DMP output
-    ├── hpc-compute/
-    ├── hpc-storage/
-    ├── cloud-compute/
-    ├── cloud-storage/
-    └── ...                   # one dir per service slug
+├── help-videos.yaml          # Help video catalog (not rendered yet)
+├── legal.yaml                # Terms, disclaimers, per-tier legal notices
+├── explainers.yaml           # Plain-language explainers + just-in-time nudges
+├── dmp-templates/            # Handlebars templates for DMP output
+│   ├── hpc-compute/
+│   ├── hpc-storage/
+│   ├── cloud-compute/
+│   ├── cloud-storage/
+│   └── ...                   # any layout; mappings reference template paths
+├── export-templates/         # slate-export.md.hbs (Markdown export)
+├── ai-guidance/              # AI guidance applet configs (/ai)
+└── clinical/                 # Clinical guidance applet configs
 ```
+
+**How files become config keys.** `scripts/build-config.js` loads each top-level file into `public/config.json` under its basename with hyphens turned into underscores (`tier-questionnaire.yaml` → `config.tier_questionnaire`). If the file has a root key named after itself (`tiers:` in `tiers.yaml`), that key is unwrapped; otherwise the whole document is used (`meta`, `retention`, `help`, ...). `software.yaml` and `acronyms.yaml` keep their full structure. The directories become `dmpTemplates`, `exportTemplates`, `aiGuidance`, and `clinicalGuidance`.
+
+**Every top-level file is required.** A missing one stops the build with `Config file not found`. A new `.yaml` file in `config/` is ignored unless it's added to `CONFIG_FILES` in `scripts/build-config.js`.
 
 ---
 
@@ -100,7 +112,7 @@ config/
 
 ### meta.yaml
 
-Institution identity, branding, and primary contact information.
+Institution identity, branding, contacts, footer links, cost/F&A settings, AI disclosure, and feedback.
 
 ```yaml
 # config/meta.yaml
@@ -108,11 +120,24 @@ Institution identity, branding, and primary contact information.
 institution:
   name: "Northwinds University"
   short_name: "Northwinds"
-  logo: "/images/northwinds_horizontal.png"        # Header logo
+  logo: "/images/northwinds_horizontal.png"        # Header logo (path under public/)
   footer_logo: "/images/northwinds_logo.png"       # Crest shown in the footer
+
+site:
+  title: "Research Data Planner"                   # Header + welcome page title
+  tagline: "Self-service discovery for researchers. Informed requests for support teams."
 
 # Visual branding & theming
 branding:
+  # Welcome-page hero images. With 2+ entries users get a picker in the gear
+  # menu. Each entry: image (required), thumb, caption, credit.
+  # (A legacy single `hero_background: "/path.png"` string still works.)
+  hero_backgrounds:
+    - image: "/images/backgrounds/college.webp"
+      thumb: "/images/backgrounds/thumbs/college.webp"
+      caption: "Northwinds University"
+      credit: "Northwinds University"
+  hero_overlay: 0.4               # 0 = no darkening, 1 = fully dark
   # Built-in skin booted as the default theme (users can switch in-app).
   # Options: northwinds | highcontrast | (omit for the ODP default)
   default_skin: northwinds
@@ -128,16 +153,75 @@ contact:
     value: "rc-help@northwinds.edu"
     label: "rc-help@northwinds.edu"                # Display text for the link
 
-  # Security/compliance inquiries
+  # Security/compliance inquiries (also the consultation-step fallback
+  # when a tier has no consultation_contact)
   security: "research-security@northwinds.edu"
 
   # Consultation booking
   consultation_url: "https://northwinds.edu/research-computing/consult"
 
+# Footer policy links — a plain list; add, remove, or reorder freely.
+# (The legacy object form { privacy: url, ... } still renders.)
+links:
+  - label: "Privacy Notice"
+    url: "https://northwinds.edu/privacy"
+  - label: "Data Classification Policy"
+    url: "https://rcd.northwinds.edu/policies/data-classification"
+
+# Base URL that explainers.yaml full_guide.corpus_path values resolve
+# against. null hides the "read the full guide" links.
+governance_corpus_url: "https://rcd.northwinds.edu"
+
+# Shown wherever dollar figures appear (slate, results, exports)
+cost_disclaimer:
+  short: "Planning estimate, not a quote — prices are subject to change."
+  long: |
+    These figures are planning estimates, not a quote for services. ...
+
+# F&A in the slate export. default_rate is applied to the whole direct
+# total; rate_label / rate_basis / note / policy_url are display only.
+indirect_costs:
+  default_rate: 0.54
+  rate_label: "54%"
+  rate_basis: "MTDC"
+  sponsor_rates: []               # Not read by the app yet
+  note: |
+    Indirect costs (F&A) are calculated at the federally negotiated rate.
+  policy_url: "https://northwinds.edu/research/indirect-costs"
+
+# AI-assistance disclosure: first-visit banner, footer line, /about-ai page
+ai_disclosure:
+  enabled: true
+  assistant: "Claude (Anthropic)"   # Substituted for {assistant}; "" drops the vendor mention
+  banner:
+    title: "About This Tool"
+    message: |
+      Research Data Planner was built with agentic coding assistance from {assistant}. ...
+    learn_more_label: "Learn more"
+    report_issue_url: "https://github.com/your-org/your-fork/issues"
+    report_issue_label: "Report an issue"
+  footer:
+    text: "Built with agentic coders — every change reviewed by Research IT."
+    learn_more_label: "Learn more"
+    feedback_label: "Share your feedback"
+  about_page:
+    intro: "How we used AI to build this tool, and why transparency matters."
+    citation: |
+      Research Data Planner. (2024-2026). Developed by {institution} with AI coding
+      assistance from {assistant}.
+
+# Feedback widgets — require the feedback-api service (see DOCKER.md).
+# api_key must match the service's API_KEY_WRITE. Set enabled: false on a
+# pure static host.
+feedback:
+  enabled: true
+  api_url: "/api/v1"
+  api_key: "changeme-write"
+
 # App versioning
-version: "1.0.0"
-schema_version: "1.0"            # Schema version for upgrade compatibility
-last_updated: "2025-01-15"
+version: "1.0.0"                 # Echoed in the DMP footer and exports
+schema_version: "1.0"            # Config schema version (informational; not checked by the build)
+last_updated: "2026-06-25"       # Informational only — not read by the app
 ```
 
 ---
@@ -242,13 +326,16 @@ tiers:
     help_text: |
       Projects at this tier require consultation with the security team.
 
-    consultation_required: true       # Forces the wizard to show a consultation step
+    consultation_required: true       # ENDS the wizard here: welcome -> tier -> consultation step;
+                                      # no service selection, estimate, or results for this tier
     retention_questions_required: true
-    consultation_message: |           # Shown on the consultation step
+    consultation_message: |           # Shown on the consultation step (Markdown)
       Projects at this tier require a consultation with the Research
       Security team to determine appropriate controls and budget.
-    consultation_contact: "security@example.edu"
+    consultation_contact: "security@example.edu"  # Falls back to meta.contact.security
 ```
+
+> **Tier slugs matter beyond this file.** The questionnaire's upgrade-only ranking (`src/lib/classifyTier.js`) and the Service Matrix compliance badges (`src/views/ServiceMatrix.vue`, which reads `high`/`restricted` mappings) are keyed to the demo slugs `low`, `medium`, `high`, `restricted`. Renaming slugs also means updating `mappings.yaml`, `bundles.yaml`, `retention.yaml`, `legal.yaml` (`tier_notices`), and `tier-questionnaire.yaml`. Keep the four slugs and change `name`/`short_name` unless you're prepared to do all of that.
 
 > **Note on fields:** Only the fields above are read by the app. You may see older example configs with `icon`, `self_service`, `security_review_required`, `typical_provisioning_time`, `show_workflow_modal`, `compliance_types`, `warnings`, or a top-level `default_tier` — none of those are wired into the current Vue components. Adding them won't cause errors, but they won't affect behavior either.
 
@@ -387,6 +474,8 @@ categories:
         description: "Lower tiers easy to obtain"
 ```
 
+> **Category `icon`** is looked up in a small map in `ServiceSelectStep.vue`: `cpu`, `hard-drive`, `cloud`, `box`, `life-buoy`. Any other name (e.g. `database`, `monitor`, `globe` above) falls back to the `box` icon. The compare button only appears for a category when it has `comparison_features` **and** at least two services available at the selected tier carry `comparison_features`.
+
 ---
 
 ### services.yaml
@@ -433,7 +522,7 @@ services:
       type: tiered                               # "unit" | "tiered" | "consultation"
       unit: "core-hour"                          # Internal unit identifier
       unit_label: "CPU Core Hour"                # Display label (shown in UI)
-      tiers:
+      tiers:                                     # Marginal bands: each up_to is a cumulative ceiling
         - up_to: 10000                           # Rate applies up to this quantity
           price: 0.08
           label: "Standard"
@@ -553,22 +642,27 @@ services:
 | `name` | ✅ | Wizard + explore pages |
 | `category` | ✅ | Groups services in wizard; links to `categories.yaml` |
 | `description` | ✅ | Service cards, DMP |
-| `long_description` | recommended | Service cards, comparison modal |
-| `documentation_url` | recommended | Service cards |
-| `comparison_features` | recommended | `CompareModal` and `ServiceMatrix` (keys must match `categories.yaml`) |
-| `cost_model.type` | ✅ | `"unit"`, `"tiered"`, or `"consultation"` |
-| `cost_model.unit_label` | ✅ | Display label throughout UI |
-| `cost_model.price` | unit only | `ResultsStep`, `slateStore`, `useDMPGenerator` |
-| `cost_model.tiers[].up_to/price/label` | tiered only | Same — tiered cost calculation |
-| `subsidies[].auto_apply / discount_type / discount_value` | optional | `pricing.js` `computeServiceCost()` (called by `slateStore`) applies them; free units use `discount_type: free_units` |
-| `archive_option.service_slug/description` | optional | `EstimateStep` surfaces paired archive prompt |
+| `comparison_features` | recommended | `CompareModal` (keys must match `categories.yaml`). Each value is either a bare level (`full`/`partial`/`none`) or `{ value, detail }`; a missing key reads as `none` |
+| `cost_model.type` | ✅ | `"unit"`, `"tiered"`, or `"consultation"` (anything else prices at $0) |
+| `cost_model.unit_label` | ✅ | Display label throughout UI (falls back to `cost_model.unit`) |
+| `cost_model.price` | unit only | `src/lib/pricing.js` — shared by `ResultsStep`, `slateStore`, `useDMPGenerator` |
+| `cost_model.tiers[].up_to/price/label` | tiered only | Same — marginal banding; the last band uses `up_to: null` |
+| `subsidies[]` | optional | `slug`, `name`, `description`, `condition`, `discount_type` (`free_units` \| `percent` \| `fixed`), `discount_value`, `auto_apply`. `auto_apply: true` subsidies are always applied by `pricing.js` (free units come off the quantity before pricing); `auto_apply: false` ones are opt-in checkboxes on `EstimateStep` (one per service, matched by `slug`) |
+| `archive_option.service_slug/description` | optional | `EstimateStep` surfaces paired archive prompt; priced through the archive service's own `cost_model` |
 | `estimation.prompt/default_value/min_value/max_value/step/presets` | optional | `EstimateStep` UI |
+| `estimation.unit_display` | optional | Unit shown next to the estimate input (overrides `cost_model.unit_label`) |
+| `acknowledgment.required/title/message/items` | optional | `EstimateStep` shows a limitations checkbox; the wizard won't advance until it's ticked |
+| `deployment` | optional | Service Matrix badges: list of `on-prem`, `cloud`, `hybrid` |
+| `tech` | optional | Service Matrix tech badges (list of strings) |
+| `pricing_url` | optional | Service Matrix "pricing" link (e.g. a vendor calculator) |
+| `is_archive_tier` | optional | `true` hides the service from service selection and comparison — it's reachable only as another service's `archive_option` |
 
 **Fields defined in config but not currently rendered** (recorded for reference, reserved for future work):
 
-- `fa_exempt` — used in real configs to flag internal service centers (F&A-exempt). Not read by the wizard yet.
+- `long_description`, `documentation_url` — present on every demo service, but no component renders them for services today (`documentation_url` is only read on software entries).
+- `fa_exempt` — used in real configs to flag internal service centers (F&A-exempt). Not read yet: the slate export applies `meta.indirect_costs.default_rate` to the whole direct total, exempt services included.
 - `recommended_with` — planned cross-sell prompt ("pair storage with compute"). Defined but not surfaced.
-- `cost_model.billing_period`, `cost_model.unit_description`, `cost_model.note` — metadata honored by configs but not consumed by the wizard today.
+- `cost_model.billing_period`, `cost_model.unit_description`, `cost_model.note`, `cost_model.contact` — metadata honored by configs but not consumed by the wizard today. All prices are treated as monthly.
 
 **Removed legacy fields** — if you're migrating an older `services.yaml`, these are no-ops and can be deleted:
 
@@ -584,7 +678,9 @@ services:
 
 ### bundles.yaml
 
-Pre-selected service combinations researchers can apply in one click.  Bundles are shown on the service-selection step and filtered by the researcher's tier — a bundle is "recommended" if its `recommended_tiers` list includes the selected tier, "available" if every service it references is allowed for that tier, and hidden otherwise.
+Pre-selected service combinations researchers can apply in one click.  Bundles are shown in the "Bundles" view of the service-selection step and labeled by the researcher's tier — a bundle is "recommended" if its `recommended_tiers` list includes the selected tier, "available" if every service it references is mapped to that tier, and otherwise shown greyed out as unavailable with no Apply button.
+
+> A "recommended" bundle can be applied even if one of its services isn't mapped to that tier, and the build doesn't check this — only list tiers in `recommended_tiers` where every bundled service has a `mappings.yaml` entry.
 
 ```yaml
 # config/bundles.yaml
@@ -645,7 +741,7 @@ bundles:
 |-------|----------|-------|
 | `slug` | ✅ | Identifier |
 | `name` | ✅ | Display |
-| `description` | ✅ | Shown on the bundle card (Markdown supported via `AnnotatedText`) |
+| `description` | ✅ | Shown on the bundle card (Markdown, rendered through `AnnotatedHtml`) |
 | `recommended_tiers` | ✅ | Array of tier slugs from `tiers.yaml` (lowercase: `low`, `medium`, `high`, `restricted`) |
 | `services[].service` | ✅ | Service slug from `services.yaml` |
 | `services[].default_estimate` | optional | Initial quantity applied to the service; omit for consultation services |
@@ -690,8 +786,9 @@ mappings:
       - Dedicated VPC with restricted access
       - All data encrypted with customer-managed KMS keys
     dmp_template: "cloud-compute/high"
-    # Optional compliance metadata — recorded with the mapping for
-    # institutional reference; not currently surfaced in the wizard UI.
+    # Optional compliance metadata — shown in the Service Matrix detail panel
+    # (BAA badge, frameworks, training, timeline, audit logging, encryption)
+    # for mappings on the `high` and `restricted` tiers; validated at build time.
     compliance:
       frameworks: [hipaa, ferpa]
       baa_status: in_place
@@ -709,11 +806,25 @@ mappings:
 |-------|----------|-------|
 | `service` | yes | Service slug from `services.yaml` |
 | `tier` | yes | Tier slug from `tiers.yaml` (`low`, `medium`, `high`, `restricted`) |
-| `approval` | yes | `automatic`, `review`, or `consultation` |
-| `approval_contact` | optional | Email shown to the researcher when approval is required |
-| `notes` | optional | User-facing notes (Markdown).  Use `null` for none. |
-| `dmp_template` | optional | Path under `config/dmp-templates/` (no `.md` extension) |
-| `compliance` | optional | Metadata block — recorded for reference, not currently rendered |
+| `approval` | yes | `automatic`, `review`, or `consultation` — non-automatic values show a "Requires review/consultation" badge (missing defaults to `automatic`); informational only, nothing is blocked |
+| `approval_contact` | optional | Passed to DMP templates as `{{mapping.approval_contact}}` |
+| `notes` | optional | User-facing notes (Markdown), shown as the service's requirements and passed to DMP templates.  Use `null` for none. |
+| `dmp_template` | optional | Path under `config/dmp-templates/`, with or without `.md`. Without it, the service gets no DMP section |
+| `compliance` | optional | See below |
+
+**`compliance` block** (optional; rendered in the Service Matrix for `high`/`restricted` mappings):
+
+| Field | Notes |
+|-------|-------|
+| `frameworks` | List, e.g. `hipaa`, `ferpa`, `fda_21_cfr_11`, `fedramp` |
+| `baa_status` | `in_place`, `available`, `not_available`, or `not_applicable` — any other value is a build error. Only `in_place` lights the BAA badge |
+| `baa_reference` | Name of the agreement. Build **warning** if `baa_status: in_place` without it |
+| `training_required` | List of strings |
+| `timeline` | Expected provisioning time |
+| `audit_logging` | Boolean |
+| `encryption` | `at_rest`, `in_transit`, `both`, `none` |
+
+Build rule: listing `hipaa` in `frameworks` requires `baa_status` of `in_place` (or `not_applicable` for on-prem services with no business associate) — otherwise the build fails. See [VALIDATION.md](./VALIDATION.md).
 
 > **Note — schema changes from earlier versions:**
 >
@@ -1047,12 +1158,14 @@ acronyms:
 
 # Annotation behavior settings
 annotation_config:
+  enabled: true            # false turns auto-annotation off everywhere
   word_boundary: true      # Match whole words only
   case_sensitive: true     # "HPC" but not "hpc"
-  max_per_term: 3          # Max annotations per page per term
+  max_per_term: 3          # Max annotations per term per annotated text block
   tooltip_delay: 300       # ms before showing tooltip
 
-  # Elements to skip
+  # Not read by the app today (annotation only runs inside AnnotatedText /
+  # AnnotatedHtml blocks, so code/inputs are never annotated anyway)
   skip_elements:
     - "code"
     - "pre"
@@ -1090,6 +1203,13 @@ enabled_calculators:
     - ml-training
     - ml-inference
     - gpu-simulation
+
+  api:
+    - llm-api-costs
+
+# Group keys must be storage, cpu, gpu, or api (others are skipped). Each id
+# needs a calculator_config entry AND a component registered in
+# src/views/CalculatorBrowser.vue, or it won't render.
 
 # Calculator-specific configuration
 calculator_config:
@@ -1199,53 +1319,41 @@ calculator_config:
 
 # Global calculator settings
 global:
-  # Safety multiplier for all estimates
+  # Safety multiplier applied to every result — the only global key the app reads
   safety_multiplier: 1.5
-  safety_message: "Includes 1.5x buffer for processing intermediates"
 
-  # Show calculation breakdown
-  show_calculation: true
-
-  # Precision for results
-  storage_precision: 1    # decimal places for TB
-  compute_precision: 0    # decimal places for SU
+  # Present in the demo config but not read by the app today:
+  # safety_message, show_calculation, storage_precision, compute_precision,
+  # default_archive_ratio, archive_ratio_help (rounding is hardcoded)
 ```
+
+See [CALCULATOR-DEVELOPMENT.md](./CALCULATOR-DEVELOPMENT.md) for per-calculator keys and the component interface.
 
 ---
 
 ### help.yaml
 
-Configuration for the "Talk to a Human" help escape hatch and contact information.
+Configuration for the "Talk to a Human" help escape hatch: a floating help button that opens the Get Help modal.
 
 ```yaml
 # config/help.yaml
 
-# Global help CTA that appears on complex pages
 global:
+  # The floating help button shows only when BOTH of these are true
   show_help_cta: true
-  help_cta_text: "Not sure? Talk to a human"
-  help_cta_link: "/contact"
-  help_cta_position: "bottom-right"   # or "inline", "header"
+  floating_button:
+    enabled: true
 
-  # Pages where help is especially prominent
-  emphasized_pages:
-    - "tier-selection"
-    - "storage-estimate"
-    - "service-selection"
-    - "high-tier-workflow"
-
-# Contact options in help modal
+# Contact buttons in the help modal
 contact_options:
-  - type: "email"
+  - type: "email"                     # Unique per option (used as the list key)
     label: "Email Us"
     description: "Get a response within 1 business day"
-    icon: "mail"
+    icon: "mail"                      # mail | calendar | ticket | bookmark (others -> mail)
+    primary: true                     # Highlighted button
     action:
-      type: "email"
+      type: "email"                   # email | external_link | save_state
       address: "rc-help@northwinds.edu"
-      subject_template: "Data Planner Help Request"
-      # Include wizard state in email body
-      include_state: true
 
   - type: "schedule"
     label: "Schedule a Call"
@@ -1255,44 +1363,43 @@ contact_options:
       type: "external_link"
       url: "https://calendly.com/northwinds-rc/consult"
 
-  - type: "save"
-    label: "Save & Continue Later"
-    description: "Get a link to return to your progress"
-    icon: "bookmark"
-    action:
-      type: "save_state"
-      # Email the state link to user
-      email_link: true
+# Context message at the top of the modal, keyed by the CURRENT WIZARD STEP ID:
+# welcome, tier-select, grant-period, retention, service-select, software,
+# estimate, results, consultation
+contextual_help:
+  tier-select:
+    title: "Not sure which data tier?"
+    message: |
+      If your research involves human subjects data, health information,
+      or government contracts, we recommend a quick consultation.
 
-# What gets exported when user requests help mid-wizard
-export_state:
-  include:
-    - current_step
-    - selected_tier
-    - selected_services
-    - estimates
-    - questionnaire_answers
+# Quick FAQ (answers are Markdown)
+faq:
+  - question: "How long does provisioning take?"
+    answer: |
+      - **L1/L2 services:** Same day (self-service)
+      - **L3 (HIPAA):** 3-7 business days
 
-  # Format for email body
-  email_format: |
-    ## Current Progress
+# Optional drop-in hours
+office_hours:
+  enabled: true
+  title: "Drop-in Office Hours"
+  description: "No appointment needed"
+  schedule:
+    - day: "Tuesday"
+      time: "2:00 PM - 4:00 PM"
+      location: "Virtual (Zoom)"
 
-    **Step:** {{current_step}}
-    **Data Tier:** {{selected_tier.name}}
-
-    ### Selected Services
-    {{#each selected_services}}
-    - {{this.name}}: {{this.estimate}} {{this.unit}}
-    {{/each}}
-
-    ### Questionnaire Answers
-    {{#each questionnaire_answers}}
-    - {{this.question}}: {{this.answer}}
-    {{/each}}
-
-    ---
-    Please help me with: [describe your question]
+# Optional urgent-issue line
+urgent:
+  enabled: true
+  title: "Urgent Issue?"
+  description: "For production system outages or security incidents"
 ```
+
+**Present in the demo `help.yaml` but not read by the app today:** `global.help_cta_text`, `help_cta_link`, `help_cta_position`, `emphasized_pages`, `floating_button.icon/pulse_animation/show_after_seconds`; `action.subject_template`, `include_state`, `email_link`; per-message `show_*_cta` flags; `office_hours.schedule[].link`; `urgent.contact/phone`; and the entire `export_state` block.
+
+> **Heads-up:** the demo's `contextual_help` keys (`tier-selection`, `storage-estimate`, ...) don't match any wizard step id, so no contextual message appears until you rename them (e.g. `tier-select`, `estimate`).
 
 ---
 
@@ -1487,11 +1594,21 @@ override:
     If you're unsure, please contact Research Computing for guidance.
 ```
 
+**How the questionnaire walks the tree** (`src/lib/classifyTier.js`, shared with `TierQuestionnaire.vue`):
+
+- It starts at the **first** entry in `questions` and follows each option's `next`; `next: complete` (or no `next`) ends the walk. An entry with `type: "summary"` also ends it.
+- `sets_tier` only ever **upgrades** the result, ranked `low < medium < high < restricted`. The ranking is hardcoded — a `sets_tier` naming any other slug is ignored. A path that sets no tier lands on `low`.
+- `sets_flags` / `clears_flags` add and remove classification flags (`hipaa`, `phi`, `ferpa`, `cui`, `itar`, `ear`, `fre`, ...). Flags flow into the DMP (`{{#if flags.phi}}`) and the results summary.
+
+**Other keys the page reads:** `intro.audience_note.{title,description}`, `intro.skip_option.{enabled,label}`, `intro.quick_select.{enabled,label,tier}`; per question `icon` and `learn_more.{title,content,link}`; `summary.{title,show_flags,cta.<tier-slug>}`; and `examples_by_discipline`. The top-level `override` block shown above (and the demo's top-level `quick_select`) is **not read** — use `intro.quick_select` instead.
+
 ---
 
 ### tier-workflow.yaml
 
-Detailed approval processes for each tier, shown when users select high-tier data.
+Detailed approval processes for each tier.
+
+> **Not rendered yet.** No component reads `tier-workflow.yaml` today. It's built into `config.json`, and the `show_if` / `skip_if` step gating is implemented and unit-tested in `src/lib/workflowSteps.js`, but no UI shows the workflow. Keep it accurate for when it's wired up; editing it won't change what researchers see.
 
 ```yaml
 # config/tier-workflow.yaml
@@ -1640,70 +1757,47 @@ faq:
 
 ### retention.yaml
 
-Data retention schedules for compliance and DMP generation.
+Data retention schedules for the wizard's retention step (shown only for tiers with `retention_questions_required: true`). Researchers tick the schedules that apply; the longest selected schedule wins (never less than 3 years), and the years beyond the grant period drive archive cost.
 
 ```yaml
 # config/retention.yaml
 
 schedules:
-  - slug: nih-standard
-    name: "NIH Standard"
-    description: "3 years after final expenditure report"
+  - slug: federal-grant-standard
+    name: "Federal Grant (Standard)"
+    description: "Most federally funded research must keep data for 3 years after the grant closes."
     years: 3
-    applies_to:
-      - funders: ["NIH", "HHS"]
-    source_url: "https://grants.nih.gov/grants/policy/nihgps/html5/section_8/8.4_record_retention_and_access.htm"
+    regulation: "2 CFR 200.334"                    # Link text
+    regulation_url: "https://www.ecfr.gov/current/title-2/section-200.334"
+    applies_to_tiers:                              # REQUIRED — tier slugs; validated at build
+      - low
+      - medium
+      - high
+    is_default: true                               # Pre-selected and labeled as the default
 
-  - slug: nsf-standard
-    name: "NSF Standard"
-    description: "3 years after final expenditure report"
-    years: 3
-    applies_to:
-      - funders: ["NSF"]
-    source_url: "https://www.nsf.gov/bfa/dias/policy/rtc/terms.pdf"
+  - slug: irb-human-subjects
+    name: "IRB Human Subjects Research"
+    description: "Research with human participants under an IRB protocol requires records for up to 20 years."
+    years: 20
+    regulation: "45 CFR 46 / 21 CFR 50"
+    regulation_url: "https://www.hhs.gov/ohrp/regulations-and-policy"
+    applies_to_tiers:
+      - high
 
-  - slug: dod-standard
-    name: "DoD Standard"
-    description: "3 years after final payment"
-    years: 3
-    applies_to:
-      - funders: ["DoD", "DARPA", "Army", "Navy", "Air Force"]
-
-  - slug: hipaa-retention
-    name: "HIPAA Retention"
-    description: "6 years from creation or last effective date"
-    years: 6
-    applies_to:
-      - compliance: ["hipaa", "phi"]
-    notes: "State laws may require longer retention"
-
-  - slug: fda-clinical
-    name: "FDA Clinical Trials"
-    description: "2 years after drug approval or investigation discontinuation"
-    years: 2
-    applies_to:
-      - compliance: ["fda_21_cfr_11"]
-    notes: "Consult with sponsor for specific requirements"
-
-  - slug: institutional-default
-    name: "Institutional Default"
-    description: "7 years after project completion"
-    years: 7
-    is_default: true
-    notes: "University policy minimum"
-
-# Default archive ratio for cost estimation
-default_archive_ratio: 0.5
-archive_ratio_help: |
-  The archive ratio estimates how much of your active data will need
-  long-term retention. 50% is typical - most intermediate files can
-  be deleted, but raw data and final results should be archived.
-
-# Archive cost estimation
-archive_pricing:
-  per_tb_per_month: 1.50
-  retrieval_fee_per_tb: 0.50
+archive_settings:
+  custom_ratio_prompt: |                           # Help text on the archive-ratio control
+    After your grant ends, some data still needs to be kept in "archive" storage ...
 ```
+
+| Field | Notes |
+|-------|-------|
+| `schedules[].slug/name/description/years` | Required |
+| `schedules[].applies_to_tiers` | **Required** — a schedule without it breaks the retention step. Every slug must exist in `tiers.yaml` |
+| `schedules[].regulation`, `regulation_url` | Optional citation link |
+| `schedules[].is_default` | Optional |
+| `archive_settings.custom_ratio_prompt` | Optional |
+
+**Not read by the app today:** `schedules[].is_post_grant`, `archive_required`, `trigger_question`; `archive_settings.typical_archive_ratio` (the default ratio is hardcoded at 0.7) and `allow_custom_ratio`. Archive pricing comes from the service's `archive_option` (see `services.yaml`), not from this file.
 
 ---
 
@@ -1735,6 +1829,15 @@ license_statuses:
     color: "gray"
     icon: "external-link"
     description: "You must provide your own license"
+
+  unavailable:
+    label: "Not Available"
+    color: "red"
+    icon: "x-circle"
+    description: "Not available on this platform"
+
+# The status keys full / restricted / byol / unavailable are fixed — the
+# catalog's filters and colors are keyed to them. Edit labels and text only.
 
 # Software catalog
 software:
@@ -1958,76 +2061,156 @@ license_hosting:
     lab or department. This is useful for software with "bring your
     own license" requirements.
   contact: "rc-help@northwinds.edu"
-  more_info_url: "https://docs.rc.northwinds.edu/licenses/hosting"
+  more_info_url: "https://docs.rc.northwinds.edu/licenses/hosting"   # not read
+
+# Platform display names (keys match the availability keys above)
+platforms:
+  hpc:
+    name: "HPC Cluster"
+    description: "High-performance computing cluster"
+  jupyterhub:
+    name: "JupyterHub"
+    description: "Managed Jupyter notebook environment"
+    url: "https://jupyter.northwinds.edu"
+    features: ["Pre-configured environments", "No local installation needed"]
+  vdi:
+    name: "Virtual Desktop"
+    description: "Virtual desktop infrastructure"
+  cloud:
+    name: "Cloud (AWS/Azure)"
+    description: "Cloud computing platforms"
+
+search:
+  enabled: true
+  placeholder: "Search software..."
 ```
+
+**Other software fields the app reads:** `description_long`, `license_model` (`byol` triggers a bring-your-own-license notice in the wizard), `license_server.{we_can_host,contact}`, `license_info.{type,server,contact,notes,cost_estimate,cost_notes,cost_period}`, `institutional_support_url` / `institutional_support_label`, `export_control.{classification,eccn,restriction,notes}`, and `tier_restrictions.{min_tier,max_tier,notes}` (catalog badges).
+
+**Not read today** (safe to keep, no effect): `availability.<platform>.gpu_support`, `parallel_toolbox`, `products`, `approval_required`, `no_setup`, `packages_included`, `requires_own_license`; `toolboxes`, `add_ons`, `byol_available`; `license_info.teaching_licenses/research_licenses/cost_per_seat/vendor_contact/request_quote_cta`; `platforms.*.typical_use`; `search.search_fields`.
+
+---
+
+## Legal, Explainers & Guidance
+
+### legal.yaml
+
+The terms layer. Have your counsel review it before go-live (the file's `counsel_review` block is a note to you, not display text).
+
+| Key | Where it appears |
+|-----|------------------|
+| `terms_of_use`, `acceptable_use`, `data_responsibility`, `no_warranty` | `{heading, short, body}` — the `body` sections render on the About AI page |
+| `no_warranty.short` | Footer fine print |
+| `dmp_legal_framing.{heading, body}` | "About This Plan" section at the end of the generated DMP |
+| `tier_notices.<tier-slug>` | Per-tier legal notice appended to the DMP — keys must match your tier slugs |
+
+`acknowledgement`, `last_reviewed`, and `counsel_review` are not read by the app.
+
+### explainers.yaml
+
+Short in-app explainers, keyed by id under `explainers:`. The app currently renders one id, `overhead-and-direct-costs`, as a "→" nudge on the results step, slate, and Service Matrix cost column.
+
+| Key | Purpose |
+|-----|---------|
+| `title` | Modal title |
+| `jit.link_text` | Nudge link text — without it the nudge doesn't render |
+| `short` | Opening answer (Markdown) |
+| `table.{caption, columns, rows, footnote}` | Worked example table |
+| `bottom_line` | One-sentence takeaway |
+| `full_guide.{text, corpus_path}` | "Read the full guide" link, resolved against `meta.governance_corpus_url` (hidden when that's null) |
+
+### help-videos.yaml
+
+Loaded into `config.json` but **not read by any component yet**. Editing it has no visible effect today.
+
+### ai-guidance/ and clinical/
+
+Each `*.yaml` file becomes an entry keyed by filename: `ai-guidance/stakes-assessment.yaml` → `config.aiGuidance['stakes-assessment']`, `clinical/irb-amendment.yaml` → `config.clinicalGuidance['irb-amendment']`. Each applet component looks up its own filename, so keep the existing names. Renaming a file silently drops that applet's content. See [AI-GUIDANCE-APPLETS.md](../AI-GUIDANCE-APPLETS.md).
 
 ---
 
 ## DMP Templates
 
-Templates in `config/dmp-templates/` use Handlebars syntax to generate Data Management Plan text.
+Templates in `config/dmp-templates/` use Handlebars syntax to generate Data Management Plan text. Any `.md` file under that directory (nested folders allowed) becomes a template keyed by its path without `.md` — `hpc-storage/default.md` is `hpc-storage/default`. A mapping opts in with `dmp_template: "hpc-storage/default"`; a service/tier mapping without `dmp_template` gets no DMP section.
+
+Each template renders **once per selected service**, so the context describes that one service.
 
 ### Available Variables
 
 ```handlebars
-{{!-- Institution info --}}
-{{institution.name}}
-{{institution.short_name}}
+{{!-- Institution --}}
+{{institution.name}}  {{institution.short_name}}
 
-{{!-- Selected tier --}}
-{{tier.name}}
-{{tier.description}}
+{{!-- This service --}}
+{{service.slug}}  {{service.name}}  {{service.description}}
+{{service.estimate}}      {{!-- researcher's quantity --}}
+{{service.unit}}  {{service.unit_label}}
+{{service.free_units}}  {{service.billable}}
+{{service.monthly_cost}}  {{service.total_cost}}   {{!-- total = whole grant period --}}
+{{service.notes}}         {{!-- researcher's note, else the mapping's notes --}}
 
-{{!-- Services --}}
-{{#each services}}
-  {{this.name}}
-  {{this.estimate}}
-  {{this.unit}}
-  {{this.total_cost}}
-  {{this.billing_period}}
-{{/each}}
+{{!-- Archive tail (null unless the researcher added archive) --}}
+{{archive.estimate}}  {{archive.monthly_cost}}  {{archive.annual_cost}}
+{{archive.total_cost}}  {{archive.years}}
 
-{{!-- Retention --}}
-{{retention.schedule.name}}
-{{retention.years}}
+{{!-- Tier and mapping --}}
+{{tier.slug}}  {{tier.name}}  {{tier.description}}
+{{mapping.approval}}  {{mapping.approval_contact}}  {{mapping.notes}}
+
+{{!-- Retention (null when no retention years) --}}
+{{retention.years}}  {{retention.name}}   {{!-- name = "N-year retention" --}}
+
+{{!-- Grant period --}}
+{{grant.start_date}}  {{grant.end_date}}  {{grant.months}}  {{grant.years}}
+
+{{!-- Questionnaire classification flags --}}
+{{#if flags.phi}}...{{/if}}
+{{#each classification.labels}}{{this}}{{/each}}
+
+{{!-- Generation info --}}
+{{generated.date}}  {{generated.version}}   {{!-- version = meta.yaml version --}}
 
 {{!-- Helpers --}}
-{{currency value}}        {{!-- Formats as $1,234.56 --}}
-{{number value}}          {{!-- Formats with commas --}}
+{{currency value}}        {{!-- $1,234 --}}
+{{number value}}          {{!-- 1,234 --}}
 {{date value}}            {{!-- Formats date --}}
-{{#if condition}}...{{/if}}
+{{pluralize count "file" "files"}}
+{{#if (eq a b)}}  {{#if (gt a b)}}  {{#if (lt a b)}}
 ```
+
+The app wraps the rendered sections with a header (institution, classification, grant period, retention), regulatory guidance driven by the classification flags, and a footer that adds `meta.cost_disclaimer.long` and `legal.yaml`'s `tier_notices` / `dmp_legal_framing`.
 
 ### Example: `config/dmp-templates/hpc-storage/default.md`
 
 ```markdown
-## Data Storage and Preservation
+## HPC Storage
 
-Research data will be stored on {{institution.name}}'s {{services.storage.name}} system,
-a {{services.storage.description}}.
+Research data will be stored on {{institution.name}}'s Ceph storage cluster.
 
-**Active Storage Allocation:** {{number services.storage.estimate}} {{services.storage.unit}}
-**Estimated Monthly Cost:** {{currency services.storage.monthly_cost}}
+**Storage Allocation:**
+- Active storage needed: {{number service.estimate}} TB
+- Estimated monthly cost: {{currency service.monthly_cost}}
+- Grant period cost: {{currency service.total_cost}}
 
-{{#if services.archive}}
-Long-term data preservation will use {{services.archive.name}} at
-{{currency services.archive.price}}/TB/month. Estimated archive storage:
-{{number services.archive.estimate}} TB.
+{{#if service.notes}}
+**Notes:**
+{{service.notes}}
 {{/if}}
 
-### Backup and Recovery
-
-{{#if services.storage.comparison_features.snapshots.value}}
-The storage system provides {{services.storage.comparison_features.snapshots.detail}}.
-{{else}}
-Users are responsible for maintaining their own backups.
+{{#if retention}}
+**Long-Term Retention:**
+Data subject to {{retention.name}} requirements will be retained for
+{{retention.years}} years.
+{{#if archive}}
+- Archive storage: {{number archive.estimate}} TB
+- Total retention cost: {{currency archive.total_cost}}
 {{/if}}
-
-### Data Retention
-
-Data will be retained for {{retention.years}} years following project completion,
-in accordance with {{retention.schedule.name}} requirements.
+{{/if}}
 ```
+
+### Export template
+
+`config/export-templates/slate-export.md.hbs` is the Handlebars template for the slate's Markdown export. Every `*.md.hbs` file in that directory is loaded (keyed by filename without the extension), but the app only renders `slate-export`.
 
 ---
 
@@ -2046,6 +2229,7 @@ npm run build:config
 ```
 
 Validation checks:
+- Every config file in the build list exists
 - All YAML syntax is valid
 - All service references exist
 - All tier references exist
@@ -2071,7 +2255,7 @@ npm run build
 npm run preview
 ```
 
-Deploy to any static host (Netlify, Vercel, GitHub Pages, S3, etc.). No server-side code required for V1.
+Deploy to any static host (Netlify, Vercel, GitHub Pages, S3, etc.) with an SPA fallback to `index.html` (the app uses history-mode routing). No server-side code is required, except the optional feedback API — set `meta.feedback.enabled: false` if you don't run it. See [DOCKER.md](./DOCKER.md) for the containerized setup.
 
 ---
 
@@ -2080,7 +2264,7 @@ Deploy to any static host (Netlify, Vercel, GitHub Pages, S3, etc.). No server-s
 ### Adding a new service
 
 1. Add service definition to `services.yaml`
-2. Add tier mappings (or use defaults from `mappings.yaml`)
+2. Add tier mappings in `mappings.yaml` (there are no defaults — an unmapped service is hidden)
 3. Add comparison features matching category definitions
 4. Create DMP template in `dmp-templates/`
 5. Optionally add to bundles in `bundles.yaml`
@@ -2088,9 +2272,9 @@ Deploy to any static host (Netlify, Vercel, GitHub Pages, S3, etc.). No server-s
 
 ### Adding a new data tier
 
-1. Add tier to `tiers.yaml`
-2. Add workflow to `tier-workflow.yaml`
-3. Update `tier-questionnaire.yaml` if needed
+1. Add tier to `tiers.yaml` (the questionnaire can only recommend `low`/`medium`/`high`/`restricted` — see the note under [tiers.yaml](#tiersyaml))
+2. Add workflow to `tier-workflow.yaml` (not rendered yet)
+3. Update `tier-questionnaire.yaml`, `legal.yaml` `tier_notices`, and `bundles.yaml` `recommended_tiers` if needed
 4. Add service mappings for new tier
 5. Update retention schedules if applicable
 6. Run `npm run build:config`
@@ -2104,9 +2288,10 @@ Deploy to any static host (Netlify, Vercel, GitHub Pages, S3, etc.). No server-s
 ### Adding a calculator
 
 1. Create Vue component in `src/components/estimate/` (e.g. `src/components/estimate/MyThingCalculator.vue`)
-2. Add to `calculators.yaml` enabled list
-3. Add configuration in `calculator_config` section
-4. Calculator appears in Help Me Estimate modal
+2. Register it in the `calculatorComponents` map in `src/views/CalculatorBrowser.vue`
+3. Add to `calculators.yaml` enabled list
+4. Add configuration in `calculator_config` section
+5. Calculator appears on the Calculators explore page (`/calculators`)
 
 ### Changing institution branding
 

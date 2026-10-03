@@ -18,6 +18,7 @@ Welcome to the OpenResearchDataPlanner administration guide. This folder contain
 | [CUSTOMIZE.md](./CUSTOMIZE.md) | Complete configuration reference | Adding services, tiers, bundles |
 | [CALCULATOR-DEVELOPMENT.md](./CALCULATOR-DEVELOPMENT.md) | Build custom "Help Me Estimate" calculators | Domain-specific estimation tools |
 | [VALIDATION.md](./VALIDATION.md) | Troubleshooting config errors | When `npm run build:config` fails |
+| [DOCKER.md](./DOCKER.md) | Docker / Caddy deployment, feedback API | Container deployment |
 | [UPGRADING.md](./UPGRADING.md) | Version migration guide | Pulling upstream changes |
 
 ---
@@ -41,8 +42,16 @@ config/
 ├── tier-workflow.yaml        # Compliance approval processes
 ├── retention.yaml            # Data retention schedules
 ├── software.yaml             # Licensed software catalog
-└── dmp-templates/            # Handlebars templates for DMP output
+├── help-videos.yaml          # Embedded help video configuration
+├── legal.yaml                # Terms, disclaimers, per-tier legal notices
+├── explainers.yaml           # Concept explainers + just-in-time nudges
+├── dmp-templates/            # Handlebars templates for DMP output
+├── export-templates/         # Handlebars template for the slate export
+├── ai-guidance/              # AI guidance applet configs (/ai)
+└── clinical/                 # Clinical guidance applet configs
 ```
+
+Every top-level `.yaml` above must exist — `npm run build:config` exits with `Config file not found` if one is missing.
 
 ### Essential Commands
 
@@ -61,12 +70,12 @@ npm run build
 
 ## Examples
 
-The [examples/minimal-config/](./examples/minimal-config/) directory contains a stripped-down configuration with:
+The [examples/minimal-config/](./examples/minimal-config/) directory contains stripped-down versions of five files (`meta`, `tiers`, `services`, `mappings`, `bundles`) with:
 - 3 services
 - 2 tiers
 - 1 bundle
 
-Use this as a reference for the minimum viable configuration.
+Use it as a reference, not a complete drop-in: copy those files over the demo config and keep the rest. Because it uses its own tier slugs (`standard`, `sensitive`), you must also update the tier slugs in `retention.yaml` (`applies_to_tiers`) before validation passes, and the services rely on the demo `categories.yaml` defining `compute` and `storage`.
 
 ---
 

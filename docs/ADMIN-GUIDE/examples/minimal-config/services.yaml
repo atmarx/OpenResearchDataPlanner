@@ -22,12 +22,11 @@ services:
     cost_model:
       type: unit                            # Per-unit pricing
       unit: "SU"                            # Service Unit
+      unit_label: "SU"                      # Display label in the UI
       price: 0.05                           # $0.05 per SU
-      billing_period: usage                 # Billed on usage
 
     # Estimation UI
     estimation:
-      unit: "SU"
       prompt: "How many Service Units do you need?"
       default_value: 10000
       presets:                              # Quick-select options
@@ -52,16 +51,16 @@ services:
 
     # Tiered pricing model
     cost_model:
-      type: tiered                          # Volume-based pricing
+      type: tiered                          # Volume-based pricing (marginal bands)
       unit: "TB"
-      billing_period: month
-      tiers:
-        - up_to: 1
-          price: 0
-          note: "First 1 TB free"
+      unit_label: "TB"
+      tiers:                                # each up_to is a cumulative ceiling
+        # The free first TB comes from the subsidy below (free units come off
+        # the quantity BEFORE banding) — don't also add a $0 band, or users
+        # get the free allowance twice.
         - up_to: 10
-          price: 10                         # $10/TB/month for 1-10 TB
-        - above: 10
+          price: 10                         # $10/TB/month for billable TB up to 10
+        - up_to: null                       # null = unbounded top band
           price: 8                          # $8/TB/month above 10 TB
 
     # Automatic subsidy
@@ -74,7 +73,6 @@ services:
         auto_apply: true                    # Applied automatically
 
     estimation:
-      unit: "TB"
       prompt: "How much storage do you need?"
       default_value: 5
 
@@ -92,11 +90,10 @@ services:
     cost_model:
       type: unit
       unit: "TB"
+      unit_label: "TB"
       price: 30                             # Higher price for compliance
-      billing_period: month
 
     estimation:
-      unit: "TB"
       prompt: "How much secure storage do you need?"
       default_value: 1
 

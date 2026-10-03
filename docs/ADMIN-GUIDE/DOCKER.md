@@ -68,26 +68,34 @@ docker-compose -f docker-compose.dev.yml restart
 
 ## config-local Structure
 
+Because `config-local/` is mounted over `/app/config`, it must contain **every** file the build loads — a missing YAML file fails the build with `Config file not found` and the container exits. Copy the whole `config/` tree (step 2 above) and edit from there.
+
 ```
 config-local/
-├── meta.yaml              # Institution name, contacts (required)
-├── services.yaml          # Your services and pricing (required)
-├── tiers.yaml             # Tier definitions (required)
-├── help.yaml              # Support contacts
+├── meta.yaml              # Institution name, contacts, branding
+├── services.yaml          # Your services and pricing
+├── tiers.yaml             # Tier definitions
 ├── categories.yaml        # Service categories
-├── bundles.yaml           # Pre-configured bundles
 ├── mappings.yaml          # Tier-to-service matrix
+├── bundles.yaml           # Pre-configured bundles
+├── help.yaml              # Support contacts
+├── help-videos.yaml       # Embedded help videos
 ├── acronyms.yaml          # Terminology (usually keep default)
 ├── calculators.yaml       # Calculator config (usually keep default)
 ├── tier-questionnaire.yaml
+├── tier-workflow.yaml
 ├── retention.yaml
 ├── software.yaml
+├── legal.yaml             # Disclaimer / no-warranty boilerplate
+├── explainers.yaml        # Explainer content
 ├── dmp-templates/         # Per-service Handlebars-templated Markdown for DMP output
 │   └── <service-slug>/
 │       └── <variant>.md    # e.g. default.md, high.md (build reads only .md; .hbs files here are ignored)
-├── images/                # Branding (optional)
+├── export-templates/      # *.md.hbs export templates (slate-export.md.hbs)
+├── ai-guidance/           # AI guidance applet configs (optional dir)
+├── clinical/              # Clinical guidance applet configs (optional dir)
+├── images/                # Branding (optional) — copied to /images/ at startup
 │   ├── logo.png
-│   ├── logo-dark.png
 │   └── favicon.ico
 └── css/                   # Custom styles (optional)
     └── custom.css         # → loaded as /custom/custom.css
@@ -136,7 +144,7 @@ If you're deploying for a different institution:
 
 3. **Edit these files minimum**:
    - `meta.yaml` — Institution name, logo, contacts
-     - Leave `links.privacy`, `links.terms`, etc. blank to hide them
+     - `links` is a list of `{ label, url }` footer links — remove an entry (or leave its `url` blank) to hide it
    - `services.yaml` — Your actual services and pricing
    - `tiers.yaml` — Your tier names (if different)
    - `help.yaml` — Your support contacts
@@ -148,10 +156,13 @@ If you're deploying for a different institution:
    cp your-favicon.ico config-local/images/favicon.ico
    ```
 
-   Supported image overrides:
-   - `images/logo.png` — Header logo
-   - `images/logo-dark.png` — Logo for dark mode (optional)
-   - `images/favicon.ico` — Browser favicon
+   The dev entrypoint copies `config-local/images/*` into `/images/`, so point `meta.yaml` at the files you added — nothing is picked up by filename alone:
+   ```yaml
+   institution:
+     logo: "/images/logo.png"          # Header logo
+     footer_logo: "/images/logo.png"   # Footer crest (optional; falls back to logo)
+   ```
+   `images/favicon.ico` is the one exception — it's also copied to `/favicon.ico` and used automatically.
 
 5. **Add custom CSS** (optional):
    ```bash
@@ -179,14 +190,17 @@ If you're deploying for a different institution:
        }
    ```
 
-4. **Run with dev compose** (for testing):
+6. **Run with dev compose** (for testing):
    ```bash
    docker-compose -f docker-compose.dev.yml up --build
    ```
 
-5. **Once stable**, bake config into production image:
+7. **Once stable**, bake config into production image. The production build only reads YAML and templates from `config/` — it does not process `config/images/` or `config/css/`, so move those into `public/` yourself:
    ```bash
    cp -r config-local/* config/
+   cp -r config-local/images/* public/images/      # if you added images
+   mkdir -p public/custom && cp -r config-local/css/* public/custom/   # if you added CSS
+   rm -rf config/images config/css
    docker-compose up --build -d
    ```
 
@@ -198,10 +212,15 @@ If running behind nginx/Caddy/Traefik:
 
 ```yaml
 # docker-compose.override.yml
+# Compose *concatenates* port lists across files, so use !override
+# (Compose v2.24+) to replace the base "4000:3000" mapping instead of adding to it.
 services:
   planner:
-    ports:
+    ports: !override
       - "127.0.0.1:4000:3000"  # Only localhost
+  feedback-api:
+    ports: !override
+      - "127.0.0.1:4001:4001"  # Caddy inside the planner container already proxies /api/*
 ```
 
 Then proxy from your frontend:
@@ -224,12 +243,16 @@ example.edu {
 
 ## Environment Variables
 
-Currently none required. Future versions may support:
+The planner container takes none. The `feedback-api` service (started by both compose files) reads:
 
-| Variable | Description |
-|----------|-------------|
-| `CONFIG_DIR` | Override config directory location |
-| `PORT` | Override port (default 4000) |
+| Variable | Default (docker-compose.yml) | Description |
+|----------|------------------------------|-------------|
+| `FEEDBACK_API_KEY_WRITE` → `API_KEY_WRITE` | `changeme-write` | Key the browser sends when submitting feedback. Must match `feedback.api_key` in `meta.yaml`. |
+| `FEEDBACK_API_KEY_ADMIN` → `API_KEY_ADMIN` | `changeme-admin` | Admin key for reading feedback stats (IT Workbench). |
+| `CORS_ORIGIN` | `http://localhost:4000` | Allowed browser origin. |
+| `PORT` / `DB_PATH` | `4001` / `/app/data/feedback.db` | Set in the compose file; data persists in the `feedback-data` volume. |
+
+Set the keys in a `.env` file next to `docker-compose.yml` — and change both from the defaults before going live. `docker-compose.dev.yml` hard-codes `dev-write-key` / `dev-admin-key` instead. If you don't want feedback collection, set `feedback.enabled: false` in `meta.yaml` and remove the `feedback-api` service.
 
 ---
 

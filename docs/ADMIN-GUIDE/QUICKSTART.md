@@ -6,7 +6,7 @@ Get your own branded OpenResearchDataPlanner running in 15 minutes.
 
 ## Prerequisites
 
-- Node.js 18+ and npm
+- Node.js 20+ and npm (`marked`, `sharp`, and `vitest` all require Node 20)
 - Git
 - A text editor
 
@@ -66,13 +66,13 @@ If you have a logo, add it to `public/images/logo.svg`.
 
 ## Step 3: Define Your Tiers (3 min)
 
-Most institutions use 3-4 tiers. Edit `config/tiers.yaml`:
+Most institutions use 3-4 tiers. Edit `config/tiers.yaml`. Change the names, descriptions, and examples freely, but **keep the demo's tier slugs** (`low`, `medium`, `high`, `restricted`) unless you're ready to chase them through the rest of the config — see the note below.
 
 ```yaml
 # config/tiers.yaml
 
 tiers:
-  - slug: public
+  - slug: low
     name: "Public"
     short_name: "Public"
     sort_order: 1
@@ -84,7 +84,7 @@ tiers:
     consultation_required: false
     retention_questions_required: false
 
-  - slug: internal
+  - slug: medium
     name: "Internal"
     short_name: "Internal"
     sort_order: 2
@@ -96,7 +96,7 @@ tiers:
     consultation_required: false
     retention_questions_required: false
 
-  - slug: regulated
+  - slug: high
     name: "Regulated"
     short_name: "Regulated"
     sort_order: 3
@@ -105,13 +105,14 @@ tiers:
     examples:
       - "Patient medical records"
       - "Student education records"
-    consultation_required: true
+    # true would END the wizard at a consultation step for this tier —
+    # researchers would never reach service selection. Leave it false when
+    # the tier has self-service options (approval is set per mapping instead).
+    consultation_required: false
     retention_questions_required: true
-    consultation_message: |
-      Regulated data requires consultation with the
-      Research Security team before provisioning.
-    consultation_contact: "data-security@contoso.edu"
 ```
+
+> **Tier slugs are referenced elsewhere.** `bundles.yaml` (`recommended_tiers`), `retention.yaml` (`applies_to_tiers`), `mappings.yaml`, `legal.yaml` (`tier_notices`), and `tier-questionnaire.yaml` (`sets_tier`) all name tiers by slug, and the questionnaire's tier ranking in `src/lib/classifyTier.js` only knows `low`/`medium`/`high`/`restricted`. The example above drops the demo's `restricted` tier, so also remove `restricted` from the `applies_to_tiers` lists in `config/retention.yaml` — otherwise `npm run validate:config` fails with `Retention schedule "export-control" references unknown tier: "restricted"`.
 
 ---
 
@@ -135,8 +136,8 @@ services:
     cost_model:
       type: unit
       unit: "SU"
+      unit_label: "SU"
       price: 0.05
-      billing_period: usage
 
     estimation:
       unit_display: "SU"
@@ -157,19 +158,17 @@ services:
     cost_model:
       type: tiered
       unit: "TB"
-      billing_period: month
-      tiers:
-        - up_to: 1
-          price: 0
-          note: "First 1 TB free"
+      unit_label: "TB"
+      tiers:                            # marginal bands; up_to = cumulative ceiling
         - up_to: 10
           price: 10
-        - above: 10
+        - up_to: null                   # null = unbounded top band
           price: 8
 
-    subsidies:
+    subsidies:                          # first 1 TB free (comes off before banding)
       - slug: free-tier
         name: "Free Tier"
+        description: "First 1 TB included"
         discount_type: free_units
         discount_value: 1
         auto_apply: true
@@ -189,8 +188,8 @@ services:
     cost_model:
       type: unit
       unit: "TB"
+      unit_label: "TB"
       price: 25
-      billing_period: month
 
     documentation_url: "https://storage.contoso.edu/hipaa"
 ```
@@ -203,28 +202,35 @@ Now wire each service to the tiers that can use it in `config/mappings.yaml`:
 
 mappings:
   - service: hpc-compute
-    tier: public
+    tier: low
     approval: automatic
 
   - service: hpc-compute
-    tier: internal
+    tier: medium
     approval: automatic
 
   - service: research-storage
-    tier: public
+    tier: low
     approval: automatic
 
   - service: research-storage
-    tier: internal
+    tier: medium
     approval: automatic
 
   - service: hipaa-storage
-    tier: regulated
+    tier: high
     approval: consultation
     approval_contact: "data-security@contoso.edu"
 ```
 
 See [CUSTOMIZE.md](./CUSTOMIZE.md#mappingsyaml) for optional mapping fields (`notes`, `dmp_template`, `compliance` metadata).
+
+Finally, the demo `config/bundles.yaml` references the Northwinds services you just replaced, so validation will fail until you clear it. Start with an empty list and add your own bundles later (see [Create Bundles](#create-bundles)):
+
+```yaml
+# config/bundles.yaml
+bundles: []
+```
 
 ---
 
@@ -263,7 +269,7 @@ Before going live:
 
 See [CUSTOMIZE.md](./CUSTOMIZE.md) for the complete service schema including:
 - Comparison features for side-by-side comparison
-- Multiple cost models (unit, tiered, subscription, consultation)
+- Cost models (`unit`, `tiered`, `consultation`)
 - Subsidies and bulk discounts
 - DMP templates
 
@@ -277,8 +283,8 @@ bundles:
     name: "HPC Starter"
     description: "Everything to get started with HPC"
     recommended_tiers:
-      - public
-      - internal
+      - low
+      - medium
     services:
       - service: hpc-compute
         default_estimate: 10000
@@ -304,6 +310,8 @@ Deploy the `dist/` folder to any static host:
 npm run build
 # Deploy contents of dist/ to your web server
 ```
+
+The app uses HTML5 history routing, so configure your host to serve `index.html` for unknown paths (SPA fallback) — otherwise deep links like `/services` or `/workbench` 404 on refresh. The feedback widget needs the separate feedback API (see [DOCKER.md](./DOCKER.md)); on a pure static host, set `feedback.enabled: false` in `meta.yaml`.
 
 Popular options:
 - GitHub Pages

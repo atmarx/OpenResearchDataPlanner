@@ -43,9 +43,13 @@ tiers:
       - "Identifiable human subjects data"
 
     # Workflow settings
-    consultation_required: true        # Show the consultation step before service selection
+    # true would END the wizard at a consultation step (welcome -> tier ->
+    # consultation) and secure-storage could never be selected. Keep it false
+    # and gate approval per service in mappings.yaml instead.
+    consultation_required: false
     retention_questions_required: true # Ask retention questions for regulated data
-    consultation_message: |
-      Projects with sensitive data require a consultation to verify
-      compliance requirements before provisioning services.
-    consultation_contact: "rc-help@example.edu"
+    # Only used when consultation_required is true:
+    # consultation_message: |
+    #   Projects with sensitive data require a consultation to verify
+    #   compliance requirements before provisioning services.
+    # consultation_contact: "rc-help@example.edu"
