@@ -140,7 +140,7 @@ concepts:
     triggers:
       - action: "wipe-slate"
     script_notes: |
-      - "Click 'Wipe' to clear everything and start over"
+      - "Click the trash icon ('Clear slate') to clear everything and start over"
       - "This doesn't affect any submitted requests - just your current draft"
       - "Your auto-saved progress will be gone, but you can always rebuild"
 
@@ -454,7 +454,7 @@ wizard_steps:
       - action: "open-help"
     script_notes: |
       - "This wizard helps you plan research computing for your grant"
-      - 7 steps: Project info → Data tier → Duration → Services → Estimates → Review → Export
+      - 8 steps: Welcome → Data tier → Grant period → Retention → Services → Software → Estimates → Results
       - Time estimate: "Most people finish in 10-15 minutes"
       - Saving: "Everything auto-saves. You can come back anytime."
       - The result: "Cost estimates for your budget + DMP text for your proposal"
@@ -474,7 +474,7 @@ wizard_steps:
       - "If in doubt, pick L2. You can always upgrade."
 
   - slug: wizard-service-selection
-    title: "Step 4: Choosing Your Services"
+    title: "Step 5: Choosing Your Services"
     description: "Bundles vs individual services"
     duration: "2:00"
     thumbnail: "service-selection.jpg"
@@ -484,10 +484,10 @@ wizard_steps:
       - "You can pick a bundle (pre-configured package) or build your own"
       - When to use bundles: "If a bundle matches your work, start there"
       - Customizing: "You can add/remove services from any bundle"
-      - Comparison: "Click 'Compare' to see services side-by-side"
+      - Comparison: "Click 'Compare Options' to see services side-by-side"
 
   - slug: wizard-estimates
-    title: "Step 5: Usage Estimates"
+    title: "Step 7: Usage Estimates"
     description: "How to fill in quantities you don't know"
     duration: "2:30"
     thumbnail: "estimates.jpg"

@@ -67,9 +67,10 @@ contact_options:
       # Email the state link to user
       email_link: true
 
-# Context-specific help messages
+# Context-specific help messages. Keys must match wizard step ids in
+# src/composables/useWizard.js (GetHelpModal looks up the current step id).
 contextual_help:
-  tier-selection:
+  tier-select:
     title: "Not sure which data tier?"
     message: |
       Data classification can be tricky. If your research involves any
@@ -77,7 +78,7 @@ contextual_help:
       we recommend scheduling a quick consultation.
     show_schedule_cta: true
 
-  storage-estimate:
+  estimate:
     title: "Unsure about storage needs?"
     message: |
       Try our calculators, or describe your data types and we'll help
