@@ -1,6 +1,7 @@
 import { ref, computed, reactive, watch } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSlateStore } from '@/stores/slateStore'
+import { resolveCalculatorTarget } from '@/lib/calculatorTargets'
 
 /**
  * Simple debounce function
@@ -11,18 +12,6 @@ function debounce(fn, delay = 150) {
     clearTimeout(timeoutId)
     timeoutId = setTimeout(() => fn(...args), delay)
   }
-}
-
-/**
- * Default service mappings for calculator results, keyed by calculator category
- * (enabled_calculators in calculators.yaml). A calculator overrides this with
- * calculator_config.<id>.target_services.default. Slugs must exist in
- * config/services.yaml — an unknown slug still lands in the slate, priced at $0.
- */
-const DEFAULT_TARGET_SERVICES = {
-  storage: 'hpc-storage',
-  cpu: 'hpc-cpu',
-  gpu: 'hpc-gpu'
 }
 
 /**
@@ -89,14 +78,10 @@ export function useCalculator(calculatorId) {
   /**
    * Get the target service for this calculator's output
    */
-  const targetService = computed(() => {
-    // Check if calculator has explicit target_services
-    if (config.value?.target_services?.default) {
-      return config.value.target_services.default
-    }
-    // Fall back to category default
-    return DEFAULT_TARGET_SERVICES[category.value] || 'hpc-storage'
-  })
+  const targetService = computed(() => resolveCalculatorTarget(config.value, category.value))
+
+  // Whether the result has a real service to land on in the slate
+  const canAddToSlate = computed(() => !!configStore.servicesBySlug[targetService.value])
 
   /**
    * Get alternative target services
@@ -614,6 +599,13 @@ export function useCalculator(calculatorId) {
 
     const service = serviceSlug || targetService.value
 
+    // An unknown slug would land in the slate priced at $0, which reads as
+    // "free" on a grant budget. Refuse instead.
+    if (!service || !configStore.servicesBySlug[service]) {
+      error.value = 'This estimate can\'t be added to the slate: no matching service is configured. Note the figure for your budget.'
+      return false
+    }
+
     slateStore.addItem({
       service,
       quantity: result.value,
@@ -743,6 +735,7 @@ export function useCalculator(calculatorId) {
     // Computed
     outputUnit,
     targetService,
+    canAddToSlate,
     alternativeServices,
     relatableComparison,
     displayResult,

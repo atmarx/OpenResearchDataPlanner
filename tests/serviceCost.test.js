@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
 import yaml from 'js-yaml'
-import { computeServiceCost, computeServiceLineItem, computeEstimate } from '../src/lib/pricing.js'
+import { computeServiceCost, computeServiceLineItem, computeEstimate, computeFanda, softwareLicenseCost } from '../src/lib/pricing.js'
 
 // Load the REAL price list so these tests fail if the cost_model / subsidies
 // schema ever drifts from what the engine reads (the $0-slate regression).
@@ -189,5 +189,63 @@ describe('computeEstimate — full budget roll-up', () => {
     expect(est.byService).toHaveLength(1)
     expect(est.byService[0].service_slug).toBe('hpc-compute')
     expect(est.monthlyTotal).toBeCloseTo(80, 6) // 1000 SU in the first band @ $0.08
+  })
+})
+
+describe('computeFanda — F&A skips fa_exempt services', () => {
+  it('charges F&A only on non-exempt services (hpc-compute exempt, aws-compute-small not)', () => {
+    expect(svc('hpc-compute').fa_exempt).toBe(true)
+    expect(svc('aws-compute-small').fa_exempt).toBeFalsy()
+
+    const items = [
+      { service: 'hpc-compute', monthlyEstimate: 1000, annualEstimate: 12000 },
+      { service: 'aws-compute-small', monthlyEstimate: 500, annualEstimate: 6000 }
+    ]
+    const f = computeFanda(items, bySlug(), 0.54)
+    expect(f.baseAnnual).toBe(6000)
+    expect(f.exemptAnnual).toBe(12000)
+    expect(f.fandaAnnual).toBeCloseTo(3240, 6) // 6000 * 0.54, not 18000 * 0.54
+    expect(f.fandaMonthly).toBeCloseTo(270, 6)
+  })
+
+  it('an all-exempt slate carries no F&A', () => {
+    const items = [{ service: 'hpc-storage', monthlyEstimate: 100, annualEstimate: 1200 }]
+    expect(computeFanda(items, bySlug(), 0.54).fandaAnnual).toBe(0)
+  })
+
+  it('treats an unknown service as F&A-bearing (over-state, never under-state)', () => {
+    const items = [{ service: 'gone-from-config', monthlyEstimate: 10, annualEstimate: 120 }]
+    expect(computeFanda(items, bySlug(), 0.5).fandaAnnual).toBe(60)
+  })
+})
+
+describe('softwareLicenseCost — BYOL cost reaches the slate (real software.yaml)', () => {
+  let software
+  beforeAll(() => {
+    const p = path.resolve(__dirname, '..', 'config', 'software.yaml')
+    software = yaml.load(fs.readFileSync(p, 'utf8')).software
+  })
+  const sw = (slug) => software.find((s) => s.slug === slug)
+
+  it('a numeric cost_per_seat becomes costToUser (ls-dyna, $15,000/year)', () => {
+    expect(softwareLicenseCost(sw('ls-dyna'))).toEqual({ costToUser: 15000, costEstimate: null, costPeriod: 'year' })
+  })
+
+  it('a cost_estimate range is kept as a display-ready estimate (cadence)', () => {
+    const c = softwareLicenseCost(sw('cadence'))
+    expect(c.costToUser).toBeNull()
+    expect(c.costEstimate).toBe('$50,000–$150,000')
+    expect(c.costPeriod).toBe('year')
+  })
+
+  it('BYOL with no published price carries no cost (schrodinger → vendor quote)', () => {
+    expect(softwareLicenseCost(sw('schrodinger'))).toEqual({ costToUser: null, costEstimate: null, costPeriod: null })
+  })
+
+  it('every BYOL title with a price in software.yaml yields a cost', () => {
+    for (const s of software.filter((x) => x.license_info?.cost_per_seat != null || x.license_info?.cost_estimate != null)) {
+      const c = softwareLicenseCost(s)
+      expect(c.costToUser ?? c.costEstimate, s.slug).not.toBeNull()
+    }
   })
 })

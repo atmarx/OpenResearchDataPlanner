@@ -178,8 +178,9 @@ cost_disclaimer:
   long: |
     These figures are planning estimates, not a quote for services. ...
 
-# F&A in the slate export. default_rate is applied to the whole direct
-# total; rate_label / rate_basis / note / policy_url are display only.
+# F&A in the slate export. default_rate is applied to direct costs on
+# services without `fa_exempt: true`; rate_label / rate_basis / note /
+# policy_url are display only.
 indirect_costs:
   default_rate: 0.54
   rate_label: "54%"
@@ -493,7 +494,7 @@ services:
   # ============================================================
 
   - slug: hpc-compute
-    fa_exempt: true                              # Optional — internal service center flag (metadata, not yet rendered)
+    fa_exempt: true                              # Optional — internal service center; no F&A charged on it in the export
     name: "HPC Compute (CPU)"
     category: compute                            # Must match a category slug in categories.yaml
     description: "CPU compute on SLURM cluster for batch workloads"
@@ -660,7 +661,7 @@ services:
 **Fields defined in config but not currently rendered** (recorded for reference, reserved for future work):
 
 - `long_description`, `documentation_url` — present on every demo service, but no component renders them for services today (`documentation_url` is only read on software entries).
-- `fa_exempt` — used in real configs to flag internal service centers (F&A-exempt). Not read yet: the slate export applies `meta.indirect_costs.default_rate` to the whole direct total, exempt services included.
+- `fa_exempt` — flags internal service centers and free allocations as F&A-exempt. The slate export charges `meta.indirect_costs.default_rate` only on non-exempt services, and lists the exempt total separately.
 - `recommended_with` — planned cross-sell prompt ("pair storage with compute"). Defined but not surfaced.
 - `cost_model.billing_period`, `cost_model.unit_description`, `cost_model.note`, `cost_model.contact` — metadata honored by configs but not consumed by the wizard today. All prices are treated as monthly.
 
@@ -2085,9 +2086,9 @@ search:
   placeholder: "Search software..."
 ```
 
-**Other software fields the app reads:** `description_long`, `license_model` (`byol` triggers a bring-your-own-license notice in the wizard), `license_server.{we_can_host,contact}`, `license_info.{type,server,contact,notes,cost_estimate,cost_notes,cost_period}`, `institutional_support_url` / `institutional_support_label`, `export_control.{classification,eccn,restriction,notes}`, and `tier_restrictions.{min_tier,max_tier,notes}` (catalog badges).
+**Other software fields the app reads:** `description_long`, `license_model` (`byol` triggers a bring-your-own-license notice in the wizard), `license_server.{we_can_host,contact}`, `license_info.{type,server,contact,notes,cost_per_seat,cost_estimate,cost_notes,cost_period}` (`cost_per_seat` — a number — or `cost_estimate` — a range like `"50000-150000"` — is carried onto the slate for BYOL titles), `institutional_support_url` / `institutional_support_label`, `export_control.{classification,eccn,restriction,notes}`, and `tier_restrictions.{min_tier,max_tier,notes}` (catalog badges).
 
-**Not read today** (safe to keep, no effect): `availability.<platform>.gpu_support`, `parallel_toolbox`, `products`, `approval_required`, `no_setup`, `packages_included`, `requires_own_license`; `toolboxes`, `add_ons`, `byol_available`; `license_info.teaching_licenses/research_licenses/cost_per_seat/vendor_contact/request_quote_cta`; `platforms.*.typical_use`; `search.search_fields`.
+**Not read today** (safe to keep, no effect): `availability.<platform>.gpu_support`, `parallel_toolbox`, `products`, `approval_required`, `no_setup`, `packages_included`, `requires_own_license`; `toolboxes`, `add_ons`, `byol_available`; `license_info.teaching_licenses/research_licenses/vendor_contact/request_quote_cta`; `platforms.*.typical_use`; `search.search_fields`.
 
 ---
 

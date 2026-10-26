@@ -420,10 +420,19 @@ function handleWipeSlate() {
                 <div class="text-sm text-text-muted">{{ sw.licenseModel }}</div>
               </div>
               <div class="flex items-center gap-4">
-                <div v-if="sw.costToUser !== null" class="text-right">
+                <div v-if="sw.costToUser != null" class="text-right">
                   <div class="font-semibold text-text">
                     {{ formatCurrency(sw.costToUser) }}/{{ sw.costPeriod || 'yr' }}
                   </div>
+                </div>
+                <div v-else-if="sw.costEstimate" class="text-right">
+                  <div class="font-semibold text-text">
+                    {{ sw.costEstimate }}/{{ sw.costPeriod || 'yr' }}
+                  </div>
+                  <div class="text-xs text-text-muted">vendor estimate</div>
+                </div>
+                <div v-else-if="sw.licenseModel === 'byol'" class="text-sm text-text-muted">
+                  Vendor quote needed
                 </div>
                 <div v-else class="text-sm text-text-muted">
                   Included

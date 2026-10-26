@@ -2,6 +2,7 @@ import { computed, ref } from 'vue'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
 import { useSlateStore } from '@/stores/slateStore'
+import { softwareLicenseCost } from '@/lib/pricing'
 
 /**
  * Wizard step definitions, in flow order. Order matters beyond display:
@@ -328,15 +329,15 @@ export function useWizard() {
       }
     }
 
-    // Software: mirror sessionStore.selected_software into the slate. A null
-    // costToUser renders as "Included" (campus-licensed); BYOL keeps its note.
+    // Software: mirror sessionStore.selected_software into the slate. BYOL
+    // licence cost comes from software.yaml license_info (softwareLicenseCost);
+    // campus-licensed titles carry no cost and render as "Included".
     for (const sel of sessionStore.session.selected_software) {
       const sw = configStore.config?.software?.software?.find(s => s.slug === sel.software_slug)
       slateStore.addSoftware({
         id: sw?.name || sel.software_slug,
         licenseModel: sw?.license_model || 'campus',
-        costToUser: sw?.cost_to_user ?? null,
-        costPeriod: sw?.cost_period || null,
+        ...softwareLicenseCost(sw),
         note: sel.note || null
       })
     }

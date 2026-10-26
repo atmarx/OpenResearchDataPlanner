@@ -34,7 +34,7 @@
 ## Software Requested
 
 {{#each software}}
-- **{{id}}** ({{licenseModel}}){{#if costToUser}} — {{currency costToUser}}/{{costPeriod}}{{/if}}
+- **{{id}}** ({{licenseModel}}){{#if costToUser}} — {{currency costToUser}}/{{costPeriod}}{{else if costEstimate}} — {{costEstimate}}/{{costPeriod}} (vendor estimate){{else if (eq licenseModel "byol")}} — vendor quote needed{{/if}}
 {{/each}}
 {{/if}}
 
@@ -48,6 +48,10 @@
 | Monthly | {{currency totals.monthly}} | {{currency totals.fandaMonthly}} | {{currency totals.totalMonthlyWithFanda}} |
 | Annual | {{currency totals.annual}} | {{currency totals.fandaAnnual}} | {{currency totals.totalAnnualWithFanda}} |
 
+{{#if totals.fandaExemptAnnual}}
+F&A is charged on {{currency totals.fandaBaseAnnual}}/yr of direct costs. {{currency totals.fandaExemptAnnual}}/yr is for F&A-exempt services (internal service centers and free allocations), which carry no F&A.
+
+{{/if}}
 > F&A (indirect costs) calculated at the federally negotiated rate. Confirm sponsor-specific caps with your grants office.
 {{else}}
 | Period | Cost |

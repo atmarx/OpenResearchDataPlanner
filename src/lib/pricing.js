@@ -253,3 +253,71 @@ export function computeEstimate(selections, { servicesBySlug, grantMonths, reten
     archiveYears: Math.max(0, retentionYears - grantMonths / 12)
   }
 }
+
+/**
+ * F&A (indirect costs) over a set of slate items, skipping services flagged
+ * `fa_exempt: true` in services.yaml (internal service centers, free/NSF-funded
+ * allocations). Items whose service is unknown are treated as F&A-bearing —
+ * over-stating indirects on a grant budget is the safer miss.
+ *
+ * rate_basis (e.g. MTDC) is not modelled beyond the exemption flag.
+ *
+ * @param {Array}  items - slate items { service, monthlyEstimate, annualEstimate }
+ * @param {Object} servicesBySlug - slug -> service config
+ * @param {number} rate - e.g. 0.54
+ * @returns {{ baseMonthly, baseAnnual, exemptMonthly, exemptAnnual,
+ *             fandaMonthly, fandaAnnual }}
+ */
+export function computeFanda(items, servicesBySlug, rate = 0) {
+  let baseMonthly = 0
+  let baseAnnual = 0
+  let exemptMonthly = 0
+  let exemptAnnual = 0
+
+  for (const item of items || []) {
+    const monthly = item.monthlyEstimate || 0
+    const annual = item.annualEstimate || 0
+    if (servicesBySlug?.[item.service]?.fa_exempt) {
+      exemptMonthly += monthly
+      exemptAnnual += annual
+    } else {
+      baseMonthly += monthly
+      baseAnnual += annual
+    }
+  }
+
+  return {
+    baseMonthly,
+    baseAnnual,
+    exemptMonthly,
+    exemptAnnual,
+    fandaMonthly: baseMonthly * rate,
+    fandaAnnual: baseAnnual * rate
+  }
+}
+
+/**
+ * Licence cost of one software.yaml entry, in the shape the slate stores.
+ * Only BYOL titles carry a cost, under license_info: a numeric
+ * `cost_per_seat`, or a `cost_estimate` range string like "50000-150000"
+ * (returned display-ready: "$50,000–$150,000"). Campus-licensed software
+ * returns all nulls (rendered as "Included").
+ *
+ * @param {object} software - a software.yaml entry
+ * @returns {{ costToUser: number|null, costEstimate: string|null, costPeriod: string|null }}
+ */
+export function softwareLicenseCost(software) {
+  const info = software?.license_info
+  if (!info) return { costToUser: null, costEstimate: null, costPeriod: null }
+
+  const seat = Number(info.cost_per_seat)
+  const costToUser = info.cost_per_seat != null && Number.isFinite(seat) ? seat : null
+  const costEstimate = costToUser === null && info.cost_estimate != null
+    ? String(info.cost_estimate)
+        .replace(/\d+(\.\d+)?/g, (n) => `$${Number(n).toLocaleString('en-US')}`)
+        .replace(/\s*-\s*/, '–')
+    : null
+  const costPeriod = costToUser !== null || costEstimate !== null ? (info.cost_period || 'year') : null
+
+  return { costToUser, costEstimate, costPeriod }
+}

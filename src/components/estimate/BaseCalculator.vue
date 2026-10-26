@@ -112,6 +112,15 @@ const props = defineProps({
   justAdded: {
     type: Boolean,
     default: false
+  },
+
+  /**
+   * False when no slate service matches this calculator's output (the LLM
+   * API calculator's dollar figure) — the result stands alone, no button.
+   */
+  canAddToSlate: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -324,7 +333,10 @@ function handleReset() {
         </div>
 
         <!-- Add to Slate Button -->
-        <div class="mt-6 flex justify-center">
+        <p v-if="!canAddToSlate" class="mt-6 text-center text-sm text-text-muted">
+          No slate service is priced this way. Carry this figure into your budget directly.
+        </p>
+        <div v-else class="mt-6 flex justify-center">
           <button
             v-if="!justAdded"
             @click="handleAddToSlate"

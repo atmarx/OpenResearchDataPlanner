@@ -15,6 +15,7 @@ import fs from 'fs'
 import path from 'path'
 import yaml from 'js-yaml'
 import { fileURLToPath } from 'url'
+import { resolveCalculatorTarget } from '../src/lib/calculatorTargets.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -282,6 +283,24 @@ export function validateConfig(config) {
     //     agreements elsewhere can ignore it.
     if (compliance.baa_status === 'in_place' && !compliance.baa_reference) {
       warnings.push(`${where} has baa_status "in_place" but no baa_reference — name the agreement so it can be audited`)
+    }
+  }
+
+  // 6. Validate calculator slate targets. A calculator whose result lands on an
+  //    unknown service adds a $0 line to the slate — it reads as "free".
+  const calculators = config.calculators || {}
+  for (const [category, ids] of Object.entries(calculators.enabled_calculators || {})) {
+    for (const id of ids || []) {
+      const calcConfig = calculators.calculator_config?.[id]
+      const targets = [
+        resolveCalculatorTarget(calcConfig, category),
+        ...(calcConfig?.target_services?.alternatives || [])
+      ].filter(Boolean)
+      for (const slug of targets) {
+        if (!serviceSlugs.has(slug)) {
+          errors.push(`Calculator "${id}" targets unknown service: "${slug}"`)
+        }
+      }
     }
   }
 

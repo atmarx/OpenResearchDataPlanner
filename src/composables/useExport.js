@@ -2,6 +2,7 @@ import Handlebars from 'handlebars'
 import { useSlateStore } from '@/stores/slateStore'
 import { useConfigStore } from '@/stores/configStore'
 import { useSessionStore } from '@/stores/sessionStore'
+import { computeFanda } from '@/lib/pricing'
 
 // Register additional helpers for export templates.
 // currency, number, eq, gt, lt, date and pluralize are registered as an import
@@ -34,23 +35,28 @@ if (!Handlebars.helpers.formatDate) {
 }
 
 // Slate totals plus F&A ("fanda" = Facilities & Administrative, i.e. indirect
-// costs) at meta.indirect_costs.default_rate. The rate is applied to the whole
-// direct total; rate_basis (e.g. MTDC) is only echoed as a label, no exclusions
-// are computed. sponsor_rates in meta.yaml are not read here.
+// costs) at meta.indirect_costs.default_rate. F&A is charged only on services
+// without `fa_exempt: true` (see computeFanda); rate_basis (e.g. MTDC) is only
+// echoed as a label. sponsor_rates in meta.yaml are not read here.
 function buildTotals(slateStore, configStore) {
   const ic = configStore.config?.meta?.indirect_costs
   const rate = ic?.default_rate ?? 0
   const direct = { monthly: slateStore.totalMonthlyCost, annual: slateStore.totalAnnualCost }
+  const fanda = computeFanda(slateStore.slate.items, configStore.servicesBySlug, rate)
   return {
     monthly: direct.monthly,
     annual: direct.annual,
     fandaRate: rate,
     fandaRateLabel: ic?.rate_label ?? null,
     fandaRateBasis: ic?.rate_basis ?? null,
-    fandaMonthly: direct.monthly * rate,
-    fandaAnnual: direct.annual * rate,
-    totalMonthlyWithFanda: direct.monthly * (1 + rate),
-    totalAnnualWithFanda: direct.annual * (1 + rate),
+    fandaBaseMonthly: fanda.baseMonthly,
+    fandaBaseAnnual: fanda.baseAnnual,
+    fandaExemptMonthly: fanda.exemptMonthly,
+    fandaExemptAnnual: fanda.exemptAnnual,
+    fandaMonthly: fanda.fandaMonthly,
+    fandaAnnual: fanda.fandaAnnual,
+    totalMonthlyWithFanda: direct.monthly + fanda.fandaMonthly,
+    totalAnnualWithFanda: direct.annual + fanda.fandaAnnual,
     fandaNote: ic?.note ?? null,
     fandaPolicyUrl: ic?.policy_url ?? null
   }
@@ -202,6 +208,9 @@ export function useExport() {
     md += `- Annual (direct): $${context.totals.annual?.toLocaleString() || 0}\n`
     if (context.totals.fandaRate > 0) {
       md += `- F&A (${context.totals.fandaRateLabel || context.totals.fandaRate * 100 + '%'} ${context.totals.fandaRateBasis || ''}): $${context.totals.fandaAnnual?.toLocaleString() || 0}/yr\n`
+      if (context.totals.fandaExemptAnnual > 0) {
+        md += `- F&A-exempt services (no F&A charged): $${context.totals.fandaExemptAnnual.toLocaleString()}/yr\n`
+      }
       md += `- **Total with F&A (annual): $${context.totals.totalAnnualWithFanda?.toLocaleString() || 0}**\n`
     }
     md += '\n'

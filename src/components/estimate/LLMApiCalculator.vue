@@ -20,6 +20,7 @@ const {
   applyPreset,
   calculate,
   addToSlate,
+  canAddToSlate,
   resetInputs
 } = useCalculator('llm-api-costs')
 
@@ -162,6 +163,7 @@ function statusLabel(status) {
     :error="error"
     :comparison="relatableComparison"
     :just-added="justAdded"
+    :can-add-to-slate="canAddToSlate"
     @apply-preset="handleApplyPreset"
     @calculate="handleCalculate"
     @add-to-slate="handleAddToSlate"

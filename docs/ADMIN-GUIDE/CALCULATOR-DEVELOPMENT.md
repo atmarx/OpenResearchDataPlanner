@@ -361,7 +361,7 @@ The global `safety_multiplier` (default 1.5x) accounts for:
 
 ### 6. Link to Services
 
-Each calculator's result maps to a service so it can be added to the slate. By default the mapping follows the calculator's **category** — `storage` → `hpc-storage`, `cpu` → `hpc-cpu`, `gpu` → `hpc-gpu`. To target a specific service, set `target_services` in `calculators.yaml`:
+Each calculator's result maps to a service so it can be added to the slate. By default the mapping follows the calculator's **category** — `storage` → `hpc-storage`, `cpu` → `hpc-compute`, `gpu` → `hpc-gpu` (defaults live in `src/lib/calculatorTargets.js`). To target a specific service, set `target_services` in `calculators.yaml`:
 
 ```yaml
 # config/calculators.yaml
@@ -374,7 +374,9 @@ calculator_config:
 
 The `api` category has **no** default mapping — see the note below.
 
-Note: the built-in `cpu` category default is the slug `hpc-cpu`, but the shipped CPU service is `hpc-compute`. For CPU calculators, set `target_services.default: hpc-compute` explicitly rather than relying on the category default. Likewise, an `api` calculator with no `target_services` falls back to `hpc-storage`, so its dollar estimate lands on the storage line — the shipped `llm-api-costs` has this problem. No shipped service is priced per dollar (`azure-openai` is per 1M tokens), so `target_services` alone doesn't fully fix it; treat the LLM API calculator's slate entry as unreliable until this is fixed in code.
+`npm run build:config` fails if any enabled calculator's target (default or alternative) isn't a service in `services.yaml` — an unknown slug would otherwise land in the slate priced at $0. If you rename or remove `hpc-compute`, `hpc-storage` or `hpc-gpu`, set `target_services.default` on the affected calculators.
+
+The shipped `llm-api-costs` calculator has no target: its result is dollars over a period, and no shipped service is priced that way (`azure-openai` is per 1M tokens). It shows the figure with no **Add to Slate** button. Give it `target_services.default` only if you add a service whose unit matches.
 
 ---
 

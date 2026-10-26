@@ -257,6 +257,7 @@ export const useSlateStore = defineStore('slate', () => {
         id: softwareItem.id,
         licenseModel: softwareItem.licenseModel || 'campus',
         costToUser: softwareItem.costToUser ?? null,
+        costEstimate: softwareItem.costEstimate ?? null,
         costPeriod: softwareItem.costPeriod || null,
         note: softwareItem.note || null
       })
