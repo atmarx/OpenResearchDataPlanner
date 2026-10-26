@@ -91,7 +91,7 @@ function handleComplete({ output, flags }) {
 
 function getNextApplet() {
   // After IRB amendment, suggest going to clinical validation
-  return 'clinical-validation'
+  return 'clinical/clinical-validation'
 }
 
 const iconMap = {

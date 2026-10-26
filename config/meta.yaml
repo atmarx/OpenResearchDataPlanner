@@ -162,7 +162,7 @@ ai_disclosure:
       We follow the same responsible AI practices we recommend to researchers: human oversight,
       transparent disclosure, and continuous verification.
     learn_more_label: "Learn more"
-    report_issue_url: "https://github.com/anthropics/claude-code"
+    report_issue_url: "https://github.com/atmarx/OpenResearchDataPlanner/issues"
     report_issue_label: "Report an issue"
 
   # Footer acknowledgment (always visible if enabled). learn_more_label links to
