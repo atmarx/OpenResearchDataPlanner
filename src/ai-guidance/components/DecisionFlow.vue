@@ -72,14 +72,19 @@ const currentQuestion = computed(() => {
   return props.questions.find(q => q.id === currentQuestionId.value) || null
 })
 
-// Answer history for back navigation
+// Answer history for back navigation — each entry snapshots the output and
+// flags as they stood before that answer, so going back unwinds them
 const history = ref([])
 
 // Select an option
 function selectOption(option) {
   // Record answer
   answers.value[currentQuestionId.value] = option.value
-  history.value.push(currentQuestionId.value)
+  history.value.push({
+    id: currentQuestionId.value,
+    output: output.value,
+    flags: flags.value
+  })
 
   // Apply output values
   if (option.setsOutput) {
@@ -115,13 +120,14 @@ function selectOption(option) {
 // Go back one question
 function goBack() {
   if (history.value.length > 0) {
-    const prevId = history.value.pop()
+    const prev = history.value.pop()
     // Remove the answer for the current question (normally unset — we're
-    // leaving it unanswered). NB: the previous answer's setsOutput/setsFlags are
-    // NOT rolled back; re-answering overwrites output keys, but a flag the
-    // abandoned option raised stays in `flags`.
+    // leaving it unanswered), then restore output and flags to before the
+    // previous answer so its setsOutput/setsFlags don't outlive it
     delete answers.value[currentQuestionId.value]
-    currentQuestionId.value = prevId
+    output.value = prev.output
+    flags.value = prev.flags
+    currentQuestionId.value = prev.id
     isComplete.value = false
     showLearnMore.value = false
   }
