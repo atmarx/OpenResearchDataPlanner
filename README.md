@@ -10,6 +10,33 @@ A guided planning tool that helps researchers select data infrastructure, estima
 - Generates draft Data Management Plan text as a starting point (always review and customize for your project)
 - Explains unfamiliar terms and helps estimate requirements
 
+**Who it's for:** researchers planning a grant, the research computing and IT staff who field their requests, and institutions that want to fork it and run their own copy.  The bundled config describes Northwinds University, which is fictional — swap in your own.
+
+## Status
+
+**v1.0, still being polished.**  The last tag is `v1.0.0` (April 2026); everything since lives on `main` and on staging.
+
+**Real today:**
+- The wizard: tier selection, grant period, retention, services, software, estimate, results, plus a consultation path for restricted tiers
+- Cost math with subsidies, F&A and grant periods; DMP generation and export, including PDF
+- 14 Help Me Estimate calculators, the explore pages, the AI Guide with its clinical tracks, and the IT Workbench
+- The feedback widget and its API
+
+**Not real yet:**
+- **Contacting a human from the app.**  The Get Help modal shows FAQ, office hours and contextual help, but its email, schedule and save buttons only show a demo notice.
+- **"Submit to Research IT"** on the slate has no handler, and there's no cross-device "save and continue later".
+- **Tier workflow steps.**  `tier-workflow.yaml` compiles and its gating is tested, but nothing renders it yet.
+- **Multi-session drafts, folder sync, the policy concept graph and a backend API.**  These are designed or planned for V1.1 through V2.0.
+
+**Tests:** `npm test` runs the Vitest unit suite.  CI doesn't run it, so run it before you push.  There's no end-to-end suite; the Playwright persona sessions (`npm run persona-session`) drive a live target.
+
+## Where It Runs
+
+| Environment | URL | Deploys |
+|-------------|-----|---------|
+| Staging | https://openresearchdataplanner.dev.xram.net | Automatically on push to `main` (Woodpecker, on xdocker01) |
+| Production | Not live | The pipeline fires on a tag and targets xdroplet02, but no production domain has been picked |
+
 ## Quick Start
 
 ```bash
@@ -30,8 +57,9 @@ See the [User Guide](docs/USERGUIDE.md) for a complete walkthrough.
 - **Compare Options** — Side-by-side service comparison within categories
 - **Terminology Tooltips** — Click any underlined term for a plain-English explanation
 - **Software Catalog** — Check what licensed software is available on each platform
-- **Talk to a Human** — Escape hatch to email, schedule a call, or save progress
+- **Get Help** — Floating help with FAQ, office hours and contextual tips (contact buttons are demo-only for now)
 - **AI Guide** — Decision applets for using AI tools with research data, including a clinical track (`/ai`)
+- **IT Workbench** — Login, dashboard and plan review for IT staff (`/workbench`)
 
 ## For Administrators
 
@@ -82,7 +110,7 @@ The build output is static files. Deploy anywhere:
 - GitHub Pages, Netlify, Vercel
 - AWS S3 + CloudFront
 
-No backend required. The optional feedback widget posts to a small Node.js service (`services/feedback-api/`); the bundled Docker setup runs it behind Caddy — see [Docker deployment](docs/ADMIN-GUIDE/DOCKER.md).
+The researcher UI needs no backend. The optional feedback widget posts to a small Node.js service (`services/feedback-api/`); the bundled Docker setup runs it behind Caddy — see [Docker deployment](docs/ADMIN-GUIDE/DOCKER.md).
 
 ## Documentation
 
@@ -113,9 +141,9 @@ No backend required. The optional feedback widget posts to a small Node.js servi
 ## Design Principles
 
 1. **Config-driven** — All content from YAML, no code changes for customization
-2. **Zero backend** — Fully static, deployable anywhere
+2. **No backend for the researcher UI** — Static files, deployable anywhere; only the optional feedback widget needs a service
 3. **Progressive disclosure** — Complex concepts revealed only when needed
-4. **Escape hatches** — Human help always accessible
+4. **Escape hatches** — A path to human help on every step (live contact actions still to come)
 
 ## Important Notice
 
