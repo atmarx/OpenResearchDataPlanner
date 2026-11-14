@@ -28,7 +28,7 @@ A guided planning tool that helps researchers select data infrastructure, estima
 - **Tier workflow steps.**  `tier-workflow.yaml` compiles and its gating is tested, but nothing renders it yet.
 - **Multi-session drafts, folder sync, the policy concept graph and a backend API.**  These are designed or planned for V1.1 through V2.0.
 
-**Tests:** `npm test` runs the Vitest unit suite.  CI doesn't run it, so run it before you push.  There's no end-to-end suite; the Playwright persona sessions (`npm run persona-session`) drive a live target.
+**Tests:** `npm test` runs the Vitest unit suite.  CI runs it before building images, and a failure blocks the deploy.  There's no end-to-end suite; the Playwright persona sessions (`npm run persona-session`) drive a live target.
 
 ## Where It Runs
 

@@ -222,7 +222,7 @@ See `docs/ADMIN-GUIDE/VALIDATION.md` for common errors and fixes.
 
 ### Tests
 - Vitest unit suite in `tests/` (`npm test`) — tier classification, classification flags, cost math + F&A exemption + BYOL licence cost, calculator slate targets, AI applet next-routes, config validation, skin contrast, AI disclosure, DataCheck FRE flow + workflow step gating, persona-session harness
-- CI does **not** run the suite yet — the Woodpecker pipeline only builds and pushes images; run `npm test` before pushing
+- CI runs the suite first (`.woodpecker/build.yml` `test` step: `npm ci`, `build:config`, `npm test`); a failure blocks the image push and the deploy
 - No end-to-end suite; Playwright persona-session specs (`tests/persona-sessions/*.spec.mjs`, driven by `npm run persona-session`) run browser sessions against a live target
 
 ### Config

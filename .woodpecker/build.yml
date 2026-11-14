@@ -7,6 +7,16 @@ labels:
   platform: build
 
 steps:
+  # Runs first, so a red suite stops the images from being pushed and deployed.
+  # build:config (not validate:config) because tests/validateConfig.test.js reads
+  # the built public/config.json, which is gitignored. No secrets, no docker.sock.
+  - name: test
+    image: node:22-alpine
+    commands:
+      - npm ci --no-audit --no-fund
+      - npm run build:config
+      - npm test
+
   - name: build-and-push
     image: docker:cli
     environment:
