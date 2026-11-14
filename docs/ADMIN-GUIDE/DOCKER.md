@@ -248,11 +248,11 @@ The planner container takes none. The `feedback-api` service (started by both co
 | Variable | Default (docker-compose.yml) | Description |
 |----------|------------------------------|-------------|
 | `FEEDBACK_API_KEY_WRITE` → `API_KEY_WRITE` | `changeme-write` | Key the browser sends when submitting feedback. Must match `feedback.api_key` in `meta.yaml`. |
-| `FEEDBACK_API_KEY_ADMIN` → `API_KEY_ADMIN` | `changeme-admin` | Admin key for reading feedback stats (IT Workbench). |
+| `FEEDBACK_API_KEY_ADMIN` → `API_KEY_ADMIN` | **none — required** | Admin key for reading feedback (IT Workbench). Feedback includes names and emails people chose to share. Compose won't start without it, and the server exits if it's under 16 characters or starts with `changeme`. Generate with `openssl rand -hex 24`. |
 | `CORS_ORIGIN` | `http://localhost:4000` | Allowed browser origin. |
 | `PORT` / `DB_PATH` | `4001` / `/app/data/feedback.db` | Set in the compose file; data persists in the `feedback-data` volume. |
 
-Set the keys in a `.env` file next to `docker-compose.yml` — and change both from the defaults before going live. `docker-compose.dev.yml` hard-codes `dev-write-key` / `dev-admin-key` instead. If you don't want feedback collection, set `feedback.enabled: false` in `meta.yaml` and remove the `feedback-api` service.
+Set the keys in a `.env` file next to `docker-compose.yml`.  The write key is public by design (every browser gets it in `config.json`), so its default only deters drive-by spam.  The admin key has no default. `docker-compose.dev.yml` hard-codes `dev-write-key` / `dev-admin-key-local-only` instead. If you don't want feedback collection, set `feedback.enabled: false` in `meta.yaml` and remove the `feedback-api` service.
 
 ---
 

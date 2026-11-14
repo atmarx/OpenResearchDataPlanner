@@ -3,6 +3,16 @@ import cors from '@fastify/cors'
 import { initDb } from './src/db.js'
 import feedbackRoutes from './src/routes/feedback.js'
 
+// The admin key reads back contact PII, so refuse to start without a real one.
+// A "changeme" value is in the public repo; an empty one would leave the
+// read routes guarded by nothing but a missing header check.
+const adminKey = process.env.API_KEY_ADMIN || ''
+if (adminKey.length < 16 || adminKey.startsWith('changeme')) {
+  console.error('API_KEY_ADMIN is missing, too short (<16 chars), or a public default. ' +
+    'Generate one with `openssl rand -hex 24` and set FEEDBACK_API_KEY_ADMIN in .env.')
+  process.exit(1)
+}
+
 const fastify = Fastify({ logger: true })
 
 // CORS

@@ -34,23 +34,33 @@
     #       }
     #   }
 
-    # SPA routing: try file, then index.html
-    handle {
-        try_files {path} /index.html
+    # Caching. Vite content-hashes everything under /assets, so those files can
+    # be cached forever. Everything else (index.html on any deep link,
+    # config.json, unhashed images) must revalidate, or a browser keeps the old
+    # index.html / config after a deploy. ETags make revalidation a cheap 304.
+    @hashed {
+        path /assets/*
+        file
+    }
+    handle @hashed {
+        header Cache-Control "public, max-age=31536000, immutable"
         file_server
     }
 
-    # Cache static assets aggressively
-    @static {
-        path *.js *.css *.woff *.woff2 *.png *.jpg *.svg *.ico
+    # A chunk from a previous deploy is gone. Answer 404 rather than the SPA
+    # fallback, so the router's preload-error handler reloads the page instead
+    # of executing index.html as JavaScript — and don't let anything cache it.
+    handle /assets/* {
+        header Cache-Control "no-store"
+        respond 404
     }
-    header @static Cache-Control "public, max-age=31536000, immutable"
 
-    # Don't cache HTML (for updates)
-    @html {
-        path *.html /
+    # SPA routing: try file, then index.html
+    handle {
+        header Cache-Control "no-cache"
+        try_files {path} /index.html
+        file_server
     }
-    header @html Cache-Control "no-cache, must-revalidate"
 
     # Security headers
     header {
